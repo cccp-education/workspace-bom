@@ -3,7 +3,7 @@ plugins {
     `maven-publish`
 }
 
-group = "cccp.education"
+group = "education.cccp"
 version = "0.1.0"
 
 javaPlatform {
@@ -25,6 +25,8 @@ dependencies {
         api("dev.langchain4j:langchain4j-pgvector:1.14.1-beta24")
         api("dev.langchain4j:langchain4j-embeddings-all-minilm-l6-v2:1.14.1-beta24")
         api("dev.langchain4j:langchain4j-ollama:1.14.1")
+
+        api("ai.koog:koog-agents:0.8.0")
 
         api("org.postgresql:r2dbc-postgresql:1.0.7.RELEASE")
         api("io.r2dbc:r2dbc-pool:1.0.2.RELEASE")
