@@ -52,6 +52,9 @@ dependencies {
         api("com.vladsch.flexmark:flexmark-all:0.64.8")
 
         api("com.microsoft.playwright:playwright:1.52.0")
+
+        // Vibecoding contracts module
+        api("education.cccp:vibecoding-contracts:${version}")
     }
 }
 

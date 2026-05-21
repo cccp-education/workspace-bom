@@ -14,3 +14,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "workspace-bom"
+include("vibecoding-contracts")
