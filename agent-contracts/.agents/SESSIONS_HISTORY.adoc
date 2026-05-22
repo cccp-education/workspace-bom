@@ -1,0 +1,17 @@
+= SESSIONS_HISTORY.adoc — Agent Contracts
+:date: 2026-05-22
+
+[cols="3,3,3,5"]
+|===
+| Session | Date | Statut | Résumé
+
+| 000
+| 2026-05-22
+| DONE
+| Bootstrap. AC-0→AC-3 terminés (25/25 Cucumber PASS). AC-4 3/4 (bug naiveSimilarity). AC-5+AC-6 pending.
+
+| 001
+| 2026-05-22
+| DONE
+| Fix AC-4 (naiveSimilarity + Cucumber step singulier/pluriel). AC-5 Cucumber ContextAssembler+PlanExecutor (7 scénarios). AC-6 Gouvernance finalisée. 36/36 PASS.
+|===

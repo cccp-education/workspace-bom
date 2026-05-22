@@ -1,0 +1,63 @@
+= Session 000 — Bootstrap agent-contracts (Phase 1)
+:date: 2026-05-22
+:status: DONE
+:projet: workspace-bom/agent-contracts
+
+== Résumé
+
+Bootstrap + suite de la librairie N0 `agent-contracts` sous `foundry/public/workspace-bom/agent-contracts/`.
+Pattern `api-key-pool` (standalone Gradle java-library, zéro dépendance inter-plugin).
+Session 000 (bootstrap AC-0→AC-3) + Session 001 (fix AC-4 + AC-5 + AC-6). 36/36 Cucumber PASS.
+
+== EPICs
+
+[cols="3,3,3,5"]
+|===
+| EPIC | Statut | Tests | Notes
+
+| AC-0 Scaffold
+| ✅
+| —
+| build.gradle.kts, settings.gradle.kts, gradlew, libs.versions.toml, .gitignore
+
+| AC-1 AgentState
+| ✅
+| Cucumber 8/8 PASS
+| Sealed class 7 états (Initial→Finalized), + Epic/UserStory/GradleTask
+
+| AC-2 AgentTool
+| ✅
+| Cucumber 5/5 PASS
+| Interface Tool<TInput, TOutput> + validation GradleTaskTool
+
+| AC-3 GradleTaskTool
+| ✅
+| Cucumber 12/12 PASS
+| Blacklist via regex `^..$` (word-bounded), timeout 300s, validation
+
+| AC-4 RelevanceBudget
+| ✅
+| Cucumber 4/4 PASS
+| compute() + assemble() + tokenAllocation(). Fix Cucumber step singulier/pluriel
+
+| AC-5 ContextAssembler + PlanExecutor
+| ✅
+| Cucumber 7/7 PASS
+| Mock ContextAssembler (3 exemples) + PlanExecutor (execute, evaluate, replan, stop max)
+
+| AC-6 Gouvernance
+| ✅
+| —
+| INDEX, SESSIONS_HISTORY, TEST_COVERAGE_ANALYSIS, SESSION_CHECKLIST, archives à jour
+|===
+
+== Bug AC-4 résolu
+
+Cucumber step `the budget has {int} channels` ne matchait pas "1 channel" (singulier).
+Ajout du @Then "the budget has {int} channel". Pas de bug dans naiveSimilarity elle-même —
+intersection entre "formation java" et "java formation content" = 2, score ≈ 0.816.
+
+== Prochaine session (002)
+
+- PlanSerializer Cucumber
+- publishToMavenLocal (intégration cross-borough)

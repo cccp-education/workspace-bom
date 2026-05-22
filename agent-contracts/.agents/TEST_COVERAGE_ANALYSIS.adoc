@@ -1,0 +1,66 @@
+= TEST_COVERAGE_ANALYSIS.adoc — Agent Contracts
+:date: 2026-05-22
+
+== Cucumber BDD — 36 scénarios, 36/36 PASS
+
+[cols="3,2,2,3"]
+|===
+| Feature | Scénarios | Statut | Couverture
+
+| ac_1_agent_state.feature
+| 8
+| ✅ 8/8
+| AgentPhase, isTerminal, isSuccessful, EPICs, execution results
+
+| ac_2_agent_tool.feature
+| 5
+| ✅ 5/5
+| name, description, validate success/failure, interface contract
+
+| ac_3_gradle_task_tool.feature
+| 12
+| ✅ 12/12
+| Blacklist (clean, cleanBuild, delete, refresh-deps), allowed tasks (generateSPD, generateQuiz, transformToPdf, collectCompositeContext), timeout validation
+
+| ac_4_relevance_budget.feature
+| 4
+| ✅ 4/4
+| Empty channels, compute (single channel naiveSimilarity), assemble, token allocation
+
+| ac_5_context_assembler_plan_executor.feature
+| 7
+| ✅ 7/7
+| ContextAssembler assemble (3 examples), PlanExecutor execute/evaluate/replan/stop-at-max
+|===
+
+== Sources couvertes
+
+[cols="2,3"]
+|===
+| Fichier | Couvert par
+| AgentState.kt
+| ac_1 (8 scenarios) — Toutes les sealed class + Epic/UserStory/GradleTask
+
+| AgentTool.kt
+| ac_2 (5 scenarios) — Interface contract via GradleTaskTool
+
+| GradleTaskTool.kt
+| ac_2 + ac_3 (17 scenarios) — validate, blacklist, timeout
+
+| RelevanceBudget.kt
+| ac_4 (4 scenarios) — compute, assemble, tokenAllocation
+
+| ContextAssembler.kt
+| ac_5 (3 scenarios Outline) — assemble via mock ContextAssembler, ContextReady, composite context
+
+| PlanExecutor.kt
+| ac_5 (4 scenarios) — execute, evaluate, replan, stop at max replans via mock PlanExecutor
+
+| PlanSerializer.kt
+| Non couvert (pas de Cucumber)
+|===
+
+== Actions prochaine session
+
+- PlanSerializer Cucumber
+- publishToMavenLocal (intégration cross-borough)

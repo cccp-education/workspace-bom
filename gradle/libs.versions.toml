@@ -33,7 +33,7 @@ cucumber = "7.34.3"
 
 # ── Gradle tooling ────────────────────────────────────────────────────────────
 plugin-publish = "2.1.0"
-kover = "0.9.1"
+kover = "0.9.8"
 
 # ── Plugin versions (published by education.cccp) ────────────────────────────
 slider = "0.0.7"

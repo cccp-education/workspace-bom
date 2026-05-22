@@ -1,0 +1,36 @@
+= COMPLETED_TASKS_ARCHIVE_2026-05.adoc — Agent Contracts
+:mois: Mai 2026
+
+== Session 000 — Bootstrap (2026-05-22)
+
+[cols="3,5"]
+|===
+| EPIC | Résultat
+
+| AC-0
+| Scaffold Gradle java-library avec settings.gradle.kts, build.gradle.kts, gradlew, libs.versions.toml, .gitignore. GroupId education.cccp, version 0.1.0. Dépendance unique : koog-agents:0.8.0.
+
+| AC-1
+| AgentState.kt — sealed class 7 états standardisés : Initial, ContextReady, Classified, Planned, Executed, Evaluated, Finalized. Enum AgentPhase (BUILD_CONTEXT→FINALIZE). Data classes Epic, UserStory, GradleTask. 8 Cucumber PASS.
+
+| AC-2
+| AgentTool.kt — interface générique Tool<TInput, TOutput> avec name, description, execute() suspend, validate() → Result<Unit>. 5 Cucumber PASS via GradleTaskTool.
+
+| AC-3
+| GradleTaskTool.kt — pont koog vers tâche Gradle cross-borough. Blacklist via regex ^..$ (word-bounded) : clean, cleanBuild, cleanAll, delete, deleteAll, rm, reset, nuke, purge, wipeout, --refresh-dependencies. Timeout 300s (1-600 valide). 12 Cucumber PASS.
+|===
+
+== Session 001 — Fix AC-4 + AC-5 + AC-6 (2026-05-22)
+
+[cols="3,5"]
+|===
+| EPIC | Résultat
+
+| AC-4 fix
+| Bug naïve : Cucumber step `the budget has {int} channels` ne matchait pas "1 channel" (singulier). Fix : ajout @Then("the budget has {int} channel") en plus du @Then pluriel. Pas de bug dans naiveSimilarity — l'intersection entre "formation java" et "java formation content" = 2, score ok. 4/4 PASS.
+
+| AC-5
+| ContextAssemblerPlanExecutorSteps.kt — mock ContextAssembler + PlanExecutor avec runBlocking (Cucumber ne supporte pas suspend dans les steps : arity mismatch via Continuation invisible). 3 scenarios outline ContextAssembler (assemble → ContextReady, intention+composite context validés) + 4 scenarios PlanExecutor (execute, evaluate, replan+increment, stop at max replans). ac_5_context_assembler_plan_executor.feature. 7/7 PASS.
+
+| AC-6
+| Gouvernance finalisée : INDEX.adoc (AC-4/5/6 marqués ✅, session 001 DONE), SESSIONS_HISTORY.adoc (session 001 ajoutée), TEST_COVERAGE_ANALYSIS.adoc (36/36 PASS, ac_5 documenté), SESSION_CHECKLIST.adoc (checklist marquée), archive COMPLETED_TASKS mis à jour. 36/36 Cucumber PASS au total.

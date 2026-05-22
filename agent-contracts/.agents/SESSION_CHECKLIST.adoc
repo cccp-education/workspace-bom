@@ -1,0 +1,31 @@
+= SESSION_CHECKLIST.adoc — Agent Contracts Session 000
+
+== Hook Ouverture
+
+- [x] Lire PROMPT_REPRISE.adoc
+- [x] Lire AGENT.adoc
+- [x] Lire .agents/INDEX.adoc
+- [x] git status
+- [x] ./gradlew build (vérifier compilation)
+- [x] Vérifier que le build compile avant de coder
+
+== Sessions traitées
+
+Session 001 (2026-05-22) — AC-4 bugfix + AC-5 Cucumber + AC-6 gouvernance. 36/36 PASS.
+
+== Hook Fermeture
+
+- [ ] Étape 1 : Rapport session → `.agents/sessions/NNN-sujet.adoc`
+- [ ] Étape 2 : PROMPT_REPRISE.adoc (max 70 lignes)
+- [ ] Étape 3 : .agents/INDEX.adoc (session N+1, roadmap, statut EPICs)
+- [ ] Étape 4 : .agents/SESSIONS_HISTORY.adoc
+- [ ] Étape 5 : .agents/TEST_COVERAGE_ANALYSIS.adoc (si tests modifiés)
+- [ ] Étape 6 : .agents/archives/COMPLETED_TASKS_ARCHIVE_2026-05.adoc
+
+== Vérification Pré-compile
+
+- [ ] build.gradle.kts syntaxe correcte
+- [ ] settings.gradle.kts syntaxe correcte
+- [ ] gradle/libs.versions.toml syntaxe correcte
+- [ ] Sources Kotlin compilent
+- [ ] Tests compilent et passent

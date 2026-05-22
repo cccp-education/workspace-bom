@@ -1,0 +1,81 @@
+= INDEX.adoc — Agent Contracts (agent-contracts)
+:session: 001
+:date: 2026-05-22
+:status: DONE — AC-0→AC-6 terminés, 36/36 Cucumber PASS
+
+== Roadmap
+
+[cols="3,3,2,5"]
+|===
+| EPIC | Statut | Priorité | Description
+
+| AC-0
+| ✅ TERMINÉ
+| Haute
+| Scaffold projet Gradle java-library sous workspace-bom/agent-contracts/
+
+| AC-1
+| ✅ TERMINÉ
+| Haute
+| AgentState.kt — sealed class états standardisés (8 Cucumber PASS)
+
+| AC-2
+| ✅ TERMINÉ
+| Haute
+| AgentTool.kt — interface Tool<TInput, TOutput> commune (5 Cucumber PASS)
+
+| AC-3
+| ✅ TERMINÉ
+| Haute
+| GradleTaskTool.kt — pont koog, blacklist regex-bounded, timeout 300s (12 Cucumber PASS)
+
+| AC-4
+| ✅ TERMINÉ
+| Haute
+| RelevanceBudget.kt — budget dynamique cosinus + softmax. Fix naiveSimilarity + Cucumber step
+
+| AC-5
+| ✅ TERMINÉ
+| Haute
+| ContextAssembler.kt + PlanExecutor.kt — interfaces N1→N2, 7 Cucumber PASS
+
+| AC-6
+| ✅ TERMINÉ
+| Haute
+| Gouvernance (.agents/ SESSIONS_HISTORY, archives, INDEX)
+|===
+
+== Portefeuille
+
+[cols="2,3,5"]
+|===
+| Fichier | Rôle | Consommé par
+
+| AgentState.kt
+| Sealed class 7 états standardisés
+| N1 (codebase), N2 (planner/training/codex), N3 (engine)
+
+| AgentTool.kt
+| Interface Tool<TInput, TOutput>
+| N1 (implémente), N2 (consomme)
+
+| GradleTaskTool.kt
+| Pont vers tâche Gradle d'un autre borough
+| N2 (planner → training/codex/quizz)
+
+| RelevanceBudget.kt
+| Budget dynamique par pertinence cosinus
+| N1 (MultiChannelContextGraph), N2 (planning)
+
+| ContextAssembler.kt
+| Interface assemblage contexte augmenté
+| N1 (implémente), N2 (consomme)
+
+| PlanExecutor.kt
+| Interface exécution/évaluation/replan
+| N2 (planner implémente)
+
+| PlanSerializer.kt
+| Sérialisation plan ↔ Epics
+| N2 (planner)
+|===
