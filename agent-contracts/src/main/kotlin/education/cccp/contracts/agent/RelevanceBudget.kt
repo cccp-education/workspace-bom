@@ -1,4 +1,4 @@
-package cccp.education.contracts.agent
+package education.cccp.contracts.agent
 
 import kotlin.math.exp
 import kotlin.math.sqrt

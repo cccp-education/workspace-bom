@@ -1,7 +1,7 @@
-package cccp.education.contracts.agent.scenarios
+package education.cccp.contracts.agent.scenarios
 
-import cccp.education.contracts.agent.ChannelScore
-import cccp.education.contracts.agent.RelevanceBudget
+import education.cccp.contracts.agent.ChannelScore
+import education.cccp.contracts.agent.RelevanceBudget
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When

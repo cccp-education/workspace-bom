@@ -1,7 +1,7 @@
-package cccp.education.contracts.agent.scenarios
+package education.cccp.contracts.agent.scenarios
 
-import cccp.education.contracts.agent.AgentTool
-import cccp.education.contracts.agent.GradleTaskTool
+import education.cccp.contracts.agent.AgentTool
+import education.cccp.contracts.agent.GradleTaskTool
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When

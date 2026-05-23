@@ -1,8 +1,8 @@
-package cccp.education.contracts.agent.scenarios
+package education.cccp.contracts.agent.scenarios
 
-import cccp.education.contracts.agent.AgentState
-import cccp.education.contracts.agent.ContextAssembler
-import cccp.education.contracts.agent.PlanExecutor
+import education.cccp.contracts.agent.AgentState
+import education.cccp.contracts.agent.ContextAssembler
+import education.cccp.contracts.agent.PlanExecutor
 import io.cucumber.java.en.And
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then

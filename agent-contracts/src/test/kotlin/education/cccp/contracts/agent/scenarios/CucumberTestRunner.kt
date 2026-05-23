@@ -1,4 +1,4 @@
-package cccp.education.contracts.agent.scenarios
+package education.cccp.contracts.agent.scenarios
 
 import io.cucumber.junit.platform.engine.Constants.FILTER_TAGS_PROPERTY_NAME
 import io.cucumber.junit.platform.engine.Constants.GLUE_PROPERTY_NAME
@@ -11,7 +11,7 @@ import org.junit.platform.suite.api.Suite
 @Suite
 @IncludeEngines("cucumber")
 @SelectClasspathResource("features")
-@ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "cccp.education.contracts.agent.scenarios")
+@ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "education.cccp.contracts.agent.scenarios")
 @ConfigurationParameter(
     key = PLUGIN_PROPERTY_NAME,
     value = "pretty, html:build/reports/cucumber.html, json:build/reports/cucumber.json"

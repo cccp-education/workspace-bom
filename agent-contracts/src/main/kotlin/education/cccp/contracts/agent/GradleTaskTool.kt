@@ -1,4 +1,4 @@
-package cccp.education.contracts.agent
+package education.cccp.contracts.agent
 
 import ai.koog.serialization.typeToken
 import kotlinx.serialization.Serializable

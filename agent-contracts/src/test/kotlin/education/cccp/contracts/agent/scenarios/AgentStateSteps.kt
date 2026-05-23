@@ -1,8 +1,8 @@
-package cccp.education.contracts.agent.scenarios
+package education.cccp.contracts.agent.scenarios
 
-import cccp.education.contracts.agent.AgentPhase
-import cccp.education.contracts.agent.AgentState
-import cccp.education.contracts.agent.Epic
+import education.cccp.contracts.agent.AgentPhase
+import education.cccp.contracts.agent.AgentState
+import education.cccp.contracts.agent.Epic
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When

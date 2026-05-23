@@ -1,4 +1,4 @@
-package cccp.education.contracts.agent
+package education.cccp.contracts.agent
 
 interface AgentTool<TInput, TOutput> {
     val name: String

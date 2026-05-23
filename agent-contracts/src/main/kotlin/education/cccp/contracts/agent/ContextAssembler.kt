@@ -1,4 +1,4 @@
-package cccp.education.contracts.agent
+package education.cccp.contracts.agent
 
 interface ContextAssembler {
     suspend fun assemble(intention: String, workspaceRoot: String): AgentState.ContextReady

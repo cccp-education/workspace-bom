@@ -1,4 +1,4 @@
-package cccp.education.contracts.agent
+package education.cccp.contracts.agent
 
 enum class AgentPhase { BUILD_CONTEXT, CLASSIFY, PLAN, EXECUTE, EVALUATE, REPLAN, FINALIZE, GIVE_UP }
 

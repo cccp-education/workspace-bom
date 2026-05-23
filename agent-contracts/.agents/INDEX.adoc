@@ -53,7 +53,7 @@
 
 | AgentState.kt
 | Sealed class 7 états standardisés
-| N1 (codebase), N2 (planner/training/codex), N3 (engine)
+| N1 (codebase), N2 (planner/training/codex), N3 (runner-gradle)
 
 | AgentTool.kt
 | Interface Tool<TInput, TOutput>

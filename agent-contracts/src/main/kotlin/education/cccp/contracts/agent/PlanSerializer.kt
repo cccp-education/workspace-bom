@@ -1,4 +1,4 @@
-package cccp.education.contracts.agent
+package education.cccp.contracts.agent
 
 object PlanSerializer {
     fun serialize(epics: List<Epic>): String {
