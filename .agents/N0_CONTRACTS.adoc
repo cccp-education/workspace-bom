@@ -1,0 +1,213 @@
+= N0-CONTRACTS — Architecture des Contrats Cross-Borough
+:date: 2026-05-24
+:session: 064
+:adr: ADR-001-multimodule-contrats-n0.adoc
+:statut: LIVRÉ
+
+== TL;DR pour un LLM
+
+Quand tu lis du code dans ce workspace et que tu vois `import education.cccp.contracts.context.*`,
+tu sais que ces types viennent de `codebase-contracts:0.1.0` — un module N0 dans `workspace-bom`.
+
+*NE PAS* créer de copies locales de ces types. La duplication a été éradiquée en Session 064.
+La source unique de vérité est `foundry/public/workspace-bom/codebase-contracts/`.
+
+== Pourquoi ce document existe
+
+Session 063 a identifié un smell-pattern : les 3 types N0 `ContextChannel`, `ChannelBudget`,
+`CompositeContext`, `CompositeContextConfig` étaient dupliqués dans 4 boroughs :
+`codebase-gradle`, `planner-gradle`, `codex-gradle`, `training-gradle`.
+
+Session 064 a résolu ce problème en créant un module Maven séparé, publié localement,
+et en migrant tous les imports vers ce module. Ce document est la mémoire technique
+de cette migration — pour qu'un LLM ou un développeur futur comprenne instantanément
+l'architecture sans avoir à lire l'historique complet.
+
+== Architecture finale (post-Session 064)
+
+```
+workspace-bom/                              ← projet Gradle multimodule
+├── settings.gradle.kts                     ← include("agent-contracts", "codebase-contracts")
+├── build.gradle.kts                        ← java-platform (BOM)
+├── gradle/libs.versions.toml               ← catalogue unique ([versions], [plugins], [libraries], [bundles])
+├── agent-contracts/                        ← subproject (36 Cucumber BDD)
+│   ├── build.gradle.kts                    ← education.cccp:agent-contracts:0.1.0
+│   └── src/main/kotlin/education/cccp/contracts/agent/
+│       ├── AgentState.kt                   ← sealed class 6 états
+│       ├── AgentTool.kt                    ← interface transverse
+│       ├── ContextAssembler.kt             ← interface N1→N2
+│       └── PlanExecutor.kt                 ← interface N1→N2
+└── codebase-contracts/                     ← NOUVEAU (Session 064)
+    ├── build.gradle.kts                    ← education.cccp:codebase-contracts:0.1.0
+    └── src/main/kotlin/education/cccp/contracts/context/
+        ├── ContextChannel.kt               ← sealed class 5 variants + ChannelBudget
+        ├── CompositeContext.kt             ← data class 4 sections + config
+        └── CompositeContextConfig.kt       ← data class token budget 40/30/20/10
+```
+
+== Artefacts Maven (dans ~/.m2/repository/)
+
+[cols="3,3,5"]
+|===
+| GroupId | ArtifactId | Version
+| `education.cccp` | `workspace-bom` | `0.1.0` (BOM java-platform)
+| `education.cccp` | `agent-contracts` | `0.1.0` (contrats agentiques koog)
+| `education.cccp` | `codebase-contracts` | `0.1.0` (contrats contexte N0)
+|===
+
+Pour publier : `cd foundry/public/workspace-bom && ./gradlew publishToMavenLocal`
+
+== Dépendances entre boroughs
+
+```
+codebase-contracts (N0) ─────────────────────┐
+     │                                        │
+     │ implementation(...)                    │
+     ▼                                        │
+codebase-gradle (N1) ──┐                     │
+     │                  │                     │
+     │                  │ implementation(...) │
+     ▼                  ▼                     ▼
+planner-gradle    codex-gradle    training-gradle
+   (N2)               (N2)             (N2)
+```
+
+*Note* : `runner-gradle` (N3) ne dépend pas directement de `codebase-contracts`.
+Il consomme les artefacts produits par les N2 via le contrat DAG N2→N3.
+
+== Contenu des types N0
+
+=== ContextChannel.kt
+
+Sealed class avec 5 variants :
+
+[cols="2,2,2,3"]
+|===
+| Variant | `source` | `budgetProportion` | `sectionHeader`
+| `Eager` | `"EAGER"` | 0.40 | `RÈGLES_EAGER`
+| `Rag` | `"RAG"` | 0.30 | `CONTEXTE_RAG`
+| `Graphify` | `"Graphify"` | 0.20 | `RELATIONS_GRAPHIFY`
+| `Docs` | `"Docs"` | 0.10 | `CONTEXTE_DOCS`
+| `Resource` | `"Resource"` | 0.0 | `RESSOURCES_COLD`
+|===
+
++ `ChannelBudget` data class (5 fractions de budget, doit sommer à 1.0)
++ `ChannelType` enum { EAGER, RAG, GRAPHIFY, RESOURCE, DOCS }
++ `truncateToTokens(maxTokens: Int)` — tronque le contenu au budget token
++ `estimateTokens(text: String)` — heuristique tokens ≈ chars/3.5
++ `DEFAULT_TOKEN_BUDGET = 8000`
+
+=== CompositeContext.kt
+
+```kotlin
+data class CompositeContext(
+    val eagerSection: String,
+    val ragSection: String,
+    val graphifySection: String,
+    val docsSection: String = "",
+    val config: CompositeContextConfig
+)
+```
+
++ `toChannels()` → `List<ContextChannel>` (5 canaux)
++ `channelsWithBudget(budget: ChannelBudget)` → canaux tronqués au budget
+
+=== CompositeContextConfig.kt
+
+```kotlin
+data class CompositeContextConfig(
+    val totalTokenBudget: Int = 8000,
+    val budgetEagerLazy: Double = 0.40,
+    val budgetRag: Double = 0.30,
+    val budgetGraphify: Double = 0.20,
+    val budgetDocs: Double = 0.10,
+    val budgetOverhead: Double = 0.0  // resource
+)
+```
+
+== Comment ajouter un nouveau borough consommateur
+
+. Ajouter `mavenLocal()` dans les `repositories` du `build.gradle.kts`
+. Ajouter `implementation("education.cccp:codebase-contracts:0.1.0")` dans les `dependencies`
+. Importer : `import education.cccp.contracts.context.*`
+. Utiliser les types directement — aucune copie locale nécessaire
+
+== Comment modifier un type N0
+
+. Modifier le fichier dans `workspace-bom/codebase-contracts/src/main/kotlin/...`
+. Ajouter/mettre à jour les tests dans `codebase-contracts/src/test/kotlin/...`
+. `./gradlew codebase-contracts:test` → tous les tests doivent passer
+. `./gradlew publishToMavenLocal` → republie dans `~/.m2`
+. Vérifier la compilation des boroughs consommateurs (planner, codex, training, codebase)
+   → `./gradlew compileKotlin` dans chaque repo
+
+== Reliquats connus (Session 064 → 065)
+
+. *codex-gradle* : `org.jetbrains:annotations` version conflict (Gradle 9.5.1 strict)
+  - Kotlin embedded `annotations:13.0` vs koog-agents `annotations:26.0.2-1`
+  - Solution : `exclude("org.jetbrains", "annotations")` dans `implementation(libs.koog.agents)`
+. *training-gradle* : `education.cccp.readme:0.0.1` plugin manquant
+  - Solution : publier le plugin ou commenter la ligne dans `build.gradle.kts`
+. *codebase-gradle* : `alias(libs.plugins.kotlin.jvm)` non résolu dans le bloc `plugins {}`
+  - Solution : remplacer par `id("org.jetbrains.kotlin.jvm") version "2.3.20"`
+. *planner-gradle* : compile OK depuis Session 064 — seul borough N2 pleinement fonctionnel
+
+Ces bugs sont *préexistants* à la migration N0. La restructuration n'a rien cassé.
+La Session 065 est programmée pour les résoudre (cf. `PROMPT_REPRISE.adoc`).
+
+== Tests
+
+[cols="3,2,2,3"]
+|===
+| Module | Tests | Framework | Note
+| `agent-contracts` | 36 | Cucumber BDD | AgentState, AgentTool, blacklist, budget, assembler, executor
+| `codebase-contracts` | 16 | JUnit 5 | ContextChannelTest (9), ChannelBudgetTest (5), CompositeContextTest (2)
+| **Total** | **52** | |
+|===
+
+Les tests Cucumber sont dans `agent-contracts/src/test/resources/features/`.
+Les tests unitaires sont dans `codebase-contracts/src/test/kotlin/education/cccp/contracts/context/`.
+
+== ADR associée
+
+- `foundry/public/workspace-bom/.agents/decisions/ADR-001-multimodule-contrats-n0.adoc`
+- Décision : Option A (multimodule Gradle) retenue le 2026-05-24
+- Raison : 1 seul catalogue, 1 seul `publishToMavenLocal`, pattern Gradle standard
+
+== Historique des modifications des types N0
+
+[cols="1,3,5"]
+|===
+| Session | Modification | Impact
+| 046 | Création originale dans codebase-gradle | Package `cccp.vibecoding.contracts.context`
+| 055 | Rapatriement vibecoding-contracts | Duplication dans codebase source tree
+| 063 | Propagation aux N2 (smell-pattern) | Duplication dans planner, codex, training
+| 064 | Extraction dans codebase-contracts (module N0) | Package `education.cccp.contracts.context`, zéro duplication
+|===
+
+== Règles pour les LLM futurs
+
+. *Quand un LLM propose d'ajouter un type contextuel* → le mettre dans `codebase-contracts`, PAS dans un borough individuel
+. *Quand un LLM voit `cccp.vibecoding.contracts.context`* → c'est du code legacy/obsolete, migrer vers `education.cccp.contracts.context`
+. *Quand un borough ne compile pas* → vérifier d'abord `~/.m2/repository/education/cccp/codebase-contracts/0.1.0/`, lancer `./gradlew publishToMavenLocal` dans workspace-bom si absent
+. *Quand la version change* → mettre à jour les `implementation("education.cccp:codebase-contracts:X.Y.Z")` dans les 4 boroughs consommateurs
+. *Ne JAMAIS recréer `cccp/vibecoding/contracts/context/`* — ce répertoire a été supprimé dans les 4 boroughs et ne doit pas revenir
+
+== Bootstrap pour un nouveau développeur
+
+```bash
+# 1. Publier les contrats en local
+cd foundry/public/workspace-bom
+./gradlew publishToMavenLocal
+
+# 2. Vérifier que les contrats sont disponibles
+ls ~/.m2/repository/education/cccp/codebase-contracts/0.1.0/
+
+# 3. Lancer les tests des contrats
+./gradlew codebase-contracts:test       # 16/16 PASS
+./gradlew agent-contracts:cucumberTest  # 36/36 PASS
+
+# 4. Compiler un borough consommateur (exemple planner)
+cd ../planner-gradle
+./gradlew :planner-plugin:compileKotlin # doit compiler sans erreur
+```
