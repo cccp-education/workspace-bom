@@ -45,8 +45,38 @@ pdfbox = "3.0.4"
 tika = "3.1.0"
 flexmark = "0.64.8"
 
-# ── Plugins ────────────────────────────────────────────────────────────────────
-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+# ── Agent Contracts ───────────────────────────────────────────────────────────
+agent-contracts = "0.1.0"
+assertj = "3.25.3"
 
 # ── Other ─────────────────────────────────────────────────────────────────────
 playwright = "1.52.0"
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+
+[libraries]
+# ── Koog ──
+koog-agents = { module = "ai.koog:koog-agents", version.ref = "koog" }
+
+# ── Kotlin ──
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serial" }
+
+# ── Tests ──
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-platform" }
+junit-platform-suite = { module = "org.junit.platform:junit-platform-suite", version.ref = "junit-platform" }
+cucumber-java = { module = "io.cucumber:cucumber-java", version.ref = "cucumber" }
+cucumber-junit-platform-engine = { module = "io.cucumber:cucumber-junit-platform-engine", version.ref = "cucumber" }
+cucumber-picocontainer = { module = "io.cucumber:cucumber-picocontainer", version.ref = "cucumber" }
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
+
+[bundles]
+cucumber = [
+    "cucumber-java",
+    "cucumber-junit-platform-engine",
+    "cucumber-picocontainer",
+    "junit-platform-suite",
+]

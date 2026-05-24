@@ -6,6 +6,10 @@ pluginManagement {
     }
 }
 
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention").version("0.9.0")
+}
+
 dependencyResolutionManagement {
     repositories {
         mavenLocal()
@@ -14,3 +18,6 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "workspace-bom"
+
+include("agent-contracts")
+include("codebase-contracts")
