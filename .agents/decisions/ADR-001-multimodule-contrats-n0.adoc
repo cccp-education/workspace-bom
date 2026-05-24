@@ -1,0 +1,127 @@
+= ADR-001 — Architecture workspace-bom : Multimodule Gradle pour les contrats N0 partagés
+:date: 2026-05-24
+:statut: décidé
+:décideur: cheroliv
+:session: 063 → 064
+:contexte: EPIC 3 — Propagation Multi-Canal Convergent aux N2
+
+== Contexte
+
+=== Problème initial (Session 063)
+
+L'EPIC 3 exigeait de propager les types de contrat N0 (`ContextChannel`,
+`ChannelBudget`, `CompositeContext`, `CompositeContextConfig`) de codebase-gradle (N1)
+vers les 3 boroughs N2 : planner-gradle, codex-gradle, training-gradle.
+
+L'import direct `implementation("education.cccp:codebase-plugin:0.0.1")` est impossible
+car le POM de codebase-plugin contient des dépendances circulaires :
+
+```
+codebase-plugin (N1)
+├── doc-pipeline:0.1.0-SNAPSHOT    → codex-gradle (N2)
+└── planner-plugin:0.0.1            → planner-gradle (N2)
+```
+
+La solution de contournement (Session 063) a été la *duplication locale* des 3 fichiers
+de contrat dans chaque borough. Cela a fonctionné mais constitue un smell-pattern :
+les types N0 sont conçus comme un Shared Kernel (DDD) et doivent vivre dans un seul artefact.
+
+=== Discussion Session 063 (fin)
+
+Le smell-pattern a été identifié : la duplication est un symptom, pas la cause.
+La cause racine est l'absence d'un module N0 dédié pour les contrats cross-borough.
+
+Deux options ont été examinées pour héberger ces contrats dans `workspace-bom` :
+
+== Options
+
+=== Option A : Multimodule Gradle
+
+```
+workspace-bom/
+├── settings.gradle.kts         ← include("agent-contracts", "codebase-contracts")
+├── build.gradle.kts            ← java-platform BOM (inchangé)
+├── gradle/libs.versions.toml   ← catalogue UNIQUE partagé
+├── agent-contracts/            ← subproject java-library (existant)
+└── codebase-contracts/         ← NOUVEAU subproject java-library
+    └── src/main/kotlin/education/cccp/contracts/context/
+        ├── ContextChannel.kt
+        ├── CompositeContext.kt
+        └── CompositeContextConfig.kt
+```
+
+*Avantages :*
+- `./gradlew publishToMavenLocal` publie tout en une commande
+- Un seul catalogue de versions (source unique de vérité)
+- Un seul Gradle daemon
+- Pattern standard Gradle, zéro surprise
+- Aligné avec la philosophie du repo : "point d'entrée unique pour les contrats cross-borough"
+
+*Inconvénients :*
+- Suppression de `agent-contracts/settings.gradle.kts` (mineur)
+- Migration des 36 tests Cucumber déjà passants
+
+=== Option B : Modules indépendants (statut quo étendu)
+
+*Inconvénients éliminatoires :*
+- 3 `./gradlew publishToMavenLocal` à exécuter dans l'ordre
+- 3 catalogues de versions à synchroniser manuellement
+- Confusion structurelle ("pourquoi ces modules partagent un repo mais pas un build ?")
+- Pattern incohérent avec la philosophie du workspace-bom
+
+== Décision
+
+**Option A retenue : workspace-bom devient un projet Gradle multimodule.**
+
+*Raison principale :* workspace-bom n'est pas un plugin Gradle comme les 11 boroughs —
+c'est le BOM + bibliothèques de contrats partagées. Sa raison d'être est d'être
+LE point d'entrée unique pour les versions et les contrats cross-borough.
+Un build multimodule reflète cette cohésion.
+
+*Impact sur les 11 boroughs :* aucun. Ils restent indépendants et importent :
+[source,kotlin]
+----
+implementation("education.cccp:agent-contracts:0.1.0")
+implementation("education.cccp:codebase-contracts:0.1.0")
+----
+
+== Plan d'implémentation (Session 064)
+
+=== Phase 1 : Restructuration workspace-bom (multimodule)
+
+. Supprimer `agent-contracts/settings.gradle.kts` (le projet devient un subproject)
+. Supprimer `agent-contracts/gradle/` (catalogue de versions délégué au root)
+. Modifier `workspace-bom/settings.gradle.kts` : ajouter `include("agent-contracts")`
+. Supprimer `agent-contracts/build` + `agent-contracts/.gradle` (cache du build indépendant)
+. Vérifier : `./gradlew agent-contracts:build` compile et les 36 tests passent
+. Vérifier : `./gradlew publishToMavenLocal` publie BOM + agent-contracts
+
+=== Phase 2 : Création codebase-contracts
+
+. Créer `codebase-contracts/build.gradle.kts` (java-library, zero dep sauf kotlin-stdlib)
+. Déplacer les 3 fichiers N0 de codebase-plugin vers codebase-contracts
+  (`cccp.vibecoding.contracts.context` → `education.cccp.contracts.context`)
+. Package : `education.cccp.contracts.context`
+. GroupId : `education.cccp`, ArtifactId : `codebase-contracts`, Version : `0.1.0`
+. Publier dans mavenLocal
+
+=== Phase 3 : Nettoyage N2 (suppression duplication)
+
+. Supprimer les fichiers dupliqués dans planner-gradle, codex-gradle, training-gradle
+  (`cccp/vibecoding/contracts/context/*.kt`)
+. Ajouter `implementation("education.cccp:codebase-contracts:0.1.0")` dans les 3 boroughs
+. Ajuster les imports : `cccp.vibecoding.contracts.context` → `education.cccp.contracts.context`
+
+=== Phase 4 : codebase-plugin (optionnel)
+
+. Remplacer les types N0 locaux par `implementation("education.cccp:codebase-contracts:0.1.0")`
+. Ceci ne résout PAS la dépendance circulaire codebase→N2 (elle est légitime pour l'orchestration)
+. Mais les types N0 ne sont plus dupliqués
+
+== Conséquences
+
+- ✅ Zéro duplication des types N0
+- ✅ Un seul `publishToMavenLocal` pour tout le workspace-bom
+- ✅ Structure Gradle standard, documentée, maintenable
+- ✅ Les 11 boroughs restent indépendants
+- ⚠️ Migration unique (Session 064), puis plus jamais touchée
