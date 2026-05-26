@@ -22,3 +22,4 @@ rootProject.name = "workspace-bom"
 include("agent-contracts")
 include("codebase-contracts")
 include("vibecoding-contracts")
+include("llm-pool-contracts")
