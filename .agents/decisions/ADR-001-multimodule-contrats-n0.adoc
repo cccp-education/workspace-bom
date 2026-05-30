@@ -18,7 +18,7 @@ car le POM de codebase-plugin contient des dépendances circulaires :
 
 ```
 codebase-plugin (N1)
-├── doc-pipeline:0.1.0-SNAPSHOT    → codex-gradle (N2)
+├── codex-plugin:0.1.0-SNAPSHOT    → codex-gradle (N2)
 └── planner-plugin:0.0.1            → planner-gradle (N2)
 ```
 

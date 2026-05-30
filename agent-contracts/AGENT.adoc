@@ -6,7 +6,7 @@
 
 . *N0 pur* — Zéro dépendance inter-plugin. Seule dépendance : `ai.koog:koog-agents:0.8.0`.
 . *Interfaces, pas implémentations* — Les N2 consomment des contrats abstraits, pas le code de N1.
-. *Pattern api-key-pool* — Même pattern N0 standalone que graphify-gradle/api-key-pool.
+. *Pattern api-key-pool* — Même pattern N0 standalone que foundry/public/api-key-pool.
 . *Tests obligatoires* — Chaque EPIC doit avoir des tests unitaires.
 . *Zéro logique métier* — Les contrats ne contiennent aucune logique de génération de formation.
 
