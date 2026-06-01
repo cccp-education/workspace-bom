@@ -1,0 +1,47 @@
+= Index des Sessions — workspace-bom (MEMPHIS 🎸)
+:code-name: MEMPHIS
+:borough-num: 22
+:n0-socle: Bill of Materials multi-module — Shared Kernel DDD cross-borough
+
+_Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
+
+_Derniere mise a jour_ : 2026-06-02
+_Session terminee_ : 001 — Borough-isation : workspace-bom devient MEMPHIS 🎸, 22ème borough (governance)
+_Prochaine session_ : 002
+_Session en cours_ : 002
+
+'''
+
+== Sessions Recentes
+
+|===
+| # | Date | Type | Sujet | Score
+| 001 | 2026-06-02 | governance | Borough-isation — workspace-bom devient MEMPHIS 🎸, 22ème borough. Création .agents/sessions/, INDEX.adoc, SESSIONS_HISTORY.adoc. | 10/10
+|===
+
+'''
+
+== Roadmap — Etat Actuel
+
+|===
+| EPIC | Description | Statut | Priorite
+| MEM-0 | Bootstrap gouvernance agent — .agents/, AGENT.adoc | ✅ TERMINE | P0
+| MEM-1 | N0_CONTRACTS — Shared Kernel DDD cross-borough | 🔄 EN COURS | P0
+|===
+
+'''
+
+== Fichiers Associes
+
+|===
+| Fichier | Role | Type
+| `.agents/N0_CONTRACTS.adoc` | Specification des contrats partages N0 | EAGER
+| `.agents/decisions/` | ADRs architecture | LAZY
+| `.agents/sessions/` | Archives par session | LAZY
+| `.agents/INDEX.adoc` | Dashboard + roadmap + portefeuille | EAGER
+| `.agents/SESSIONS_HISTORY.adoc` | Historique complet des sessions | EAGER
+|===
+
+'''
+
+_Note_ : Cet index est maintenu automatiquement par l'agent en fin de session.

@@ -1,0 +1,35 @@
+= Session 001 — Borough-isation : workspace-bom → MEMPHIS 🎸
+:type: governance
+:score: 10/10
+:date: 2026-06-02
+
+== Contexte
+
+Le projet `workspace-bom` est intégré au portefeuille de boroughs du workspace
+`AGENTS.adoc` sous le nom de code *MEMPHIS 🎸*, 22ème borough.
+
+== Objectif
+
+Acter l'identité de borough dans les fichiers de gouvernance. Ce projet est le
+socle N0 des contrats partagés — Bill of Materials multi-module, Shared Kernel DDD
+cross-borough (agent-contracts, codebase-contracts, vibecoding-contracts,
+llm-pool-contracts).
+
+== Actions
+
+. Création du répertoire `.agents/sessions/`.
+. Création de `INDEX.adoc` — dashboard avec session 001 clôturée, prochaine
+session 002.
+. Création de `SESSIONS_HISTORY.adoc` avec l'entrée session 001.
+. Rapport : ce document créé.
+
+== Fichiers modifiés
+
+* `.agents/sessions/` — répertoire créé
+* `.agents/INDEX.adoc` — dashboard créé (session 001 → 002)
+* `.agents/SESSIONS_HISTORY.adoc` — historique créé (entrée #001)
+* `.agents/sessions/001-borough-isation-memphis.adoc` — ce rapport
+
+== Code source
+
+Aucune modification du code source. Gouvernance uniquement.
