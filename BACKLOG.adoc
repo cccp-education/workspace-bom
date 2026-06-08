@@ -1,0 +1,85 @@
+= Backlog — MEMPHIS (workspace-bom)
+:description: Backlog de publication Maven Central — EPIC PUB
+:date: 2026-06-08
+:toc: left
+:sectnums:
+
+_Source : configuration/EPIC_PUB.adoc (Session 096)_
+
+'''
+== EPIC PUB — Publication Maven Central
+
+BOM + 4 libraries de contrats partagés (N0). Premier artefact publie (VAGUE 1). Toutes les autres vagues dependent de ces artefacts.
+
+=== PUB-3.01 — workspace-bom
+**Priorite** : P0
+**Estimation** : 1 pt
+**Dependances** : PUB-0 et PUB-1 complets (DNS TXT + GPG)
+
+. `cd foundry/public/workspace-bom && ./gradlew publish closeAndRelease`
+. Artefact : `education.cccp:workspace-bom:0.1.0`
+. Verifier sur https://central.sonatype.com/artifact/education.cccp/workspace-bom
+
+=== PUB-3.02 — agent-contracts
+**Priorite** : P0
+**Estimation** : 1 pt
+**Dependances** : PUB-0 et PUB-1 complets
+
+. `cd foundry/public/workspace-bom && ./gradlew :agent-contracts:publish closeAndRelease`
+. Artefact : `education.cccp:agent-contracts:0.1.0`
+
+=== PUB-3.03 — codebase-contracts
+**Priorite** : P0
+**Estimation** : 1 pt
+**Dependances** : PUB-0 et PUB-1 complets
+
+. `cd foundry/public/workspace-bom && ./gradlew :codebase-contracts:publish closeAndRelease`
+. Artefact : `education.cccp:codebase-contracts:0.1.0`
+
+=== PUB-3.04 — vibecoding-contracts
+**Priorite** : P0
+**Estimation** : 1 pt
+**Dependances** : PUB-0 et PUB-1 complets
+
+. `cd foundry/public/workspace-bom && ./gradlew :vibecoding-contracts:publish closeAndRelease`
+. Artefact : `education.cccp:vibecoding-contracts:0.1.0`
+
+=== PUB-3.05 — llm-pool-contracts
+**Priorite** : P0
+**Estimation** : 1 pt
+**Dependances** : PUB-0 et PUB-1 complets
+
+. `cd foundry/public/workspace-bom && ./gradlew :llm-pool-contracts:publish closeAndRelease`
+. Artefact : `education.cccp:llm-pool-contracts:0.1.0`
+
+=== PUB-2.2 — Mise a jour commentaire relocation dans build.gradle.kts
+**Priorite** : P1
+**Estimation** : 1 pt
+**Dependances** : Aucune
+
+Dans les `build.gradle.kts` du multi-module workspace-bom, remplacer le commentaire :
+
+```kotlin
+// RELOCATION : prepare la migration du groupId education.cccp →
+// <futur-domaine>. Activer avec -Prem relocationGroup="io.github.cccp-education"
+```
+
+Par :
+
+```kotlin
+// RELOCATION : garde comme echappatoire future.
+// Activable avec -Prem relocationGroup="<futur-namespace>"
+```
+
+'''
+== EPIC PUB-5 — Verification
+
+=== PUB-5.1 — Verifier Maven Central
+
+| Artefact | URL |
+|---|---|
+| workspace-bom | https://central.sonatype.com/artifact/education.cccp/workspace-bom |
+| agent-contracts | https://central.sonatype.com/artifact/education.cccp/agent-contracts |
+| codebase-contracts | https://central.sonatype.com/artifact/education.cccp/codebase-contracts |
+| vibecoding-contracts | https://central.sonatype.com/artifact/education.cccp/vibecoding-contracts |
+| llm-pool-contracts | https://central.sonatype.com/artifact/education.cccp/llm-pool-contracts |
