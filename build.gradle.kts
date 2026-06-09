@@ -1,10 +1,11 @@
 plugins {
+    signing
     `java-platform`
     `maven-publish`
 }
 
 group = "education.cccp"
-version = "0.1.0"
+version = "0.0.1"
 
 javaPlatform {
     allowDependencies()
@@ -106,5 +107,13 @@ publishing {
             name = "local"
             url = uri(layout.buildDirectory.dir("repo"))
         }
+
     }
+}
+
+signing {
+    if (System.getenv("CI") != "true" && !version.toString().endsWith("-SNAPSHOT")) {
+        sign(publishing.publications)
+    }
+    useGpgCmd()
 }
