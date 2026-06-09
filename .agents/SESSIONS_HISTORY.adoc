@@ -5,4 +5,5 @@ _Date creation : 2026-06-02_
 |===
 | # | Date | Type | Sujet | Score
 | 001 | 2026-06-02 | governance | Borough-isation — workspace-bom devient MEMPHIS 🎸, 22ème borough. Création .agents/sessions/, INDEX.adoc, SESSIONS_HISTORY.adoc. Code source non modifié. | 10/10
+| 002 | 2026-06-09 | ops | EPIC PUB — config Nmcp + signing + version 0.0.1 + build nmcp upload Sonatype Central | 8/10
 |===

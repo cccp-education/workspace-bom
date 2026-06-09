@@ -1,0 +1,20 @@
+= Session 002 — EPIC PUB : config publication Maven Central (Nmcp + signing + version 0.0.1)
+:sessions: 002
+:date: 2026-06-09
+:type: ops
+:score: 8/10
+
+== Summary
+Configuration de la publication Maven Central pour workspace-bom :
+- Ajout plugin Nmcp (`com.gradleup.nmcp.settings:1.5.0`) dans settings.gradle.kts
+- Ajout plugin `signing` + bloc signing avec `useGpgCmd()` dans build.gradle.kts
+- Version passée de `0.1.0` à `0.0.1`
+- Build nmcp : succès (zip + signatures), upload sur Sonatype Central (statut PUBLISHING)
+
+== Issues
+- BOM non visible sur Maven Central (404) — probable délai propagation ou validation
+- 23 repos GitHub `cccp-education/*` toujours vides
+- DNS TXT `_gradle-challenge.cccp.education` pas posé (Plugin Portal bloqué)
+
+== Score
+8/10 — publication configurée et buildée, mais 404 en production.

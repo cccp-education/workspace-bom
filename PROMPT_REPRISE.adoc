@@ -1,0 +1,13 @@
+= PROMPT_REPRISE — Session 002 : EPIC PUB — Publication Maven Central
+:session: 002
+:date: 2026-06-09
+:mission: Configurer et publier workspace-bom sur Maven Central (VAGUE 1)
+
+== Done
+- ✅ Nmcp + signing configurés, build nmcp success
+- ✅ Version 0.0.1 uploadée sur Sonatype Central (statut PUBLISHING)
+- ✅ Commit + push sur cccp-education/workspace-bom
+
+== Next session (003)
+- Vérifier disponibilité BOM sur Maven Central
+- Décider prochaine vague (contracts submodules, graphify, api-key-pool...)

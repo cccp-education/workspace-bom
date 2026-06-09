@@ -1,0 +1,7 @@
+= Tâches Terminées — Juin 2026
+:date: 2026-06-09
+
+== Session 002 — EPIC PUB (2026-06-09)
+- Config Nmcp settings + signing dans build.gradle.kts
+- Version 0.1.0 → 0.0.1
+- Build nmcp + upload Sonatype Central
