@@ -5,3 +5,14 @@
 - Config Nmcp settings + signing dans build.gradle.kts
 - Version 0.1.0 → 0.0.1
 - Build nmcp + upload Sonatype Central
+
+== Session 003 — EPIC PUB Contrats N0 (2026-06-11)
+- Token Central Portal regénéré (WFHLy8 expiré → ZQdFZK)
+- 4 contrats en builds Gradle indépendants (pattern 0124)
+- Publication agent-contracts:0.0.1 → Central Portal ✅
+- Publication codebase-contracts:0.0.1 → Central Portal ✅
+- Publication llm-pool-contracts:0.0.1 → Central Portal ✅
+- Publication vibecoding-contracts:0.0.1 → Central Portal ✅
+- Leçon nmcp: settings plugin ne propage pas aux sous-projets
+- Root settings nettoyé (plus de include())
+- Architecture documentée dans EPIC_PUB.adoc
