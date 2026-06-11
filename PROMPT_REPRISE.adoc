@@ -1,13 +1,16 @@
-= PROMPT_REPRISE — Session 002 : EPIC PUB — Publication Maven Central
-:session: 002
-:date: 2026-06-09
-:mission: Configurer et publier workspace-bom sur Maven Central (VAGUE 1)
+= PROMPT_REPRISE — Session 003 : EPIC PUB — Publication 4 contrats N0
+:sessions: 003
+:date: 2026-06-11
+:mission: Publier agent-contracts, codebase-contracts, llm-pool-contracts, vibecoding-contracts sur Maven Central
 
 == Done
-- ✅ Nmcp + signing configurés, build nmcp success
-- ✅ Version 0.0.1 uploadée sur Sonatype Central (statut PUBLISHING)
-- ✅ Commit + push sur cccp-education/workspace-bom
+- ✅ Token Central Portal regénéré (ZQdFZK)
+- ✅ 4 contrats en builds indépendants (settings.gradle.kts + gradlew + nmcp + libs.versions.toml)
+- ✅ 4 contrats publiés sur Maven Central en 0.0.1
+- ✅ Leçon nmcp documentée dans configuration/EPIC_PUB.adoc
+- ✅ Root settings.gradle.kts nettoyé (plus de include(), plus de nmcp)
 
-== Next session (003)
-- Vérifier disponibilité BOM sur Maven Central
-- Décider prochaine vague (contracts submodules, graphify, api-key-pool...)
+== Next session (004)
+- Vérifier disponibilité des 4 contrats sur Maven Central (search.maven.org)
+- VAGUE 2 : api-key-pool-gradle:0.0.1 + graphify-gradle
+- Mettre à jour BOM pour référencer les contrats publiés (api() → published deps)

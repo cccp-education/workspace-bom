@@ -6,18 +6,19 @@ plugins {
 }
 
 group = "education.cccp"
-version = "0.1.0"
+version = "0.0.1"
 kotlin.jvmToolchain(JavaVersion.VERSION_24.ordinal)
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
 dependencies {
     // Contrat N0 — dépend de agent-contracts pour les types de base (AgentTool etc.)
     // et koog pour SimpleTool (ExecShellTool, ExecGradleTool)
-    api(project(":agent-contracts"))
-    api(project(":codebase-contracts"))
+    api(libs.agent.contracts)
+    api(libs.codebase.contracts)
     api(libs.koog.agents)
     api(libs.kotlinx.serialization.json)
 
@@ -76,7 +77,7 @@ publishing {
         }
     }
     repositories {
-        mavenLocal()
+        mavenCentral()
     }
 }
 

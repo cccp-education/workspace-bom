@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "education.cccp"
-version = "0.1.0"
+version = "0.0.1"
 kotlin.jvmToolchain(JavaVersion.VERSION_24.ordinal)
 
 repositories {
@@ -72,7 +72,7 @@ publishing {
         }
     }
     repositories {
-        mavenLocal()
+        mavenCentral()
     }
 }
 

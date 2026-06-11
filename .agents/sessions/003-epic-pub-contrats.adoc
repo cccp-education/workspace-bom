@@ -1,0 +1,34 @@
+= Session 003 — EPIC PUB : Publication 4 contrats N0 + leçon nmcp
+:sessions: 003
+:date: 2026-06-11
+:type: ops/archi
+:score: 9/10
+
+== Summary
+Publication des 4 contrats N0 sur Maven Central en version 0.0.1 :
+- agent-contracts:0.0.1
+- codebase-contracts:0.0.1
+- llm-pool-contracts:0.0.1
+- vibecoding-contracts:0.0.1
+
+Mise à jour token Central Portal (ancien `WFHLy8` expiré → nouveau `ZQdFZK`).
+
+Leçon critique : nmcp `nmcpSettings { centralPortal { ... } }` dans settings.gradle.kts
+ne propage PAS les credentials aux tâches individuelles des sous-projets.
+Seul `publishAggregationToCentralPortal` fonctionne (tâche racine).
+Les tâches `:subproject:publishAllPublicationsToCentralPortal` échouent avec
+`Nmcp: Central Portal 'username' is missing`.
+
+== Architecture adoptée
+Chaque contrat est désormais un build Gradle *indépendant* dans son propre sous-dossier
+(son propre settings.gradle.kts, gradlew, nmcp, libs.versions.toml) —
+conforme au pattern documenté dans l'article 0124.
+Le root settings.gradle.kts n'inclut plus les contrats (suppression des include()).
+
+== Issues
+- nmcp settings plugin = boîte noire qui ne propage pas aux sous-projets
+- vibecoding-contracts dépend de agent-contracts + codebase-contracts → mavenLocal en attendant propagation Central
+
+== Score
+9/10 — 4 artefacts publiés, architecture alignée sur le pattern 0124, leçon documentée dans EPIC_PUB.adoc.
+-1 pour le temps perdu à debugger nmcp multi-module.

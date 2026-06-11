@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "education.cccp"
-version = libs.versions.agent.contracts.get()
+version = "0.0.1"
 kotlin.jvmToolchain(JavaVersion.VERSION_24.ordinal)
 
 repositories {
@@ -114,7 +114,7 @@ publishing {
         }
     }
     repositories {
-        mavenLocal()
+        mavenCentral()
     }
 }
 
