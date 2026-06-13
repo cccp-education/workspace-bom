@@ -6,9 +6,9 @@
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
 _Derniere mise a jour_ : 2026-06-13
-_Session terminee_ : 003 — EPIC PUB : publication 4 contrats N0 + leçon nmcp
-_Prochaine session_ : 005
-_Session en cours_ : 004 — Liquidation N0
+_Session terminee_ : 004 — Liquidation N0 (PUB-2.2 + root BOM fix + vérification 5 artefacts Central)
+_Prochaine session_ : 006
+_Session en cours_ : 005 — (dormant, maintenance)
 
 '''
 
@@ -29,8 +29,8 @@ _Session en cours_ : 004 — Liquidation N0
 |===
 | EPIC | Description | Statut | Priorite
 | MEM-0 | Bootstrap gouvernance agent — .agents/, AGENT.adoc | ✅ TERMINE | P0
-| MEM-1 | N0_CONTRACTS — Shared Kernel DDD cross-borough | 🔄 EN COURS | P0
-| PUB | Publication Maven Central + Plugin Portal | 🔄 EN COURS (VAGUE 1 ✅, 4 contrats vérifiés sur Central, BOM à publier) | P0
+| MEM-1 | N0_CONTRACTS — Shared Kernel DDD cross-borough | ✅ TERMINE (4 contrats publiés + vérifiés) | P0
+| PUB | Publication Maven Central + Plugin Portal | ✅ TERMINE (5 artefacts sur Central : BOM + 4 contrats) | P0
 |===
 
 '''

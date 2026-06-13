@@ -1,14 +1,14 @@
-= PROMPT_REPRISE — Session 005 : PUB-3.01 — Publication workspace-bom:0.0.1 sur Maven Central
+= PROMPT_REPRISE — Session 005 : Maintenance
 :sessions: 005
 :date: 2026-06-13
-:mission: Publier workspace-bom:0.0.1 sur Maven Central, màj références consommateurs
+:mission: Dormant — tous les artefacts N0 publiés et vérifiés
 
 == Done (session 004)
 - ✅ PUB-2.2 RELOCATION — màj commentaires dans 5 build.gradle.kts
 - ✅ Root BOM fix — mavenCentral() au lieu de mavenLocal()
-- ✅ 4 contrats vérifiés sur Central (HTTP 200) : agent-contracts, codebase-contracts, llm-pool-contracts, vibecoding-contracts
+- ✅ 4 contrats vérifiés sur Central (HTTP 200)
+- ✅ workspace-bom:0.0.1 déjà sur Central
+- ✅ MEM-1 + PUB marqués TERMINÉ dans INDEX.adoc
 
 == Next session (005)
-- PUB-3.01 — publier workspace-bom:0.0.1 sur Maven Central
-- Mettre à jour les références consommateurs (build.gradle.kts des boroughs N1+)
-- Vérifier disponibilité sur https://central.sonatype.com/artifact/education.cccp/workspace-bom
+- Dormant. Réactiver si nouveaux contrats cross-borough émergent.
