@@ -6,6 +6,12 @@
 - Version 0.1.0 → 0.0.1
 - Build nmcp + upload Sonatype Central
 
+== Session 004 — Liquidation N0 (2026-06-13)
+- PUB-2.2 RELOCATION : màj commentaires dans 3 build.gradle.kts (agent-contracts, codebase-contracts, root BOM)
+- Root BOM fix : repositories mavenCentral() au lieu de maven local
+- Vérification 4 contrats sur Central (HTTP 200) : agent-contracts, codebase-contracts, llm-pool-contracts, vibecoding-contracts
+- workspace-bom:0.0.1 déjà sur Central ✅
+
 == Session 003 — EPIC PUB Contrats N0 (2026-06-11)
 - Token Central Portal regénéré (WFHLy8 expiré → ZQdFZK)
 - 4 contrats en builds Gradle indépendants (pattern 0124)

@@ -1,0 +1,42 @@
+= Session 004 — Liquidation N0 (PUB-2.2 + vérification Central)
+:session: 004
+:date: 2026-06-13
+:type: ops
+:score: 9/10
+
+== Objectif
+Terminer les reliquats de MEMPHIS (workspace-bom) : PUB-2.2 RELOCATION, fix root BOM, vérification Central.
+
+== Réalisations
+
+=== PUB-2.2 — Commentaires RELOCATION
+- Màj dans 3 build.gradle.kts : agent-contracts, codebase-contracts, root BOM
+- llm-pool-contracts et vibecoding-contracts déjà en forme courte (pas de bloc commentaire long)
+- Ancien : "prépare la migration du groupId education.cccp → <futur-domaine>"
+- Nouveau : "gardé comme échappatoire future. Activable avec -Prem relocationGroup"
+
+=== Root BOM fix
+- `build.gradle.kts` racine : `repositories { maven { name = "local" ... } }` → `repositories { mavenCentral() }`
+- Le BOM publiait vers un répertoire local, maintenant vers Maven Central
+
+=== Vérification Central
+- 4 contrats vérifiés (HTTP 200) :
+  - agent-contracts:0.0.1 ✅
+  - codebase-contracts:0.0.1 ✅
+  - llm-pool-contracts:0.0.1 ✅
+  - vibecoding-contracts:0.0.1 ✅
+- workspace-bom:0.0.1 déjà sur Central ✅
+
+=== Gouvernance
+- INDEX.adoc : session 004 ajoutée, roadmap màj
+- PROMPT_REPRISE.adoc : session 005 (publication BOM si nécessaire)
+- BACKLOG.adoc : PUB-3.02→3.05 marqués PUBLIÉ+VÉRIFIÉ, PUB-2.2 TERMINÉ
+- SESSIONS_HISTORY.adoc : entrée 004 ajoutée
+
+== Résultat
+- 5 artefacts N0 vérifiés sur Maven Central
+- 52 tests PASS (inchangé)
+- MEMPHIS liquidé — prêt pour consommation cross-borough
+
+== Prochaine session
+005 — Publier BOM si version bump nécessaire, màj références consommateurs.

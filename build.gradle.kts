@@ -82,11 +82,8 @@ publishing {
                     developerConnection.set("scm:git:git@github.com:cccp-education/workspace-bom.git")
                     url.set("https://github.com/cccp-education/workspace-bom")
                 }
-                // RELOCATION : prépare la migration du groupId éducation.cccp →
-                // <futur-domaine>. Activer avec -Prem relocationGroup="io.github.cccp-education"
-                // Effet : injecte <distributionManagement><relocation><groupId>...</groupId></relocation>
-                // dans le POM publié. Les consommateurs existants seront redirigés automatiquement
-                // vers le nouveau groupId lors de la prochaine màj de dépendance.
+                // RELOCATION : gardé comme échappatoire future.
+                // Activable avec -Prem relocationGroup="<futur-namespace>"
                 project.findProperty("relocationGroup")?.let { targetGroup ->
                     withXml {
                         val pom = asElement()
@@ -103,11 +100,7 @@ publishing {
         }
     }
     repositories {
-        maven {
-            name = "local"
-            url = uri(layout.buildDirectory.dir("repo"))
-        }
-
+        mavenCentral()
     }
 }
 

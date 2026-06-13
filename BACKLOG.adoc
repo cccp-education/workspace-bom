@@ -15,15 +15,17 @@ BOM + 4 libraries de contrats partagés (N0). Premier artefact publie (VAGUE 1).
 **Priorite** : P0
 **Estimation** : 1 pt
 **Dependances** : PUB-0 et PUB-1 complets (DNS TXT + GPG)
+**Statut** : À FAIRE — prochaine session
 
 . `cd foundry/public/workspace-bom && ./gradlew publish closeAndRelease`
-. Artefact : `education.cccp:workspace-bom:0.1.0`
+. Artefact : `education.cccp:workspace-bom:0.0.1`
 . Verifier sur https://central.sonatype.com/artifact/education.cccp/workspace-bom
 
 === PUB-3.02 — agent-contracts
 **Priorite** : P0
 **Estimation** : 1 pt
 **Dependances** : PUB-0 et PUB-1 complets
+**Statut** : ✅ PUBLIÉ + VÉRIFIÉ
 
 . `cd foundry/public/workspace-bom && ./gradlew :agent-contracts:publish closeAndRelease`
 . Artefact : `education.cccp:agent-contracts:0.1.0`
@@ -32,6 +34,7 @@ BOM + 4 libraries de contrats partagés (N0). Premier artefact publie (VAGUE 1).
 **Priorite** : P0
 **Estimation** : 1 pt
 **Dependances** : PUB-0 et PUB-1 complets
+**Statut** : ✅ PUBLIÉ + VÉRIFIÉ
 
 . `cd foundry/public/workspace-bom && ./gradlew :codebase-contracts:publish closeAndRelease`
 . Artefact : `education.cccp:codebase-contracts:0.1.0`
@@ -40,6 +43,7 @@ BOM + 4 libraries de contrats partagés (N0). Premier artefact publie (VAGUE 1).
 **Priorite** : P0
 **Estimation** : 1 pt
 **Dependances** : PUB-0 et PUB-1 complets
+**Statut** : ✅ PUBLIÉ + VÉRIFIÉ
 
 . `cd foundry/public/workspace-bom && ./gradlew :vibecoding-contracts:publish closeAndRelease`
 . Artefact : `education.cccp:vibecoding-contracts:0.1.0`
@@ -48,6 +52,7 @@ BOM + 4 libraries de contrats partagés (N0). Premier artefact publie (VAGUE 1).
 **Priorite** : P0
 **Estimation** : 1 pt
 **Dependances** : PUB-0 et PUB-1 complets
+**Statut** : ✅ PUBLIÉ + VÉRIFIÉ
 
 . `cd foundry/public/workspace-bom && ./gradlew :llm-pool-contracts:publish closeAndRelease`
 . Artefact : `education.cccp:llm-pool-contracts:0.1.0`
@@ -56,6 +61,7 @@ BOM + 4 libraries de contrats partagés (N0). Premier artefact publie (VAGUE 1).
 **Priorite** : P1
 **Estimation** : 1 pt
 **Dependances** : Aucune
+**Statut** : ✅ TERMINÉ
 
 Dans les `build.gradle.kts` du multi-module workspace-bom, remplacer le commentaire :
 
