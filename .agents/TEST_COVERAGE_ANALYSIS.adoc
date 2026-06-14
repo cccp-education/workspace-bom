@@ -1,0 +1,33 @@
+= TEST_COVERAGE_ANALYSIS — pipeline-contracts (MEM-2)
+:date: 2026-06-14
+:session: 005
+
+== Couverture par Type
+
+[cols="3,2,2,2"]
+|===
+| Classe | JUnit5 | Cucumber | Total
+| ConventionalCommit | 5 | 2 | 7
+| ReleaseNotesConfig | 4 | 3 | 7
+| GitLogParser (interface) | 6 | 2 | 8
+| ReleaseNotesRenderer (interface) | 5 | 3 | 8
+| ReleaseNotesGenerator (interface) | 2 | 1 | 3
+| **Total** | **22** | **11** | **33**
+|===
+
+== Couverture par Niveau
+
+[cols="2,3"]
+|===
+| Niveau | Scénarios
+| Unitaire (JUnit5) | Data classes (9) + contrats interfaces avec fakes (13)
+| Fonctionnel (Cucumber BDD) | Invariants pipeline complet (11 scénarios Gherkin)
+| Intégration | Non applicable (contrat N0 pur, zéro dépendance externe)
+|===
+
+== Notes
+
+- Contrat N0 pur : zéro dépendance hors kotlin-stdlib
+- Les interfaces sont testées via des fakes (implémentations anonymes) — pattern DDD contrat
+- Cucumber BDD documente le comportement attendu en langage naturel pour les boroughs N2 consommateurs
+- Pas de Testcontainers nécessaire (pas de pgvector, pas de git, pas de réseau)

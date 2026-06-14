@@ -1,6 +1,6 @@
 = Backlog — MEMPHIS (workspace-bom)
-:description: Backlog de publication Maven Central — EPIC PUB
-:date: 2026-06-08
+:description: Backlog de publication Maven Central — EPIC PUB + MEM-2
+:date: 2026-06-14
 :toc: left
 :sectnums:
 
@@ -9,17 +9,16 @@ _Source : configuration/EPIC_PUB.adoc (Session 096)_
 '''
 == EPIC PUB — Publication Maven Central
 
-BOM + 4 libraries de contrats partagés (N0). Premier artefact publie (VAGUE 1). Toutes les autres vagues dependent de ces artefacts.
+BOM + 5 libraries de contrats partagés (N0). Premier artefact publié (VAGUE 1). Toutes les autres vagues dépendent de ces artefacts.
 
 === PUB-3.01 — workspace-bom
 **Priorite** : P0
 **Estimation** : 1 pt
 **Dependances** : PUB-0 et PUB-1 complets (DNS TXT + GPG)
-**Statut** : À FAIRE — prochaine session
+**Statut** : ✅ PUBLIÉ + VÉRIFIÉ
 
-. `cd foundry/public/workspace-bom && ./gradlew publish closeAndRelease`
 . Artefact : `education.cccp:workspace-bom:0.0.1`
-. Verifier sur https://central.sonatype.com/artifact/education.cccp/workspace-bom
+. Verifiée sur https://central.sonatype.com/artifact/education.cccp/workspace-bom
 
 === PUB-3.02 — agent-contracts
 **Priorite** : P0
@@ -27,8 +26,7 @@ BOM + 4 libraries de contrats partagés (N0). Premier artefact publie (VAGUE 1).
 **Dependances** : PUB-0 et PUB-1 complets
 **Statut** : ✅ PUBLIÉ + VÉRIFIÉ
 
-. `cd foundry/public/workspace-bom && ./gradlew :agent-contracts:publish closeAndRelease`
-. Artefact : `education.cccp:agent-contracts:0.1.0`
+. Artefact : `education.cccp:agent-contracts:0.0.1`
 
 === PUB-3.03 — codebase-contracts
 **Priorite** : P0
@@ -36,8 +34,7 @@ BOM + 4 libraries de contrats partagés (N0). Premier artefact publie (VAGUE 1).
 **Dependances** : PUB-0 et PUB-1 complets
 **Statut** : ✅ PUBLIÉ + VÉRIFIÉ
 
-. `cd foundry/public/workspace-bom && ./gradlew :codebase-contracts:publish closeAndRelease`
-. Artefact : `education.cccp:codebase-contracts:0.1.0`
+. Artefact : `education.cccp:codebase-contracts:0.0.1`
 
 === PUB-3.04 — vibecoding-contracts
 **Priorite** : P0
@@ -45,8 +42,7 @@ BOM + 4 libraries de contrats partagés (N0). Premier artefact publie (VAGUE 1).
 **Dependances** : PUB-0 et PUB-1 complets
 **Statut** : ✅ PUBLIÉ + VÉRIFIÉ
 
-. `cd foundry/public/workspace-bom && ./gradlew :vibecoding-contracts:publish closeAndRelease`
-. Artefact : `education.cccp:vibecoding-contracts:0.1.0`
+. Artefact : `education.cccp:vibecoding-contracts:0.0.1`
 
 === PUB-3.05 — llm-pool-contracts
 **Priorite** : P0
@@ -54,28 +50,23 @@ BOM + 4 libraries de contrats partagés (N0). Premier artefact publie (VAGUE 1).
 **Dependances** : PUB-0 et PUB-1 complets
 **Statut** : ✅ PUBLIÉ + VÉRIFIÉ
 
-. `cd foundry/public/workspace-bom && ./gradlew :llm-pool-contracts:publish closeAndRelease`
-. Artefact : `education.cccp:llm-pool-contracts:0.1.0`
+. Artefact : `education.cccp:llm-pool-contracts:0.0.1`
 
-=== PUB-2.2 — Mise a jour commentaire relocation dans build.gradle.kts
+=== PUB-3.06 — pipeline-contracts
+**Priorite** : P1
+**Estimation** : 1 pt
+**Dependances** : MEM-2 terminé (33/33 PASS)
+**Statut** : À FAIRE — prochaine session
+
+. Code prêt (session 005), publication nmcp restante
+. `cd foundry/public/workspace-bom/pipeline-contracts && ./gradlew publishAggregationToCentralPortal`
+. Artefact : `education.cccp:pipeline-contracts:0.0.1`
+
+=== PUB-2.2 — Mise à jour commentaire relocation dans build.gradle.kts
 **Priorite** : P1
 **Estimation** : 1 pt
 **Dependances** : Aucune
 **Statut** : ✅ TERMINÉ
-
-Dans les `build.gradle.kts` du multi-module workspace-bom, remplacer le commentaire :
-
-```kotlin
-// RELOCATION : prepare la migration du groupId education.cccp →
-// <futur-domaine>. Activer avec -Prem relocationGroup="io.github.cccp-education"
-```
-
-Par :
-
-```kotlin
-// RELOCATION : garde comme echappatoire future.
-// Activable avec -Prem relocationGroup="<futur-namespace>"
-```
 
 '''
 == EPIC PUB-5 — Verification
@@ -89,3 +80,4 @@ Par :
 | codebase-contracts | https://central.sonatype.com/artifact/education.cccp/codebase-contracts |
 | vibecoding-contracts | https://central.sonatype.com/artifact/education.cccp/vibecoding-contracts |
 | llm-pool-contracts | https://central.sonatype.com/artifact/education.cccp/llm-pool-contracts |
+| pipeline-contracts | https://central.sonatype.com/artifact/education.cccp/pipeline-contracts |

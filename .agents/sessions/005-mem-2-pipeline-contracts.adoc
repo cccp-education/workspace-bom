@@ -1,0 +1,68 @@
+= Rapport Session 005 — MEM-2 Pipeline Contracts
+:session: 005
+:date: 2026-06-14
+:borough: MEMPHIS 🎸 (workspace-bom)
+:epic: MEM-2
+:score: 10/10
+
+== Résumé
+
+Création du 5ème artefact N0 `pipeline-contracts` dans workspace-bom.
+Contrat de release notes cross-borough (issue de magic-stick EPIC 7).
+
+== Ce qui a été fait
+
+|===
+| Tâche | Statut | Détail
+| MEM-2.1 | ✅ | Création structure `pipeline-contracts/`
+| MEM-2.2 | ✅ | `build.gradle.kts` — zéro dépendance (pattern llm-pool-contracts)
+| MEM-2.3 | ✅ | `ConventionalCommit.kt` + 5 tests unitaires (TDD)
+| MEM-2.4 | ✅ | `ReleaseNotesConfig.kt` + 4 tests unitaires (TDD)
+| MEM-2.5 | ✅ | `GitLogParser.kt`, `ReleaseNotesRenderer.kt`, `ReleaseNotesGenerator.kt` + 13 tests de contrat avec fakes (TDD)
+| MEM-2.6 | ✅ | `settings.gradle.kts` autonome (nmcp + foojay)
+| MEM-2.7 | ✅ | BOM root OK (déjà zéro dep, kotlin-stdlib constrainte)
+| MEM-2.8 | ✅ | 22/22 JUnit5 PASS + 11/11 Cucumber PASS = 33/33
+|===
+
+== Tests
+
+[cols="2,3,2"]
+|===
+| Framework | Fichiers | Scénarios
+| JUnit5 | ConventionalCommitTest, ReleaseNotesConfigTest, GitLogParserContractTest, ReleaseNotesRendererContractTest, ReleaseNotesGeneratorContractTest | 22
+| Cucumber BDD | pc_1_pipeline_contracts.feature (11 scénarios) | 11
+| **Total** | | **33**
+|===
+
+== Fichiers créés
+
+[cols="3,4"]
+|===
+| Fichier | Rôle
+| `pipeline-contracts/build.gradle.kts` | Build (java-library, signing, nmcp)
+| `pipeline-contracts/settings.gradle.kts` | Settings autonome (nmcp)
+| `pipeline-contracts/gradle/libs.versions.toml` | Catalogue versions (cucumber 7.34.3, assertj 3.25.3)
+| `pipeline-contracts/src/main/kotlin/contracts/pipeline/ConventionalCommit.kt` | Data class commit conventionnel
+| `pipeline-contracts/src/main/kotlin/contracts/pipeline/ReleaseNotesConfig.kt` | Data class configuration release notes
+| `pipeline-contracts/src/main/kotlin/contracts/pipeline/GitLogParser.kt` | Interface parser git log
+| `pipeline-contracts/src/main/kotlin/contracts/pipeline/ReleaseNotesRenderer.kt` | Interface renderer release notes
+| `pipeline-contracts/src/main/kotlin/contracts/pipeline/ReleaseNotesGenerator.kt` | Interface générateur release notes
+| `pipeline-contracts/src/test/kotlin/contracts/pipeline/ConventionalCommitTest.kt` | Unit test
+| `pipeline-contracts/src/test/kotlin/contracts/pipeline/ReleaseNotesConfigTest.kt` | Unit test
+| `pipeline-contracts/src/test/kotlin/contracts/pipeline/GitLogParserContractTest.kt` | Contrat test
+| `pipeline-contracts/src/test/kotlin/contracts/pipeline/ReleaseNotesRendererContractTest.kt` | Contrat test
+| `pipeline-contracts/src/test/kotlin/contracts/pipeline/ReleaseNotesGeneratorContractTest.kt` | Contrat test
+| `pipeline-contracts/src/test/resources/features/pc_1_pipeline_contracts.feature` | Feature BDD (11 scénarios)
+| `pipeline-contracts/src/test/kotlin/contracts/pipeline/scenarios/PipelineContractsStepDefs.kt` | Step definitions Cucumber
+| `pipeline-contracts/src/test/kotlin/contracts/pipeline/scenarios/CucumberTestRunner.kt` | Runner Cucumber
+|===
+
+== Prochaine session (006)
+
+Publication sur Maven Central (`./gradlew :pipeline-contracts:publishAggregationToCentralPortal`).
+Ensuite, implémentation concrète dans document-gradle (DOC-8, New Orleans).
+
+== Dépendance zéro
+
+Le contrat N0 `pipeline-contracts` n'a aucune dépendance hors `kotlin-stdlib`.
+Consommable par n'importe quel borough N2 avec `implementation("education.cccp:pipeline-contracts:0.0.1")`.

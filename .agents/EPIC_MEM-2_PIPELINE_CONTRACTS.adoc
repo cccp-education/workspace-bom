@@ -215,14 +215,14 @@ workspace-bom/pipeline-contracts/
 
 === Phase 1 — MEMPHIS : Création du module N0 (MEM-2)
 
-. [ ] MEM-2.1 — Créer `pipeline-contracts/` dans workspace-bom
-. [ ] MEM-2.2 — `build.gradle.kts` (pattern `codebase-contracts` — zéro dépendance)
-. [ ] MEM-2.3 — `ConventionalCommit.kt` + test unitaire
-. [ ] MEM-2.4 — `ReleaseNotesConfig.kt` + test
-. [ ] MEM-2.5 — `GitLogParser.kt`, `ReleaseNotesRenderer.kt`, `ReleaseNotesGenerator.kt`
-. [ ] MEM-2.6 — Ajouter `include("pipeline-contracts")` dans `settings.gradle.kts`
-. [ ] MEM-2.7 — Ajouter `pipeline-contracts` dans la BOM (`build.gradle.kts` root)
-. [ ] MEM-2.8 — `./gradlew :pipeline-contracts:test` → 100% PASS
+. [x] MEM-2.1 — Créer `pipeline-contracts/` dans workspace-bom
+. [x] MEM-2.2 — `build.gradle.kts` (pattern `llm-pool-contracts` — zéro dépendance)
+. [x] MEM-2.3 — `ConventionalCommit.kt` + test unitaire (5 tests)
+. [x] MEM-2.4 — `ReleaseNotesConfig.kt` + test (4 tests)
+. [x] MEM-2.5 — `GitLogParser.kt`, `ReleaseNotesRenderer.kt`, `ReleaseNotesGenerator.kt` (13 tests contrat)
+. [x] MEM-2.6 — `settings.gradle.kts` autonome avec nmcp
+. [x] MEM-2.7 — BOM root OK (zéro dep, kotlin-stdlib déjà constrainte)
+. [x] MEM-2.8 — 22/22 JUnit5 + 11/11 Cucumber = 33/33 PASS
 . [ ] MEM-2.9 — Publier sur Maven Central : `./gradlew :pipeline-contracts:publish`
 
 === Phase 2 — document-gradle : Implémentation concrète (DOC-8)

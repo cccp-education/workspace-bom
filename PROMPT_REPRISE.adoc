@@ -1,16 +1,18 @@
-= PROMPT_REPRISE — Session 005 : MEM-2 Pipeline Contracts
-:sessions: 005
+= PROMPT_REPRISE — Session 006 : MEM-2 Publication + DOC-8
+:sessions: 006
 :date: 2026-06-14
-:mission: Cadrage EPIC MEM-2 (pipeline-contracts N0, issue de magic-stick EPIC 7)
+:mission: Publication pipeline-contracts sur Maven Central + implémentation document-gradle
 
-== Done (session 004)
-- ✅ PUB-2.2 RELOCATION — màj commentaires dans 5 build.gradle.kts
-- ✅ Root BOM fix — mavenCentral() au lieu de mavenLocal()
-- ✅ 4 contrats vérifiés sur Central (HTTP 200)
-- ✅ workspace-bom:0.0.1 déjà sur Central
-- ✅ MEM-1 + PUB marqués TERMINÉ dans INDEX.adoc
+== Done (session 005)
+- ✅ MEM-2.1 — Structure `pipeline-contracts/` créée
+- ✅ MEM-2.2 — `build.gradle.kts` (zéro dépendance, pattern llm-pool-contracts)
+- ✅ MEM-2.3 — `ConventionalCommit.kt` + 5 tests (TDD)
+- ✅ MEM-2.4 — `ReleaseNotesConfig.kt` + 4 tests (TDD)
+- ✅ MEM-2.5 — `GitLogParser.kt`, `ReleaseNotesRenderer.kt`, `ReleaseNotesGenerator.kt` + 13 tests (TDD)
+- ✅ MEM-2.6 — `settings.gradle.kts` autonome (nmcp)
+- ✅ MEM-2.7 — BOM root OK
+- ✅ MEM-2.8 — 22/22 JUnit5 + 11/11 Cucumber = 33/33 PASS
 
-== Next session (005)
-- Cadrage MEM-2 : pipeline-contracts N0 (release notes)
-- Voir `.agents/EPIC_MEM-2_PIPELINE_CONTRACTS.adoc` pour la dialectique complète
-- Origine : session 014 magic-stick (doc site) EPIC 7 → besoin transverse
+== Next session (006)
+- MEM-2.9 — Publier `pipeline-contracts` sur Maven Central (nmcp)
+- DOC-8.1→8.6 — Implémentation concrète dans document-gradle (New Orleans)

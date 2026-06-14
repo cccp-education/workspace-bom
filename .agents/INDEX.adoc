@@ -6,9 +6,9 @@
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
 _Derniere mise a jour_ : 2026-06-14
-_Session terminee_ : 004 — Liquidation N0 (PUB-2.2 + root BOM fix + vérification 5 artefacts Central)
+_Session terminee_ : 005 — MEM-2 Pipeline Contracts (22 JUnit5 + 11 Cucumber = 33/33 PASS)
 _Prochaine session_ : 006
-_Session en cours_ : 005 — MEM-2 Pipeline Contracts cadrage (dormant, EPIC 7 magic-stick → contrat N0)
+_Session en cours_ : 006 — MEM-2.9 Publication Maven Central + DOC-8 implémentation New Orleans
 
 '''
 
@@ -20,6 +20,7 @@ _Session en cours_ : 005 — MEM-2 Pipeline Contracts cadrage (dormant, EPIC 7 m
 | 002 | 2026-06-09 | ops | EPIC PUB — config Nmcp + signing + version 0.0.1 + build nmcp | 8/10
 | 003 | 2026-06-11 | ops/archi | EPIC PUB — publication 4 contrats N0 + leçon nmcp multi-module. Token regénéré, 4 builds indépendants (pattern 0124). | 9/10
 | 004 | 2026-06-13 | ops | Liquidation N0 — PUB-2.2 RELOCATION màj 5 build.gradle.kts + fix root BOM mavenCentral() + vérification 4 contrats sur Central | 9/10
+| 005 | 2026-06-14 | dev | MEM-2 Pipeline Contracts — 5ème artefact N0 (ConventionalCommit, ReleaseNotesConfig, GitLogParser, ReleaseNotesRenderer, ReleaseNotesGenerator). 22/22 JUnit5 + 11/11 Cucumber PASS. | 10/10
 |===
 
 '''
@@ -30,7 +31,7 @@ _Session en cours_ : 005 — MEM-2 Pipeline Contracts cadrage (dormant, EPIC 7 m
 | EPIC | Description | Statut | Priorite
 | MEM-0 | Bootstrap gouvernance agent — .agents/, AGENT.adoc | ✅ TERMINE | P0
 | MEM-1 | N0_CONTRACTS — Shared Kernel DDD cross-borough | ✅ TERMINE (4 contrats publiés + vérifiés) | P0
-| MEM-2 | Pipeline Contracts — release notes N0 (session 014 magic-stick EPIC 7 → cadrage 2026-06-14) | 📋 CADRAGE (voir EPIC_MEM-2_PIPELINE_CONTRACTS.adoc) | P1
+| MEM-2 | Pipeline Contracts — release notes N0 (session 014 magic-stick EPIC 7) | ✅ CODE TERMINÉ (33/33 PASS, non publié) | P1
 | PUB | Publication Maven Central + Plugin Portal | ✅ TERMINE (5 artefacts sur Central : BOM + 4 contrats) | P0
 |===
 

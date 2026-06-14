@@ -22,3 +22,15 @@
 - Leçon nmcp: settings plugin ne propage pas aux sous-projets
 - Root settings nettoyé (plus de include())
 - Architecture documentée dans EPIC_PUB.adoc
+
+== Session 005 — MEM-2 Pipeline Contracts (2026-06-14)
+- MEM-2.1 : Structure `pipeline-contracts/` créée
+- MEM-2.2 : `build.gradle.kts` (zéro dépendance, pattern llm-pool-contracts)
+- MEM-2.3 : `ConventionalCommit.kt` + 5 tests unitaires (TDD)
+- MEM-2.4 : `ReleaseNotesConfig.kt` + 4 tests unitaires (TDD)
+- MEM-2.5 : `GitLogParser.kt`, `ReleaseNotesRenderer.kt`, `ReleaseNotesGenerator.kt` + 13 tests contrat (TDD)
+- MEM-2.6 : `settings.gradle.kts` autonome (nmcp + foojay)
+- MEM-2.7 : BOM root OK (zéro dep, kotlin-stdlib déjà constrainte)
+- MEM-2.8 : 22/22 JUnit5 + 11/11 Cucumber = 33/33 PASS
+- 5ème artefact N0 workspace-bom prêt pour publication Maven Central
+- Synchronisation globale : AGENTS.adoc Staten Island 004→014, magic-stick INDEX.adoc chemins OSS→public, SESSION_CHECKLIST engine→runner-gradle
