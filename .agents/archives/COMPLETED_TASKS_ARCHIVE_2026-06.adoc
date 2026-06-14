@@ -1,6 +1,16 @@
 = Tâches Terminées — Juin 2026
 :date: 2026-06-14
 
+== Session 006 — MEM-4 opencode-session-contracts (2026-06-14)
+- MEM-4.1 : Structure `opencode-session-contracts/` créée (build.gradle.kts, settings.gradle.kts, libs.versions.toml)
+- MEM-4.2 : `SessionPrompt.kt` + `SessionResponse.kt` + `SessionStatus.kt` (11 tests TDD)
+- MEM-4.3 : `AgentContext.kt` + `ToolCallRecord.kt` + `TokenUsage.kt` (11 tests TDD)
+- 22/22 JUnit5 PASS, publié mavenLocal
+- BOM racine mis à jour (opencode-session-contracts:0.0.1)
+- 7ème artefact N0 workspace-bom prêt
+- BACKLOG.adoc enrichi (EPIC MEM-4, 5 US, ~8 pts)
+- INDEX.adoc mis à jour (MEM-4 roadmap)
+
 == Session 006 — MEM-3 i18n-contracts (2026-06-14)
 - MEM-3.1 : Structure `i18n-contracts/` créée (build.gradle.kts, settings.gradle.kts, libs.versions.toml)
 - MEM-3.2 : `SupportedLanguage.kt` + `LanguageCatalog.kt` (10 langues, 15 tests TDD)

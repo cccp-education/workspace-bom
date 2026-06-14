@@ -1,20 +1,16 @@
-= PROMPT_REPRISE — Session 006 : MEM-2 Publication + MEM-3 Cadrage + DOC-8
-:sessions: 006
+= PROMPT_REPRISE — Session 007 : MEM-2 Publication + MEM-4 Cucumber + DOC-8
+:sessions: 007
 :date: 2026-06-14
-:mission: Publication pipeline-contracts sur Maven Central + Cadrage MEM-3 i18n-contracts + DOC-8
+:mission: Publication pipeline-contracts sur Maven Central + Cucumber MEM-4 + DOC-8
 
-== Done (session 005)
-- ✅ MEM-2.1 — Structure `pipeline-contracts/` créée
-- ✅ MEM-2.2 — `build.gradle.kts` (zéro dépendance, pattern llm-pool-contracts)
-- ✅ MEM-2.3 — `ConventionalCommit.kt` + 5 tests (TDD)
-- ✅ MEM-2.4 — `ReleaseNotesConfig.kt` + 4 tests (TDD)
-- ✅ MEM-2.5 — `GitLogParser.kt`, `ReleaseNotesRenderer.kt`, `ReleaseNotesGenerator.kt` + 13 tests (TDD)
-- ✅ MEM-2.6 — `settings.gradle.kts` autonome (nmcp)
-- ✅ MEM-2.7 — BOM root OK
-- ✅ MEM-2.8 — 22/22 JUnit5 + 11/11 Cucumber = 33/33 PASS
-- ✅ MEM-3 Cadrage — BACKLOG.adoc enrichi (6 US, ~8 pts, 10 langues, 5 classes/interfaces)
+== Done (session 006)
+- ✅ MEM-3 i18n-contracts — 6ème artefact N0 créé (5 classes, 28 tests PASS, mavenLocal)
+- ✅ MEM-4 opencode-session-contracts — 7ème artefact N0 créé (6 classes, 22 tests PASS, mavenLocal)
+- ✅ BOM racine mis à jour (opencode-session-contracts:0.0.1)
+- ✅ BACKLOG.adoc enrichi (MEM-3 + MEM-4)
+- ✅ INDEX.adoc mis à jour (MEM-3 + MEM-4)
 
-== Next session (006)
+== Next session (007)
 - MEM-2.9 — Publier `pipeline-contracts` sur Maven Central (nmcp)
-- MEM-3.1 — Structure `i18n-contracts/` (build.gradle.kts, settings.gradle.kts, libs.versions.toml)
+- MEM-4.4 — Cucumber BDD opencode_session.feature (4-6 scénarios)
 - DOC-8.1→8.6 — Implémentation concrète dans document-gradle (New Orleans)

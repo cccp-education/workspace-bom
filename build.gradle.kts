@@ -53,6 +53,8 @@ dependencies {
         api("com.vladsch.flexmark:flexmark-all:0.64.8")
 
         api("com.microsoft.playwright:playwright:1.52.0")
+
+        api("education.cccp:opencode-session-contracts:0.0.1")
     }
 }
 

@@ -1,0 +1,58 @@
+= Session 006 — MEM-4 opencode-session-contracts (7ème artefact N0)
+:session: 006
+:date: 2026-06-14
+:type: dev+tdd
+:score: 10/10
+
+== Contexte
+
+Session issue du brainstorming codebase Session 103 — Architecture thin-client
+opencode↔Gradle. opencode devient UI terminal uniquement, toute la logique métier
+(LLM, RAG, tools) est dans des tâches Gradle.
+
+== Actions
+
+. Création module `opencode-session-contracts/` — 7ème artefact N0 dans workspace-bom
+. 6 classes de contrat (SessionPrompt, SessionResponse, AgentContext, SessionStatus, ToolCallRecord, TokenUsage)
+. 6 fichiers de test JUnit5 (22/22 PASS)
+. build.gradle.kts + settings.gradle.kts (pattern i18n-contracts, zéro dépendance externe)
+. libs.versions.toml + gradle wrapper
+. publishToMavenLocal OK
+. BOM racine mis à jour (opencode-session-contracts:0.0.1)
+. BACKLOG.adoc enrichi (EPIC MEM-4, 5 US, ~8 pts)
+. INDEX.adoc mis à jour (MEM-4 statut)
+. PROMPT_REPRISE mis à jour (session 007)
+
+== Fichiers créés
+
+- opencode-session-contracts/build.gradle.kts
+- opencode-session-contracts/settings.gradle.kts
+- opencode-session-contracts/gradle/libs.versions.toml
+- opencode-session-contracts/gradle/wrapper/gradle-wrapper.properties
+- opencode-session-contracts/gradle/wrapper/gradle-wrapper.jar
+- opencode-session-contracts/gradlew
+- opencode-session-contracts/src/main/kotlin/contracts/session/SessionPrompt.kt
+- opencode-session-contracts/src/main/kotlin/contracts/session/SessionResponse.kt
+- opencode-session-contracts/src/main/kotlin/contracts/session/AgentContext.kt
+- opencode-session-contracts/src/main/kotlin/contracts/session/SessionStatus.kt
+- opencode-session-contracts/src/main/kotlin/contracts/session/ToolCallRecord.kt
+- opencode-session-contracts/src/main/kotlin/contracts/session/TokenUsage.kt
+- opencode-session-contracts/src/test/kotlin/contracts/session/SessionPromptTest.kt
+- opencode-session-contracts/src/test/kotlin/contracts/session/SessionResponseTest.kt
+- opencode-session-contracts/src/test/kotlin/contracts/session/AgentContextTest.kt
+- opencode-session-contracts/src/test/kotlin/contracts/session/SessionStatusTest.kt
+- opencode-session-contracts/src/test/kotlin/contracts/session/ToolCallRecordTest.kt
+- opencode-session-contracts/src/test/kotlin/contracts/session/TokenUsageTest.kt
+
+== Fichiers modifiés
+
+- build.gradle.kts (BOM racine — ajout opencode-session-contracts:0.0.1)
+- BACKLOG.adoc (EPIC MEM-4)
+- .agents/INDEX.adoc (MEM-4 roadmap)
+- PROMPT_REPRISE.adoc (session 007)
+
+== Résultat
+
+7ème artefact N0 prêt. 22/22 JUnit5 PASS. Contrats thin-client opencode↔Gradle
+définis dans le Shared Kernel. Prochaine étape : Cucumber BDD (MEM-4.4) +
+implémentation SessionProtocolTask dans codebase (EPIC SP).

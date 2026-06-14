@@ -6,9 +6,9 @@
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
 _Derniere mise a jour_ : 2026-06-14
-_Session terminee_ : 005 — MEM-2 Pipeline Contracts (22 JUnit5 + 11 Cucumber = 33/33 PASS)
-_Prochaine session_ : 006
-_Session en cours_ : 006 — MEM-2.9 Publication Maven Central + DOC-8 implémentation New Orleans + Cadrage MEM-3 i18n-contracts
+_Session terminee_ : 006 — MEM-4 opencode-session-contracts (22/22 JUnit5 PASS, 7ème artefact N0)
+_Prochaine session_ : 007
+_Session en cours_ : 007 — MEM-2.9 Publication Maven Central + MEM-4.4 Cucumber + DOC-8
 
 '''
 
