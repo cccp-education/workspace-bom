@@ -8,7 +8,7 @@ _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 _Derniere mise a jour_ : 2026-06-14
 _Session terminee_ : 005 — MEM-2 Pipeline Contracts (22 JUnit5 + 11 Cucumber = 33/33 PASS)
 _Prochaine session_ : 006
-_Session en cours_ : 006 — MEM-2.9 Publication Maven Central + DOC-8 implémentation New Orleans
+_Session en cours_ : 006 — MEM-2.9 Publication Maven Central + DOC-8 implémentation New Orleans + Cadrage MEM-3 i18n-contracts
 
 '''
 
@@ -32,6 +32,8 @@ _Session en cours_ : 006 — MEM-2.9 Publication Maven Central + DOC-8 implémen
 | MEM-0 | Bootstrap gouvernance agent — .agents/, AGENT.adoc | ✅ TERMINE | P0
 | MEM-1 | N0_CONTRACTS — Shared Kernel DDD cross-borough | ✅ TERMINE (4 contrats publiés + vérifiés) | P0
 | MEM-2 | Pipeline Contracts — release notes N0 (session 014 magic-stick EPIC 7) | ✅ CODE TERMINÉ (33/33 PASS, non publié) | P1
+| MEM-3 | i18n-contracts — Contrats d'internationalisation N0 (10 langues, 6 US, ~8 pts) | ☐ NOUVEAU — Cadrage Session 006 | P1
+| MEM-4 | opencode-session-contracts — Protocole Thin Client opencode↔Gradle (7ème artefact N0, 5 US, ~8 pts) | ☐ NOUVEAU — Cadrage Session 103 codebase brainstorming | P1
 | PUB | Publication Maven Central + Plugin Portal | ✅ TERMINE (5 artefacts sur Central : BOM + 4 contrats) | P0
 |===
 

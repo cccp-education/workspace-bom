@@ -27,9 +27,12 @@ data class AuditEntry(
  * Exécution pure, sans dépendance Gradle.
  * Extraite de codebase.koog dans N0 pour partage N1→N2 sans violation DAG.
  */
+typealias ToolHandler = (toolName: String, arguments: Map<String, String>, workspaceRoot: String) -> String
+
 class ToolRegistry(
     private val tools: MutableMap<String, ToolInfo> = mutableMapOf(),
-    private val auditTrail: MutableList<AuditEntry> = mutableListOf()
+    private val auditTrail: MutableList<AuditEntry> = mutableListOf(),
+    private val handlers: MutableMap<String, ToolHandler> = mutableMapOf()
 ) {
     companion object {
         const val MAX_READ_FILE_SIZE: Long = 10 * 1024 * 1024 // 10 MB
@@ -48,6 +51,10 @@ class ToolRegistry(
 
     fun register(tool: ToolInfo) {
         tools[tool.name] = tool
+    }
+
+    fun registerHandler(toolName: String, handler: ToolHandler) {
+        handlers[toolName] = handler
     }
 
     fun get(name: String): ToolInfo =
@@ -79,6 +86,9 @@ class ToolRegistry(
     }
 
     private fun executeInternal(toolName: String, arguments: Map<String, String>, workspaceRoot: String, dryRun: Boolean): String {
+        handlers[toolName]?.let { handler ->
+            return if (dryRun) "DRY RUN: $toolName($arguments)" else handler(toolName, arguments, workspaceRoot)
+        }
         return when (toolName) {
             "read_file" -> {
                 val path = arguments["path"] ?: throw IllegalArgumentException("read_file requires 'path'")

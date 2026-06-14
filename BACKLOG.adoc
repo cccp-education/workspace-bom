@@ -81,3 +81,284 @@ BOM + 5 libraries de contrats partagés (N0). Premier artefact publié (VAGUE 1)
 | vibecoding-contracts | https://central.sonatype.com/artifact/education.cccp/vibecoding-contracts |
 | llm-pool-contracts | https://central.sonatype.com/artifact/education.cccp/llm-pool-contracts |
 | pipeline-contracts | https://central.sonatype.com/artifact/education.cccp/pipeline-contracts |
+
+'''
+== EPIC MEM-3 : i18n-contracts — Contrats d'Internationalisation N0
+
+*Découverte* : Session 111 bakery — L'i18n est une préoccupation transverse (bakery, slider, codex, training, magic-stick, document, readme). Mérite un artefact N0 partagé dans workspace-bom.
+
+*Objectif* : Définir les contrats (interfaces + data classes) pour l'internationalisation — codes langue, catalogues, bundles de messages, résolution de locale. Zéro implémentation — chaque borough implémente selon son contexte (Thymeleaf pour bakery, Asciidoctor pour codex, Reveal.js pour slider, etc.).
+
+*Charge* : ~8 pts (~2 sessions)
+*Priorité* : P1 — Prérequis pour BKY-I18N et tout autre borough multilingue.
+*Pattern* : Tier 0 (zéro dépendance externe, kotlin-stdlib only) — comme `codebase-contracts`, `llm-pool-contracts`, `pipeline-contracts`.
+
+=== Langues supportées (10)
+
+[cols="1,2,3,2,2"]
+|===
+| Rang | Code ISO 639-1 | Langue | Nom natif | RTL
+| 1 | `en` | Anglais (English) | English | Non
+| 2 | `zh` | Chinois Mandarin | 中文 | Non
+| 3 | `hi` | Hindi | हिन्दी | Non
+| 4 | `es` | Espagnol | Español | Non
+| 5 | `fr` | Français | Français | Non
+| 6 | `ar` | Arabe Standard | العربية | Oui
+| 7 | `bn` | Bengali | বাংলা | Non
+| 8 | `pt` | Portugais | Português | Non
+| 9 | `ru` | Russe | Русский | Non
+| 10 | `ur` | Ourdou | اردو | Oui
+|===
+
+=== Classes/Interfaces proposées
+
+[cols="1,3,2,2"]
+|===
+| Classe | Description | Type | Pts
+
+| `SupportedLanguage`
+| Data class : `code` (ISO 639-1), `name` (English), `nativeName` (endonyme),
+  `rtl` (Boolean), `localeTag` (ex: `"fr-FR"`, `"ar-SA"`).
+| data class
+| 1
+
+| `LanguageCatalog`
+| Object : liste statique des 10 `SupportedLanguage`, `all()` → List,
+  `findByCode(code)` → SupportedLanguage?, `supportedCodes()` → Set<String>.
+| object
+| 1
+
+| `I18nConfig`
+| Data class : `activeLanguage` (String, default `"fr"`),
+  `supportedLanguages` (List<String>, default `["fr"]`),
+  `fallbackLanguage` (String, default `"en"`).
+  `validate()` → Either<Error, Unit> (vérifie que active ∈ supported).
+| data class
+| 1
+
+| `MessageBundle`
+| Interface : `get(key: String, locale: Locale): String?`,
+  `keys(): Set<String>`, `locale(): Locale`.
+  Contrat pur — chaque borough fournit son implémentation
+  (Properties pour Thymeleaf, YAML pour Asciidoctor, JSON pour Reveal.js).
+| interface
+| 1
+
+| `LocaleResolver`
+| Interface : `resolve(config: I18nConfig): Locale`.
+  Contrat de résolution en cascade (CLI > properties > DSL > YAML > default).
+  `resolveWithFallback(config): Locale` — si active ∉ supported → fallback.
+| interface
+| 1
+|===
+
+=== User Stories
+
+[cols="1,4,2,2"]
+|===
+| US | Description | Pts | Priorité
+
+| US-MEM-3.1
+| **Structure projet** — Créer `i18n-contracts/` avec `build.gradle.kts`
+  (pattern llm-pool-contracts, zéro dépendance), `settings.gradle.kts`
+  autonome (nmcp), `gradle/libs.versions.toml`.
+| 1
+| 🔴 P0
+
+| US-MEM-3.2
+| **SupportedLanguage + LanguageCatalog** — TDD : data class 5 champs,
+  object avec `all()`, `findByCode()`, `supportedCodes()`.
+  8-10 tests unitaires (construction, lookup existant/inexistant,
+  RTL arabe/ourdou, codes normalisés).
+| 2
+| 🔴 P0
+
+| US-MEM-3.3
+| **I18nConfig** — TDD : data class 3 champs + `validate()` retournant
+  `Either<I18nError, Unit>`. 6-8 tests (config valide, active hors
+  supported, fallback non supporté, defaults).
+| 1.5
+| 🟠 P1
+
+| US-MEM-3.4
+| **MessageBundle + LocaleResolver** — Interfaces pures (contrats).
+  `MessageBundle` : 3 méthodes. `LocaleResolver` : 2 méthodes.
+  Tests de contrat (mock implementations) — 4-6 tests.
+| 1.5
+| 🟠 P1
+
+| US-MEM-3.5
+| **Cucumber BDD** — Feature `i18n_contracts.feature` :
+  résolution locale cascade, fallback si langue non supportée,
+  lookup message par clé, catalogue 10 langues complet.
+  4-6 scénarios.
+| 1.5
+| 🟡 P2
+
+| US-MEM-3.6
+| **Publication Maven Central** — nmcp publish,
+  vérification https://central.sonatype.com/artifact/education.cccp/i18n-contracts.
+  Mise à jour BOM racine.
+| 0.5
+| 🟡 P2
+|===
+
+=== Consommateurs prévus
+
+[cols="2,3,4"]
+|===
+| Borough | Usage i18n | Implémentation
+| Bakery | Templates Thymeleaf 36 fichiers | `messages_{code}.properties` + `#{key}`
+| Slider | Slides Reveal.js | `i18n/{code}.json` + JS bundle
+| Codex | PDF/EPUB Asciidoctor | Attributs localisés AsciiDoc
+| Training | Formulaires Google Forms | Labels multilingues
+| Magic-stick | Site documentation | `messages_{code}.properties` Thymeleaf
+| Document | Génération AsciiDoc | Templates localisés
+| Readme | README générés | Templates par langue
+|===
+
+=== Note architecture
+
+Cet artefact est *strictement* un contrat (interfaces + data classes).
+Aucune implémentation — pas de `ResourceBundle`, pas de `Properties.load`,
+pas de parsing YAML/JSON. Chaque borough fournit sa propre implémentation
+adaptée à son format de template (Thymeleaf, Asciidoctor, Reveal.js, etc.).
+
+Le contrat garantit l'interopérabilité : un `I18nConfig` produit par bakery
+peut être consommé par runner-gradle pour orchestrer un site multilingue.
+
+'''
+== EPIC MEM-4 : opencode-session-contracts — Protocole Thin Client opencode↔Gradle
+
+*Découverte* : Session 103 codebase brainstorming (2026-06-14) — Architecture thin-client
+opencode↔Gradle. opencode devient une UI terminal uniquement, toute la logique métier
+(LLM, RAG, tools) est dans des tâches Gradle.
+
+*Objectif* : Définir les contrats N0 pour le protocole de session entre un thin client
+(opencode) et le moteur Gradle (codebase VibecodingTask). 7ème artefact N0 dans workspace-bom.
+
+*Charge* : ~8 pts (~2 sessions)
+*Priorité* : P1 — Dépend de EPIC V (VibecodingTask moteur) et EPIC X (verify→adapt) dans codebase.
+*Pattern* : Tier 0 (zéro dépendance externe, kotlin-stdlib only).
+
+=== Architecture
+
+```
+opencode (thin client UI)
+    │ SessionPrompt (contrat N0)
+    ▼
+runner-gradle (N3) — pont thin-client ↔ Gradle engine
+    │ VibecodingTask
+    ▼
+codebase-gradle (N1) — moteur LLM + RAG + tools
+```
+
+=== Classes/Interfaces proposées
+
+[cols="1,3,2,2"]
+|===
+| Classe | Description | Type | Pts
+
+| `SessionPrompt`
+| Data class : `sessionId` (UUID), `prompt` (String), `context` (AgentContext?),
+  `maxActions` (Int, default 10), `model` (String?, override modèle).
+| data class
+| 1
+
+| `SessionResponse`
+| Data class : `sessionId` (UUID), `output` (String formatée pour affichage),
+  `toolCalls` (List<ToolCallRecord>), `tokenUsage` (TokenUsage),
+  `status` (SessionStatus).
+| data class
+| 1
+
+| `AgentContext`
+| Data class : `eagerRules` (String, règles AGENT.adoc),
+  `ragChunks` (List<String>, résultats RAG pgvector),
+  `graphRelations` (String, relations Graphify),
+  `backlogItems` (List<String>, items BACKLOG pertinents).
+| data class
+| 1
+
+| `SessionStatus`
+| Enum : `IN_PROGRESS`, `COMPLETED`, `ERROR`, `CANCELLED`.
+| enum
+| 0.5
+
+| `ToolCallRecord`
+| Data class : `toolName` (String), `args` (Map<String,String>),
+  `result` (String), `timestamp` (Instant).
+| data class
+| 0.5
+
+| `TokenUsage`
+| Data class : `promptTokens` (Int), `completionTokens` (Int),
+  `totalTokens` (Int), `cost` (Double?).
+| data class
+| 0.5
+|===
+
+=== User Stories
+
+[cols="1,4,2,2"]
+|===
+| US | Description | Pts | Priorité
+
+| US-MEM-4.1
+| **Structure projet** — Créer `opencode-session-contracts/` avec
+  `build.gradle.kts` (pattern llm-pool-contracts, zéro dépendance),
+  `settings.gradle.kts` autonome (nmcp), `gradle/libs.versions.toml`.
+| 1
+| 🔴 P0
+
+| US-MEM-4.2
+| **SessionPrompt + SessionResponse + SessionStatus** — TDD : data classes
+  + enum. 6-8 tests unitaires (construction, validation, statuts).
+| 2
+| 🔴 P0
+
+| US-MEM-4.3
+| **AgentContext + ToolCallRecord + TokenUsage** — TDD : data classes.
+  4-6 tests unitaires (construction, sérialisation).
+| 1.5
+| 🟠 P1
+
+| US-MEM-4.4
+| **Cucumber BDD** — Feature `opencode_session.feature` :
+  prompt→réponse cycle complet, session resume, erreur→status ERROR,
+  contexte injecté programmatiquement.
+  4-6 scénarios.
+| 1.5
+| 🟡 P2
+
+| US-MEM-4.5
+| **Publication Maven Central** — nmcp publish,
+  vérification https://central.sonatype.com/artifact/education.cccp/opencode-session-contracts.
+  Mise à jour BOM racine.
+| 0.5
+| 🟡 P2
+|===
+
+=== Consommateurs prévus
+
+[cols="2,3,4"]
+|===
+| Borough | Usage | Rôle
+| Codebase (N1) | SessionProtocolTask — implémente le moteur contre le contrat | Producteur
+| Runner (N3) | Pont thin-client ↔ Gradle — dispatch SessionPrompt → SessionProtocolTask | Consommateur
+| Workspace (N4) | Provisioning — scaffold projet avec SessionProtocolTask câblé | Consommateur
+|===
+
+=== Note architecture
+
+Cet artefact est *strictement* un contrat (data classes + enum).
+Aucune implémentation — pas de logique LLM, pas de RAG, pas de tools.
+Le contrat garantit l'interopérabilité : n'importe quel thin client
+(opencode, CLI custom, IDE plugin) peut dialoguer avec le moteur Gradle
+via ce format standardisé.
+
+=== Référence
+
+Brainstorming Session 103 codebase (2026-06-14) — Discussion architecture
+thin-client opencode↔Gradle. Contrats N0 dans workspace-bom (MEMPHIS),
+moteur dans codebase (N1), pont dans runner (N3).

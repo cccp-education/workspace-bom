@@ -1,8 +1,21 @@
-= TEST_COVERAGE_ANALYSIS — pipeline-contracts (MEM-2)
+= TEST_COVERAGE_ANALYSIS — workspace-bom (MEMPHIS)
 :date: 2026-06-14
-:session: 005
+:session: 006
 
-== Couverture par Type
+== i18n-contracts (MEM-3)
+
+[cols="3,2"]
+|===
+| Classe | JUnit5
+| SupportedLanguage | 5
+| LanguageCatalog | 10
+| I18nConfig | 8
+| MessageBundle (interface) | 4
+| LocaleResolver (interface) | 5
+| **Total** | **28**
+|===
+
+== pipeline-contracts (MEM-2)
 
 [cols="3,2,2,2"]
 |===

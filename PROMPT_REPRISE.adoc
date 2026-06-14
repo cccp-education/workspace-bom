@@ -1,7 +1,7 @@
-= PROMPT_REPRISE — Session 006 : MEM-2 Publication + DOC-8
+= PROMPT_REPRISE — Session 006 : MEM-2 Publication + MEM-3 Cadrage + DOC-8
 :sessions: 006
 :date: 2026-06-14
-:mission: Publication pipeline-contracts sur Maven Central + implémentation document-gradle
+:mission: Publication pipeline-contracts sur Maven Central + Cadrage MEM-3 i18n-contracts + DOC-8
 
 == Done (session 005)
 - ✅ MEM-2.1 — Structure `pipeline-contracts/` créée
@@ -12,7 +12,9 @@
 - ✅ MEM-2.6 — `settings.gradle.kts` autonome (nmcp)
 - ✅ MEM-2.7 — BOM root OK
 - ✅ MEM-2.8 — 22/22 JUnit5 + 11/11 Cucumber = 33/33 PASS
+- ✅ MEM-3 Cadrage — BACKLOG.adoc enrichi (6 US, ~8 pts, 10 langues, 5 classes/interfaces)
 
 == Next session (006)
 - MEM-2.9 — Publier `pipeline-contracts` sur Maven Central (nmcp)
+- MEM-3.1 — Structure `i18n-contracts/` (build.gradle.kts, settings.gradle.kts, libs.versions.toml)
 - DOC-8.1→8.6 — Implémentation concrète dans document-gradle (New Orleans)

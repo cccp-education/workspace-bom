@@ -1,7 +1,17 @@
 = Tâches Terminées — Juin 2026
-:date: 2026-06-09
+:date: 2026-06-14
 
-== Session 002 — EPIC PUB (2026-06-09)
+== Session 006 — MEM-3 i18n-contracts (2026-06-14)
+- MEM-3.1 : Structure `i18n-contracts/` créée (build.gradle.kts, settings.gradle.kts, libs.versions.toml)
+- MEM-3.2 : `SupportedLanguage.kt` + `LanguageCatalog.kt` (10 langues, 15 tests TDD)
+- MEM-3.3 : `I18nConfig.kt` + `I18nValidationResult` sealed class (8 tests TDD)
+- MEM-3.4 : `MessageBundle.kt` + `LocaleResolver.kt` interfaces (9 tests contrat)
+- 28/28 JUnit5 PASS, publié mavenLocal
+- Parallèle Bakery BKY-I18N US-0 (dépendance i18n-contracts ajoutée)
+- AGENTS.adoc racine mis à jour (MEMPHIS + Bushwick)
+- 6ème artefact N0 workspace-bom prêt
+
+== Session 005 — MEM-2 Pipeline Contracts (2026-06-14)
 - Config Nmcp settings + signing dans build.gradle.kts
 - Version 0.1.0 → 0.0.1
 - Build nmcp + upload Sonatype Central

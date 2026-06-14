@@ -1,0 +1,70 @@
+= Session 006 — MEM-3 i18n-contracts Cadrage + Implémentation
+:date: 2026-06-14
+:type: cadrage + dev
+:score: 9/10
+
+== Contexte
+
+MEMPHIS 5 artefacts N0 publiés. MEM-2 pipeline-contracts code prêt (33/33 PASS).
+Nouveau besoin transverse : i18n pour bakery, slider, codex, training, etc.
+
+== Réalisations
+
+=== Cadrage MEM-3
+- BACKLOG.adoc enrichi : 6 US (~8 pts), 10 langues, 5 classes/interfaces
+- 7 boroughs consommateurs identifiés
+- INDEX.adoc + PROMPT_REPRISE.adoc mis à jour
+
+=== Implémentation i18n-contracts (MEM-3.1→3.4)
+- Structure projet créée : `i18n-contracts/` avec build.gradle.kts, settings.gradle.kts, libs.versions.toml
+- Pattern : Tier 0 (zéro dépendance, kotlin-stdlib only) — comme llm-pool-contracts
+- 5 classes dans `contracts.i18n` :
+  - `SupportedLanguage` — data class (code, name, nativeName, rtl, localeTag)
+  - `LanguageCatalog` — object (10 langues, findByCode, supportedCodes)
+  - `I18nConfig` — data class (activeLanguage, supportedLanguages, fallbackLanguage, validate())
+  - `MessageBundle` — interface (get, keys, locale)
+  - `LocaleResolver` — interface (resolve, resolveWithFallback)
+- 28 tests JUnit5 PASS (5 SupportedLanguage + 10 LanguageCatalog + 8 I18nConfig + 4 MessageBundle + 5 LocaleResolver)
+- Publié en mavenLocal
+
+=== Parallèle Bakery BKY-I18N US-0
+- Dépendance `education.cccp:i18n-contracts:0.0.1` ajoutée dans bakery
+- SiteConfiguration, BakeryExtension, ConfigResolver, ResolvedConfigs enrichis
+- Compilation OK, tests existants PASS
+
+=== Gouvernance transverse
+- `AGENTS.adoc` racine : MEMPHIS + Bushwick mis à jour
+
+== Fichiers créés/modifiés
+
+*Créés* :
+- `i18n-contracts/build.gradle.kts`
+- `i18n-contracts/settings.gradle.kts`
+- `i18n-contracts/gradle/libs.versions.toml`
+- `i18n-contracts/src/main/kotlin/contracts/i18n/SupportedLanguage.kt`
+- `i18n-contracts/src/main/kotlin/contracts/i18n/LanguageCatalog.kt`
+- `i18n-contracts/src/main/kotlin/contracts/i18n/I18nConfig.kt`
+- `i18n-contracts/src/main/kotlin/contracts/i18n/MessageBundle.kt`
+- `i18n-contracts/src/main/kotlin/contracts/i18n/LocaleResolver.kt`
+- `i18n-contracts/src/test/kotlin/contracts/i18n/SupportedLanguageTest.kt`
+- `i18n-contracts/src/test/kotlin/contracts/i18n/LanguageCatalogTest.kt`
+- `i18n-contracts/src/test/kotlin/contracts/i18n/I18nConfigTest.kt`
+- `i18n-contracts/src/test/kotlin/contracts/i18n/MessageBundleTest.kt`
+- `i18n-contracts/src/test/kotlin/contracts/i18n/LocaleResolverTest.kt`
+
+*Modifiés* :
+- `BACKLOG.adoc` — EPIC MEM-3
+- `.agents/INDEX.adoc` — MEM-3, session 006
+- `PROMPT_REPRISE.adoc` — Session 006
+
+== Tests
+
+- 28/28 JUnit5 PASS
+- Compilation OK
+
+== Prochaine session (006 suite)
+
+- MEM-2.9 — Publier pipeline-contracts sur Maven Central (nmcp)
+- MEM-3.5 — Cucumber BDD i18n_contracts.feature
+- MEM-3.6 — Publication i18n-contracts sur Maven Central
+- DOC-8 — Implémentation document-gradle (New Orleans)
