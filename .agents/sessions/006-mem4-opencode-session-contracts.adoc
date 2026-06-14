@@ -53,6 +53,7 @@ opencode↔Gradle. opencode devient UI terminal uniquement, toute la logique mé
 
 == Résultat
 
-7ème artefact N0 prêt. 22/22 JUnit5 PASS. Contrats thin-client opencode↔Gradle
-définis dans le Shared Kernel. Prochaine étape : Cucumber BDD (MEM-4.4) +
-implémentation SessionProtocolTask dans codebase (EPIC SP).
+7ème artefact N0 prêt. 22/22 JUnit5 + 8/8 Cucumber = 30/30 PASS.
+Contrats thin-client opencode↔Gradle définis dans le Shared Kernel.
+Prochaine étape : implémentation SessionProtocolTask dans codebase (EPIC SP)
++ publication Maven Central (MEM-4.5).

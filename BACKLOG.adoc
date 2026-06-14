@@ -309,27 +309,27 @@ codebase-gradle (N1) — moteur LLM + RAG + tools
   `build.gradle.kts` (pattern llm-pool-contracts, zéro dépendance),
   `settings.gradle.kts` autonome (nmcp), `gradle/libs.versions.toml`.
 | 1
-| 🔴 P0
+| ✅ DONE
 
 | US-MEM-4.2
 | **SessionPrompt + SessionResponse + SessionStatus** — TDD : data classes
   + enum. 6-8 tests unitaires (construction, validation, statuts).
 | 2
-| 🔴 P0
+| ✅ DONE
 
 | US-MEM-4.3
 | **AgentContext + ToolCallRecord + TokenUsage** — TDD : data classes.
   4-6 tests unitaires (construction, sérialisation).
 | 1.5
-| 🟠 P1
+| ✅ DONE
 
 | US-MEM-4.4
 | **Cucumber BDD** — Feature `opencode_session.feature` :
   prompt→réponse cycle complet, session resume, erreur→status ERROR,
   contexte injecté programmatiquement.
-  4-6 scénarios.
+  8 scénarios PASS.
 | 1.5
-| 🟡 P2
+| ✅ DONE
 
 | US-MEM-4.5
 | **Publication Maven Central** — nmcp publish,
