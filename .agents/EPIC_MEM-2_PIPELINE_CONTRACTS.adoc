@@ -1,0 +1,265 @@
+= EPIC MEM-2 — Pipeline Contracts (N0)
+:date: 2026-06-14
+:origin: Session 014 magic-stick (doc site) — EPIC 7
+:priority: P1
+:estimation: 8 pts
+:borough: MEMPHIS 🎸 (workspace-bom)
+:dependances: Aucune (N0 pur)
+
+== Genèse — Dialectique Complète
+
+=== Session 014 magic-stick — EPIC 7 : Site doc auto + IA release notes
+
+L'EPIC 7 du doc site magic-stick (Staten Island) a été terminé. Il consistait à :
+1. Auto-updater le site doc avec la version ISO + lien SourceForge
+2. Générer des notes de version à chaque release
+
+=== Implémentation existante : script shell ad-hoc
+
+Un script `scripts/generate-release-notes.sh` a été créé dans le repo ISO
+(`foundry/public/magic-stick/`). Il fait :
+- `git log --format="%s"` entre deux tags
+- Regex sur les commits conventionnels (`feat:`, `fix:`, `chore:`…)
+- Template AsciiDoc structuré (titre + sections par catégorie + liens download)
+- Output stdout ou fichier
+
+=== Question : pipeline transferable ?
+
+> "Est-ce que l'enchaînement de tâches peut être planifié sous forme de pipeline
+> transferable en tâche Gradle ?"
+
+**Réponse** : Oui. Le pipeline se décompose en 3 étapes :
+```
+VERSION file ──▶ [1] releaseNotesGenerate ──▶ [2] releaseNotesInject ──▶ [3] bake+deploy
+                       (git log→AsciiDoc)         (jbake.properties)        (runner-gradle N3)
+```
+
+Décision initiale : mettre l'implémentation dans `document-gradle` (New Orleans)
+car c'est le borough N2 qui maîtrise déjà la manipulation AsciiDoc.
+
+=== Question : contrat N0 dans workspace-bom ?
+
+> "Mettre ça dans workspace-bom et ses sous-artefacts c'est pas mieux ?"
+
+**Réponse** : Oui. Le pattern "release notes" est transverse à tous les boroughs N2
+(magic-stick, plantuml-gradle, codex-gradle, slider-gradle, bakery-gradle…). Un contrat
+dans `workspace-bom` permet :
+1. N'importe quel borough N2 peut dépendre du contrat N0 et fournir son propre renderer
+2. Pas de couplage — un borough n'a pas besoin de `document-gradle` juste pour générer
+   des release notes
+3. Aligné DAG — N0 (contrats) < N2 (implémentation), pas de dépendance circulaire
+
+=== Analyse : dans quel artefact existant ?
+
+4 artefacts N0 existent dans `workspace-bom` :
+- `agent-contracts` → orchestration d'agents IA (koog+langchain4j)
+- `codebase-contracts` → RAG socle, pgvector, anonymisation de code source
+- `llm-pool-contracts` → pool de clés API LLM, rotation, quotas
+- `vibecoding-contracts` → génération de code assistée par IA
+
+*Aucun ne couvre le parsing git log + génération de contenu documentaire.*
+
+**Conclusion** : Créer un 5ème artefact `pipeline-contracts` dans `workspace-bom`.
+
+=== Clarification : nouveau borough ou extension MEMPHIS ?
+
+`workspace-bom` (MEMPHIS 🎸) est déjà un mono-repo multi-modules N0.
+Ajouter un 5ème module `pipeline-contracts` = extension de MEMPHIS, pas un nouveau
+borough. Un nouveau borough = projet Gradle indépendant avec sa propre gouvernance
+`.agents/`.
+
+'''
+== Architecture Cible
+
+```
+workspace-bom:pipeline-contracts (N0 → education.cccp:pipeline-contracts:0.0.1)
+        │
+        │ implementation
+        ▼
+document-gradle (N2, New Orleans)
+  ├─ GitReleaseNotesGenerator    (implémente ReleaseNotesGenerator)
+  ├─ AsciidocReleaseNotesRenderer (implémente ReleaseNotesRenderer)
+  └─ Tâche releaseNotesGenerate   (expose le pipeline dans le DSL)
+```
+
+=== N'importe quel borough N2 peut consommer
+
+[source,kotlin]
+----
+// Dans le build.gradle.kts de n'importe quel borough N2
+dependencies {
+    implementation("education.cccp:pipeline-contracts:0.0.1")
+}
+----
+
+Le borough implémente `ReleaseNotesRenderer` dans son propre format
+(AsciiDoc pour document-gradle, Markdown pour bakery-gradle, JSON pour runner-gradle…).
+
+'''
+== Contenu du Module `pipeline-contracts`
+
+=== 1. `ConventionalCommit.kt` — Data class
+
+[source,kotlin]
+----
+package education.cccp.contracts.pipeline
+
+data class ConventionalCommit(
+    val type: String,        // feat, fix, chore, perf, refactor, docs, test
+    val scope: String?,      // optionnel, ex: "scripts"
+    val message: String,     // message nettoyé sans le préfixe conventionnel
+    val hash: String,        // hash complet du commit
+    val date: String         // date ISO
+)
+----
+
+=== 2. `ReleaseNotesConfig.kt` — Configuration
+
+[source,kotlin]
+----
+package education.cccp.contracts.pipeline
+
+data class ReleaseNotesConfig(
+    val fromTag: String? = null,     // tag de départ (null = auto-detect)
+    val toTag: String = "HEAD",      // tag d'arrivée
+    val categories: Map<String, String> = mapOf(
+        "feat" to "Nouveautés",
+        "fix" to "Corrections",
+        "chore" to "Maintenance",
+        "perf" to "Performance",
+        "refactor" to "Refactoring",
+        "docs" to "Documentation",
+        "test" to "Tests"
+    ),
+    val outputDir: String = "build/release-notes",
+    val version: String? = null,     // version extraite de VERSION file
+    val rendererType: String = "asciidoc",  // asciidoc, markdown, json
+    val includeDownloads: Boolean = true    // ajouter section téléchargement
+)
+----
+
+=== 3. `GitLogParser.kt` — Interface
+
+[source,kotlin]
+----
+package education.cccp.contracts.pipeline
+
+interface GitLogParser {
+    fun parse(fromTag: String, toTag: String): List<ConventionalCommit>
+    fun detectVersion(projectDir: File): String?
+    fun detectFromTag(projectDir: File, toTag: String): String?
+}
+----
+
+=== 4. `ReleaseNotesRenderer.kt` — Interface
+
+[source,kotlin]
+----
+package education.cccp.contracts.pipeline
+
+interface ReleaseNotesRenderer {
+    val format: String         // "asciidoc", "markdown", "json"
+    fun render(commits: List<ConventionalCommit>, config: ReleaseNotesConfig): String
+    fun renderToFile(commits: List<ConventionalCommit>, config: ReleaseNotesConfig, outputFile: File): File
+}
+----
+
+=== 5. `ReleaseNotesGenerator.kt` — Interface orchestrateur
+
+[source,kotlin]
+----
+package education.cccp.contracts.pipeline
+
+interface ReleaseNotesGenerator {
+    val parser: GitLogParser
+    val renderer: ReleaseNotesRenderer
+    fun generate(config: ReleaseNotesConfig): File
+}
+----
+
+'''
+== Structure du Module
+
+```
+workspace-bom/pipeline-contracts/
+├── build.gradle.kts                        ← zero dépendance sauf kotlin-stdlib
+├── src/main/kotlin/education/cccp/contracts/pipeline/
+│   ├── ConventionalCommit.kt
+│   ├── ReleaseNotesConfig.kt
+│   ├── GitLogParser.kt
+│   ├── ReleaseNotesRenderer.kt
+│   └── ReleaseNotesGenerator.kt
+└── src/test/kotlin/education/cccp/contracts/pipeline/
+    ├── ConventionalCommitTest.kt
+    ├── ReleaseNotesConfigTest.kt
+    └── contracts/                          ← tests de contrat (invariants)
+```
+
+'''
+== Dépendances
+
+- *Zéro dépendance* sauf `kotlin-stdlib`
+- Pas de dépendance sur git (le parser est une interface — l'implémentation concrète
+  dans document-gradle utilise `ProcessBuilder("git", "log"…)` mais le contrat N0
+  ne dépend pas de git)
+
+== Versioning
+
+- Version initiale : `0.0.1`
+- GroupId : `education.cccp`
+- ArtifactId : `pipeline-contracts`
+- Publier sur Maven Central (nmcp) comme les 4 autres contrats N0
+
+'''
+== Impact — Plan d'Implémentation
+
+=== Phase 1 — MEMPHIS : Création du module N0 (MEM-2)
+
+. [ ] MEM-2.1 — Créer `pipeline-contracts/` dans workspace-bom
+. [ ] MEM-2.2 — `build.gradle.kts` (pattern `codebase-contracts` — zéro dépendance)
+. [ ] MEM-2.3 — `ConventionalCommit.kt` + test unitaire
+. [ ] MEM-2.4 — `ReleaseNotesConfig.kt` + test
+. [ ] MEM-2.5 — `GitLogParser.kt`, `ReleaseNotesRenderer.kt`, `ReleaseNotesGenerator.kt`
+. [ ] MEM-2.6 — Ajouter `include("pipeline-contracts")` dans `settings.gradle.kts`
+. [ ] MEM-2.7 — Ajouter `pipeline-contracts` dans la BOM (`build.gradle.kts` root)
+. [ ] MEM-2.8 — `./gradlew :pipeline-contracts:test` → 100% PASS
+. [ ] MEM-2.9 — Publier sur Maven Central : `./gradlew :pipeline-contracts:publish`
+
+=== Phase 2 — document-gradle : Implémentation concrète (DOC-8)
+
+. [ ] DOC-8.1 — Dépendance `implementation("education.cccp:pipeline-contracts:0.0.1")`
+. [ ] DOC-8.2 — `GitReleaseNotesGenerator.kt` : `ProcessBuilder("git"…)` + parsing
+. [ ] DOC-8.3 — `AsciidocReleaseNotesRenderer.kt` : template AsciiDoc complet
+. [ ] DOC-8.4 — Tâche Gradle `releaseNotesGenerate` dans le DSL
+. [ ] DOC-8.5 — Test fonctionnel avec un vrai repo git (Gradle TestKit)
+. [ ] DOC-8.6 — Test d'intégration avec magic-stick (repo réel avec tags)
+
+=== Phase 3 — magic-stick : Consommation (obsolescence du script shell)
+
+. [ ] Remplacer `scripts/generate-release-notes.sh` par tâche Gradle
+. [ ] Mise à jour CI/CD pour utiliser la tâche au lieu du script
+
+'''
+== Bénéfices par rapport au script shell actuel
+
+[cols="2,5,5"]
+|===
+| Aspect | Script shell | Contrat N0 + document-gradle
+| Transferable | Non — hardcodé pour magic-stick | Oui — tout borough avec tags git
+| Testé | Non — zéro test | Oui — JUnit5 + TestKit
+| Typesafe | Non — bash, string parsing | Oui — data classes Kotlin
+| Extensible | Non — template fixe | Oui — Renderer interface, implémentations multiples
+| Maintenable | Non — 143 lignes de bash | Oui — code typé, refactorable
+| IA (EPIC 7.2) | Non — commentaire placeholder | Oui — renderer peut appeler Ollama
+|===
+
+'''
+== Notes
+
+* L'interface `ReleaseNotesRenderer` est le point d'extension pour l'IA :
+  un renderer `OllamaReleaseNotesRenderer` pourrait appeler Ollama pour générer
+  un résumé humain des commits avant de les formater en AsciiDoc.
+* Le contrat N0 est volontairement minimal — zéro dépendance pour rester un
+  contrat pur, comme `codebase-contracts` et `llm-pool-contracts`.
+* Le script `scripts/generate-release-notes.sh` devient obsolète une fois
+  l'implémentation Gradle stable. Garder en fallback jusqu'à DOC-8.6 validé.

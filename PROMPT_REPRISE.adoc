@@ -1,7 +1,7 @@
-= PROMPT_REPRISE — Session 005 : Maintenance
+= PROMPT_REPRISE — Session 005 : MEM-2 Pipeline Contracts
 :sessions: 005
-:date: 2026-06-13
-:mission: Dormant — tous les artefacts N0 publiés et vérifiés
+:date: 2026-06-14
+:mission: Cadrage EPIC MEM-2 (pipeline-contracts N0, issue de magic-stick EPIC 7)
 
 == Done (session 004)
 - ✅ PUB-2.2 RELOCATION — màj commentaires dans 5 build.gradle.kts
@@ -11,4 +11,6 @@
 - ✅ MEM-1 + PUB marqués TERMINÉ dans INDEX.adoc
 
 == Next session (005)
-- Dormant. Réactiver si nouveaux contrats cross-borough émergent.
+- Cadrage MEM-2 : pipeline-contracts N0 (release notes)
+- Voir `.agents/EPIC_MEM-2_PIPELINE_CONTRACTS.adoc` pour la dialectique complète
+- Origine : session 014 magic-stick (doc site) EPIC 7 → besoin transverse
