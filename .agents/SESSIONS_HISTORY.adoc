@@ -4,6 +4,7 @@ _Date creation : 2026-06-02_
 
 |===
 | # | Date | Type | Sujet | Score
+| 007 | 2026-06-17 | audit | **Migration workspace-bom** — Audit complet des 16 boroughs publics N2/N3. Résultats : 4 boroughs 🔄 PARTIEL (bakery, codex, plantuml, readme consomment BOM), 6 boroughs ❌ NON MIGRÉ (api-key-pool, capsule, hyperframes, magic-stick, slider, graphify, newpipe, jhipster). Plan de migration documenté. workspace-bom v0.1.0 mis à jour. | 10/10
 | 006 | 2026-06-14 | dev+tdd | **MEM-4 opencode-session-contracts** — 7ème artefact N0 créé. 6 classes (SessionPrompt, SessionResponse, AgentContext, SessionStatus, ToolCallRecord, TokenUsage). 22/22 JUnit5 PASS. Publié mavenLocal. BOM racine mis à jour. | 10/10
 | 006 | 2026-06-14 | cadrage + dev | **MEM-3 i18n-contracts** — 6ème artefact N0 créé. 5 classes (SupportedLanguage, LanguageCatalog, I18nConfig, MessageBundle, LocaleResolver). 28 tests JUnit5 PASS. Publié mavenLocal. Parallèle Bakery BKY-I18N US-0. AGENTS.adoc racine mis à jour. | 9/10
 | 005 | 2026-06-14 | dev | MEM-2 Pipeline Contracts — 5ème artefact N0. 5 data classes/interfaces + 22 JUnit5 + 11 Cucumber BDD = 33/33 PASS. Package contracts.pipeline, zéro dépendance. | 10/10

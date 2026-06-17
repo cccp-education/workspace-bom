@@ -5,10 +5,12 @@
 
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
-_Derniere mise a jour_ : 2026-06-14
-_Session terminee_ : 006 — MEM-4 opencode-session-contracts (22/22 JUnit5 PASS, 7ème artefact N0)
+_Derniere mise a jour_ : 2026-06-17
+_session terminee_ : 006 — MEM-4 opencode-session-contracts (22/22 JUnit5 PASS, 7ème artefact N0)
 _Prochaine session_ : 007
-_Session en cours_ : 007 — MEM-2.9 Publication Maven Central + MEM-4.4 Cucumber + DOC-8
+_Session en cours_ : 008 — Audit migration workspace-bom (MEMPHIS)
+
+'''
 
 '''
 
@@ -32,8 +34,9 @@ _Session en cours_ : 007 — MEM-2.9 Publication Maven Central + MEM-4.4 Cucumbe
 | MEM-0 | Bootstrap gouvernance agent — .agents/, AGENT.adoc | ✅ TERMINE | P0
 | MEM-1 | N0_CONTRACTS — Shared Kernel DDD cross-borough | ✅ TERMINE (4 contrats publiés + vérifiés) | P0
 | MEM-2 | Pipeline Contracts — release notes N0 (session 014 magic-stick EPIC 7) | ✅ CODE TERMINÉ (33/33 PASS, non publié) | P1
-| MEM-3 | i18n-contracts — Contrats d'internationalisation N0 (10 langues, 6 US, ~8 pts) | ☐ NOUVEAU — Cadrage Session 006 | P1
-| MEM-4 | opencode-session-contracts — Protocole Thin Client opencode↔Gradle (7ème artefact N0, 5 US, ~8 pts) | ✅ CODE TERMINÉ (22 JUnit5 + 8 Cucumber = 30/30 PASS, mavenLocal) | P1
+| MEM-3 | i18n-contracts — Contrats d'internationalisation N0 (10 langues, 6 US, ~8 pts) | ✅ TERMINÉ (Session 006) | P1
+| MEM-4 | opencode-session-contracts — Protocole Thin Client opencode↔Gradle (7ème artefact N0, 5 US, ~8 pts) | ✅ TERMINÉ (Session 006) | P1
+| MEM-5 | Audit migration workspace-bom — 16 boroughs publics, plan de migration documenté | ✅ TERMINÉ (Session 007) | P1
 | PUB | Publication Maven Central + Plugin Portal | ✅ TERMINE (5 artefacts sur Central : BOM + 4 contrats) | P0
 |===
 
