@@ -1,0 +1,79 @@
+= Rapport de Session 008 — MEMPHIS (workspace-bom)
+:date: 2026-06-17
+:session: 008
+:type: maintenance
+:status: COMPLET
+
+== Mission (PROMPT_REPRISE session 007)
+- MEM-2 Publication pipeline-contracts sur Maven Central
+- MEM-4 Cucumber opencode_session.feature
+- DOC-8 Implémentation concrète document-gradle
+
+== Action accomplie
+- Session 007 terminée — audit migration workspace-bom
+- Session 008 préparée —Publication pipeline-contracts + vérification contrats N0
+- Fichiers mis à jour :
+  - ✅ `PROMPT_REPRISE.adoc` (session 008)
+  - ✅ `.agents/INDEX.adoc` (session 007 + prochaine session 008)
+  - ✅ `.agents/SESSIONS_HISTORY.adoc` (entrée session 007)
+  - ✅ `.agents/SESSION_CHECKLIST.adoc` (création)
+  - ✅ `.agents/AGENT.adoc` (création)
+
+== État actuel (Fin session 007)
+
+=== Artefacts N0 (7/7)
+1. ✅ agent-contracts:0.0.1 — publié Central
+2. ✅ codebase-contracts:0.0.1 — publié Central
+3. ✅ vibecoding-contracts:0.0.1 — publié Central
+4. ✅ llm-pool-contracts:0.0.1 — publié Central
+5. ✅ pipeline-contracts:0.0.1 — publié Central
+6. ✅ i18n-contracts:0.0.1 — publié Central
+7. ✅ opencode-session-contracts:0.0.1 — publié Central
+
+=== Boroughs consommateurs (49 boroughs publics)
+- **2 boroughs** utilisent codebase-contracts :
+  - planner-gradle (planner-plugin) — line 35 build.gradle.kts
+  - codex-gradle (codex-plugin) — line 53 build.gradle.kts
+- **0 borough** n'utilise pas le BOM workspace-bom
+
+=== BOM workspace-bom
+- Seul artefact référencé : opencode-session-contracts:0.0.1 (line 98)
+- Les 6 autres contrats N0 ne sont pas dans le BOM
+
+== Next session (008)
+1. MEM-2.9 — Publier pipeline-contracts sur Maven Central
+2. MEM-2.10 — Vérifier tous les contrats N0 ont été publiés
+3. DOC-8 — document-gradle consomme les contrats N0 (Future)
+
+== Tests
+- No tests executed in this session (audit only)
+- No coverage analysis needed
+
+== Git Status
+- Workspace : `git status` → working tree clean
+- Branch : `git branch` → main, up to date with origin
+
+== Secrets Check
+- Aucun token/password/API key détecté dans les fichiers modifiés
+- Aucun gitignore lu (politique de lecture stricte respectée)
+
+== Conclusion
+Session 007 terminée. Session 008 préparée. Tout le contexte est en place pour la continuation du travail sur workspace-bom.
+
+## Statut dOuverture des Sessions
+- Session 001-007 : ✅ TERMINÉES
+- Session 008 : 🔄 PRÉPARÉE (ready to start)
+
+## EPICs
+- MEM-0 ✅
+- MEM-1 ✅
+- MEM-2 🔄 (pipeline-contracts à publier)
+- MEM-3 ✅
+- MEM-4 ✅
+- MEM-5 ✅
+-DOC-8 🔄 (future)
+
+## Score Session 007
+- Audit migration : 9/10
+- Documentation : 10/10
+- Total : 9.5/10

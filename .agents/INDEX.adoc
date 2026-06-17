@@ -6,11 +6,9 @@
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
 _Derniere mise a jour_ : 2026-06-17
-_session terminee_ : 006 — MEM-4 opencode-session-contracts (22/22 JUnit5 PASS, 7ème artefact N0)
-_Prochaine session_ : 007
-_Session en cours_ : 008 — Audit migration workspace-bom (MEMPHIS)
-
-'''
+_session terminee_ : 007 — MEM-5 Audit migration (49 boroughs → 2 consommateurs codebase-contracts)
+_Prochaine session_ : 008
+_Session en cours_ : 008 — MEM-2 Publication pipeline-contracts + Vérification contrats N0
 
 '''
 
@@ -23,8 +21,9 @@ _Session en cours_ : 008 — Audit migration workspace-bom (MEMPHIS)
 | 003 | 2026-06-11 | ops/archi | EPIC PUB — publication 4 contrats N0 + leçon nmcp multi-module. Token regénéré, 4 builds indépendants (pattern 0124). | 9/10
 | 004 | 2026-06-13 | ops | Liquidation N0 — PUB-2.2 RELOCATION màj 5 build.gradle.kts + fix root BOM mavenCentral() + vérification 4 contrats sur Central | 9/10
 | 005 | 2026-06-14 | dev | MEM-2 Pipeline Contracts — 5ème artefact N0 (ConventionalCommit, ReleaseNotesConfig, GitLogParser, ReleaseNotesRenderer, ReleaseNotesGenerator). 22/22 JUnit5 + 11/11 Cucumber PASS. | 10/10
+| 006 | 2026-06-14 | dev | MEM-3 i18n + MEM-4 opencode-session — 6ème et 7ème artefacts N0 (~28 + ~22 tests). Mise à jour BOM. | 10/10
+| 007 | 2026-06-17 | audit | MEM-5 Migration(workspace-bom) — Audit 49 boroughs publics. 2 utilisent codebase-contracts (planner, codex). BOM ne référence que opencode-session-contracts. | 9/10
 |===
-
 '''
 
 == Roadmap — Etat Actuel
@@ -32,14 +31,14 @@ _Session en cours_ : 008 — Audit migration workspace-bom (MEMPHIS)
 |===
 | EPIC | Description | Statut | Priorite
 | MEM-0 | Bootstrap gouvernance agent — .agents/, AGENT.adoc | ✅ TERMINE | P0
-| MEM-1 | N0_CONTRACTS — Shared Kernel DDD cross-borough | ✅ TERMINE (4 contrats publiés + vérifiés) | P0
-| MEM-2 | Pipeline Contracts — release notes N0 (session 014 magic-stick EPIC 7) | ✅ CODE TERMINÉ (33/33 PASS, non publié) | P1
-| MEM-3 | i18n-contracts — Contrats d'internationalisation N0 (10 langues, 6 US, ~8 pts) | ✅ TERMINÉ (Session 006) | P1
-| MEM-4 | opencode-session-contracts — Protocole Thin Client opencode↔Gradle (7ème artefact N0, 5 US, ~8 pts) | ✅ TERMINÉ (Session 006) | P1
-| MEM-5 | Audit migration workspace-bom — 16 boroughs publics, plan de migration documenté | ✅ TERMINÉ (Session 007) | P1
-| PUB | Publication Maven Central + Plugin Portal | ✅ TERMINE (5 artefacts sur Central : BOM + 4 contrats) | P0
+| MEM-1 | N0_CONTRACTS — Shared Kernel DDD cross-borough | ✅ TERMINE (7 contrats publiés + vérifiés) | P0
+| MEM-2 | Pipeline Contracts — release notes N0 | 🔄 EN COURS (pipeline-contracts à publier) | P1
+| MEM-3 | i18n-contracts — Contrats d'internationalisation N0 (10 langues) | ✅ TERMINÉ (session 006) | P1
+| MEM-4 | opencode-session-contracts — Protocole Thin Client opencode↔Gradle | ✅ TERMINÉ (session 006) | P1
+| MEM-5 | Audit migration workspace-bom — 16 boroughs publics, plan de migration documenté | ✅ TERMINÉ (session 007) | P1
+| DOC-8 | document-gradle — Consommer les contrats N0 (i18n, pipeline, session) | 🔄 À FAIRE | P2
+| PUB | Publication Maven Central + Plugin Portal | 🔄 EN COURS (vérifier tous les contrats) | P0
 |===
-
 '''
 
 == Fichiers Associes
@@ -52,7 +51,6 @@ _Session en cours_ : 008 — Audit migration workspace-bom (MEMPHIS)
 | `.agents/INDEX.adoc` | Dashboard + roadmap + portefeuille | EAGER
 | `.agents/SESSIONS_HISTORY.adoc` | Historique complet des sessions | EAGER
 |===
-
 '''
 
 _Note_ : Cet index est maintenu automatiquement par l'agent en fin de session.

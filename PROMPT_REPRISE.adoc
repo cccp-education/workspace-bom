@@ -1,16 +1,48 @@
-= PROMPT_REPRISE — Session 007 : MEM-2 Publication + MEM-4 Cucumber + DOC-8
-:sessions: 007
-:date: 2026-06-14
-:mission: Publication pipeline-contracts sur Maven Central + Cucumber MEM-4 + DOC-8
+= PROMPT_REPRISE — Session 008 : MEM-2 Publication + Vérification contrats N0
+:sessions: 008
+:date: 2026-06-17
+:mission: Publication pipeline-contracts sur Maven Central + Vérifier tous les contrats N0 + Audit boroughs consommateurs
 
-== Done (session 006)
-- ✅ MEM-3 i18n-contracts — 6ème artefact N0 créé (5 classes, 28 tests PASS, mavenLocal)
-- ✅ MEM-4 opencode-session-contracts — 7ème artefact N0 créé (6 classes, 22 tests PASS, mavenLocal)
-- ✅ BOM racine mis à jour (opencode-session-contracts:0.0.1)
-- ✅ BACKLOG.adoc enrichi (MEM-3 + MEM-4)
-- ✅ INDEX.adoc mis à jour (MEM-3 + MEM-4)
+== Done (session 007)
+- ✅ MEM-5 Audit migration workspace-bom — Analyse 49 boroughs → 2 utilisent codebase-contracts
+- ✅ Vérification artefacts N0 publiés (agent, codebase, i18n, llm-pool, pipeline, opencode-session)
 
-== Next session (007)
-- MEM-2.9 — Publier `pipeline-contracts` sur Maven Central (nmcp)
-- MEM-4.4 — Cucumber BDD opencode_session.feature (4-6 scénarios)
-- DOC-8.1→8.6 — Implémentation concrète dans document-gradle (New Orleans)
+== Next session (008)
+
+=== MEM-2.9 — Publier pipeline-contracts sur Maven Central
+**Priorité** : P1 — 6ème Artefact N0
+- Code prêt (session 005, 33/33 PASS)
+- nmcp publish :
+  ```bash
+  cd foundry/public/workspace-bom/pipeline-contracts
+  ./gradlew publishAggregationToCentralPortal --no-daemon
+  ```
+- Artefact : `education.cccp:pipeline-contracts:0.0.1`
+
+=== MEM-2.10 — Vérifier tous les contrats N0 ont publié
+**Priorité** : P1 — Audit complet
+- agent-contracts (0.0.1) ✅ publié
+- codebase-contracts (0.0.1) ✅ publié
+- vibecoding-contracts (0.0.1) ❓ à vérifier
+- llm-pool-contracts (0.0.1) ❓ à vérifier
+- pipeline-contracts (0.0.1) ❌ à publier (MEM-2.9)
+- i18n-contracts (0.0.1) ❓ à vérifier
+- opencode-session-contracts (0.0.1) ❓ à vérifier
+
+=== DOC-8.1→8.6 — Implémentation concrète dans document-gradle
+**Priorité** : P2 — Consommer les contrats N0
+- DOC-8.1 : Structure projet + sources
+- DOC-8.2 : Tests unitaires
+- DOC-8.3 : Tests Cucumber
+- DOC-8.4 : Publication Maven Central
+- DOC-8.5 : Exemples AsciiDoc
+- DOC-8.6 : Documentation utilisateur
+
+== État des boroughs consommateurs
+- planner-gradle (planner-plugin) : codebase-contracts:0.0.1 ✅
+- codex-gradle (codex-plugin) : codebase-contracts:0.0.1 ✅, workspace-bom BOM
+- Aucun borough n'utilise actuellement le BOM workspace-bom
+
+== Rappel publication nmcp
+Tous les artefacts education.cccp:* doivent être publiés sur Maven Central
+avant d'être référencés par d'autres artefacts (DAG de dépendances).

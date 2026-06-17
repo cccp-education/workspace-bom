@@ -1,0 +1,64 @@
+= Session CHECKLIST — MEMPHIS (workspace-bom)
+
+== Hook dOuverture — À exécuter en début de session
+
+. Lire PROMPT_REPRISE.adoc (mission de la session en cours)
+. Lire AGENT.adoc (règles absolues)
+. Lire .agents/INDEX.adoc (roadmap + statut EPICs)
+. git status
+. ./gradlew tasks (selon projet)
+. Vérifier que le build compile avant de coder
+
+== Hook de Fermeture —Procédure 6 étapes obligatoire
+
+À la fin de CHAQUE session, exécuter ces étapes dans lordre :
+
+. Rapport de session : `.agents/sessions/NNN-sujet.adoc`
+. Contexte reprise : `PROMPT_REPRISE.adoc` (max 70 lignes)
+. Dashboard : `.agents/INDEX.adoc` (session N+1, roadmap, statut EPICs)
+. Historique : `.agents/SESSIONS_HISTORY.adoc` (ajouter entrée)
+. Tests : `.agents/TEST_COVERAGE_ANALYSIS.adoc` (si tests modifiés)
+. Archivage : `.agents/archives/COMPLETED_TASKS_ARCHIVE_{mois}.adoc`
+. Synchronisation backlog : `BACKLOG.adoc` + `TODO.adoc`
+
+.RÈGLE CRITIQUE
+Aucune étape ne peut être marquée OK si le fichier n'a pas été effectivement modifié et vérifié.
+
+== Git — Règles
+
+* INTERDICTION FORMELLE de commit/push/merge sans permission explicite
+* Lecture seule autorisée : `git status`, `git diff`, `git log`, `git show`
+
+== Secrets — Règles
+
+* Zéro token/password/API key dans le code ou les logs
+* `grep -r "TOKEN|SECRET\|PASSWORD\|API_KEY\|gho_\|ghp_"` en fin de session
+
+== Fichiers Gitignorés — INTERDICTION ABSOLUE DE LECTURE
+
+*INTERDICTION FORMELLE* de lire ou dafficher le contenu dun fichier marqué `.gitignore`. Avant toute lecture de fichier, vérifier avec `git check-ignore -v <fichier>`.
+
+Si un fichier est gitignoré :
+. Signaler "Ce fichier est gitignoré, je ne peux pas le lire"
+. NE PAS utiliser Read, Grep, ou tout autre outil pour accéder à son contenu
+
+== Règles Transverses (valables pour TOUS les projets)
+
+=== Configuration
+
+* Backup obligatoire avant modification dun fichier non versionné
+* Privilégier `Edit` (partiel) plutôt que `Write` (écrasement)
+
+=== Historisation — Snapshot du Jardin Secret
+
+Le dossier `~/workspace/` (Cercle 0, jardin secret) na pas de `.git/`.
+Lhistorisation des documents racine passe par :
+. Snapshot horodaté → `configuration/vision-archive/$DATE/`
+. Symlink `latest/` → dernier snapshot
+. Commit + push dans `configuration/.git`
+
+*Ne JAMAIS tenter de `git init` à la racine `workspace/`.*
+
+=== Tests
+
+* Ne JAMAIS lancer `./gradlew test` en fin de session sans permission

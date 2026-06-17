@@ -1,0 +1,73 @@
+= AGENT.adoc — rules absolues (MEMPHIS workspace-bom)
+
+== Règle 1 : Aucune Initiative Spontanée
+
+Je suis un agent exécutant les instructions de l'utilisateur. Je n'ai AUCUNE initiative spontanée. Je ne fais QUE ce qui est demandé explicitement.
+
+* Je ne modifie AUCUN fichier sauf si l'utilisateur me demande explicitement de le faire
+* Je ne lance AUCUNE tâche Gradle sauf si l'utilisateur me demande explicitement de le faire
+* Je ne fais AUCUNE modification de configuration sauf si l'utilisateur me demande explicitement de le faire
+
+**Exception** : Je peux lire des fichiers pour comprendre l'état actuel, mais je ne fais QUE lire.
+
+== Règle 2 : Aucune Autorisation implicite
+
+* Je ne fais AUCUN commit, push, merge sans permission explicite
+* Je ne publie AUCUN artefact Maven Central sans permission explicite
+* Je ne modifie AUCUN gitignore sans permission explicite
+
+== Règle 3 : Git - Lecture Seule par Défaut
+
+* `git status` autorisé pour vérifier l'état
+* `git diff` autorisé pour voir les modifications
+* `git log` autorisé pour l'historique
+* `git show` autorisé pour voir le contenu d'un commit
+
+**Aucune modification git** (commit, push, merge, branch, tag) sans permission explicite.
+
+== Règle 4 : Secrets - Interdiction Totale
+
+* Zéro token/password/API key dans le code
+* Zéro token/password/API key dans les logs
+* Avant de lire un fichier, vérifier `git check-ignore -v <fichier>`
+* Si gitignoré : signaler "Ce fichier est gitignoré, je ne peux pas le lire"
+
+== Règle 5 : Fichiers - Edit > Write
+
+* Privilégier `Edit` (partiel) plutôt que `Write` (écrasement)
+* Backup obligatoire avant modification d'un fichier non versionné
+* Vérifier l'état git avant toute modification
+
+== Règle 6 : Tests - Permission Explicite
+
+* Ne JAMAIS lancer `./gradlew test` sans permission explicite
+* Ne JAMAIS modifier les tests sans permission explicite
+* Ne JAMAIS modifier le coverage sans permission explicite
+
+== Règle 7 : Architecture - Respecter les Contrats N0
+
+* workspace-bom héberge les contrats N0 (zéro dépendance externe)
+* Les contrats sont des interfaces/data classes/pure data
+* Aucune logique métier dans les contrats N0
+* Chaque borough implémente selon son contexte
+
+== Règle 8 : Compilation Validation
+
+* Avant toute modification, vérifier le build compile
+* `./gradlew build -x test` avant de coder
+* `./gradlew tasks` pour voir les tâches disponibles
+
+== Règle 9 : Publication Maven Central - DAG
+
+* Un artefact N1 ne peut être publié que si ses dépendances N0 sont déjà sur Central
+* Un artefact N2 ne peut être publié que si ses dépendances N0/N1 sont déjà sur Central
+
+*Vérifier l'ordre DAG avant toute publication.*
+
+== Règle 10 : Documenter les Modifications
+
+* En fin de session, documenter TOUTES les modifications dans :
+** `.agents/sessions/NNN-sujet.adoc` (rapport)
+** `PROMPT_REPRISE.adoc` (max 70 lignes)
+** `.agents/INDEX.adoc` (roadmap, statut)
+** `.agents/SESSIONS_HISTORY.adoc` (historique)
