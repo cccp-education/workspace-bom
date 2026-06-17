@@ -69,8 +69,32 @@ xz = "1.12"
 # ── Other ─────────────────────────────────────────────────────────────────────
 playwright = "1.52.0"
 
+# ── PlantUML specific ─────────────────────────────────────────────────────────
+spring-boot = "3.4.2"
+spring-dependency-management = "1.1.7"
+spring-cloud-contract = "4.2.2"
+deps-versions = "0.51.0"
+poi = "5.3.0"
+okhttp-digest = "2.10"
+grolifant = "1.2.2"
+jjwt = "0.12.3"
+netty-tcnative = "2.0.70.Final"
+commons-fileupload = "1.5"
+google-api-client = "2.1.0"
+google-auth-library = "1.28.0"
+
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
+kotlin-allopen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }
+kotlin-noarg = { id = "org.jetbrains.kotlin.plugin.noarg", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
+spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
+versions = { id = "com.github.ben-manes.versions", version.ref = "deps-versions" }
+plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "plugin-publish" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+node-gradle = { id = "com.github.node-gradle.node", version.ref = "node-gradle" }
 
 [libraries]
 # ── Kotlin ──
@@ -78,6 +102,7 @@ kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serial" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-reactive = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-reactive", version.ref = "coroutines" }
+kotlinx-coroutines-reactor = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-reactor", version.ref = "coroutines" }
 kotlinx-coroutines-jdk8 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8", version.ref = "coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 
@@ -86,6 +111,7 @@ jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", ver
 jackson-dataformat-yaml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml", version.ref = "jackson" }
 jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
 jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jackson" }
+jackson-module-jsonSchema = { module = "com.fasterxml.jackson.module:jackson-module-jsonSchema", version.ref = "jackson" }
 
 # ── LangChain4j ──
 langchain4j = { module = "dev.langchain4j:langchain4j", version.ref = "langchain4j" }
@@ -97,6 +123,12 @@ langchain4j-anthropic = { module = "dev.langchain4j:langchain4j-anthropic", vers
 langchain4j-pgvector = { module = "dev.langchain4j:langchain4j-pgvector", version.ref = "langchain4j-beta" }
 langchain4j-minilm = { module = "dev.langchain4j:langchain4j-embeddings-all-minilm-l6-v2", version.ref = "langchain4j-beta" }
 langchain4j-hugging-face = { module = "dev.langchain4j:langchain4j-hugging-face", version.ref = "langchain4j-beta" }
+langchain4j-reactor = { module = "dev.langchain4j:langchain4j-reactor", version.ref = "langchain4j" }
+langchain4j-spring-boot-starter = { module = "dev.langchain4j:langchain4j-spring-boot-starter", version.ref = "langchain4j" }
+langchain4j-ollama-spring-boot-starter = { module = "dev.langchain4j:langchain4j-ollama-spring-boot-starter", version.ref = "langchain4j" }
+langchain4j-web-search-engine-google-custom = { module = "dev.langchain4j:langchain4j-web-search-engine-google-custom", version.ref = "langchain4j" }
+langchain4j-google-ai-gemini = { module = "dev.langchain4j:langchain4j-google-ai-gemini", version.ref = "langchain4j" }
+langchain4j-spring-boot-tests = { module = "dev.langchain4j:langchain4j-spring-boot-tests", version.ref = "langchain4j" }
 
 # ── Koog ──
 koog-agents = { module = "ai.koog:koog-agents", version.ref = "koog" }
@@ -115,11 +147,15 @@ arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrow" }
 arrow-fx-coroutines = { module = "io.arrow-kt:arrow-fx-coroutines", version.ref = "arrow" }
 arrow-jackson = { module = "io.arrow-kt:arrow-integrations-jackson-module", version.ref = "arrow-jackson" }
 commons-io = { module = "commons-io:commons-io", version.ref = "commons-io" }
+commons-beanutils = { module = "commons-beanutils:commons-beanutils", version = "1.9.4" }
+commons-lang3 = { module = "org.apache.commons:commons-lang3", version = "3.17.0" }
+commons-collections4 = { module = "org.apache.commons:commons-collections4", version = "4.4" }
 
 # ── Tests ──
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-platform" }
 junit-platform-suite = { module = "org.junit.platform:junit-platform-suite", version.ref = "junit-platform" }
+junit-platform-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit-jupiter" }
 cucumber-java = { module = "io.cucumber:cucumber-java", version.ref = "cucumber" }
 cucumber-junit-platform-engine = { module = "io.cucumber:cucumber-junit-platform-engine", version.ref = "cucumber" }
 cucumber-picocontainer = { module = "io.cucumber:cucumber-picocontainer", version.ref = "cucumber" }
@@ -128,6 +164,8 @@ testcontainers-junit5 = { module = "org.testcontainers:junit-jupiter", version.r
 mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockito-kotlin" }
 mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito-jupiter" }
 assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
+assertj-swing = { module = "org.assertj:assertj-swing", version.ref = "assertj" }
+wiremock = { module = "org.wiremock:wiremock", version = "3.9.2" }
 
 # ── Docker / Infrastructure ──
 docker-java-core = { module = "com.github.docker-java:docker-java-core", version.ref = "docker-java" }
@@ -139,6 +177,38 @@ jgit-core = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "jgit"
 jgit-ssh = { module = "org.eclipse.jgit:org.eclipse.jgit.ssh.jsch", version.ref = "jgit" }
 jgit-archive = { module = "org.eclipse.jgit:org.eclipse.jgit.archive", version.ref = "jgit" }
 xz = { module = "org.tukaani:xz", version.ref = "xz" }
+
+# ── Spring Boot ──
+spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "spring-boot" }
+spring-boot-starter-mail = { module = "org.springframework.boot:spring-boot-starter-mail", version.ref = "spring-boot" }
+spring-boot-starter-thymeleaf = { module = "org.springframework.boot:spring-boot-starter-thymeleaf", version.ref = "spring-boot" }
+spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation", version.ref = "spring-boot" }
+spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux", version.ref = "spring-boot" }
+spring-boot-starter-data-r2dbc = { module = "org.springframework.boot:spring-boot-starter-data-r2dbc", version.ref = "spring-boot" }
+spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security", version.ref = "spring-boot" }
+spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-boot" }
+spring-security-data = { module = "org.springframework.security:spring-security-data", version.ref = "spring-boot" }
+spring-security-test = { module = "org.springframework.security:spring-security-test", version.ref = "spring-boot" }
+spring-cloud-starter-contract-verifier = { module = "org.springframework.cloud:spring-cloud-starter-contract-verifier", version.ref = "spring-cloud-contract" }
+spring-boot-devtools = { module = "org.springframework.boot:spring-boot-devtools", version.ref = "spring-boot" }
+spring-boot-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor", version.ref = "spring-boot" }
+spring-boot-properties-migrator = { module = "org.springframework.boot:spring-boot-properties-migrator", version.ref = "spring-boot" }
+
+# ── PDF/Extraction ──
+poi-ooxml = { module = "org.apache.poi:poi-ooxml", version.ref = "poi" }
+tika-parsers-standard = { module = "org.apache.tika:tika-parsers-standard-package", version.ref = "tika" }
+
+# ── Other ──
+okhttp-digest = { module = "com.burgstaller:okhttp-digest", version.ref = "okhttp-digest" }
+grolifant = { module = "org.ysb33r.gradle:grolifant", version.ref = "grolifant" }
+jjwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref = "jjwt" }
+jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref = "jjwt" }
+netty-tcnative-boringssl-static = { module = "io.netty:netty-tcnative-boringssl-static", version.ref = "netty-tcnative" }
+commons-fileupload = { module = "commons-fileupload:commons-fileupload", version.ref = "commons-fileupload" }
+google-api-services-forms = { module = "com.google.apis:google-api-services-forms", version.ref = "google-api-client" }
+google-api-services-drive = { module = "com.google.apis:google-api-services-drive", version.ref = "google-api-client" }
+google-api-client-jackson2 = { module = "com.google.api-client:google-api-client-jackson2", version.ref = "google-api-client" }
+google-auth-library-oauth2-http = { module = "com.google.auth:google-auth-library-oauth2-http", version.ref = "google-auth-library" }
 
 # ── Gradle tooling ──
 gradle-tooling-api = { module = "org.gradle:gradle-tooling-api", version.ref = "gradle-tooling" }
@@ -152,6 +222,16 @@ asciidoctorj-diagram-plantuml = { module = "org.asciidoctor:asciidoctorj-diagram
 pdfbox = { module = "org.apache.pdfbox:pdfbox", version.ref = "pdfbox" }
 tika-core = { module = "org.apache.tika:tika-core", version.ref = "tika" }
 flexmark-all = { module = "com.vladsch.flexmark:flexmark-all", version.ref = "flexmark" }
+
+# ── Kotlin Stdlib ──
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+kotlin-test-junit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5", version.ref = "kotlin" }
+
+# ── Reactor ──
+reactor-kotlin-extensions = { module = "io.projectreactor.kotlin:reactor-kotlin-extensions", version = "1.2.3" }
+reactor-test = { module = "io.projectreactor:reactor-test", version = "3.7.2" }
 
 # ── Other ──
 playwright = { module = "com.microsoft.playwright:playwright", version.ref = "playwright" }
@@ -175,6 +255,7 @@ r2dbc = [
     "r2dbc-spi",
     "kotlinx-coroutines-core",
     "kotlinx-coroutines-reactive",
+    "kotlinx-coroutines-reactor",
 ]
 arrow = [
     "arrow-core",
@@ -182,8 +263,10 @@ arrow = [
 ]
 coroutines = [
     "kotlinx-coroutines-core",
+    "kotlinx-coroutines-reactive",
     "kotlinx-coroutines-jdk8",
     "kotlinx-coroutines-test",
+    "kotlinx-coroutines-reactor",
 ]
 jgit = [
     "jgit-core",
@@ -204,4 +287,59 @@ jackson = [
 docker = [
     "docker-java-core",
     "docker-java-transport-httpclient5",
+]
+asciidoctor = [
+    "asciidoctorj",
+    "asciidoctorj-diagram",
+    "asciidoctorj-diagram-plantuml",
+]
+plantuml = [
+    "jgit-core",
+    "jgit-ssh",
+    "jgit-archive",
+    "xz",
+    "commons-io",
+    "poi-ooxml",
+    "tika-parsers-standard",
+    "okhttp-digest",
+    "grolifant",
+    "jjwt-impl",
+    "jjwt-jackson",
+    "netty-tcnative-boringssl-static",
+    "commons-fileupload",
+    "google-api-services-forms",
+    "google-api-services-drive",
+    "google-api-client-jackson2",
+    "google-auth-library-oauth2-http",
+]
+plantuml-ai = [
+    "langchain4j",
+    "langchain4j-reactor",
+    "langchain4j-spring-boot-starter",
+    "langchain4j-ollama-spring-boot-starter",
+    "langchain4j-hugging-face",
+    "langchain4j-mistral",
+    "langchain4j-web-search-engine-google-custom",
+    "langchain4j-google-ai-gemini",
+    "langchain4j-pgvector",
+    "jackson-module-jsonSchema",
+    "arrow-core",
+    "arrow-fx-coroutines",
+    "arrow-jackson",
+    "commons-beanutils",
+    "commons-lang3",
+    "commons-collections4",
+    "spring-boot-starter-actuator",
+    "spring-boot-starter-mail",
+    "spring-boot-starter-thymeleaf",
+    "spring-boot-starter-validation",
+    "spring-boot-starter-webflux",
+    "spring-boot-starter-data-r2dbc",
+    "spring-boot-starter-security",
+    "spring-security-data",
+    "kotlin-reflect",
+    "kotlin-stdlib-jdk8",
+    "kotlinx-coroutines-reactor",
+    "reactor-kotlin-extensions",
+    "reactor-test",
 ]

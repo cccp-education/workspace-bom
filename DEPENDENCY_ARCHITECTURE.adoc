@@ -1,0 +1,72 @@
+# Architecture des Dépendances avec le BOM
+
+## Introduction
+
+Le workspace-bom (Bill of Materials) est un projet central qui définit les versions standardisées de toutes les dépendances utilisées dans les projets de l'organisation. Cette approche permet d'assurer la cohérence des versions à travers tous les projets et de simplifier la gestion des dépendances.
+
+## Structure du BOM
+
+Le BOM est structuré comme suit :
+
+```
+workspace-bom/
+├── build.gradle.kts        # Définition du BOM comme plateforme Java
+├── settings.gradle.kts     # Configuration du projet
+└── gradle/
+    └── libs.versions.toml  # Fichier centralisant les versions des dépendances
+```
+
+## Utilisation du BOM dans les projets
+
+Pour utiliser le BOM dans un projet, il faut :
+
+1. Ajouter le BOM comme dépendance de plateforme dans le fichier `build.gradle.kts` :
+
+```kotlin
+dependencies {
+    implementation(platform("education.cccp:workspace-bom:0.0.1"))
+}
+```
+
+2. Utiliser les dépendances sans spécifier les versions dans le fichier `build.gradle.kts` :
+
+```kotlin
+dependencies {
+    implementation(libs.kotlin.stdlib)
+    implementation(libs.jackson.module.kotlin)
+    // etc.
+}
+```
+
+3. Le fichier `libs.versions.toml` local ne doit contenir que les versions spécifiques au projet qui ne sont pas gérées par le BOM.
+
+## Avantages de l'approche BOM
+
+1. **Cohérence des versions** : Tous les projets utilisent les mêmes versions de dépendances.
+2. **Simplification de la gestion** : Les versions sont centralisées dans un seul endroit.
+3. **Mise à jour facilitée** : Une mise à jour du BOM se propage à tous les projets.
+4. **Réduction des conflits** : Moins de risques de conflits de versions entre dépendances.
+
+## Bonnes pratiques
+
+1. Ne pas dupliquer les versions dans les fichiers `libs.versions.toml` locaux si elles sont déjà gérées par le BOM.
+2. Mettre à jour régulièrement le BOM pour utiliser les dernières versions stables des dépendances.
+3. Utiliser des bundles pour grouper les dépendances fréquemment utilisées ensemble.
+4. Documenter les raisons des versions choisies dans le BOM.
+
+## Projets migrés vers le BOM
+
+Les projets suivants ont été migrés pour utiliser le BOM :
+
+- codex-gradle
+- plantuml-gradle
+- (d'autres projets à venir)
+
+## Maintenance du BOM
+
+Le BOM doit être régulièrement mis à jour pour :
+
+1. Suivre les dernières versions stables des dépendances.
+2. Ajouter de nouvelles dépendances fréquemment utilisées.
+3. Retirer les dépendances obsolètes.
+4. Vérifier la compatibilité entre les versions des dépendances.
