@@ -11,7 +11,7 @@ coroutines = "1.10.2"
 jackson = "2.21.2"
 langchain4j = "1.14.1"
 langchain4j-beta = "1.14.1-beta24"
-koog = "0.8.0"
+koog = "1.0.0"
 
 # ── Database ──────────────────────────────────────────────────────────────────
 r2dbc-postgresql = "1.0.7.RELEASE"

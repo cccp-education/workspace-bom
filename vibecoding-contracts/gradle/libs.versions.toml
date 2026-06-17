@@ -2,7 +2,7 @@
 vibecoding-contracts = "0.0.1"
 kotlin = "2.3.20"
 kotlinx-serial = "1.7.3"
-koog = "0.8.0"
+koog = "1.0.0"
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
