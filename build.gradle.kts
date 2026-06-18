@@ -1,3 +1,5 @@
+
+
 plugins {
     signing
     `java-platform`
@@ -101,6 +103,46 @@ dependencies {
         // DELETE pipeline-contracts (migré dans bakery-gradle)
         // GARDER SEULEMENT agent-contracts, codebase-contracts, llm-pool-contracts
     }
+}
+
+// ── runAllTests — lance les tests de tous les boroughs publics (builds indépendants) ──
+
+val testableProjects = listOf(
+    "api-key-pool-gradle",
+    "bakery-gradle",
+    "capsule-gradle",
+    "codebase-gradle",
+    "codex-gradle",
+    "graphify-gradle",
+    "hyperframes-gradle",
+    "planner-gradle",
+    "plantuml-gradle",
+    "readme-gradle",
+    "slider-gradle"
+)
+
+val runAllTestsTask = tasks.register("runAllTests") {
+    group = "verification"
+    description = "Runs tests for all public boroughs (each as independent Gradle build)"
+}
+
+testableProjects.forEach { projectName ->
+    val projectDir = rootProject.projectDir.parentFile.resolve(projectName)
+    if (projectDir.resolve("build.gradle.kts").exists()) {
+        val testTask = tasks.register<Exec>("runTestsFor${projectName.replace("-", "").replaceFirstChar { it.uppercase() }}") {
+            group = "verification"
+            description = "Runs tests in $projectName"
+            workingDir = projectDir
+            commandLine("./gradlew", "check")
+        }
+        runAllTestsTask.configure {
+            dependsOn(testTask)
+        }
+    }
+}
+
+tasks.named("check") {
+    dependsOn(runAllTestsTask)
 }
 
 publishing {

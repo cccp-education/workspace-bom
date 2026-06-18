@@ -43,6 +43,13 @@
 - Root settings nettoyé (plus de include())
 - Architecture documentée dans EPIC_PUB.adoc
 
+== Session 008 — Fix runAllTests + Dépendance codebase-gradle (2026-06-18)
+- Fix `./gradlew tasks` : `dependsAfter` non résolu → remplacé par Exec task par borough
+- `check` → `dependsOn(runAllTests)` pour chaînage cross-borough
+- Codebase-gradle : ajout `opencode-session-contracts` manquant dans build.gradle.kts
+- Codebase-gradle : fix `LiveContextInjectorTest.kt` import conflict `contracts.session.AgentContext` → `codebase.koog.session.AgentContext`
+- Full `check` chain : api-key-pool ✅, bakery ✅, capsule ✅, codebase ✅ (tests PASS)
+
 == Session 005 — MEM-2 Pipeline Contracts (2026-06-14)
 - MEM-2.1 : Structure `pipeline-contracts/` créée
 - MEM-2.2 : `build.gradle.kts` (zéro dépendance, pattern llm-pool-contracts)

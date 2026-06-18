@@ -85,7 +85,7 @@ publishing {
                     developer {
                         id.set("cccp-education")
                         name.set("CCCP Education")
-                        email.set("cccp.education@gmail.com")
+                        email.set("cccp.edu@gmail.com")
                     }
                 }
                 scm {

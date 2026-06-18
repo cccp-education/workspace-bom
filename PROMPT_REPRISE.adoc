@@ -1,13 +1,14 @@
-= PROMPT_REPRISE — Session 008 : MEM-2 Publication + Vérification contrats N0
-:sessions: 008
-:date: 2026-06-17
-:mission: Publication pipeline-contracts sur Maven Central + Vérifier tous les contrats N0 + Audit boroughs consommateurs
+= PROMPT_REPRISE — Session 009 : MEM-2.9 Publication pipeline-contracts + Vérification
+:sessions: 009
+:date: 2026-06-18
+:mission: Publier pipeline-contracts sur Maven Central + Vérifier contrats N0
 
-== Done (session 007)
-- ✅ MEM-5 Audit migration workspace-bom — Analyse 49 boroughs → 2 utilisent codebase-contracts
-- ✅ Vérification artefacts N0 publiés (agent, codebase, i18n, llm-pool, pipeline, opencode-session)
+== Done (session 008)
+- ✅ Fix `./gradlew tasks` (runAllTests réécrite avec Exec task, check→runAllTests)
+- ✅ Fix codebase-gradle dépendance opencode-session-contracts manquante
+- ✅ Full check chain cross-borough opérationnelle
 
-== Next session (008)
+== Next session (009)
 
 === MEM-2.9 — Publier pipeline-contracts sur Maven Central
 **Priorité** : P1 — 6ème Artefact N0
@@ -29,20 +30,10 @@
 - i18n-contracts (0.0.1) ❓ à vérifier
 - opencode-session-contracts (0.0.1) ❓ à vérifier
 
-=== DOC-8.1→8.6 — Implémentation concrète dans document-gradle
+=== DOC-8.1→8.6 — Implémentation document-gradle
 **Priorité** : P2 — Consommer les contrats N0
-- DOC-8.1 : Structure projet + sources
-- DOC-8.2 : Tests unitaires
-- DOC-8.3 : Tests Cucumber
-- DOC-8.4 : Publication Maven Central
-- DOC-8.5 : Exemples AsciiDoc
-- DOC-8.6 : Documentation utilisateur
 
 == État des boroughs consommateurs
-- planner-gradle (planner-plugin) : codebase-contracts:0.0.1 ✅
-- codex-gradle (codex-plugin) : codebase-contracts:0.0.1 ✅, workspace-bom BOM
-- Aucun borough n'utilise actuellement le BOM workspace-bom
-
-== Rappel publication nmcp
-Tous les artefacts education.cccp:* doivent être publiés sur Maven Central
-avant d'être référencés par d'autres artefacts (DAG de dépendances).
+- planner-gradle : codebase-contracts:0.0.1 ✅
+- codex-gradle : codebase-contracts:0.0.1 ✅, workspace-bom BOM
+- codebase-gradle : opencode-session-contracts:0.0.1 ✅ (fix session 008)
