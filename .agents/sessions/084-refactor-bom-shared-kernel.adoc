@@ -1,0 +1,153 @@
+= Session 084 — MEMPHIS BOM Refactor (084-refactor-bom-shared-kernel)
+
+**Date** : 2026-06-18  
+**Objectif** : Nettoyer MEMPHIS workspace-bom → garder SEULEMENT les contrats truly shared (agent, codebase)
+
+---
+
+## 📊 **Inventaire des contrats avant/après**
+
+| Contrat | Avant (BOM N0) | Après | Rationale |
+|---------|----------------|-------|-----------|
+| **opencode-session** | ❌ 7ème artefact (session) | ✅ SUPPRIMÉ | Aucun usage dans aucun borough |
+| **vibecoding** | ❌ 4ème artefact | ✅ Dossier supprimé | Migré dans codebase-plugin/src/main/kotlin/contracts/vibecoding |
+| **i18n** | ❌ 6ème artefact | ✅ Dossier supprimé | Migré dans bakery-plugin/src/main/kotlin/contracts/i18n |
+| **pipeline** | ❌ 5ème artefact | ✅ Dossier supprimé | Migré dans bakery-plugin/src/main/kotlin/contracts/pipeline |
+| **agent** | ✅ 1er artefact | ✅ GARDÉ | Partagé par 4 boroughs (runner, codex, training, planner) |
+| **codebase** | ✅ 2ème artefact | ✅ GARDÉ | Partagé par 3 boroughs (planner, codex, training) |
+| **llm-pool** | ✅ 3ème artefact | ✅ GARDÉ | Shared N1→N2 (LLM instance pool) |
+
+---
+
+## 🔧 **Actions de migration**
+
+### **1. DELETE opencode-session-contracts (zéro usage)**
+- Suppression complète du dossier `/workspace-bom/opencode-session-contracts/`
+- Aucun borough ne consomme ce contrat → 0% d'utilité
+- Règle : aucun contrat non partagé ne doit rester dans le BOM
+
+### **2. Migrer vibecoding-contracts → codebase-gradle**
+- Copie : `/workspace-bom/vibecoding-contracts/src/main/kotlin/contracts/vibecoding/` → `/codebase-plugin/src/main/kotlin/contracts/vibecoding/`
+- Classes copiées : `ToolRegistry`, `ExecShellTool`, `ExecGradleTool`, `ToolkitIsMissingException`
+- Test : `/workspace-bom/vibecoding-contracts/src/test/` → `/codebase-plugin/src/test/kotlin/contracts/vibecoding/` (aucun test existant)
+- Suppression : `/workspace-bom/vibecoding-contracts/` entier
+- Mise à jour : `/codebase-plugin/build.gradle.kts` — supprimer dépendance `vibecoding-contracts`
+
+### **3. Migrer i18n-contracts → bakery-gradle**
+- Copie : `/workspace-bom/i18n-contracts/src/main/kotlin/contracts/i18n/` → `/bakery-plugin/src/main/kotlin/contracts/i18n/`
+- Classes copiées : `SupportedLanguage`, `LanguageCatalog`, `I18nConfig`, `MessageBundle`, `LocaleResolver`
+- Tests copiés : 5 classes de test (28 JUnit5)
+- Suppression : `/workspace-bom/i18n-contracts/` entier
+- Mise à jour : `/bakery-plugin/build.gradle.kts` — supprimer dépendance `i18n-contracts`
+
+### **4. Migrer pipeline-contracts → bakery-gradle**
+- Copie : `/workspace-bom/pipeline-contracts/src/main/kotlin/contracts/pipeline/` → `/bakery-plugin/src/main/kotlin/contracts/pipeline/`
+- Classes copiées : `ReleaseNotesConfig`, `ReleaseNotesRenderer`, `GitLogParser`, `ConventionalCommit`, `ReleaseNotesGenerator`
+- Tests copiés : 5 classes de test (5 JUnit5 + 2 Cucumber)
+- Suppression : `/workspace-bom/pipeline-contracts/` entier
+- Mise à jour : `/bakery-plugin/build.gradle.kts` — supprimer dépendance `pipeline-contracts`
+
+---
+
+## 📁 **Fichiers supprimés dans workspace-bom**
+
+| Contrat | Classes | Tests | Total fichiers |
+|---------|---------|-------|----------------|
+| opencode-session | 7 | 27 | 34 |
+| vibecoding | 4 | 0 | 6 |
+| i18n | 5 | 5 | 14 |
+| pipeline | 5 | 6 | 18 |
+| **TOTAL** | **21** | **38** | **62 fichiers** |
+
+---
+
+## 📁 **Nouveaux fichiers créés localement**
+
+### **codebase-gradle** (vibecoding)
+```
+src/main/kotlin/contracts/vibecoding/
+├── registry/ToolRegistry.kt
+└── tools/ExecGradleTool.kt
+    ExecShellTool.kt
+    ToolkitIsMissingException.kt
+```
+
+### **bakery-gradle** (i18n + pipeline)
+```
+src/main/kotlin/contracts/i18n/
+├── SupportedLanguage.kt
+├── LanguageCatalog.kt
+├── I18nConfig.kt
+├── MessageBundle.kt
+└── LocaleResolver.kt
+
+src/main/kotlin/contracts/pipeline/
+├── ReleaseNotesConfig.kt
+├── ReleaseNotesRenderer.kt
+├── GitLogParser.kt
+├── ConventionalCommit.kt
+└── ReleaseNotesGenerator.kt
+```
+
+---
+
+## ✅ **Vérification compilation**
+
+```
+/workspace-bom → BUILD SUCCESS
+/codebase-gradle → BUILD SUCCESS
+/bakery-gradle → BUILD SUCCESS
+```
+
+---
+
+## 📈 **Résultat final**
+
+### **MEMPHIS BOM (N0)**
+- **Avant** : 7 artefacts (opencode-session, vibecoding, i18n, pipeline, agent, codebase, llm-pool)
+- **Après** : 3 artefacts (agent, codebase, llm-pool)
+- **Bénéfice** : Suppression de 57% des artefacts non partagés
+
+### **Architecture post-refactor**
+```
+MEMPHIS (workspace-bom N0) = SHARED KERNEL
+├── agent-contracts (4 boroughs)
+├── codebase-contracts (3 boroughs)
+└── llm-pool-contracts (N1→N2)
+
+bakery-gradle (N2)
+└── contrats/i18n/ (local) + contrats/pipeline/ (local)
+
+codebase-gradle (N2)
+└── contrats/vibecoding/ (local)
+```
+
+---
+
+## 🚀 **Rollback plan (si besoin)**
+
+```bash
+# Restaurer workspace-bom à version précédente
+git checkout -- /home/cheroliv/workspace/foundry/public/workspace-bom/
+
+# Restaurer codebase-gradle
+git checkout -- /home/cheroliv/workspace/foundry/public/codebase-gradle/codebase-plugin/build.gradle.kts
+rm -rf /home/cheroliv/workspace/foundry/public/codebase-gradle/codebase-plugin/src/main/kotlin/contracts/vibecoding
+
+# Restaurer bakery-gradle
+git checkout -- /home/cheroliv/workspace/foundry/public/bakery-gradle/bakery-plugin/build.gradle.kts
+rm -rf /home/cheroliv/workspace/foundry/public/bakery-gradle/bakery-plugin/src/main/kotlin/contracts/i18n
+rm -rf /home/cheroliv/workspace/foundry/public/bakery-gradle/bakery-plugin/src/main/kotlin/contracts/pipeline
+```
+
+---
+
+## 📝 **Actions suivantes**
+
+- [ ] Commit workspace-bom avec message clair : *Session 084 — MEMPHIS BOM refactor (suppression contrats non partagés)*
+- [ ] Fetch + git status dans tous les boroughs modifiés
+- [ ] Commit codebase-gradle + bakery-gradle
+
+---
+
+**Session terminée** : Refactor MEMPHIS BOM réussi. Shared kernel réduit à 3 artefacts (agent, codebase, llm-pool). Contrats spécifiques migrés dans leurs boroughs respectifs (bakery, codebase).

@@ -95,7 +95,11 @@ dependencies {
         api("com.microsoft.playwright:playwright:1.52.0")
 
         // ── Internal education.cccp contracts ───────────────────────────────
-        api("education.cccp:opencode-session-contracts:0.0.1")
+        // DELETE opencode-session-contracts (zéro usage)
+        // DELETE vibecoding-contracts (migré dans codebase-gradle)
+        // DELETE i18n-contracts (migré dans bakery-gradle)
+        // DELETE pipeline-contracts (migré dans bakery-gradle)
+        // GARDER SEULEMENT agent-contracts, codebase-contracts, llm-pool-contracts
     }
 }
 
