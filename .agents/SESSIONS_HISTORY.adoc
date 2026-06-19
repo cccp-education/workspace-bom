@@ -4,6 +4,7 @@ _Date creation : 2026-06-02_
 
 |===
 | # | Date | Type | Sujet | Score
+| 009 | 2026-06-19 | bugfix+ops | **runAllTests BOM coverage + kover codebase 80→79** — Audit testableProjects : 2 boroughs manquants ajoutés (dashboard-gradle, jhipster-gradle-plugins). Fix koverVerify codebase (79.73% → minBound 79). runAllTests vérifié (13 boroughs). pipeline-contracts reporté session 010. | 8.5/10
 | 008 | 2026-06-18 | bugfix | **Fix runAllTests + Dépendance codebase-gradle** — `dependsAfter` non résolu → Exec task par borough. `check` → `runAllTests`. Codebase-gradle : ajout opencode-session-contracts + fix import conflict LiveContextInjectorTest. Cross-borough check chain opérationnelle. | 8.5/10
 | 007 | 2026-06-17 | audit | **MEM-5 Migration workspace-bom** — Audit complet des 49 boroughs publics. Résultats : 2 boroughs utilisent codebase-contracts (planner, codex). BOM workspace-bom ne référence que opencode-session-contracts. Plan de migration documenté. | 9/10
 | 006 | 2026-06-14 | dev+tdd | **MEM-4 opencode-session-contracts** — 7ème artefact N0 créé. 6 classes (SessionPrompt, SessionResponse, AgentContext, SessionStatus, ToolCallRecord, TokenUsage). 22/22 JUnit5 PASS. Publié mavenLocal. BOM racine mis à jour. | 10/10

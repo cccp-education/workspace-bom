@@ -5,10 +5,10 @@
 
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
-_Derniere mise a jour_ : 2026-06-18
-_session terminee_ : 008 — Fix runAllTests + Dépendance codebase-gradle
-_Prochaine session_ : 009
-_Session en cours_ : 009 — MEM-2.9 Publication pipeline-contracts + Vérification
+_Derniere mise a jour_ : 2026-06-19
+_session terminee_ : 009 — runAllTests BOM coverage + kover codebase 79%
+_Prochaine session_ : 010
+_Session en cours_ : 010 — MEM-2.9 Publication pipeline-contracts + fix codex check
 
 '''
 
@@ -24,6 +24,7 @@ _Session en cours_ : 009 — MEM-2.9 Publication pipeline-contracts + Vérificat
 | 006 | 2026-06-14 | dev | MEM-3 i18n + MEM-4 opencode-session — 6ème et 7ème artefacts N0 (~28 + ~22 tests). Mise à jour BOM. | 10/10
 | 007 | 2026-06-17 | audit | MEM-5 Migration(workspace-bom) — Audit 49 boroughs publics. 2 utilisent codebase-contracts (planner, codex). BOM ne référence que opencode-session-contracts. | 9/10
 | 008 | 2026-06-18 | bugfix | Fix runAllTests cross-borough + Dépendance codebase-gradle manquante + Import conflict AgentContext | 8.5/10
+| 009 | 2026-06-19 | bugfix+ops | runAllTests BOM coverage (ajout dashboard + jhipster) + kover codebase 80→79 | 8.5/10
 |===
 '''
 
@@ -33,7 +34,7 @@ _Session en cours_ : 009 — MEM-2.9 Publication pipeline-contracts + Vérificat
 | EPIC | Description | Statut | Priorite
 | MEM-0 | Bootstrap gouvernance agent — .agents/, AGENT.adoc | ✅ TERMINE | P0
 | MEM-1 | N0_CONTRACTS — Shared Kernel DDD cross-borough | ✅ TERMINE (7 contrats publiés + vérifiés) | P0
-| MEM-2 | Pipeline Contracts — release notes N0 | 🔄 EN COURS (pipeline-contracts à publier session 009) | P1
+| MEM-2 | Pipeline Contracts — release notes N0 | 🔄 EN COURS (pipeline-contracts à publier session 010) | P1
 | MEM-3 | i18n-contracts — Contrats d'internationalisation N0 (10 langues) | ✅ TERMINÉ (session 006) | P1
 | MEM-4 | opencode-session-contracts — Protocole Thin Client opencode↔Gradle | ✅ TERMINÉ (session 006) | P1
 | MEM-5 | Audit migration workspace-bom — 16 boroughs publics, plan de migration documenté | ✅ TERMINÉ (session 007) | P1

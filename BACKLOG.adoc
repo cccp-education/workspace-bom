@@ -56,7 +56,7 @@ BOM + 5 libraries de contrats partagés (N0). Premier artefact publié (VAGUE 1)
 **Priorite** : P1
 **Estimation** : 1 pt
 **Dependances** : MEM-2 terminé (33/33 PASS)
-**Statut** : À FAIRE — prochaine session
+**Statut** : À FAIRE — session 010
 
 . Code prêt (session 005), publication nmcp restante
 . `cd foundry/public/workspace-bom/pipeline-contracts && ./gradlew publishAggregationToCentralPortal`
