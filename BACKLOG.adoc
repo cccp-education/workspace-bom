@@ -69,6 +69,22 @@ BOM + 5 libraries de contrats partagés (N0). Premier artefact publié (VAGUE 1)
 **Statut** : ✅ TERMINÉ
 
 '''
+== EPIC DOC-I18N — README multilingues workspace-bom
+
+*Session 010 (2026-06-24)* — Documentation multilingue alignée sur `i18n-contracts` (MEM-3).
+
+=== DOC-I18N-1 — README Consumer (10 langues)
+**Statut** : ✅ TERMINÉ (session 010)
+. 10 fichiers `README.{en,zh,hi,es,fr,ar,bn,pt,ru,ur}.md`
+. Master source EN + 9 traductions marquées `rev 0.0.1`
+. Badges Maven Central/License, switcher i18n, RTL ar/ur
+
+=== DOC-I18N-2 — README Plugin Internals (10 langues)
+**Statut** : ✅ TERMINÉ (session 010)
+. 10 fichiers `README.plugin.{en,zh,hi,es,fr,ar,bn,pt,ru,ur}.md`
+. Architecture multi-module, patterns Tier 0, publication nmcp, runAllTests
+
+'''
 == EPIC PUB-5 — Verification
 
 === PUB-5.1 — Verifier Maven Central

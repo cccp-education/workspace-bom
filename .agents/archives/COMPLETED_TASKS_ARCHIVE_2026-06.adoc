@@ -1,5 +1,15 @@
 = Tâches Terminées — Juin 2026
-:date: 2026-06-14
+:date: 2026-06-24
+
+== Session 010 — README multilingues workspace-bom (2026-06-24)
+- DOC-I18N-1 : 10 README consumer créés (EN master + 9 traductions `rev 0.0.1`)
+- DOC-I18N-2 : 10 README plugin internals créés (EN master + 9 traductions)
+- 20 fichiers total, 10 langues du catalogue `i18n-contracts` (en, zh, hi, es, fr, ar, bn, pt, ru, ur)
+- Badges Maven Central/License shields.io, switcher i18n (liens relatifs)
+- RTL géré pour ar + ur (SupportedLanguage.rtl = true)
+- Block markers version/build/tests présents
+- Dogfooding `i18n-contracts` (MEM-3) — `LanguageCatalog.all()` sert de spécification directe
+- MEM-2.9 publication pipeline-contracts reportée session 011
 
 == Session 006 — MEM-4 opencode-session-contracts (2026-06-14)
 - MEM-4.1 : Structure `opencode-session-contracts/` créée (build.gradle.kts, settings.gradle.kts, libs.versions.toml)

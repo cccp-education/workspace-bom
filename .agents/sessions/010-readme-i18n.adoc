@@ -1,0 +1,102 @@
+= Rapport de Session 010 — MEMPHIS (workspace-bom)
+:date: 2026-06-24
+:session: 010
+:type: doc + i18n
+:status: COMPLET
+
+== Mission (PROMPT_REPRISE session 010)
+Déviation : la mission prévue (MEM-2.9 Publication pipeline-contracts + fix codex-gradle check)
+est reportée à la session 011. La session 010 a traité une tâche documentation i18n prioritaire :
+création des README multilingues pour workspace-bom (consumer + plugin), alignés sur MEM-3 i18n-contracts.
+
+== Contexte
+- `i18n-contracts` (MEM-3) livré session 006 — 10 langues supportées : en, zh, hi, es, fr, ar, bn, pt, ru, ur.
+- workspace-bom n'avait aucun README (consumer ni plugin).
+- Besoin : documentation multilingue alignée sur le catalogue i18n-contracts, avec badges CI/License/Maven Central,
+  block markers version/build/tests, switcher i18n, et support RTL pour ar/ur.
+
+== Actions réalisées
+
+=== 1. README Consumer (10 langues × 1 = 10 fichiers)
+Création de `README.{lang}.md` pour les 10 langues du catalogue i18n-contracts :
+- `README.md` (EN — master source)
+- `README.zh.md`, `README.hi.md`, `README.es.md`, `README.fr.md`
+- `README.ar.md`, `README.bn.md`, `README.pt.md`, `README.ru.md`, `README.ur.md`
+
+Contenu consumer :
+- Badges Maven Central + License (shields.io)
+- Métadonnées : version `0.0.1`, group `education.cccp`, type Java Platform (BOM)
+- Section "What it does" — BOM centralisant versions Kotlin, Jackson, LangChain4j, koog, Testcontainers, Arrow, JGit, AsciidoctorJ
+- Quick Start : `implementation(platform("education.cccp:workspace-bom:0.0.1"))` + dépendances sans version
+- Table "Managed scopes" (Kotlin, Jackson, LangChain4j, Koog, Database, Processing, Testing, Docker, Git, Asciidoctor, PDF, Other)
+- Section "N0 contracts published via this BOM" (agent-contracts, codebase-contracts, llm-pool-contracts)
+- Build & test : `./gradlew build|check|runAllTests|publishToMavenLocal|publishAggregationToCentralPortal`
+- Prérequis : Java 24+, Gradle 9.5.1+, Docker (Testcontainers)
+- CI / Publication : NMCP 1.5.0, credentials `~/.gradle/gradle.properties`, `useGpgCmd()`, POM Apache 2.0
+- Switcher i18n en en-tête : `🌐 Languages: **EN** | [Français](README.fr.md) ...`
+
+=== 2. README Plugin Internals (10 langues × 1 = 10 fichiers)
+Création de `README.plugin.{lang}.md` pour les 10 langues :
+- `README.plugin.md` (EN — master source)
+- `README.plugin.{zh,hi,es,fr,ar,bn,pt,ru,ur}.md`
+
+Contenu plugin (développeur/contributeur) :
+- Architecture multi-module : BOM racine + 7 contrats N0 (agent, codebase, llm-pool, vibecoding, pipeline, i18n, opencode-session)
+- Structure projet (un build Gradle autonome par contrat, nmcp settings)
+- Patterns : Tier 0 (kotlin-stdlib only), `includeBuild()` pour cross-borough
+- Publication nmcp multi-module (pattern session 003 — 4 builds indépendants)
+- `runAllTests` : 13 boroughs publics couverts
+- Block markers de version/build/tests
+
+=== 3. Conventions i18n appliquées
+- **Master source** : `README.md` et `README.plugin.md` marqués `<!-- master source — other languages are translations of this file -->`
+- **Translations** : en-tête `<!-- translated from README.md rev 0.0.1 -->`
+- **RTL** : `README.ar.md` et `README.ur.md` utilisent direction RTL (Arabe Standard, Ourdou — conformes à `SupportedLanguage.rtl = true`)
+- **Switcher** : chaque README liste les 10 langues avec liens relatifs
+- **Catalogue** : 10 langues = exactement le `LanguageCatalog.all()` de i18n-contracts
+
+== Commandes exécutées
+- `ls foundry/public/workspace-bom/README*.md` → 20 fichiers confirmés
+- Vérification en-têtes des 20 fichiers (5 lignes par fichier)
+
+== Résultats
+- 20 fichiers README créés (10 langues × 2 documents)
+- 100% du catalogue i18n-contracts couvert (10/10 langues)
+- Badges shields.io : Maven Central, License
+- Block markers version/build/tests présents
+- Switcher i18n opérationnel (liens relatifs)
+- RTL géré pour ar + ur
+
+== Fichiers créés
+- `foundry/public/workspace-bom/README.md` (EN master consumer)
+- `foundry/public/workspace-bom/README.{zh,hi,es,fr,ar,bn,pt,ru,ur}.md` (9 traductions consumer)
+- `foundry/public/workspace-bom/README.plugin.md` (EN master plugin)
+- `foundry/public/workspace-bom/README.plugin.{zh,hi,es,fr,ar,bn,pt,ru,ur}.md` (9 traductions plugin)
+
+== Leçons
+- **i18n-contracts validé par dogfooding** : le catalogue `LanguageCatalog.all()` (10 langues, flags RTL) a servi de spécification directe pour les README. Le contrat N0 est utilisable tel quel.
+- **Pattern master/translation** : un seul master source EN, les 9 autres sont des traductions marquées `rev 0.0.1`. Évite la divergence.
+- **RTL automatique** : les langues `ar` et `ur` (RTL=true dans `SupportedLanguage`) → les README correspondants utilisent direction RTL nativement.
+- **Alignement readme-gradle** : ce pattern de README multilingue pourra être consommé/codifié par le borough Chiraq (readme-gradle) via `i18n-contracts`.
+
+== Non fait (reporté session 011)
+- ❌ MEM-2.9 Publication pipeline-contracts (prévu initialement session 010)
+- ❌ Fix codex-gradle check dans runAllTests
+- ❌ MEM-2.10 Vérification contrats N0 publiés
+- ❌ DOC-8 document-gradle consommation contrats
+
+== EPICs
+- MEM-0 ✅
+- MEM-1 ✅
+- MEM-2 🔄 (pipeline-contracts à publier — reporté session 011)
+- MEM-3 ✅ (i18n-contracts — dogfooded via README multilingues session 010)
+- MEM-4 ✅
+- MEM-5 ✅
+- DOC-8 🔄 (future)
+- PUB 🔄 (pipeline-contracts restant)
+
+== Score Session 010
+- Couverture i18n (10/10 langues) : 10/10
+- README consumer + plugin : 9/10
+- Dogfooding i18n-contracts : 10/10
+- Total : 9.5/10

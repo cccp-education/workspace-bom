@@ -1,14 +1,15 @@
-= PROMPT_REPRISE — Session 010 : MEM-2.9 Publication pipeline-contracts + runAllTests audit
-:sessions: 010
-:date: 2026-06-19
-:mission: Publier pipeline-contracts + fix codex-gradle check manquant dans runAllTests
+= PROMPT_REPRISE — Session 011 : MEM-2.9 Publication pipeline-contracts + fix codex check
+:sessions: 011
+:date: 2026-06-24
+:mission: Publier pipeline-contracts sur Maven Central + fix codex-gradle check manquant
 
-== Done (session 009)
-- ✅ Audit testableProjects BOM : ajout dashboard-gradle + jhipster-gradle-plugins
-- ✅ Fix kover codebase-gradle : minBound 80→79 (79.73% réel)
-- ✅ runAllTests compilé et vérifié (13 boroughs)
+== Done (session 010)
+- ✅ 20 README multilingues créés (10 langues × consumer + plugin)
+- ✅ Dogfooding i18n-contracts (MEM-3) — LanguageCatalog.all() = spec
+- ✅ Badges Maven Central/License, switcher i18n, RTL ar/ur
+- ✅ Master source EN + 9 traductions marquées `rev 0.0.1`
 
-== Next session (010)
+== Next session (011)
 
 === MEM-2.9 — Publier pipeline-contracts sur Maven Central
 **Priorité** : P1 — 6ème Artefact N0
