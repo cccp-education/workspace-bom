@@ -1,0 +1,54 @@
+= Session 011 — BOM 0.0.3 + Publication 5 Contracts N0
+:date: 2026-06-25
+:epic: EPIC MEM-BOM
+
+== Contexte
+
+Codebase-gradle CI cassée par drift versions : codex-plugin:0.0.1 (Central)
+sans OcrEngine/TesseractOcrEngine, llm-pool-contracts:0.0.1 sans volumeTag.
+Versions locales en 0.1.0-SNAPSHOT non publiées.
+
+== Actions
+
+. Bump workspace-bom 0.0.1 → 0.0.3 (0.0.2 abandonné — conflit déploiement Central)
+. Activation constraints internes dans `build.gradle.kts` :
+  codex-plugin:0.0.2, 5 contracts:0.0.2 (agent, codebase, llm-pool,
+  opencode-session, i18n). Planner gardé hardcodé (borough dormant).
+. Ajout plugin `com.gradleup.nmcp.settings` 1.5.0 au settings racine BOM
+  (était absent — BOM utilisait ancien `mavenCentral()` = repo read-only)
+. Bump 5 contracts en 0.0.2 + publication mavenLocal + Central
+. Bump llm-pool-contracts 0.0.2 (volumeTag présent)
+
+== Publications Central
+
+| Artefact | Version | Déploiement nmcp
+| workspace-bom | 0.0.3 | 1a0c85aa
+| codex-plugin | 0.0.2 | 1635796b
+| llm-pool-contracts | 0.0.2 | 65368826
+| agent-contracts | 0.0.2 | c9ec6871
+| codebase-contracts | 0.0.2 | eee0fe2f
+| opencode-session-contracts | 0.0.2 | 3f4ea880
+| i18n-contracts | 0.0.2 | 326817f5
+
+== Fichiers modifiés
+
+. `build.gradle.kts` (version 0.0.3 + constraints internes)
+. `settings.gradle.kts` (nmcp settings plugin ajouté)
+. `agent-contracts/build.gradle.kts` (version 0.0.2)
+. `codebase-contracts/build.gradle.kts` (version 0.0.2)
+. `llm-pool-contracts/build.gradle.kts` (version 0.0.2)
+. `opencode-session-contracts/build.gradle.kts` (version 0.0.2)
+. `i18n-contracts/build.gradle.kts` (version 0.0.2)
+
+== Leçons
+
+. BOM = source unique de vérité versions cross-borough (pattern Maven standard)
+. nmcp requis pour publier sur Central Portal (ancien `mavenCentral()` = 405)
+. Ne jamais `error()` au settings phase — fallback optionnel
+. Conflit déploiement Central si même coordonnée déjà en validation
+
+== Prochaine session (012)
+
+. Vérifier propagation Central 7 artefacts
+. Planner-plugin : structure à réparer (catalog inaccessible depuis sous-module)
+. Étendre BOM aux autres boroughs consommateurs (bakery, slider, etc.)

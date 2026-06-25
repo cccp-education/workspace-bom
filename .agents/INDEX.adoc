@@ -5,10 +5,10 @@
 
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
-_Derniere mise a jour_ : 2026-06-24
-_session terminee_ : 010 — README multilingues (20 fichiers, 10 langues × consumer+plugin) dogfooding i18n-contracts
-_Prochaine session_ : 011
-_Session en cours_ : 011 — MEM-2.9 Publication pipeline-contracts + fix codex check
+_Derniere mise a jour_ : 2026-06-25
+_session terminee_ : 011 — BOM 0.0.3 + publication 5 contracts N0 0.0.2
+_Prochaine session_ : 012
+_Session en cours_ : 011 — BOM 0.0.3 + publication 5 contracts N0 0.0.2
 
 '''
 
@@ -26,6 +26,7 @@ _Session en cours_ : 011 — MEM-2.9 Publication pipeline-contracts + fix codex 
 | 008 | 2026-06-18 | bugfix | Fix runAllTests cross-borough + Dépendance codebase-gradle manquante + Import conflict AgentContext | 8.5/10
 | 009 | 2026-06-19 | bugfix+ops | runAllTests BOM coverage (ajout dashboard + jhipster) + kover codebase 80→79 | 8.5/10
 | 010 | 2026-06-24 | doc+i18n | README multilingues (20 fichiers, 10 langues × consumer+plugin) — dogfooding i18n-contracts (MEM-3). Badges Maven Central/License, switcher i18n, RTL ar/ur. | 9.5/10
+| 011 | 2026-06-25 | ops+archi | BOM 0.0.3 + publication 5 contracts N0 0.0.2 (agent, codebase, llm-pool, opencode-session, i18n). Constraints internes activées. nmcp settings plugin ajouté au BOM racine. Codex-plugin 0.0.2 re-publié. | 9/10
 |===
 '''
 

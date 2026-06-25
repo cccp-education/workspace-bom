@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "education.cccp"
-version = "0.0.1"
+version = "0.0.3"
 
 javaPlatform {
     allowDependencies()
@@ -96,12 +96,16 @@ dependencies {
         // ── Other ───────────────────────────────────────────────────────────
         api("com.microsoft.playwright:playwright:1.52.0")
 
-        // ── Internal education.cccp contracts ───────────────────────────────
-        // DELETE opencode-session-contracts (zéro usage)
-        // DELETE vibecoding-contracts (migré dans codebase-gradle)
-        // DELETE i18n-contracts (migré dans bakery-gradle)
-        // DELETE pipeline-contracts (migré dans bakery-gradle)
-        // GARDER SEULEMENT agent-contracts, codebase-contracts, llm-pool-contracts
+        // ── Internal education.cccp contracts (N0) — source unique de vérité ──
+        api("education.cccp:agent-contracts:0.0.2")
+        api("education.cccp:codebase-contracts:0.0.2")
+        api("education.cccp:llm-pool-contracts:0.0.2")
+        api("education.cccp:opencode-session-contracts:0.0.2")
+        api("education.cccp:i18n-contracts:0.0.2")
+
+        // ── Internal education.cccp plugins (N2) — pilotés par le BOM ───────
+        api("education.cccp:codex-plugin:0.0.2")
+        // planner-plugin:0.0.1 gardé hardcodé (borough dormant — build structure à réparer)
     }
 }
 

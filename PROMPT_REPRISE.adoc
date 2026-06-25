@@ -1,34 +1,30 @@
-= PROMPT_REPRISE — Session 011 : MEM-2.9 Publication pipeline-contracts + fix codex check
-:sessions: 011
-:date: 2026-06-24
-:mission: Publier pipeline-contracts sur Maven Central + fix codex-gradle check manquant
+= PROMPT_REPRISE — Session 012 : Propagation Central + Planner fix + étendre BOM
+:sessions: 012
+:date: 2026-06-25
+:mission: Vérifier propagation Central 7 artefacts + fix planner + étendre BOM
 
-== Done (session 010)
-- ✅ 20 README multilingues créés (10 langues × consumer + plugin)
-- ✅ Dogfooding i18n-contracts (MEM-3) — LanguageCatalog.all() = spec
-- ✅ Badges Maven Central/License, switcher i18n, RTL ar/ur
-- ✅ Master source EN + 9 traductions marquées `rev 0.0.1`
+== Done (session 011)
+- ✅ BOM 0.0.3 publié sur Central (constraints internes activées)
+- ✅ 5 contracts N0 re-publiés en 0.0.2 (agent, codebase, llm-pool, opencode-session, i18n)
+- ✅ codex-plugin 0.0.2 re-publié sur Central (OcrEngine/TesseractOcrEngine)
+- ✅ nmcp settings plugin ajouté au BOM racine (remplace mavenCentral() 405)
+- ✅ Codebase-gradle migré vers platform(bom) + deps sans version
 
-== Next session (011)
+== Next session (012)
 
-=== MEM-2.9 — Publier pipeline-contracts sur Maven Central
-**Priorité** : P1 — 6ème Artefact N0
-- Code prêt (session 005, 33/33 PASS)
-- nmcp publish :
-  ```bash
-  cd foundry/public/workspace-bom/pipeline-contracts
-  ./gradlew publishAggregationToCentralPortal --no-daemon
-  ```
-- Artefact : `education.cccp:pipeline-contracts:0.0.1`
+=== Vérifier propagation Central
+**Priorité** : P0 — ~30 min après upload nmcp
+- `curl -s -o /dev/null -w "%{http_code}" https://repo1.maven.org/maven2/education/cccp/workspace-bom/0.0.3/workspace-bom-0.0.3.pom`
+- 7 artefacts à vérifier : workspace-bom:0.0.3, codex-plugin:0.0.2, 5 contracts:0.0.2
+- Relancer CI codebase : `gh run rerun <id> --repo cccp-education/codebase-gradle --failed`
 
-=== Fix codex-gradle check dans runAllTests
-**Priorité** : P2 — codex-gradle root build.gradle.kts vide, pas de task check
-- root `build.gradle.kts` = `// readme plugin retiré temporairement`
-- Les tests sont dans `codex-plugin/` (standalone build, 135/135 PASS)
-- Solution : soit ajouter `check` task au root, soit modifier runAllTests pour codex
+=== Fix planner-plugin (Manhattan dormant)
+**Priorité** : P1 — borough dormant structure cassée
+- `planner-plugin/gradle/` inexistant → catalog `libs` inaccessible depuis sous-module
+- Crash compilation : `Unresolved reference 'libs'`
+- Solution : ajouter `gradle/libs.versions.toml` dans `planner-plugin/` ou restructurer
 
-=== MEM-2.10 — Vérifier tous les contrats N0 publiés
-**Priorité** : P1 — Audit complet
-
-=== DOC-8 — document-gradle consommation contrats N0
-**Priorité** : P2
+=== Étendre BOM aux autres boroughs
+**Priorité** : P2 —bakery, slider, plantuml, readme consomment contracts N0
+- Migrer chaque borough vers `implementation(platform(workspace-bom))`
+- Retirer versions hardcodées de leurs `libs.versions.toml`

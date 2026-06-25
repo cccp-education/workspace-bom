@@ -4,6 +4,7 @@ _Date creation : 2026-06-02_
 
 |===
 | # | Date | Type | Sujet | Score
+| 011 | 2026-06-25 | ops+archi | **BOM 0.0.3 + publication 5 contracts N0 0.0.2** — Constraints internes activées dans BOM (codex-plugin:0.0.2, 5 contracts:0.0.2). nmcp settings plugin ajouté au BOM racine (anciennement mavenCentral() = 405 read-only). 7 artefacts publiés sur Central via nmcp. Débloque CI codebase-gradle (OcrEngine/TesseractOcrEngine/volumeTag). | 9/10
 | 010 | 2026-06-24 | doc+i18n | **README multilingues (20 fichiers)** — Création 10 langues × (consumer + plugin) = 20 README. Master source EN + 9 traductions marquées `rev 0.0.1`. Badges Maven Central/License shields.io, block markers version/build/tests, switcher i18n, RTL ar/ur. Dogfooding `i18n-contracts` (MEM-3) — `LanguageCatalog.all()` sert de spec directe. MEM-2.9 publication reportée session 011. | 9.5/10
 | 009 | 2026-06-19 | bugfix+ops | **runAllTests BOM coverage + kover codebase 80→79** — Audit testableProjects : 2 boroughs manquants ajoutés (dashboard-gradle, jhipster-gradle-plugins). Fix koverVerify codebase (79.73% → minBound 79). runAllTests vérifié (13 boroughs). pipeline-contracts reporté session 010. | 8.5/10
 | 008 | 2026-06-18 | bugfix | **Fix runAllTests + Dépendance codebase-gradle** — `dependsAfter` non résolu → Exec task par borough. `check` → `runAllTests`. Codebase-gradle : ajout opencode-session-contracts + fix import conflict LiveContextInjectorTest. Cross-borough check chain opérationnelle. | 8.5/10
