@@ -1,5 +1,16 @@
 = Tâches Terminées — Juin 2026
-:date: 2026-06-24
+:date: 2026-06-29
+
+== Session 012 — BOM 0.0.5/0.0.6 registry + annotations + SEC-1 (2026-06-29)
+- BOM 0.0.5 publié Maven Central (bundle 77e1f71b)
+  - 11 boroughs plugins dans libs.versions.toml + build.gradle.kts
+  - jetbrains-annotations:26.0.2-1 forcé dans dependencyManagement
+- bakery-plugin 0.0.3 publié Maven Central (bundle 49be80ef)
+- Incident DeepSeek : 8 appels LLM interdits via runAllTests
+  - Purge deepseek du code d'exécution (8 boroughs)
+  - Panachage ports 11434-11436 → 11437-11465
+  - EPIC SEC-1 créé dans BACKLOG.adoc (3 US, 6 pts)
+- BOM 0.0.6 préparé (bakery 0.0.3) — non publié (interrompu)
 
 == Session 010 — README multilingues workspace-bom (2026-06-24)
 - DOC-I18N-1 : 10 README consumer créés (EN master + 9 traductions `rev 0.0.1`)

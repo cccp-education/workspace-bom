@@ -29,13 +29,13 @@ class SessionPromptTest {
             prompt = "Fix compilation error",
             context = context,
             maxActions = 5,
-            model = "deepseek-v4-pro",
+            model = "gemma4:31b-cloud",
         )
         assertEquals(sessionId, prompt.sessionId)
         assertEquals("Fix compilation error", prompt.prompt)
         assertEquals(context, prompt.context)
         assertEquals(5, prompt.maxActions)
-        assertEquals("deepseek-v4-pro", prompt.model)
+        assertEquals("gemma4:31b-cloud", prompt.model)
     }
 
     @Test

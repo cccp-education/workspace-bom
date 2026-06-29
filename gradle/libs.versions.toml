@@ -47,7 +47,7 @@ node-gradle = "7.1.0"
 jetbrains-annotations = "26.0.2-1"
 
 # ── Plugin versions (published by education.cccp) ────────────────────────────
-bakery-plugin = "0.0.2"
+bakery-plugin = "0.0.3"
 codex-plugin = "0.0.2"
 planner-plugin = "0.0.1"
 slider-plugin = "0.0.1"

@@ -1,0 +1,69 @@
+= Session 012 — BOM 0.0.5/0.0.6 : registry boroughs plugins + force annotations + EPIC SEC-1
+
+_Date : 2026-06-29_
+_Type : dev + publication + sécurité_
+_Score : 7/10_
+
+== Objectif
+
+Résoudre le conflit `org.jetbrains:annotations` (26.0.2-1 koog vs 17.0.0
+testcontainers) qui bloquait le notebook Colab container-provision-gradle.
+Le BOM devient le registre central des versions des boroughs plugins.
+
+== Réalisations
+
+=== BOM 0.0.5 — Registry 11 boroughs plugins + force annotations
+
+- *libs.versions.toml* : ajout 11 versions boroughs plugins
+  (bakery 0.0.2, codex 0.0.2, planner 0.0.1, slider 0.0.1, plantuml 0.0.1,
+  readme 0.0.1, hyperframes 0.0.1, graphify 0.0.2, api-key-pool 0.0.1,
+  codebase 0.0.3, capsule 0.0.1) + `jetbrains-annotations = "26.0.2-1"`
+- *build.gradle.kts* : `api(libs.*)` pour les 11 boroughs + annotations
+- *Publication Maven Central* : bundle 77e1f71b
+
+=== BOM 0.0.6 — Bump bakery 0.0.3
+
+- libs.versions.toml : `bakery-plugin = "0.0.3"`
+- build.gradle.kts : version 0.0.6
+- *Publication interrompue* par incident DeepSeek (8 appels LLM interdits)
+
+=== Incident DeepSeek — 8 appels LLM interdits
+
+`./gradlew build` (sans `-x check`) a déclenché `check` → `runAllTests`
+→ `./gradlew check` dans 13 boroughs. 8 appels au modèle DeepSeek ont été
+faits, violant AGENTS.adoc (modèles autorisés : gpt-oss:120b-cloud,
+gemma4:31b-cloud ; ports 11434-11436 interdits).
+
+*Action immédiate* : Purge de tous les défauts `deepseek-v4-*` du code
+d'exécution (8 boroughs) + panachage ports 11437-11465. Tests et doc
+purgés aussi.
+
+*Action différée* : EPIC SEC-1 créé dans BACKLOG.adoc pour identifier
+et fixer les tests coupables (mock ou assumeTrue). `runAllTests` reste
+lié à `check` — ce sont les tests coupables qui doivent être fixés.
+
+=== Purge deepseek + ports 11434-11436 (8 boroughs)
+
+| Borough | Avant | Après |
+|---|---|---|
+| planner | deepseek-v4-pro:cloud, 11434 | gemma4:31b-cloud, 11437 |
+| codex | deepseek-v4-pro:latest | gpt-oss:120b-cloud |
+| codebase | deepseek-v4-flash:cloud, alias "deepseek" | gemma4:31b-cloud, 11443 |
+| plantuml | smollm:135m, 11434 | gpt-oss:120b-cloud, 11438 |
+| slider | 11434 | 11439 |
+| newpipe | 11434 | 11440 |
+| bakery | 11440 | 11441 |
+| runner | deepseek-v4-pro:cloud, 11434 | gpt-oss:120b-cloud, 11442 |
+
+== Fichiers modifiés
+
+- `workspace-bom/gradle/libs.versions.toml` — 11 boroughs + annotations
+- `workspace-bom/build.gradle.kts` — api(libs.*) + version 0.0.6 + check restauré
+- `workspace-bom/BACKLOG.adoc` — EPIC SEC-1 (3 US, 6 pts)
+- 8 boroughs : code d'exécution + tests + scripts purgés
+
+== Points ouverts
+
+- *BOM 0.0.6 non publié* — Publication interrompue. À reprendre en session 013.
+- *EPIC SEC-1* — Audit tests coupables à faire (backlog créé)
+- *Doc .adoc* — Références deepseek dans les doc non purgées (priorité low)

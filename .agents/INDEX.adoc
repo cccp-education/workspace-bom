@@ -5,10 +5,10 @@
 
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
-_Derniere mise a jour_ : 2026-06-25
-_session terminee_ : 011 — BOM 0.0.3 + publication 5 contracts N0 0.0.2
-_Prochaine session_ : 012
-_Session en cours_ : 011 — BOM 0.0.3 + publication 5 contracts N0 0.0.2
+_Derniere mise a jour_ : 2026-06-29
+_session terminee_ : 012 — BOM 0.0.5/0.0.6 registry boroughs + annotations + SEC-1
+_Prochaine session_ : 013 — Publier BOM 0.0.6 + SEC-1 audit tests coupables
+_Session en cours_ : 012 — BOM 0.0.5 publié, 0.0.6 interrompu, purge deepseek, SEC-1 créé
 
 '''
 

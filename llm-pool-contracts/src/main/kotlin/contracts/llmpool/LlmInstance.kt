@@ -7,7 +7,7 @@ package contracts.llmpool
  * une clé SSH montée en volume Docker, sans apiKey.
  *
  * @param id identifiant unique (ex: "ollama-a", "ollama-b")
- * @param baseUrl URL de l'instance (ex: "http://localhost:11434")
+ * @param baseUrl URL de l'instance (ex: "http://localhost:11437")
  * @param model modèle à utiliser (ex: "gpt-oss:120b-cloud")
  * @param quota configuration de quota pour cette instance
  * @param volumeTag identifiant du volume SSH Docker monté pour cette instance

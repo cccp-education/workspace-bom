@@ -378,3 +378,53 @@ via ce format standardisé.
 Brainstorming Session 103 codebase (2026-06-14) — Discussion architecture
 thin-client opencode↔Gradle. Contrats N0 dans workspace-bom (MEMPHIS),
 moteur dans codebase (N1), pont dans runner (N3).
+
+'''
+== EPIC SEC-1 : Traquer et fixer les appels LLM interdits dans les tests cross-boroughs
+
+*Découverte* : Session 002 container-provision (2026-06-29) — `./gradlew build` sur
+workspace-bom déclenche `check` → `runAllTests` → `./gradlew check` dans les 13 boroughs.
+8 appels LLM au modèle DeepSeek ont été faits pendant la session, violant la règle
+AGENTS.adoc : "Modèles autorisés : gpt-oss:120b-cloud, gemma4:31b-cloud" et
+"Ports 11434-11436 INTERDITS".
+
+*Objectif* : Identifier quels tests font des appels LLM réseau réels (pas mockés)
+lors d'un `./gradlew check`, et les protéger avec `assumeTrue(isOllamaReady(port))`
+ou les mocker pour qu'aucun appel réseau non autorisé ne parte.
+
+*Contrainte* : `runAllTests` doit continuer à être lié à `check` du BOM — c'est
+la safety net cross-boroughs. Ce sont les tests coupables qui doivent être fixés.
+
+*Charge* : ~6 pts (~1-2 sessions)
+*Priorité* : 🔴 P0 — Sécurité/Conformité
+
+=== US-SEC-1.1 — Audit des tests cross-boroughs
+**Pts** : 2
+**Statut** : À FAIRE
+. Lancer `./gradlew runAllTests` avec Ollama éteint → capturer quels tests échouent
+  (ceux qui font des appels réseau sont les coupables)
+. Pour chaque borough coupable, identifier la tâche de test responsable :
+  - `test` (unitaire) — devrait être mocké, pas d'appel réseau
+  - `functionalTest` — devrait utiliser `assumeTrue` ou mock
+  - `cucumberTest` — devrait mocker le LLM
+  - `e2eTest` — OK si skip par défaut (non dans `check`)
+. Cartographier : borough → tâche → classe de test → appel réseau
+
+=== US-SEC-1.2 — Mocker ou skipper les tests coupables
+**Pts** : 3
+**Statut** : À FAIRE
+. Pour chaque test coupable identifié dans SEC-1.1 :
+  - Si test unitaire → mocker le LLM (OllamaLlmProvider fake ou stub)
+  - Si test d'intégration → `assumeTrue(isOllamaReady(11437))` pour skip propre
+  - Vérifier qu'aucun port 11434-11436 n'est utilisé (règle AGENTS.adoc)
+  - Vérifier qu'aucun modèle non autorisé (deepseek-*) n'est appelé
+. Valider : `./gradlew runAllTests` avec Ollama éteint → BUILD SUCCESSFUL
+  (tous les tests réseau skippés ou mockés)
+
+=== US-SEC-1.3 — CI guard : vérification automatique
+**Pts** : 1
+**Statut** : À FAIRE
+. Ajouter un check dans `runAllTests` : si un test fait un appel réseau
+  sans `assumeTrue`, le build échoue avec message explicite
+. Option : `--offline` flag sur les sous-builds boroughs pour détecter
+  les appels réseau non mockés

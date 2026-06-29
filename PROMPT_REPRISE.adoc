@@ -1,30 +1,30 @@
-= PROMPT_REPRISE — Session 012 : Propagation Central + Planner fix + étendre BOM
-:sessions: 012
-:date: 2026-06-25
-:mission: Vérifier propagation Central 7 artefacts + fix planner + étendre BOM
+= PROMPT_REPRISE — Session 013 : Publier BOM 0.0.6 + EPIC SEC-1 audit
+:session: 013
+:date: 2026-06-29
+:mission: Publier BOM 0.0.6 + démarrer SEC-1 (traquer tests coupables)
 
-== Done (session 011)
-- ✅ BOM 0.0.3 publié sur Central (constraints internes activées)
-- ✅ 5 contracts N0 re-publiés en 0.0.2 (agent, codebase, llm-pool, opencode-session, i18n)
-- ✅ codex-plugin 0.0.2 re-publié sur Central (OcrEngine/TesseractOcrEngine)
-- ✅ nmcp settings plugin ajouté au BOM racine (remplace mavenCentral() 405)
-- ✅ Codebase-gradle migré vers platform(bom) + deps sans version
+== Done (session 012)
+- ✅ BOM 0.0.5 publié sur Central (11 boroughs plugins + annotations:26.0.2-1)
+- ✅ bakery-plugin 0.0.3 publié sur Central (bundle 49be80ef)
+- ✅ Purge deepseek du code d'exécution (8 boroughs) + ports 11434-11436 → 11437-11465
+- ✅ EPIC SEC-1 créé dans BACKLOG.adoc (3 US, 6 pts)
+- ❌ BOM 0.0.6 non publié (interrompu par incident DeepSeek)
 
-== Next session (012)
+== Next session (013)
 
-=== Vérifier propagation Central
-**Priorité** : P0 — ~30 min après upload nmcp
-- `curl -s -o /dev/null -w "%{http_code}" https://repo1.maven.org/maven2/education/cccp/workspace-bom/0.0.3/workspace-bom-0.0.3.pom`
-- 7 artefacts à vérifier : workspace-bom:0.0.3, codex-plugin:0.0.2, 5 contracts:0.0.2
-- Relancer CI codebase : `gh run rerun <id> --repo cccp-education/codebase-gradle --failed`
+=== Publier BOM 0.0.6
+**Priorité** : P0
+- `./gradlew publishAggregationToCentralPortal --no-daemon`
+- Vérifier propagation : `curl -s -o /dev/null -w "%{http_code}" https://repo1.maven.org/maven2/education/cccp/workspace-bom/0.0.6/workspace-bom-0.0.6.pom`
 
-=== Fix planner-plugin (Manhattan dormant)
-**Priorité** : P1 — borough dormant structure cassée
-- `planner-plugin/gradle/` inexistant → catalog `libs` inaccessible depuis sous-module
-- Crash compilation : `Unresolved reference 'libs'`
-- Solution : ajouter `gradle/libs.versions.toml` dans `planner-plugin/` ou restructurer
+=== EPIC SEC-1 : Traquer les tests coupables
+**Priorité** : 🔴 P0 — Sécurité/Conformité
+- US-SEC-1.1 : Lancer `./gradlew runAllTests` avec Ollama éteint → capturer quels tests échouent (ceux qui font des appels réseau)
+- US-SEC-1.2 : Mocker ou skipper les tests coupables (assumeTrue ou stub)
+- US-SEC-1.3 : CI guard
+- `runAllTests` reste lié à `check` — ce sont les tests coupables qui doivent être fixés
 
-=== Étendre BOM aux autres boroughs
-**Priorité** : P2 —bakery, slider, plantuml, readme consomment contracts N0
-- Migrer chaque borough vers `implementation(platform(workspace-bom))`
-- Retirer versions hardcodées de leurs `libs.versions.toml`
+=== Container-provision Session 003
+- Une fois BOM 0.0.6 sur Central, relancer le notebook Colab
+- Vérifier que migrateContentI18n fonctionne avec bakery 0.0.3
+- Vérifier content-i18n/ créé + push sur cheroliv/office.git
