@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "education.cccp"
-version = "0.0.4"
+version = "0.0.5"
 
 javaPlatform {
     allowDependencies()
@@ -104,8 +104,20 @@ dependencies {
         api("education.cccp:i18n-contracts:0.0.2")
 
         // ── Internal education.cccp plugins (N2) — pilotés par le BOM ───────
-        api("education.cccp:codex-plugin:0.0.2")
-        // planner-plugin:0.0.1 gardé hardcodé (borough dormant — build structure à réparer)
+        api(libs.bakery.plugin)
+        api(libs.codex.plugin)
+        api(libs.planner.plugin)
+        api(libs.slider.plugin)
+        api(libs.plantuml.plugin)
+        api(libs.readme.plugin)
+        api(libs.hyperframes.plugin)
+        api(libs.graphify.plugin)
+        api(libs.api.key.pool.plugin)
+        api(libs.codebase.plugin)
+        api(libs.capsule.plugin)
+
+        // ── Force resolution (koog 26.0.2-1 vs testcontainers 17.0.0) ─────────
+        api(libs.jetbrains.annotations)
     }
 }
 

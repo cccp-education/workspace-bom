@@ -43,9 +43,21 @@ kover = "0.9.8"
 gradle-tooling = "9.5.1"
 node-gradle = "7.1.0"
 
+# ── JetBrains annotations (conflit koog 26.0.2-1 vs testcontainers 17.0.0) ────
+jetbrains-annotations = "26.0.2-1"
+
 # ── Plugin versions (published by education.cccp) ────────────────────────────
-slider = "0.0.7"
-codebase = "0.0.1"
+bakery-plugin = "0.0.2"
+codex-plugin = "0.0.2"
+planner-plugin = "0.0.1"
+slider-plugin = "0.0.1"
+plantuml-plugin = "0.0.1"
+readme-plugin = "0.0.1"
+hyperframes-plugin = "0.0.1"
+graphify-plugin = "0.0.2"
+api-key-pool-plugin = "0.0.1"
+codebase-plugin = "0.0.3"
+capsule-plugin = "0.0.1"
 
 # ── PDF/Extraction ────────────────────────────────────────────────────────────
 asciidoctorj = "3.0.0"
@@ -235,6 +247,22 @@ reactor-test = { module = "io.projectreactor:reactor-test", version = "3.7.2" }
 
 # ── Other ──
 playwright = { module = "com.microsoft.playwright:playwright", version.ref = "playwright" }
+
+# ── JetBrains annotations (force resolution koog vs testcontainers) ──
+jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
+
+# ── Borough plugins (education.cccp) ──
+bakery-plugin = { module = "education.cccp:bakery-plugin", version.ref = "bakery-plugin" }
+codex-plugin = { module = "education.cccp:codex-plugin", version.ref = "codex-plugin" }
+planner-plugin = { module = "education.cccp:planner-plugin", version.ref = "planner-plugin" }
+slider-plugin = { module = "education.cccp:slider-plugin", version.ref = "slider-plugin" }
+plantuml-plugin = { module = "education.cccp:plantuml-plugin", version.ref = "plantuml-plugin" }
+readme-plugin = { module = "education.cccp:readme-plugin", version.ref = "readme-plugin" }
+hyperframes-plugin = { module = "education.cccp:hyperframes-plugin", version.ref = "hyperframes-plugin" }
+graphify-plugin = { module = "education.cccp:graphify-plugin", version.ref = "graphify-plugin" }
+api-key-pool-plugin = { module = "education.cccp:api-key-pool", version.ref = "api-key-pool-plugin" }
+codebase-plugin = { module = "education.cccp:codebase-plugin", version.ref = "codebase-plugin" }
+capsule-plugin = { module = "education.cccp:capsule-plugin", version.ref = "capsule-plugin" }
 
 [bundles]
 cucumber = [
