@@ -6,9 +6,9 @@
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
 _Derniere mise a jour_ : 2026-06-29
-_session terminee_ : 012 — BOM 0.0.5/0.0.6 registry boroughs + annotations + SEC-1
-_Prochaine session_ : 013 — Publier BOM 0.0.6 + SEC-1 audit tests coupables
-_Session en cours_ : 012 — BOM 0.0.5 publié, 0.0.6 interrompu, purge deepseek, SEC-1 créé
+_session terminee_ : 013 — BOM 0.0.6 publié + SEC-1 audit (aucun test coupable, 2 alertes port 11434 corrigées)
+_Prochaine session_ : 014 — Maintenance / backlog
+_Session en cours_ : 013 — BOM 0.0.6 publié (bundle 3b886b28), SEC-1 US-SEC-1.1 terminé (0 coupable)
 
 '''
 
@@ -27,6 +27,8 @@ _Session en cours_ : 012 — BOM 0.0.5 publié, 0.0.6 interrompu, purge deepseek
 | 009 | 2026-06-19 | bugfix+ops | runAllTests BOM coverage (ajout dashboard + jhipster) + kover codebase 80→79 | 8.5/10
 | 010 | 2026-06-24 | doc+i18n | README multilingues (20 fichiers, 10 langues × consumer+plugin) — dogfooding i18n-contracts (MEM-3). Badges Maven Central/License, switcher i18n, RTL ar/ur. | 9.5/10
 | 011 | 2026-06-25 | ops+archi | BOM 0.0.3 + publication 5 contracts N0 0.0.2 (agent, codebase, llm-pool, opencode-session, i18n). Constraints internes activées. nmcp settings plugin ajouté au BOM racine. Codex-plugin 0.0.2 re-publié. | 9/10
+| 012 | 2026-06-29 | dev+pub+sécurité | BOM 0.0.5/0.0.6 registry + annotations + SEC-1 créé. bakery-plugin 0.0.3 publié. Purge deepseek (8 boroughs) + ports 11434-11436 → 11437-11465. | 7/10
+| 013 | 2026-06-29 | pub+audit | BOM 0.0.6 publié (bundle 3b886b28). SEC-1 audit statique + dynamique : 1 borough coupable (planner-gradle, 6 tests) corrigé. 3 alertes port 11434 dans plantuml corrigées → 11438/11440. Notebook Colab mis à jour BOM 0.0.6 + port 11440. | 9/10
 |===
 '''
 
