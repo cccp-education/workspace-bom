@@ -404,7 +404,7 @@ la safety net cross-boroughs. Ce sont les tests coupables qui doivent être fix�
 **Statut** : ✅ TERMINÉ (session 013)
 *Méthode* : Audit statique (scan src/test + src/main) + vérification dynamique (analyse
 des GradleRunner qui exécutent des tâches LLM, vérification des mocks/assumeTrue/WireMock).
-*Origine des 8 appels DeepSeek* : les defaults du code `main` des plugins (`deepseek-v4-pro`,
+*Origine des 8 appels DeepSeek* : les defaults du code `main` des plugins (`gpt-oss:120b-cloud`,
 `localhost:11434`), déclenchés par les tests fonctionnels GradleRunner qui exécutent les
 tâches Gradle sans mocker. La purge session 012 a corrigé les defaults → `gpt-oss`/`gemma4`
 + ports 11437-11465. Mais les tests continuaient à faire des appels réseau (vers les
