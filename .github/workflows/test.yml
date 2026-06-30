@@ -1,0 +1,55 @@
+name: runAllTests
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+env:
+  GRADLE_OPTS: -Dorg.gradle.daemon=false
+
+jobs:
+  run-all-tests:
+    name: Cross-borough check (13 boroughs)
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout workspace-bom
+        uses: actions/checkout@v4
+        with:
+          path: foundry/public/workspace-bom
+
+      - name: Checkout 13 sibling boroughs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          BOROUGHS=(
+            api-key-pool-gradle bakery-gradle capsule-gradle codebase-gradle
+            codex-gradle dashboard-gradle graphify-gradle hyperframes-gradle
+            jhipster-gradle-plugins planner-gradle plantuml-gradle
+            readme-gradle slider-gradle
+          )
+          for name in "${BOROUGHS[@]}"; do
+            echo "::group::Cloning $name"
+            git clone --depth 1 \
+              "https://cccp-education:${GH_TOKEN}@github.com/cccp-education/${name}.git" \
+              "foundry/public/${name}"
+            echo "::endgroup::"
+          done
+
+      - name: Set up JDK 24
+        uses: actions/setup-java@v4
+        with:
+          java-version: '24'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Run runAllTests (check across all 13 boroughs)
+        run: ./gradlew runAllTests --no-daemon --continue
+        working-directory: foundry/public/workspace-bom
