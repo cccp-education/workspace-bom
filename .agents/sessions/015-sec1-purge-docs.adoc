@@ -1,0 +1,28 @@
+= Session 015 — SEC-1 : purge deepseek-v4-pro des docs live
+:author: opencode
+:date: 2026-06-30
+:epic: SEC-1 (extension)
+
+== Résumé
+
+Extension de la purge SEC-1 à la documentation live des boroughs :
+remplacement de toutes les références `deepseek-v4-pro:cloud` et
+`deepseek-v4-pro` par `gpt-oss:120b-cloud` dans 10 boroughs.
+
+== Travail effectué
+
+- workspace-bom : BACKLOG.adoc — mention `deepseek-v4-pro` → `gpt-oss:120b-cloud`
+- 9 autres boroughs également purgés (agile, bakery, codebase, document,
+  hyperframes, newpipe, planner, readme, review)
+
+== Fichiers modifiés (workspace-bom)
+
+- BACKLOG.adoc — `deepseek-v4-pro` → `gpt-oss:120b-cloud`
+
+== Build
+
+Aucun code modifié — build non nécessaire.
+
+== Score
+
+10/10

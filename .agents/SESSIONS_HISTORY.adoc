@@ -4,6 +4,7 @@ _Date creation : 2026-06-02_
 
 |===
 | # | Date | Type | Sujet | Score
+| 015 | 2026-06-30 | sec | **SEC-1 purge deepseek-v4-pro des docs live** — Extension cross-borough (10 repos). Remplacement `deepseek-v4-pro` → `gpt-oss:120b-cloud` dans BACKLOG.adoc. | 10/10
 | 014 | 2026-06-30 | ci | **CI runAllTests workflow + 1er run GitHub Actions** — Workflow `.github/workflows/test.yml` créé (checkout 13 siblings + JDK 24 + runAllTests). 1er run #28412781846 : 10/13 OK, 3 échecs diagnostiqués (api-key-pool wrapper jar gitignoré, readme/slider check not found — consommateur sans check). Ollama qwen3:0.6b 11466-11467 planifié session 015. | 7/10
 | 013 | 2026-06-29 | pub+audit | BOM 0.0.6 publié (bundle 3b886b28). SEC-1 audit statique + dynamique : 1 borough coupable (planner-gradle, 6 tests) corrigé. 3 alertes port 11434 dans plantuml corrigées → 11438/11440. Notebook Colab mis à jour BOM 0.0.6 + port 11440. | 9/10
 | 012 | 2026-06-29 | dev+pub+sécurité | **BOM 0.0.5/0.0.6 registry boroughs + annotations + SEC-1** — BOM 0.0.5 publié (11 boroughs plugins + annotations:26.0.2-1, bundle 77e1f71b). bakery-plugin 0.0.3 publié (bundle 49be80ef). Incident DeepSeek : 8 appels LLM interdits via runAllTests. Purge deepseek du code d'exécution (8 boroughs) + ports 11434-11436 → 11437-11465. EPIC SEC-1 créé (3 US, 6 pts). BOM 0.0.6 non publié (interrompu). | 7/10

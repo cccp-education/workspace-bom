@@ -1,9 +1,9 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-014 — CI runAllTests workflow + 1er run GitHub Actions
+015 — SEC-1 purge deepseek-v4-pro des docs live (terminée)
 
-== Mission session 015
+== Mission session 016
 Fixer les 3 échecs CI du run #28412781846 + ajouter Ollama qwen3:0.6b.
 
 === Priorité 1 — Fixer les 3 échecs CI
@@ -25,11 +25,6 @@ Fixer les 3 échecs CI du run #28412781846 + ajouter Ollama qwen3:0.6b.
 
 === Priorité 3 — Secrets
 `GITHUB_TOKEN` natif suffit. Aucun secret additionnel pour runAllTests.
-
-== État CI
-- Run #28412781846 : ÉCHEC (37m46s) — 3 boroughs échouent, 10 OK.
-- Workflow : `.github/workflows/test.yml` sur main.
-- Logs : https://github.com/cccp-education/workspace-bom/actions/runs/28412781846
 
 == Règles
 - Voir `AGENT.adoc` — zéro initiative, permission explicite pour commit/push.
