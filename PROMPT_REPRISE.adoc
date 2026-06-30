@@ -1,16 +1,36 @@
-= PROMPT_REPRISE — Session 014 : Maintenance / backlog
+= PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
-== Done (session 013)
-- ✅ BOM 0.0.6 publié sur Central (bundle 3b886b28)
-- ✅ SEC-1 US-SEC-1.1 terminé — audit 13 boroughs = 0 coupable
-- ✅ 2 alertes port 11434 corrigées dans plantuml (ollama-local-smollm-135.yml + application-test.yaml → 11440)
-- ✅ Notebook Colab mis à jour (BOM 0.0.6 + port 11440)
+== Session en cours
+014 — CI runAllTests workflow + 1er run GitHub Actions
 
-== Next session (014)
+== Mission session 015
+Fixer les 3 échecs CI du run #28412781846 + ajouter Ollama qwen3:0.6b.
 
-=== Maintenance / backlog
-- Vérifier que `runAllTests` passe BUILD SUCCESSFUL (Ollama peut rester up, tests protégés)
-- MEM-2 pipeline-contracts : vérifier publication 0.0.2 sur Central
-- DOC-8 : document-gradle consomme i18n/pipeline/session contracts
-- Capsule-plugin et slider-plugin non publiés sur Central (artifactId mismatch BOM)
-  → corriger BOM pour utiliser `slider` (déjà publié) au lieu de `slider-plugin` ?
+=== Priorité 1 — Fixer les 3 échecs CI
+. **api-key-pool-gradle** : `gradle-wrapper.jar` gitignoré → clone CI sans jar.
+  Fix : retirer ligne `.gitignore` `**/gradle/wrapper/gradle-wrapper.jar` et
+  committer le jar, OU ajouter step CI `gradle wrapper --gradle-version 9.5.1`.
+. **readme-gradle** : `Task 'check' not found` — racine est consommateur
+  (`alias(libs.plugins.readme)`), pas de tâche `check`. Vrais tests dans
+  `readme-plugin/` (propre `gradlew` + `build.gradle.kts`).
+. **slider-gradle** : idem — vrais tests dans `slider-plugin/`.
+. Fix proposé : `testableProjects` → `List<Pair<String, String?>>` avec
+  sous-répertoire cible. `readme-gradle`→`"readme-plugin"`,
+  `slider-gradle`→`"slider-plugin"`. `Exec.workingDir` → `projectDir.resolve(subdir)`.
+
+=== Priorité 2 — Ollama qwen3:0.6b en CI
+. Step CI : `docker run -d -p 11466:11467 ollama/ollama` + `ollama pull qwen3:0.6b`.
+. Env vars : `OLLAMA_TEST_PORT=11466`, `OLLAMA_TEST_MODEL=qwen3:0.6b`.
+. Tests `assumeTrue(isOllamaReady(port))` se débloquent. Pas de secret requis.
+
+=== Priorité 3 — Secrets
+`GITHUB_TOKEN` natif suffit. Aucun secret additionnel pour runAllTests.
+
+== État CI
+- Run #28412781846 : ÉCHEC (37m46s) — 3 boroughs échouent, 10 OK.
+- Workflow : `.github/workflows/test.yml` sur main.
+- Logs : https://github.com/cccp-education/workspace-bom/actions/runs/28412781846
+
+== Règles
+- Voir `AGENT.adoc` — zéro initiative, permission explicite pour commit/push.
+- Debug depuis GitHub remote, arrêter de solliciter les ressources locales.

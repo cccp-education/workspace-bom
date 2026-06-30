@@ -5,10 +5,10 @@
 
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
-_Derniere mise a jour_ : 2026-06-29
-_session terminee_ : 013 — BOM 0.0.6 publié + SEC-1 audit (aucun test coupable, 2 alertes port 11434 corrigées)
-_Prochaine session_ : 014 — Maintenance / backlog
-_Session en cours_ : 013 — BOM 0.0.6 publié (bundle 3b886b28), SEC-1 US-SEC-1.1 terminé (0 coupable)
+_Derniere mise a jour_ : 2026-06-30
+_session terminee_ : 014 — CI runAllTests workflow créé + 1er run GitHub Actions (3 échecs diagnostiqués)
+_Prochaine session_ : 015 — Fix 3 échecs CI + Ollama qwen3:0.6b
+_Session en cours_ : 014 — Workflow test.yml poussé, run #28412781846 ÉCHEC (api-key-pool wrapper jar, readme/slider check not found)
 
 '''
 
@@ -29,6 +29,7 @@ _Session en cours_ : 013 — BOM 0.0.6 publié (bundle 3b886b28), SEC-1 US-SEC-1
 | 011 | 2026-06-25 | ops+archi | BOM 0.0.3 + publication 5 contracts N0 0.0.2 (agent, codebase, llm-pool, opencode-session, i18n). Constraints internes activées. nmcp settings plugin ajouté au BOM racine. Codex-plugin 0.0.2 re-publié. | 9/10
 | 012 | 2026-06-29 | dev+pub+sécurité | BOM 0.0.5/0.0.6 registry + annotations + SEC-1 créé. bakery-plugin 0.0.3 publié. Purge deepseek (8 boroughs) + ports 11434-11436 → 11437-11465. | 7/10
 | 013 | 2026-06-29 | pub+audit | BOM 0.0.6 publié (bundle 3b886b28). SEC-1 audit statique + dynamique : 1 borough coupable (planner-gradle, 6 tests) corrigé. 3 alertes port 11434 dans plantuml corrigées → 11438/11440. Notebook Colab mis à jour BOM 0.0.6 + port 11440. | 9/10
+| 014 | 2026-06-30 | ci | CI runAllTests workflow créé (.github/workflows/test.yml). 1er run GitHub Actions #28412781846 : 10/13 OK, 3 échecs (api-key-pool wrapper jar gitignoré, readme/slider check not found — consommateur sans check). Ollama qwen3:0.6b 11466-11467 planifié session 015. | 7/10
 |===
 '''
 

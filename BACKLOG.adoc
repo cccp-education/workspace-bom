@@ -448,3 +448,52 @@ nouveaux defaults autorisés) — coupable = planner-gradle.
   Les tests restants qui font des appels réels sont derrière `assumeTrue` ou `@Tag`.
   Recommandation : ne pas ajouter de guard supplémentaire — l'audit statique + dynamique
   suffit. `runAllTests` peut être lancé sans risque d'appel LLM non autorisé.
+
+'''
+== EPIC CI-1 : CI/CD runAllTests cross-boroughs GitHub Actions
+
+*Découverte* : Session 014 (2026-06-30) — workspace-bom n'avait aucune CI/CD.
+`runAllTests` (13 boroughs en `./gradlew check`) n'était exécutable qu'en local.
+Workflow `.github/workflows/test.yml` créé et poussé. 1er run #28412781846 :
+10/13 OK, 3 échecs diagnostiqués.
+
+*Objectif* : Rendre `runAllTests` lançable depuis GitHub Actions + nourrir le
+besoin LLM des tests d'intégration avec `qwen3:0.6b` (exception CI AGENTS.adoc).
+
+*Charge* : ~4 pts (~1 session)
+*Priorité* : 🔴 P0
+*Statut EPIC* : 🔄 EN COURS (session 014 — workflow créé, 3 échecs à fixer session 015)
+
+=== US-CI-1.1 — Workflow test.yml créé
+**Pts** : 1
+**Statut** : ✅ TERMINÉ (session 014)
+- `.github/workflows/test.yml` : checkout workspace-bom + 13 siblings + JDK 24 + runAllTests.
+- Run #28412781846 déclenché, 10/13 boroughs OK.
+
+=== US-CI-1.2 — Fix api-key-pool-gradle wrapper jar
+**Pts** : 0.5
+**Statut** : 🔄 À FAIRE (session 015)
+- `gradle-wrapper.jar` gitignoré dans api-key-pool-gradle (`.gitignore` ligne 23).
+- Fix : retirer la ligne `.gitignore` + committer le jar, OU step CI `gradle wrapper`.
+
+=== US-CI-1.3 — Fix readme-gradle + slider-gradle (check not found)
+**Pts** : 1
+**Statut** : 🔄 À FAIRE (session 015)
+- readme-gradle et slider-gradle sont des projets consommateurs sans tâche `check`.
+- Vrais tests dans `readme-plugin/` et `slider-plugin/` (propres `gradlew`).
+- Fix : `testableProjects` → `List<Pair<String, String?>>` avec sous-répertoire cible.
+  `Exec.workingDir` → `projectDir.resolve(subdir)`.
+
+=== US-CI-1.4 — Ollama qwen3:0.6b en CI
+**Pts** : 1
+**Statut** : 🔄 À FAIRE (session 015)
+- Step CI : `docker run -d -p 11466:11467 ollama/ollama` + `ollama pull qwen3:0.6b`.
+- Env vars : `OLLAMA_TEST_PORT=11466`, `OLLAMA_TEST_MODEL=qwen3:0.6b`.
+- Tests `assumeTrue(isOllamaReady(port))` se débloquent. Pas de secret requis.
+
+=== US-CI-1.5 — Secrets workspace-bom
+**Pts** : 0.5
+**Statut** : ✅ TERMINÉ (session 014)
+- `GITHUB_TOKEN` natif suffit pour cloner les 13 repos publics.
+- Aucun secret additionnel requis pour `runAllTests`.
+- Pour publication Maven Central (futur) : GPG key + Maven Central credentials.

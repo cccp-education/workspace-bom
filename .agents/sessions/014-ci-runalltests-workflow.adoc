@@ -1,0 +1,85 @@
+= Session 014 — CI runAllTests workflow + 1er run GitHub Actions (MEMPHIS)
+
+== Date
+2026-06-30
+
+== Contexte
+workspace-bom n'avait aucune CI/CD. Objectif : rendre `runAllTests`
+(13 boroughs publics en `./gradlew check`) lançable depuis GitHub Actions
+pour surveiller la santé cross-boroughs sans solliciter les ressources locales.
+
+== Réalisations
+
+=== 1. Workflow CI créé
+Fichier : `.github/workflows/test.yml`
+- Trigger : push/PR sur main + workflow_dispatch
+- Checkout workspace-bom dans `foundry/public/workspace-bom`
+- Clone des 13 repos frères `cccp-education/*` (depth 1, `GITHUB_TOKEN`)
+- JDK 24 + cache Gradle
+- `./gradlew runAllTests --no-daemon --continue` (timeout 90 min)
+
+=== 2. Premier run CI (run #28412781846)
+Statut : ÉCHEC (37m46s) — 3 problèmes identifiés :
+
+. **api-key-pool-gradle** — `gradle-wrapper.jar` gitignoré (non tracké dans git).
+  Le clone `--depth 1` ne peut pas le récupérer → `Error: Unable to access jarfile`.
+  *Cause* : `.gitignore` ligne 23 : `**/gradle/wrapper/gradle-wrapper.jar`.
+  *Fix* : committer le wrapper jar OU générer en CI via `gradle wrapper`.
+
+. **readme-gradle** — `Task 'check' not found in root project 'readme-gradle'`.
+  Le projet racine est un consommateur (`plugins { alias(libs.plugins.readme) }`)
+  qui n'applique pas `java-library` ni `base` → pas de tâche `check`.
+  Les vrais tests sont dans `readme-plugin/` (sous-répertoire avec son propre
+  `gradlew` + `build.gradle.kts` + tests Cucumber).
+  *Fix* : `runAllTests` doit détecter le sous-projet et lancer `check` dedans.
+
+. **slider-gradle** — même pattern que readme-gradle.
+  Consommateur `alias(libs.plugins.slider)` + `alias(libs.plugins.readme)`.
+  Vrais tests dans `slider-plugin/`.
+  *Fix* : idem readme-gradle.
+
+=== 3. Correction log noise pgvector (session Queens 171)
+8 `log.warn` → `log.debug` dans codebase-gradle pour silencer le bruit
+pgvector en mode dégradé (tests résilients sans pgvector).
+
+== À reprendre — session 015
+
+=== Priorité 1 : Fixer les 3 échecs CI
+. **api-key-pool-gradle** : soit committer le `gradle-wrapper.jar` (retirer
+  la ligne `.gitignore`), soit ajouter un step CI `gradle wrapper --gradle-version 9.5.1`.
+. **readme-gradle + slider-gradle** : modifier `build.gradle.kts` de workspace-bom
+  pour détecter les sous-projets. Stratégie proposée :
+  - Remplacer `testableProjects: List<String>` par `testableProjects: List<Pair<String, String?>>`
+    où le 2nd élément est le sous-répertoire (null = root).
+  - `readme-gradle` → `"readme-plugin"`, `slider-gradle` → `"slider-plugin"`.
+  - Le `Exec` task `workingDir` pointe vers `projectDir.resolve(subdir)`.
+
+=== Priorité 2 : Ajouter Ollama qwen3:0.6b en CI
+L'utilisateur veut nourrir le besoin LLM des tests d'intégration avec
+`qwen3:0.6b` lancé via Docker/Ollama sur ports 11466-11467 (exception CI
+documentée dans AGENTS.adoc). Étapes :
+. Ajouter step CI : `docker run -d -p 11466:11467 ollama/ollama`
+. `ollama pull qwen3:0.6b` (~400 MB, inférence locale)
+. Env vars : `OLLAMA_TEST_PORT=11466`, `OLLAMA_TEST_MODEL=qwen3:0.6b`
+. Les tests protégés par `assumeTrue(isOllamaReady(port))` se débloquent.
+. Pas de secret requis (modèle local, pas d'API key cloud).
+
+=== Priorité 3 : Secrets
+. `GITHUB_TOKEN` — natif, suffit pour cloner les 13 repos publics.
+. Aucun secret additionnel requis pour `runAllTests`.
+. Pour publication Maven Central (futur) : GPG key + Maven Central credentials
+  (déjà documentés dans AGENTS.adoc méthode nmcp).
+
+== Fichiers créés
+. `.github/workflows/test.yml` (55 lignes) — workflow CI runAllTests
+
+== Fichiers modifiés (codebase-gradle, session Queens 171)
+. 4 fichiers Kotlin — 8 `log.warn` → `log.debug` (voir session Queens 171)
+
+== Commit
+. `ci(bom): add runAllTests workflow (cross-borough check 13 siblings)` — poussé sur main
+. Run CI : https://github.com/cccp-education/workspace-bom/actions/runs/28412781846
+
+== Score
+7/10 — Workflow créé et poussé, 1er run CI exécuté, 3 problèmes diagnostiqués
+avec solutions proposées. Manque : fixes pas encore appliqués (session 015).
