@@ -1,0 +1,22 @@
+= Tâches Terminées — Juillet 2026
+:date: 2026-07-04
+
+== Session 016 — MEM-2 Pipeline Contracts (restauration) (2026-07-04)
+- pipeline-contracts supprimé session 084 (refactor shared kernel → 3 artefacts)
+  car "zéro usage" — jamais restauré malgré opencode-session/i18n restaurés
+  sessions 134/011. Débloquait DOC-8.1 document-gradle.
+- Restauration en baby-step DDD/TDD/BDD (5 types + 22 JUnit5 + 11 Cucumber =
+  33/33 PASS) :
+  - MEM-2.1 Structure projet (settings, build 0.0.2, libs.versions.toml, wrapper)
+  - MEM-2.2 ConventionalCommit (data class 5 champs) + 5 tests
+  - MEM-2.3 ReleaseNotesConfig (data class 8 champs defaults) + 4 tests
+  - MEM-2.4 GitLogParser (interface 3 méthodes) + 6 tests contrat fakes
+  - MEM-2.5 ReleaseNotesRenderer (interface format/render/renderToFile) + 5 tests
+  - MEM-2.6 ReleaseNotesGenerator (interface parser/renderer/generate) + 2 tests
+  - MEM-2.7 Cucumber BDD pc_1_pipeline_contracts.feature (11 scénarios)
+  - MEM-2.8 BOM racine constraint pipeline-contracts:0.0.2 + assemble SUCCESS
+  - MEM-2.9 publishToMavenLocal — 10 artefacts dans ~/.m2
+- Code source identique à la version session 005 (`b750e68`), build aligné sur
+  pattern 0.0.2 courant (cucumberTest + signing + POM Apache 2.0).
+- Publication Maven Central TODO session 017 (PUB-3.06).
+- Câblage DOC-8.1 document-gradle TODO session 017 (releaseNotesGenerate).

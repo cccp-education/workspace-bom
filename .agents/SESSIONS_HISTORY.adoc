@@ -4,6 +4,7 @@ _Date creation : 2026-06-02_
 
 |===
 | # | Date | Type | Sujet | Score
+| 016 | 2026-07-04 | dev | **MEM-2 Pipeline Contracts (restauration)** — pipeline-contracts supprimé session 084 (refactor shared kernel → 3 artefacts), jamais restauré malgré opencode-session/i18n restaurés sessions 134/011. Restauration en baby-step DDD/TDD/BDD : 5 types (ConventionalCommit, ReleaseNotesConfig, GitLogParser, ReleaseNotesRenderer, ReleaseNotesGenerator) + 22 JUnit5 + 11 Cucumber BDD = 33/33 PASS. Publié mavenLocal 0.0.2. BOM racine constraint ajouté. Débloque DOC-8.1 document-gradle. | 10/10
 | 015 | 2026-06-30 | sec | **SEC-1 purge deepseek-v4-pro des docs live** — Extension cross-borough (10 repos). Remplacement `deepseek-v4-pro` → `gpt-oss:120b-cloud` dans BACKLOG.adoc. | 10/10
 | 014 | 2026-06-30 | ci | **CI runAllTests workflow + 1er run GitHub Actions** — Workflow `.github/workflows/test.yml` créé (checkout 13 siblings + JDK 24 + runAllTests). 1er run #28412781846 : 10/13 OK, 3 échecs diagnostiqués (api-key-pool wrapper jar gitignoré, readme/slider check not found — consommateur sans check). Ollama qwen3:0.6b 11466-11467 planifié session 015. | 7/10
 | 013 | 2026-06-29 | pub+audit | BOM 0.0.6 publié (bundle 3b886b28). SEC-1 audit statique + dynamique : 1 borough coupable (planner-gradle, 6 tests) corrigé. 3 alertes port 11434 dans plantuml corrigées → 11438/11440. Notebook Colab mis à jour BOM 0.0.6 + port 11440. | 9/10

@@ -102,6 +102,7 @@ dependencies {
         api("education.cccp:llm-pool-contracts:0.0.2")
         api("education.cccp:opencode-session-contracts:0.0.2")
         api("education.cccp:i18n-contracts:0.0.2")
+        api("education.cccp:pipeline-contracts:0.0.2")
 
         // ── Internal education.cccp plugins (N2) — pilotés par le BOM ───────
         api(libs.bakery.plugin)

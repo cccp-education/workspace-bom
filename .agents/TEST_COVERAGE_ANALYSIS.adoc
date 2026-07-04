@@ -1,6 +1,6 @@
 = TEST_COVERAGE_ANALYSIS — workspace-bom (MEMPHIS)
-:date: 2026-06-14
-:session: 006
+:date: 2026-07-04
+:session: 016
 
 == i18n-contracts (MEM-3)
 
@@ -15,7 +15,7 @@
 | **Total** | **28**
 |===
 
-== pipeline-contracts (MEM-2)
+== pipeline-contracts (MEM-2) — restauré session 016
 
 [cols="3,2,2,2"]
 |===
@@ -27,6 +27,13 @@
 | ReleaseNotesGenerator (interface) | 2 | 1 | 3
 | **Total** | **22** | **11** | **33**
 |===
+
+*Restauration* : pipeline-contracts avait été supprimé en session 084 (refactor
+shared kernel → 3 artefacts, rationale "zéro usage"). Restauré en session 016
+car document-gradle DOC-8.1 en avait besoin. Code source identique à la
+version session 005 (`b750e68`), build aligné sur le pattern 0.0.2 courant
+(cucumberTest task + signing + POM Apache 2.0). Publié mavenLocal 0.0.2,
+publication Maven Central TODO session 017.
 
 == Couverture par Niveau
 

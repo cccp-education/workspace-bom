@@ -5,10 +5,10 @@
 
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
-_Derniere mise a jour_ : 2026-06-30
-_session terminee_ : 015 — SEC-1 purge deepseek-v4-pro des docs live (10 boroughs)
-_Prochaine session_ : 016 — Fix 3 échecs CI + Ollama qwen3:0.6b
-_Session en cours_ : 015 — Purge deepseek-v4-pro → gpt-oss:120b-cloud dans BACKLOG.adoc
+_Derniere mise a jour_ : 2026-07-04
+_session terminee_ : 016 — MEM-2 Pipeline Contracts (restauration) — 33/33 PASS, publié mavenLocal
+_Prochaine session_ : 017 — Publication Maven Central pipeline-contracts:0.0.2 + câblage DOC-8.1 document-gradle
+_Session en cours_ : 016 — Restauration pipeline-contracts (supprimé session 084, jamais restauré)
 
 '''
 
@@ -31,6 +31,7 @@ _Session en cours_ : 015 — Purge deepseek-v4-pro → gpt-oss:120b-cloud dans B
 | 013 | 2026-06-29 | pub+audit | BOM 0.0.6 publié (bundle 3b886b28). SEC-1 audit statique + dynamique : 1 borough coupable (planner-gradle, 6 tests) corrigé. 3 alertes port 11434 dans plantuml corrigées → 11438/11440. Notebook Colab mis à jour BOM 0.0.6 + port 11440. | 9/10
 | 014 | 2026-06-30 | ci | CI runAllTests workflow créé (.github/workflows/test.yml). 1er run GitHub Actions #28412781846 : 10/13 OK, 3 échecs (api-key-pool wrapper jar gitignoré, readme/slider check not found — consommateur sans check). Ollama qwen3:0.6b 11466-11467 planifié session 015. | 7/10
 | 015 | 2026-06-30 | sec | SEC-1 purge deepseek-v4-pro des docs live. BACKLOG.adoc → gpt-oss:120b-cloud. Extension cross-borough (10 repos). | 10/10
+| 016 | 2026-07-04 | dev | MEM-2 Pipeline Contracts (restauration) — pipeline-contracts supprimé session 084, restauré en baby-step DDD/TDD/BDD (22 JUnit5 + 11 Cucumber = 33/33 PASS). Publié mavenLocal 0.0.2. BOM racine constraint ajouté. | 10/10
 |===
 '''
 
@@ -40,7 +41,7 @@ _Session en cours_ : 015 — Purge deepseek-v4-pro → gpt-oss:120b-cloud dans B
 | EPIC | Description | Statut | Priorite
 | MEM-0 | Bootstrap gouvernance agent — .agents/, AGENT.adoc | ✅ TERMINE | P0
 | MEM-1 | N0_CONTRACTS — Shared Kernel DDD cross-borough | ✅ TERMINE (7 contrats publiés + vérifiés) | P0
-| MEM-2 | Pipeline Contracts — release notes N0 | 🔄 EN COURS (pipeline-contracts à publier session 010) | P1
+| MEM-2 | Pipeline Contracts — release notes N0 | ✅ TERMINÉ (session 016 — restauré 33/33 PASS, mavenLocal, publication Central TODO session 017) | P1
 | MEM-3 | i18n-contracts — Contrats d'internationalisation N0 (10 langues) | ✅ TERMINÉ (session 006) | P1
 | MEM-4 | opencode-session-contracts — Protocole Thin Client opencode↔Gradle | ✅ TERMINÉ (session 006) | P1
 | MEM-5 | Audit migration workspace-bom — 16 boroughs publics, plan de migration documenté | ✅ TERMINÉ (session 007) | P1

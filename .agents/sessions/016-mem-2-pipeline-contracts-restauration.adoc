@@ -1,0 +1,164 @@
+= Rapport Session 016 — MEM-2 Pipeline Contracts (restauration)
+:session: 016
+:date: 2026-07-04
+:borough: MEMPHIS 🎸 (workspace-bom)
+:epic: MEM-2
+:score: 10/10
+
+== Résumé
+
+Restauration du 5ème artefact N0 `pipeline-contracts` dans workspace-bom.
+Le contrat avait été créé en session 005 (14 juin, `b750e68`) puis supprimé
+en session 084 (18 juin, `a853475`) lors du refactor "shared kernel → 3 artefacts"
+(rationale : "zéro usage"). Il n'avait jamais été restauré malgré la
+restauration d'opencode-session-contracts et i18n-contracts (sessions 134/011).
+
+Cela bloquait DOC-8.1 dans document-gradle (`releaseNotesGenerate` en TODO,
+cf. `DocumentI18nBridge.kt` ligne 13 : "pipeline-contracts (MEM-2) pas encore
+publie — releaseNotesGenerate en TODO").
+
+Méthode : baby-step DDD/TDD/BDD — un type à la fois (data class ou interface),
+son test unitaire ou de contrat, vérification du build, puis le suivant.
+
+== Ce qui a été fait
+
+|===
+| Tâche | Statut | Détail
+
+| MEM-2.1
+| ✅
+| Structure projet `pipeline-contracts/` — settings.gradle.kts (nmcp 1.5.0),
+  build.gradle.kts (java-library 0.0.2, signing, POM, cucumberTest task),
+  gradle/libs.versions.toml, gradle wrapper 9.5.1 copié depuis i18n-contracts.
+
+| MEM-2.2
+| ✅
+| Baby-step A — `ConventionalCommit.kt` (data class 5 champs : type, scope?,
+  message, hash, date) + `ConventionalCommitTest.kt` (5 tests TDD unit).
+  Build verify : 5/5 PASS.
+
+| MEM-2.3
+| ✅
+| Baby-step B — `ReleaseNotesConfig.kt` (data class 8 champs avec defaults :
+  fromTag, toTag, categories 7 mappings, outputDir, version, rendererType,
+  includeDownloads) + `ReleaseNotesConfigTest.kt` (4 tests TDD unit).
+  Build verify : 9/9 PASS.
+
+| MEM-2.4
+| ✅
+| Baby-step C — `GitLogParser.kt` (interface 3 méthodes : parse, detectVersion,
+  detectFromTag) + `GitLogParserContractTest.kt` (6 tests TDD contrat avec
+  fakes anonymes). Build verify : 15/15 PASS.
+
+| MEM-2.5
+| ✅
+| Baby-step D — `ReleaseNotesRenderer.kt` (interface : format, render,
+  renderToFile) + `ReleaseNotesRendererContractTest.kt` (5 tests TDD contrat
+  avec fakes). Build verify : 20/20 PASS.
+
+| MEM-2.6
+| ✅
+| Baby-step E — `ReleaseNotesGenerator.kt` (interface : parser, renderer,
+  generate) + `ReleaseNotesGeneratorContractTest.kt` (2 tests TDD contrat
+  composition parser/renderer + no-commits gracefully). Build verify : 22/22
+  PASS.
+
+| MEM-2.7
+| ✅
+| Baby-step F — Cucumber BDD `pc_1_pipeline_contracts.feature` (11 scénarios)
+  + `PipelineContractsStepDefs.kt` (step defs) + `CucumberTestRunner.kt`
+  (suite @Suite, glue contracts.pipeline.scenarios, filter not @wip). Build
+  verify : 22/22 JUnit5 + 11/11 Cucumber = 33/33 PASS.
+
+| MEM-2.8
+| ✅
+| BOM racine `build.gradle.kts` mis à jour — ajout constraint
+  `api("education.cccp:pipeline-contracts:0.0.2")` (ligne 104) après
+  i18n-contracts. `./gradlew assemble` BUILD SUCCESS — constraint résolvable
+  depuis mavenLocal.
+
+| MEM-2.9
+| ✅
+| Publication `publishToMavenLocal` — 10 artefacts dans
+  `~/.m2/repository/education/cccp/pipeline-contracts/0.0.2/` (jar, javadoc,
+  sources, pom, .asc × 5, .module). Signing GPG via useGpgCmd.
+|===
+
+== Tests
+
+[cols="2,3,2]
+|===
+| Framework | Fichiers | Scénarios/tests
+| JUnit5 | ConventionalCommitTest, ReleaseNotesConfigTest, GitLogParserContractTest,
+  ReleaseNotesRendererContractTest, ReleaseNotesGeneratorContractTest | 22
+| Cucumber BDD | pc_1_pipeline_contracts.feature (11 scénarios) | 11
+| **Total** | | **33/33 PASS**
+|===
+
+== Fichiers créés (18)
+
+[cols="3,4]
+|===
+| Fichier | Rôle
+| `pipeline-contracts/settings.gradle.kts` | Settings autonome (nmcp 1.5.0)
+| `pipeline-contracts/build.gradle.kts` | Build java-library 0.0.2 + cucumberTest + POM + signing
+| `pipeline-contracts/gradle/libs.versions.toml` | Catalogue versions (cucumber 7.34.3, assertj 3.25.3)
+| `pipeline-contracts/gradle/wrapper/gradle-wrapper.{jar,properties}` | Wrapper Gradle 9.5.1
+| `pipeline-contracts/gradlew` | Script build (Unix)
+| `pipeline-contracts/gradlew.bat` | Script build (Windows)
+| `pipeline-contracts/src/main/kotlin/contracts/pipeline/ConventionalCommit.kt` | Data class commit conventionnel
+| `pipeline-contracts/src/main/kotlin/contracts/pipeline/ReleaseNotesConfig.kt` | Data class configuration release notes
+| `pipeline-contracts/src/main/kotlin/contracts/pipeline/GitLogParser.kt` | Interface parser git log
+| `pipeline-contracts/src/main/kotlin/contracts/pipeline/ReleaseNotesRenderer.kt` | Interface renderer release notes
+| `pipeline-contracts/src/main/kotlin/contracts/pipeline/ReleaseNotesGenerator.kt` | Interface générateur release notes
+| `pipeline-contracts/src/test/kotlin/contracts/pipeline/ConventionalCommitTest.kt` | Unit test (5)
+| `pipeline-contracts/src/test/kotlin/contracts/pipeline/ReleaseNotesConfigTest.kt` | Unit test (4)
+| `pipeline-contracts/src/test/kotlin/contracts/pipeline/GitLogParserContractTest.kt` | Contrat test (6)
+| `pipeline-contracts/src/test/kotlin/contracts/pipeline/ReleaseNotesRendererContractTest.kt` | Contrat test (5)
+| `pipeline-contracts/src/test/kotlin/contracts/pipeline/ReleaseNotesGeneratorContractTest.kt` | Contrat test (2)
+| `pipeline-contracts/src/test/resources/features/pc_1_pipeline_contracts.feature` | Feature BDD (11 scénarios)
+| `pipeline-contracts/src/test/kotlin/contracts/pipeline/scenarios/PipelineContractsStepDefs.kt` | Step definitions Cucumber
+| `pipeline-contracts/src/test/kotlin/contracts/pipeline/scenarios/CucumberTestRunner.kt` | Runner Cucumber @Suite
+|===
+
+== Fichiers modifiés (1)
+
+[cols="3,4]
+|===
+| Fichier | Modification
+| `build.gradle.kts` (BOM racine) | Ajout constraint `pipeline-contracts:0.0.2` (ligne 104)
+|===
+
+== Pattern de restauration
+
+. Mirror du pattern `opencode-session-contracts` 0.0.2 (build.gradle.kts avec
+  cucumberTest task + signing + POM Apache 2.0 + relocation).
+. Le code source est identique à la version session 005 (`b750e68`) — seuls
+  le `build.gradle.kts` (ajout cucumberTest/POM/signing alignés sur le pattern
+  courant 0.0.2) et la version (0.0.1 → 0.0.2) diffèrent.
+. Gradle wrapper copié depuis `i18n-contracts/gradle/wrapper/` (9.5.1).
+. `pipeline-contracts/` est un build Gradle autonome (propre `settings.gradle.kts`
+  + `gradlew`), non inclus dans le `settings.gradle.kts` racine du BOM —
+  pattern identique à `i18n-contracts/` et `opencode-session-contracts/`.
+
+== Prochaine session (017)
+
+. Publication Maven Central : `cd pipeline-contracts && ./gradlew
+  publishAggregationToCentralPortal` (PUB-3.06 BACKLOG).
+. Câblage DOC-8.1 côté document-gradle : ajout `implementation(libs.pipeline.contracts)`
+  dans `document-plugin/build.gradle.kts` + implémentation concrète
+  `releaseNotesGenerate` (GitLogParser JGit + AsciiDocRenderer).
+. Mise à jour `DocumentI18nBridge.kt` : supprimer le commentaire TODO
+  "pipeline-contracts (MEM-2) pas encore publie".
+
+== Dépendance zéro
+
+Le contrat N0 `pipeline-contracts` n'a aucune dépendance hors `kotlin-stdlib`.
+Consommable par n'importe quel borough N2 avec
+`implementation("education.cccp:pipeline-contracts:0.0.2")` (via BOM racine).
+
+== Économie d'encre
+
+Pas de régénération LLM — le code source est une restauration fidèle de la
+version session 005 (`b750e68`), alignée sur le pattern build courant 0.0.2.
+Les tests sont identiques à l'original (baby-step TDD respecté à chaque étape).

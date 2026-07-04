@@ -1,31 +1,40 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-015 — SEC-1 purge deepseek-v4-pro des docs live (terminée)
+016 — MEM-2 Pipeline Contracts (restauration) (terminée)
 
-== Mission session 016
-Fixer les 3 échecs CI du run #28412781846 + ajouter Ollama qwen3:0.6b.
+== Mission session 017
+Publication Maven Central de pipeline-contracts:0.0.2 + câblage DOC-8.1
+dans document-gradle (releaseNotesGenerate).
 
-=== Priorité 1 — Fixer les 3 échecs CI
-. **api-key-pool-gradle** : `gradle-wrapper.jar` gitignoré → clone CI sans jar.
-  Fix : retirer ligne `.gitignore` `**/gradle/wrapper/gradle-wrapper.jar` et
-  committer le jar, OU ajouter step CI `gradle wrapper --gradle-version 9.5.1`.
-. **readme-gradle** : `Task 'check' not found` — racine est consommateur
-  (`alias(libs.plugins.readme)`), pas de tâche `check`. Vrais tests dans
-  `readme-plugin/` (propre `gradlew` + `build.gradle.kts`).
-. **slider-gradle** : idem — vrais tests dans `slider-plugin/`.
-. Fix proposé : `testableProjects` → `List<Pair<String, String?>>` avec
-  sous-répertoire cible. `readme-gradle`→`"readme-plugin"`,
-  `slider-gradle`→`"slider-plugin"`. `Exec.workingDir` → `projectDir.resolve(subdir)`.
+=== Priorité 1 — Publication Maven Central (PUB-3.06)
+. `cd foundry/public/workspace-bom/pipeline-contracts`
+. `./gradlew publishAggregationToCentralPortal --no-daemon`
+. Vérifier https://central.sonatype.com/artifact/education.cccp/pipeline-contracts
+. MàJ BACKLOG.adoc PUB-3.06 → ✅ PUBLIÉ.
 
-=== Priorité 2 — Ollama qwen3:0.6b en CI
-. Step CI : `docker run -d -p 11466:11467 ollama/ollama` + `ollama pull qwen3:0.6b`.
-. Env vars : `OLLAMA_TEST_PORT=11466`, `OLLAMA_TEST_MODEL=qwen3:0.6b`.
-. Tests `assumeTrue(isOllamaReady(port))` se débloquent. Pas de secret requis.
+=== Priorité 2 — Câblage DOC-8.1 (document-gradle)
+. Ajouter `pipeline-contracts = "0.0.2"` dans
+  `document-plugin/gradle/libs.versions.toml` [versions] + [libraries].
+. Ajouter `implementation(libs.pipeline.contracts)` dans
+  `document-plugin/build.gradle.kts` (après i18n + opencode-session).
+. Créer implémentation concrète `ReleaseNotesGenerate` :
+  - `JGitLogParser` (JGit 7.5.0 — `org.eclipse.jgit` déjà dans le BOM).
+  - `AsciidoctorReleaseNotesRenderer` (AsciiDoc `= Release X.Y.Z` + sections
+    par catégorie de [ReleaseNotesConfig.categories]).
+  - `DocumentReleaseNotesGenerator` (compose parser + renderer, écrit
+    `build/release-notes/RELEASE_NOTES.adoc`).
+. Task Gradle `releaseNotesGenerate` dans `DocumentPlugin.kt`.
+. MàJ `DocumentI18nBridge.kt` : supprimer le TODO "pipeline-contracts pas
+  encore publie".
+. Tests : unit (JGitLogParser avec repo temp JGit) + functional (GradleRunner)
+  + cucumber (scénario release notes complet).
 
-=== Priorité 3 — Secrets
-`GITHUB_TOKEN` natif suffit. Aucun secret additionnel pour runAllTests.
+=== Priorité 3 — BOM 0.0.7
+. Bumper version BOM racine `0.0.6 → 0.0.7` + publier (ajout constraint
+  pipeline-contracts:0.0.2).
 
 == Règles
 - Voir `AGENT.adoc` — zéro initiative, permission explicite pour commit/push.
-- Debug depuis GitHub remote, arrêter de solliciter les ressources locales.
+- Baby-step DDD/TDD/BDD : un type à la fois, test d'abord, build verify.
+- Publication Maven Central : `./gradlew publishAggregationToCentralPortal`.
