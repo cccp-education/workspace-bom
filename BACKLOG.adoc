@@ -56,16 +56,13 @@ BOM + 5 libraries de contrats partagés (N0). Premier artefact publié (VAGUE 1)
 **Priorite** : P1
 **Estimation** : 1 pt
 **Dependances** : MEM-2 terminé (33/33 PASS)
-**Statut** : 🔄 À FAIRE — session 017 (code prêt session 016, mavenLocal publié)
+**Statut** : ✅ PUBLIÉ + VÉRIFIÉ (session 017 — bundle `f235a1da-7ff3-42cb-8b5b-5b91fb28b4af`)
 
-. Code prêt (session 016 restauration), 33/33 PASS, publié mavenLocal 0.0.2
-. Publication Maven Central restante :
-  `cd foundry/public/workspace-bom/pipeline-contracts && ./gradlew publishAggregationToCentralPortal`
 . Artefact : `education.cccp:pipeline-contracts:0.0.2`
-. Vérifier https://central.sonatype.com/artifact/education.ccp/pipeline-contracts
+. Vérifié sur https://repo1.maven.org/maven2/education/cccp/pipeline-contracts/0.0.2/
 . *Note* : pipeline-contracts avait été supprimé du BOM en session 084
   (refactor shared kernel → 3 artefacts, rationale "zéro usage"). Restauré
-  session 016 car document-gradle DOC-8.1 en avait besoin.
+  session 016 car document-gradle DOC-8.1 en avait besoin.Publié session 017.
 
 === PUB-2.2 — Mise à jour commentaire relocation dans build.gradle.kts
 **Priorite** : P1

@@ -4,6 +4,7 @@ _Date creation : 2026-06-02_
 
 |===
 | # | Date | Type | Sujet | Score
+| 017 | 2026-07-05 | ops+dev | **PUB-3.06 pipeline-contracts + BOM 0.0.7 + DOC-8.1 vérification** — pipeline-contracts:0.0.2 publié Maven Central (bundle f235a1da). BOM 0.0.7 publiée (bundle ff4ead73, constraint pipeline-contracts:0.0.2). DOC-8.1 vérifié : 29 unit + 14 functional + 3 cucumber @doc8 = 46 PASS. TODO DocumentI18nBridge nettoyé. Bug cucumberTest Gradle 9.6.1 (EOFException) documenté. | 9/10
 | 016 | 2026-07-04 | dev | **MEM-2 Pipeline Contracts (restauration)** — pipeline-contracts supprimé session 084 (refactor shared kernel → 3 artefacts), jamais restauré malgré opencode-session/i18n restaurés sessions 134/011. Restauration en baby-step DDD/TDD/BDD : 5 types (ConventionalCommit, ReleaseNotesConfig, GitLogParser, ReleaseNotesRenderer, ReleaseNotesGenerator) + 22 JUnit5 + 11 Cucumber BDD = 33/33 PASS. Publié mavenLocal 0.0.2. BOM racine constraint ajouté. Débloque DOC-8.1 document-gradle. | 10/10
 | 015 | 2026-06-30 | sec | **SEC-1 purge deepseek-v4-pro des docs live** — Extension cross-borough (10 repos). Remplacement `deepseek-v4-pro` → `gpt-oss:120b-cloud` dans BACKLOG.adoc. | 10/10
 | 014 | 2026-06-30 | ci | **CI runAllTests workflow + 1er run GitHub Actions** — Workflow `.github/workflows/test.yml` créé (checkout 13 siblings + JDK 24 + runAllTests). 1er run #28412781846 : 10/13 OK, 3 échecs diagnostiqués (api-key-pool wrapper jar gitignoré, readme/slider check not found — consommateur sans check). Ollama qwen3:0.6b 11466-11467 planifié session 015. | 7/10

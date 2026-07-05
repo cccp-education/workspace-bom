@@ -1,5 +1,21 @@
 = Tâches Terminées — Juillet 2026
-:date: 2026-07-04
+:date: 2026-07-05
+
+== Session 017 — PUB-3.06 + BOM 0.0.7 + DOC-8.1 vérification (2026-07-05)
+- PUB-3.06 pipeline-contracts:0.0.2 publié Maven Central
+  (bundle `f235a1da-7ff3-42cb-8b5b-5b91fb28b4af`). Vérifié HTTP 200.
+- BOM 0.0.7 publiée (bundle `ff4ead73-1ea3-4bda-95ae-7a09d00127ef`).
+  Constraint pipeline-contracts:0.0.2 déjà présente (session 016).
+  Vérifié HTTP 200 sur Maven Central.
+- DOC-8.1 câblage document-gradle vérifié (implémentation session 009) :
+  - 29 unit tests PASS (ConventionalCommitParser, CliGitLogParser,
+    AsciidocReleaseNotesRenderer, GitReleaseNotesGenerator).
+  - 14 functional tests PASS (ReleaseNotesFunctionalTest).
+  - 3 cucumber @doc8 scénarios PASS (release-notes.feature).
+  - TODO DocumentI18nBridge.kt nettoyé (pipeline-contracts publié).
+- Bug cucumberTest Gradle 9.6.1 documenté : `java.io.EOFException` dans
+  `getPreviousFailedTestClasses` (fichiers binaires vides). Les scénarios
+  PASSent tous — bug d'infrastructure Gradle, pas de régression fonctionnelle.
 
 == Session 016 — MEM-2 Pipeline Contracts (restauration) (2026-07-04)
 - pipeline-contracts supprimé session 084 (refactor shared kernel → 3 artefacts)

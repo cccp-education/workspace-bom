@@ -1,38 +1,29 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-016 — MEM-2 Pipeline Contracts (restauration) (terminée)
+017 — PUB-3.06 pipeline-contracts + BOM 0.0.7 + DOC-8.1 vérification (terminée)
 
-== Mission session 017
-Publication Maven Central de pipeline-contracts:0.0.2 + câblage DOC-8.1
-dans document-gradle (releaseNotesGenerate).
+== Mission session 018
+Mise à jour des consommateurs BOM 0.0.7 + vérification alignement contrats N0.
 
-=== Priorité 1 — Publication Maven Central (PUB-3.06)
-. `cd foundry/public/workspace-bom/pipeline-contracts`
-. `./gradlew publishAggregationToCentralPortal --no-daemon`
-. Vérifier https://central.sonatype.com/artifact/education.cccp/pipeline-contracts
-. MàJ BACKLOG.adoc PUB-3.06 → ✅ PUBLIÉ.
+=== Priorité 1 — Migrer document-gradle vers BOM 0.0.7
+. `document-plugin/gradle/libs.versions.toml` : `workspace-bom = "0.0.6"` → `"0.0.7"`.
+. `document-plugin/build.gradle.kts` : `implementation(platform("education.cccp:workspace-bom:0.0.6"))` → `"0.0.7"`.
+. `./gradlew compileKotlin` verify.
+. Vérifier que pipeline-contracts:0.0.2 est bien résolu depuis la BOM.
 
-=== Priorité 2 — Câblage DOC-8.1 (document-gradle)
-. Ajouter `pipeline-contracts = "0.0.2"` dans
-  `document-plugin/gradle/libs.versions.toml` [versions] + [libraries].
-. Ajouter `implementation(libs.pipeline.contracts)` dans
-  `document-plugin/build.gradle.kts` (après i18n + opencode-session).
-. Créer implémentation concrète `ReleaseNotesGenerate` :
-  - `JGitLogParser` (JGit 7.5.0 — `org.eclipse.jgit` déjà dans le BOM).
-  - `AsciidoctorReleaseNotesRenderer` (AsciiDoc `= Release X.Y.Z` + sections
-    par catégorie de [ReleaseNotesConfig.categories]).
-  - `DocumentReleaseNotesGenerator` (compose parser + renderer, écrit
-    `build/release-notes/RELEASE_NOTES.adoc`).
-. Task Gradle `releaseNotesGenerate` dans `DocumentPlugin.kt`.
-. MàJ `DocumentI18nBridge.kt` : supprimer le TODO "pipeline-contracts pas
-  encore publie".
-. Tests : unit (JGitLogParser avec repo temp JGit) + functional (GradleRunner)
-  + cucumber (scénario release notes complet).
+=== Priorité 2 — Audit alignement BOM 0.0.7 cross-boroughs
+. Lister tous les boroughs consommant `workspace-bom` (grep `workspace-bom` dans
+  `foundry/public/**/build.gradle.kts` et `libs.versions.toml`).
+. Pour chacun, vérifier la version référencée (0.0.6 vs 0.0.7).
+. Planifier montée de version globale (0.0.7) — sans forcer, juste inventorier.
 
-=== Priorité 3 — BOM 0.0.7
-. Bumper version BOM racine `0.0.6 → 0.0.7` + publier (ajout constraint
-  pipeline-contracts:0.0.2).
+=== Priorité 3 — Bug cucumberTest Gradle 9.6.1
+. `document-plugin` cucumberTest échoue avec `java.io.EOFException`
+  (`getPreviousFailedTestClasses` — fichiers binaires vides).
+. Investiguer : bug Gradle 9.6.1 connu ? Contournement propre ?
+. Voir `conventions-gradle` CucumberConventionsPlugin — peut-être un
+  `outputs.upToDateWhen { false }` ou `--rerun-tasks` systématique.
 
 == Règles
 - Voir `AGENT.adoc` — zéro initiative, permission explicite pour commit/push.
