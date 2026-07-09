@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "education.cccp"
-version = "0.0.7"
+version = "0.0.8"
 
 javaPlatform {
     allowDependencies()
@@ -84,7 +84,7 @@ dependencies {
         api("org.tukaani:xz:1.12")
 
         // ── Asciidoctor ─────────────────────────────────────────────────────
-        api("org.asciidoctor:asciidoctorj:3.0.0")
+        api("org.asciidoctor:asciidoctorj:3.0.1")
         api("org.asciidoctor:asciidoctorj-diagram:3.2.0")
         api("org.asciidoctor:asciidoctorj-diagram-plantuml:1.2025.3")
 
