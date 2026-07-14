@@ -5,9 +5,9 @@
 
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
-_Derniere mise a jour_ : 2026-07-05
-_session terminee_ : 017 — PUB-3.06 pipeline-contracts + BOM 0.0.7 + DOC-8.1 vérification
-_Prochaine session_ : 018 — Migrer document-gradle vers BOM 0.0.7 + audit alignement cross-boroughs + bug cucumberTest Gradle 9.6.1
+_Derniere mise a jour_ : 2026-07-14
+_session terminee_ : 018 — BOM 0.0.9 + slider 0.0.10 (slider constraint 0.0.1 → 0.0.10, module name fix `slider-plugin` → `slider`). Bundle `79395cf5` AUTOMATIC.
+_Prochaine session_ : 019 — Audit alignement cross-boroughs (bakery, codex, planner versions) + bug cucumberTest Gradle 9.6.1
 _Session en cours_ : —
 
 '''
@@ -33,6 +33,7 @@ _Session en cours_ : —
 | 015 | 2026-06-30 | sec | SEC-1 purge deepseek-v4-pro des docs live. BACKLOG.adoc → gpt-oss:120b-cloud. Extension cross-borough (10 repos). | 10/10
 | 016 | 2026-07-04 | dev | MEM-2 Pipeline Contracts (restauration) — pipeline-contracts supprimé session 084, restauré en baby-step DDD/TDD/BDD (22 JUnit5 + 11 Cucumber = 33/33 PASS). Publié mavenLocal 0.0.2. BOM racine constraint ajouté. | 10/10
 | 017 | 2026-07-05 | ops+dev | PUB-3.06 pipeline-contracts:0.0.2 publié Maven Central (bundle f235a1da). BOM 0.0.7 publiée (bundle ff4ead73, constraint pipeline-contracts:0.0.2). DOC-8.1 vérifié (29 unit + 14 functional + 3 cucumber @doc8 = 46 PASS). TODO DocumentI18nBridge nettoyé. Bug cucumberTest Gradle 9.6.1 (EOFException) documenté. | 9/10
+| 018 | 2026-07-14 | ops+pub | BOM 0.0.9 + slider 0.0.10 — slider constraint 0.0.1 → 0.0.10, module name fix (`slider-plugin` → `slider`). Bundle `79395cf5` AUTOMATIC. BOM 0.0.8 → 0.0.9. | 9/10
 |===
 '''
 
@@ -47,7 +48,7 @@ _Session en cours_ : —
 | MEM-4 | opencode-session-contracts — Protocole Thin Client opencode↔Gradle | ✅ TERMINÉ (session 006) | P1
 | MEM-5 | Audit migration workspace-bom — 16 boroughs publics, plan de migration documenté | ✅ TERMINÉ (session 007) | P1
 | DOC-8 | document-gradle — Consommer les contrats N0 (i18n, pipeline, session) | 🔄 À FAIRE | P2
-| PUB | Publication Maven Central + Plugin Portal | 🔄 EN COURS (BOM 0.0.7 + 7 contrats N0 publiés, pipeline-contracts 0.0.2 ajouté) | P0
+| PUB | Publication Maven Central + Plugin Portal | 🔄 EN COURS (BOM 0.0.9 + 7 contrats N0 publiés, slider 0.0.10 constraint) | P0
 |===
 '''
 

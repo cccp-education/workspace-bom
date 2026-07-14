@@ -7,7 +7,7 @@ plugins {
 
 group = "education.cccp"
 version = "0.0.2"
-kotlin.jvmToolchain(JavaVersion.VERSION_24.ordinal)
+kotlin.jvmToolchain(JavaVersion.VERSION_25.ordinal)
 
 repositories {
     mavenCentral()

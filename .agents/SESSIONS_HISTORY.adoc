@@ -4,6 +4,7 @@ _Date creation : 2026-06-02_
 
 |===
 | # | Date | Type | Sujet | Score
+| 018 | 2026-07-14 | ops+pub | **BOM 0.0.9 + slider 0.0.10** — slider constraint 0.0.1 → 0.0.10, module name fix (`slider-plugin` → `slider`). BOM 0.0.8 → 0.0.9. Bundle `79395cf5` AUTOMATIC. Correction artefact name (publié = `slider`, pas `slider-plugin`). | 9/10
 | 017 | 2026-07-05 | ops+dev | **PUB-3.06 pipeline-contracts + BOM 0.0.7 + DOC-8.1 vérification** — pipeline-contracts:0.0.2 publié Maven Central (bundle f235a1da). BOM 0.0.7 publiée (bundle ff4ead73, constraint pipeline-contracts:0.0.2). DOC-8.1 vérifié : 29 unit + 14 functional + 3 cucumber @doc8 = 46 PASS. TODO DocumentI18nBridge nettoyé. Bug cucumberTest Gradle 9.6.1 (EOFException) documenté. | 9/10
 | 016 | 2026-07-04 | dev | **MEM-2 Pipeline Contracts (restauration)** — pipeline-contracts supprimé session 084 (refactor shared kernel → 3 artefacts), jamais restauré malgré opencode-session/i18n restaurés sessions 134/011. Restauration en baby-step DDD/TDD/BDD : 5 types (ConventionalCommit, ReleaseNotesConfig, GitLogParser, ReleaseNotesRenderer, ReleaseNotesGenerator) + 22 JUnit5 + 11 Cucumber BDD = 33/33 PASS. Publié mavenLocal 0.0.2. BOM racine constraint ajouté. Débloque DOC-8.1 document-gradle. | 10/10
 | 015 | 2026-06-30 | sec | **SEC-1 purge deepseek-v4-pro des docs live** — Extension cross-borough (10 repos). Remplacement `deepseek-v4-pro` → `gpt-oss:120b-cloud` dans BACKLOG.adoc. | 10/10

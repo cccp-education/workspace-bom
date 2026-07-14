@@ -1,29 +1,36 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-017 — PUB-3.06 pipeline-contracts + BOM 0.0.7 + DOC-8.1 vérification (terminée)
+018 — BOM 0.0.9 + slider 0.0.10 (terminée)
 
-== Mission session 018
-Mise à jour des consommateurs BOM 0.0.7 + vérification alignement contrats N0.
+== Session 018 terminée
 
-=== Priorité 1 — Migrer document-gradle vers BOM 0.0.7
-. `document-plugin/gradle/libs.versions.toml` : `workspace-bom = "0.0.6"` → `"0.0.7"`.
-. `document-plugin/build.gradle.kts` : `implementation(platform("education.cccp:workspace-bom:0.0.6"))` → `"0.0.7"`.
-. `./gradlew compileKotlin` verify.
-. Vérifier que pipeline-contracts:0.0.2 est bien résolu depuis la BOM.
+BOM 0.0.9 publiée (bundle `79395cf5`). slider constraint 0.0.1 → 0.0.10 +
+correction module name (`slider-plugin` → `slider`). BOM 0.0.8 → 0.0.9.
 
-=== Priorité 2 — Audit alignement BOM 0.0.7 cross-boroughs
-. Lister tous les boroughs consommant `workspace-bom` (grep `workspace-bom` dans
-  `foundry/public/**/build.gradle.kts` et `libs.versions.toml`).
-. Pour chacun, vérifier la version référencée (0.0.6 vs 0.0.7).
-. Planifier montée de version globale (0.0.7) — sans forcer, juste inventorier.
+== Mission session 019
 
-=== Priorité 3 — Bug cucumberTest Gradle 9.6.1
+Audit alignement cross-boroughs + mise à jour des consommateurs BOM.
+
+=== Priorité 1 — Audit alignement BOM 0.0.9 cross-boroughs
+. Lister tous les boroughs consommant `workspace-bom` (grep `workspace-bom`
+  dans `foundry/public/**/build.gradle.kts` et `libs.versions.toml`).
+. Pour chacun, vérifier la version référencée (0.0.6/0.0.7 vs 0.0.9).
+. Planifier montée de version globale (0.0.9) — sans forcer, juste inventorier.
+. Vérifier que les autres plugins (bakery 0.0.3, codex 0.0.2, planner 0.0.1,
+  plantuml 0.0.1, readme 0.0.1, hyperframes 0.0.3, graphify 0.0.2,
+  api-key-pool 0.0.1, codebase 0.0.3, capsule 0.0.1) sont à jour vs Central.
+
+=== Priorité 2 — Bug cucumberTest Gradle 9.6.1
 . `document-plugin` cucumberTest échoue avec `java.io.EOFException`
   (`getPreviousFailedTestClasses` — fichiers binaires vides).
 . Investiguer : bug Gradle 9.6.1 connu ? Contournement propre ?
-. Voir `conventions-gradle` CucumberConventionsPlugin — peut-être un
-  `outputs.upToDateWhen { false }` ou `--rerun-tasks` systématique.
+. Voir `conventions-gradle` CucumberConventionsPlugin.
+
+=== Priorité 3 — Migrer document-gradle vers BOM 0.0.9
+. `document-plugin/gradle/libs.versions.toml` : `workspace-bom` version → `"0.0.9"`.
+. `document-plugin/build.gradle.kts` : `platform("education.cccp:workspace-bom:0.0.9")`.
+. `./gradlew compileKotlin` verify.
 
 == Règles
 - Voir `AGENT.adoc` — zéro initiative, permission explicite pour commit/push.

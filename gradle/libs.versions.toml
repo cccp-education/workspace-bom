@@ -50,7 +50,7 @@ jetbrains-annotations = "26.0.2-1"
 bakery-plugin = "0.0.3"
 codex-plugin = "0.0.2"
 planner-plugin = "0.0.1"
-slider-plugin = "0.0.1"
+slider-plugin = "0.0.10"
 plantuml-plugin = "0.0.1"
 readme-plugin = "0.0.1"
 hyperframes-plugin = "0.0.3"
@@ -255,7 +255,7 @@ jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "j
 bakery-plugin = { module = "education.cccp:bakery-plugin", version.ref = "bakery-plugin" }
 codex-plugin = { module = "education.cccp:codex-plugin", version.ref = "codex-plugin" }
 planner-plugin = { module = "education.cccp:planner-plugin", version.ref = "planner-plugin" }
-slider-plugin = { module = "education.cccp:slider-plugin", version.ref = "slider-plugin" }
+slider-plugin = { module = "education.cccp:slider", version.ref = "slider-plugin" }
 plantuml-plugin = { module = "education.cccp:plantuml-plugin", version.ref = "plantuml-plugin" }
 readme-plugin = { module = "education.cccp:readme-plugin", version.ref = "readme-plugin" }
 hyperframes-plugin = { module = "education.cccp:hyperframes-plugin", version.ref = "hyperframes-plugin" }

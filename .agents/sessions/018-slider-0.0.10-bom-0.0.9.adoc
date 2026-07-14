@@ -1,0 +1,29 @@
+= Session 018 — BOM 0.0.9 + slider 0.0.10
+
+_Date_ : 2026-07-14
+_Type_ : ops+pub
+_Score_ : 9/10
+
+== Objectif
+
+Mise à jour BOM avec slider 0.0.10 + bump BOM 0.0.8 → 0.0.9 + publication Central.
+
+== Actions réalisées
+
+. Correction module name slider : `education.ccp:slider-plugin` → `education.ccp:slider`
+  (artefact publié = `slider`, pas `slider-plugin`)
+. Bump slider-plugin constraint : 0.0.1 → 0.0.10
+. Bump BOM version : 0.0.8 → 0.0.9
+. `./gradlew publishToMavenLocal` BUILD SUCCESSFUL
+. `./gradlew publishAggregationToCentralPortal --no-daemon` BUILD SUCCESSFUL
+  * Bundle `79395cf5-188f-45d7-a8e0-1580dc3cf6ae` AUTOMATIC
+. Vérification Central : https://central.sonatype.com/artifact/education.ccp/workspace-bom/0.0.9 ✅
+
+== Fichiers modifiés
+
+. `build.gradle.kts` — version 0.0.8 → 0.0.9
+. `gradle/libs.versions.toml` — slider-plugin 0.0.1 → 0.0.10 + module name fix
+
+== Prochaine session — 019
+
+Audit alignement cross-boroughs (bakery, codex, planner versions) + bug cucumberTest Gradle 9.6.1.
