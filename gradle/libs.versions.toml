@@ -3,7 +3,7 @@
 workspace-bom = "0.1.0"
 
 # ── Kotlin ────────────────────────────────────────────────────────────────────
-kotlin = "2.3.20"
+kotlin = "2.4.10"
 kotlinx-serial = "1.7.3"
 coroutines = "1.10.2"
 
@@ -58,6 +58,7 @@ graphify-plugin = "0.0.2"
 api-key-pool-plugin = "0.0.1"
 codebase-plugin = "0.0.3"
 capsule-plugin = "0.0.1"
+conventions-plugin = "0.0.3"
 
 # ── PDF/Extraction ────────────────────────────────────────────────────────────
 asciidoctorj = "3.0.1"
@@ -263,6 +264,7 @@ graphify-plugin = { module = "education.cccp:graphify-plugin", version.ref = "gr
 api-key-pool-plugin = { module = "education.cccp:api-key-pool", version.ref = "api-key-pool-plugin" }
 codebase-plugin = { module = "education.cccp:codebase-plugin", version.ref = "codebase-plugin" }
 capsule-plugin = { module = "education.cccp:capsule-plugin", version.ref = "capsule-plugin" }
+conventions-plugin = { module = "education.cccp.build:conventions-plugin", version.ref = "conventions-plugin" }
 
 [bundles]
 cucumber = [

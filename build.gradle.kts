@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "education.cccp"
-version = "0.0.11"
+version = "0.0.13"
 
 javaPlatform {
     allowDependencies()
@@ -16,7 +16,7 @@ javaPlatform {
 dependencies {
     constraints {
         // ── Kotlin ──────────────────────────────────────────────────────────
-        api("org.jetbrains.kotlin:kotlin-stdlib:2.3.20")
+        api("org.jetbrains.kotlin:kotlin-stdlib:2.4.10")
         api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
         api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
         api("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.10.2")
@@ -116,6 +116,7 @@ dependencies {
         api(libs.api.key.pool.plugin)
         api(libs.codebase.plugin)
         api(libs.capsule.plugin)
+        api(libs.conventions.plugin)
 
         // ── Force resolution (koog 26.0.2-1 vs testcontainers 17.0.0) ─────────
         api(libs.jetbrains.annotations)
