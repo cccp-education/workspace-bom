@@ -1,6 +1,6 @@
 [versions]
 vibecoding-contracts = "0.0.1"
-kotlin = "2.3.20"
+kotlin = "2.4.10"
 kotlinx-serial = "1.7.3"
 koog = "1.0.0"
 
