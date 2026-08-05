@@ -1,0 +1,40 @@
+= PROMPT_REPRISE — workspace-bom (MEMPHIS)
+
+_Session terminee_ : 019 — Publication BOM 0.0.17 (constraint slider 0.0.16)
+_Prochaine session_ : 020 — prochain bump à la prochaine publication borough
+
+== Mission session 019 (TERMINÉE)
+
+. Publication BOM 0.0.17 sur Maven Central (nmcp bundle
+  `b432cc13-f08b-489c-8f67-c80d9d5d8b04` AUTOMATIC, POM HTTP 200
+  repo1.maven.org).
+. Bump `build.gradle.kts` version 0.0.16 → 0.0.17 + catalogue
+  `slider-plugin` 0.0.15 → 0.0.16 (constraint).
+. BOM 0.0.16 publiée S-062 gardait constraint 0.0.15 — bump strictement
+  montant à 0.0.17 pour exposer slider 0.0.16 (publié S-066 slider-gradle).
+. Session rattrapage INDEX : versions 0.0.10→0.0.16 publiées hors-session
+  opencode MEMPHIS (bump coordonnés depuis slider-gradle /
+  conventions-gradle / agentic-gradle) rattrapées dans la table Sessions.
+. 2 fichiers build bumpés + 3 fichiers gouvernance (INDEX, HISTORY, archive).
+. Commit + push cette session (accord pilote donné).
+
+== Contexte reprise session 020
+
+- EPIC PUB EN COURS — BOM 0.0.17 publiée. Prochain bump à la prochaine
+  publication borough (slider 0.0.17 ou autre).
+- DOC-8 (document-gradle consomme contrats N0 i18n/pipeline/session) —
+  toujours 🔄 À FAIRE (P2).
+- Artefacts N0 publiés Central : agent-contracts 0.0.1,
+  codebase-contracts 0.0.1, llm-pool-contracts 0.0.1,
+  opencode-session-contracts 0.0.1, i18n-contracts 0.0.2,
+  pipeline-contracts 0.0.2.
+- Version BOM Central : 0.0.17 (dernière).
+- Baseline : `main` propre (après commit + push session 019).
+- Règle 1 — AUCUN commit sans permission.
+
+== Rappels
+
+* GroupId : `education.cccp`
+* BOM = `java-platform` (pas de tests)
+* Méthode nmcp (AGENTS.adoc racine § Méthode de Publication)
+* INDEX borough en retard avant S-019 (s'arrêtait 0.0.9) — rattrapé.

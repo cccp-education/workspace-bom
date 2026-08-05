@@ -4,6 +4,25 @@ _Date creation : 2026-06-02_
 
 |===
 | # | Date | Type | Sujet | Score
+
+| 019 | 2026-08-06 | ops+pub+rattrapage | **BOM 0.0.17** (constraint slider 0.0.15 → 0.0.16) suite à slider 0.0.16 (S-066 slider-gradle). Bundle `b432cc13-f08b-489c-8f67-c80d9d5d8b04` AUTOMATIC, POM HTTP 200 repo1.maven.org. BOM 0.0.16 publiée S-062 gardait constraint 0.0.15 — bump strictement montant à 0.0.17. Session rattrapage INDEX : versions 0.0.10→0.0.16 publiées hors-session opencode MEMPHIS (bump coordonnés depuis slider-gradle / conventions-gradle / agentic-gradle) rattrapées dans la table. | 9/10
+
+// ── RATTRAPAGE 0.0.10→0.0.16 (publié hors-session opencode MEMPHIS) ──
+
+| 0.0.16 | 2026-08-05 | ops (rattrapé) | BOM 0.0.16 (codebase-plugin 0.0.3 → 0.0.5, commit `e0b2ae9`). Publié pour débloquer slider US-8.3a (koog-agents constraint). Constraint slider 0.0.15 gardée. | 9/10
+
+| 0.0.15 | 2026-08-05 | ops (rattrapé) | BOM 0.0.15 (slider constraint 0.0.14 → 0.0.15, commit `aeae36f`). Coordination slider S-059 (post-SLD-11 expulsion). | 9/10
+
+| 0.0.14 | 2026-08-04 | ops (rattrapé) | BOM 0.0.14 (slider constraint 0.0.12 → 0.0.14, commit `4d6f175`). Coordination slider S-055. | 9/10
+
+| 0.0.13 | 2026-07-06 | ops (rattrapé) | BOM 0.0.13 (Kotlin 2.3.20 → 2.4.10 + conventions-plugin 0.0.3 constraint, commits `0c7b98c` + `0b0ecf2`). Upgrade toolchain JDK 25. | 9/10
+
+| 0.0.12 | 2026-06-30 | ops (rattrapé) | BOM 0.0.12 (hyperframes 0.0.3 + asciidoctorj 3.0.1, commit `7aa24a8`). | 9/10
+
+| 0.0.11 | 2026-07-15 | ops (rattrapé) | BOM 0.0.11 (slider 0.0.12 constraint, commit `dcb3274`). Coordination slider S-034 (Playwright fix). | 9/10
+
+| 0.0.10 | 2026-07-15 | ops (rattrapé) | BOM 0.0.10 (slider 0.0.11 constraint, commit `a4301c7`). Coordination slider S-034. | 9/10
+
 | 018 | 2026-07-14 | ops+pub | **BOM 0.0.9 + slider 0.0.10** — slider constraint 0.0.1 → 0.0.10, module name fix (`slider-plugin` → `slider`). BOM 0.0.8 → 0.0.9. Bundle `79395cf5` AUTOMATIC. Correction artefact name (publié = `slider`, pas `slider-plugin`). | 9/10
 | 017 | 2026-07-05 | ops+dev | **PUB-3.06 pipeline-contracts + BOM 0.0.7 + DOC-8.1 vérification** — pipeline-contracts:0.0.2 publié Maven Central (bundle f235a1da). BOM 0.0.7 publiée (bundle ff4ead73, constraint pipeline-contracts:0.0.2). DOC-8.1 vérifié : 29 unit + 14 functional + 3 cucumber @doc8 = 46 PASS. TODO DocumentI18nBridge nettoyé. Bug cucumberTest Gradle 9.6.1 (EOFException) documenté. | 9/10
 | 016 | 2026-07-04 | dev | **MEM-2 Pipeline Contracts (restauration)** — pipeline-contracts supprimé session 084 (refactor shared kernel → 3 artefacts), jamais restauré malgré opencode-session/i18n restaurés sessions 134/011. Restauration en baby-step DDD/TDD/BDD : 5 types (ConventionalCommit, ReleaseNotesConfig, GitLogParser, ReleaseNotesRenderer, ReleaseNotesGenerator) + 22 JUnit5 + 11 Cucumber BDD = 33/33 PASS. Publié mavenLocal 0.0.2. BOM racine constraint ajouté. Débloque DOC-8.1 document-gradle. | 10/10

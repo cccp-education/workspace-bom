@@ -1,0 +1,120 @@
+= Session 019 — Publication BOM 0.0.17 (constraint slider 0.0.16) + rattrapage INDEX 0.0.10→0.0.16
+:session: 019
+:date: 2026-08-06
+:borough: MEMPHIS (workspace-bom)
+:epic: PUB
+
+== Objectif
+
+Publication BOM 0.0.17 sur Maven Central (constraint slider 0.0.15 → 0.0.16)
+suite à la publication slider 0.0.16 (session 066 slider-gradle). La BOM 0.0.16
+publiée S-062 gardait constraint slider 0.0.15 ; pour exposer slider 0.0.16 dans
+la BOM, bump strictement montant à 0.0.17.
+
+Session rattrapage : l'INDEX MEMPHIS était en retard (s'arrêtait à 0.0.9 /
+session 018). Les versions intermédiaires 0.0.10→0.0.16 ont été publiées hors
+session opencode MEMPHIS (bump coordonnés depuis slider-gradle / conventions-
+gradle / agentic-gradle). Cette session rattrape l'historique manquant.
+
+== Exécution
+
+=== BOM 0.0.17 — publication ===
+
+. Bump `build.gradle.kts` version `0.0.16` → `0.0.17`.
+. Bump catalogue `gradle/libs.versions.toml` `slider-plugin = "0.0.15"` →
+  `"0.0.16"` (constraint BOM).
+. `./gradlew publishAggregationToCentralPortal --no-daemon` — bundle
+  `b432cc13-f08b-489c-8f67-c80d9d5d8b04` AUTOMATIC.
+. Vérification repo1.maven.org : POM workspace-bom 0.0.17 HTTP 200
+  (après ~6 min propagation VALIDATING → publishing).
+
+=== Rattrapage INDEX 0.0.10→0.0.16 ===
+
+Les commits git `git log --oneline` entre 018 (0.0.9) et maintenant (0.0.17)
+montrent 8 versions BOM publiées non documentées dans l'INDEX MEMPHIS :
+
+* 0.0.10 (commit `a4301c7`) — slider 0.0.11 constraint.
+* 0.0.11 (commit `dcb3274`) — slider 0.0.12 constraint.
+* 0.0.12 (commit `7aa24a8`) — hyperframes 0.0.3 + asciidoctorj 3.0.1.
+* 0.0.13 (commit `0c7b98c`) — conventions-plugin 0.0.3 constraint + BOM
+  0.0.13 (Kotlin 2.3.20 → 2.4.10).
+* 0.0.14 (commit `4d6f175`) — slider constraint 0.0.12 → 0.0.14.
+* 0.0.15 (commit `aeae36f`) — slider constraint 0.0.14 → 0.0.15.
+* 0.0.16 (commit `e0b2ae9`) — codebase-plugin 0.0.3 → 0.0.5.
+
+Ces versions sont rattrapées dans la table Sessions de l'INDEX (entrées
+condensées — pas de rapports détaillés, publication coordonnée depuis
+d'autres boroughs).
+
+== Publications
+
+[cols="3,2,3"]
+|===
+| Artefact | Bundle nmcp | URL repo1.maven.org
+
+| workspace-bom 0.0.17
+| `b432cc13-f08b-489c-8f67-c80d9d5d8b04` (AUTOMATIC)
+| `education/cccp/workspace-bom/0.0.17/workspace-bom-0.0.17.pom` HTTP 200 ✅
+|===
+
+== Tests
+
+* Aucun test modifié cette session (pure ops/release).
+* Aucun test BOM exécuté (BOM = `java-platform`, pas de tests).
+
+== Fichiers Modifiés
+
+[cols="2,3,1"]
+|===
+| Fichier | Rôle | Delta
+
+| `build.gradle.kts`
+| Bump version `0.0.16` → `0.0.17`
+| 1 ligne
+
+| `gradle/libs.versions.toml`
+| Bump constraint `slider-plugin` `0.0.15` → `0.0.16`
+| 1 ligne
+
+| `.agents/INDEX.adoc`
+| Rattrapage 8 versions 0.0.10→0.0.16 + ajout session 019
+| réécriture
+
+| `.agents/SESSIONS_HISTORY.adoc`
+| Ajout entrées 019 + rattrapage 0.0.10→0.0.16
+| réécriture
+
+| `.agents/archives/COMPLETED_TASKS_ARCHIVE_2026-08.adoc`
+| Ajout entrée session 019
+| ajout
+|===
+
+*Total* : 2 fichiers build bumpés + 3 fichiers gouvernance. Zéro code de
+production modifié. Zéro test modifié.
+
+== Décisions
+
+* **BOM 0.0.17 (pas 0.0.16)** — la BOM 0.0.16 a déjà été publiée S-062
+  (bundle `e12c25b5`) avec constraint slider 0.0.15 (pour débloquer
+  slider US-8.3a). Pour exposer le slider 0.0.16 dans la BOM, il faut
+  bump à 0.0.17 (strictement montant).
+* **Rattrapage INDEX sans rapports détaillés** — les versions 0.0.10→0.0.16
+  ont été publiées par d'autres boroughs (slider-gradle, conventions-gradle,
+  agentic-gradle) en coordination. Pas de sessions opencode MEMPHIS dédiées.
+  L'INDEX rattrape avec entrées condensées (refléxion des commits git).
+
+== Prochaine session
+
+* EPIC PUB EN COURS — BOM 0.0.17 publiée. Prochain bump à la prochaine
+  publication borough (slider 0.0.17 ou autre).
+* DOC-8 (document-gradle consomme contrats N0) — toujours 🔄 À FAIRE.
+
+== Rappels
+
+* GroupId : `education.cccp`
+* Version publiée Central : BOM 0.0.17 (dernière)
+* Artefacts N0 publiés : agent-contracts 0.0.1, codebase-contracts 0.0.1,
+  llm-pool-contracts 0.0.1, opencode-session-contracts 0.0.1,
+  i18n-contracts 0.0.2, pipeline-contracts 0.0.2
+* Règle 1 — AUCUN commit sans permission (accord pilote donné pour
+  commit + push cette session).

@@ -1,0 +1,69 @@
+= COMPLETED_TASKS_ARCHIVE — Août 2026
+:date: 2026-08-06
+
+== Session 019 — Publication BOM 0.0.17 ✅
+
+Publication BOM 0.0.17 sur Maven Central (constraint slider 0.0.15 → 0.0.16)
+suite à slider 0.0.16 (session 066 slider-gradle). Bundle
+`b432cc13-f08b-489c-8f67-c80d9d5d8b04` AUTOMATIC, POM HTTP 200 repo1.maven.org.
+BOM 0.0.16 publiée S-062 gardait constraint 0.0.15 — bump strictement montant
+à 0.0.17. Session rattrapage INDEX : versions 0.0.10→0.0.16 publiées
+hors-session opencode MEMPHIS (bump coordonnés depuis slider-gradle /
+conventions-gradle / agentic-gradle) rattrapées dans la table Sessions.
+
+Tâches terminées :
+. Bump BOM `build.gradle.kts` version 0.0.16 → 0.0.17
+. Bump BOM `gradle/libs.versions.toml` slider-plugin 0.0.15 → 0.0.16
+. `./gradlew publishAggregationToCentralPortal` BOM 0.0.17 (bundle
+  `b432cc13` AUTOMATIC)
+. Vérification repo1.maven.org : POM workspace-bom 0.0.17 HTTP 200
+. Rattrapage INDEX 0.0.10→0.0.16 (8 versions publiées hors-session opencode
+  MEMPHIS, commit git `git log` source de vérité)
+. Mise à jour SESSIONS_HISTORY + création COMPLETED_TASKS_ARCHIVE_2026-08
+
+2 fichiers build bumpés — commit + push cette session (accord pilote donné).
+
+Rapport : `.agents/sessions/019-pub-bom-0.0.17.adoc`.
+
+// ── RATTRAPAGE 0.0.10→0.0.16 (publié hors-session opencode MEMPHIS) ──
+// Ces publications ont été faites par d'autres boroughs (slider-gradle,
+// conventions-gradle, agentic-gradle) en coordination. Pas de sessions
+// opencode MEMPHIS dédiées — rattrapées ici pour traçabilité.
+
+== BOM 0.0.16 (rattrapé, 2026-08-05) — codebase 0.0.3 → 0.0.5 ✅
+
+BOM 0.0.16 publiée (commit `e0b2ae9`, bundle `e12c25b5` AUTOMATIC).
+codebase-plugin 0.0.3 → 0.0.5 (débloque slider US-8.3a koog-agents
+constraint). Constraint slider 0.0.15 gardée (publiée S-062 slider).
+
+== BOM 0.0.15 (rattrapé, 2026-08-05) — slider 0.0.14 → 0.0.15 ✅
+
+BOM 0.0.15 publiée (commit `aeae36f`, bundle `02307b00` AUTOMATIC).
+slider constraint 0.0.14 → 0.0.15 (coordination slider S-059 post-SLD-11
+expulsion `slider.capsule`).
+
+== BOM 0.0.14 (rattrapé, 2026-08-04) — slider 0.0.12 → 0.0.14 ✅
+
+BOM 0.0.14 publiée (commit `4d6f175`, bundle `c8bf911c` AUTOMATIC).
+slider constraint 0.0.12 → 0.0.14 (coordination slider S-055).
+
+== BOM 0.0.13 (rattrapé, 2026-07-06) — Kotlin 2.4.10 + conventions 0.0.3 ✅
+
+BOM 0.0.13 publiée (commits `0c7b98c` + `0b0ecf2`). Kotlin 2.3.20 → 2.4.10
++ conventions-plugin 0.0.3 constraint. Upgrade toolchain JDK 25 (session
+095 globale).
+
+== BOM 0.0.12 (rattrapé, 2026-06-30) — hyperframes 0.0.3 + asciidoctorj ✅
+
+BOM 0.0.12 publiée (commit `7aa24a8`). hyperframes 0.0.3 + asciidoctorj
+3.0.1.
+
+== BOM 0.0.11 (rattrapé, 2026-07-15) — slider 0.0.12 constraint ✅
+
+BOM 0.0.11 publiée (commit `dcb3274`). slider 0.0.12 constraint
+(coordination slider S-034 Playwright fix).
+
+== BOM 0.0.10 (rattrapé, 2026-07-15) — slider 0.0.11 constraint ✅
+
+BOM 0.0.10 publiée (commit `a4301c7`). slider 0.0.11 constraint
+(coordination slider S-034).

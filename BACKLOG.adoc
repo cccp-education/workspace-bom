@@ -15,9 +15,10 @@ BOM + 5 libraries de contrats partagés (N0). Premier artefact publié (VAGUE 1)
 **Priorite** : P0
 **Estimation** : 1 pt
 **Dependances** : PUB-0 et PUB-1 complets (DNS TXT + GPG)
-**Statut** : ✅ PUBLIÉ + VÉRIFIÉ
+**Statut** : ✅ PUBLIÉ + VÉRIFIÉ (dernière version 0.0.17 — session 019, 2026-08-06, bundle `b432cc13` AUTOMATIC)
 
-. Artefact : `education.cccp:workspace-bom:0.0.1`
+. Artefact : `education.cccp:workspace-bom:0.0.17` (dernière)
+. Versions publiées : 0.0.1 → 0.0.17 (historique complet INDEX.adoc § Publications Maven Central)
 . Verifiée sur https://central.sonatype.com/artifact/education.cccp/workspace-bom
 
 === PUB-3.02 — agent-contracts

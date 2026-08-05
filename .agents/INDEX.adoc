@@ -5,9 +5,9 @@
 
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
-_Derniere mise a jour_ : 2026-07-14
-_session terminee_ : 018 — BOM 0.0.9 + slider 0.0.10 (slider constraint 0.0.1 → 0.0.10, module name fix `slider-plugin` → `slider`). Bundle `79395cf5` AUTOMATIC.
-_Prochaine session_ : 019 — Audit alignement cross-boroughs (bakery, codex, planner versions) + bug cucumberTest Gradle 9.6.1
+_Derniere mise a jour_ : 2026-08-06
+_session terminee_ : 019 — Publication BOM 0.0.17 (constraint slider 0.0.15 → 0.0.16) suite à slider 0.0.16 (session 066 slider-gradle). Bundle `b432cc13` AUTOMATIC, POM HTTP 200 repo1.maven.org. BOM 0.0.16 publiée S-062 gardait constraint 0.0.15 — bump strictement montant à 0.0.17. Session rattrapage : INDEX était en retard (s'arrêtait 0.0.9 / S-018). Versions intermédiaires 0.0.10→0.0.16 publiées hors-session opencode MEMPHIS (bump coordonnés depuis slider-gradle / conventions-gradle / agentic-gradle) — rattrapées dans la table Sessions.
+_Prochaine session_ : 020 — prochain bump à la prochaine publication borough. DOC-8 (document-gradle consomme contrats N0) toujours 🔄 À FAIRE.
 _Session en cours_ : —
 
 '''
@@ -16,26 +16,62 @@ _Session en cours_ : —
 
 |===
 | # | Date | Type | Sujet | Score
-| 001 | 2026-06-02 | governance | Borough-isation — workspace-bom devient MEMPHIS 🎸, 22ème borough. Création .agents/sessions/, INDEX.adoc, SESSIONS_HISTORY.adoc. | 10/10
-| 002 | 2026-06-09 | ops | EPIC PUB — config Nmcp + signing + version 0.0.1 + build nmcp | 8/10
-| 003 | 2026-06-11 | ops/archi | EPIC PUB — publication 4 contrats N0 + leçon nmcp multi-module. Token regénéré, 4 builds indépendants (pattern 0124). | 9/10
-| 004 | 2026-06-13 | ops | Liquidation N0 — PUB-2.2 RELOCATION màj 5 build.gradle.kts + fix root BOM mavenCentral() + vérification 4 contrats sur Central | 9/10
-| 005 | 2026-06-14 | dev | MEM-2 Pipeline Contracts — 5ème artefact N0 (ConventionalCommit, ReleaseNotesConfig, GitLogParser, ReleaseNotesRenderer, ReleaseNotesGenerator). 22/22 JUnit5 + 11/11 Cucumber PASS. | 10/10
-| 006 | 2026-06-14 | dev | MEM-3 i18n + MEM-4 opencode-session — 6ème et 7ème artefacts N0 (~28 + ~22 tests). Mise à jour BOM. | 10/10
-| 007 | 2026-06-17 | audit | MEM-5 Migration(workspace-bom) — Audit 49 boroughs publics. 2 utilisent codebase-contracts (planner, codex). BOM ne référence que opencode-session-contracts. | 9/10
-| 008 | 2026-06-18 | bugfix | Fix runAllTests cross-borough + Dépendance codebase-gradle manquante + Import conflict AgentContext | 8.5/10
-| 009 | 2026-06-19 | bugfix+ops | runAllTests BOM coverage (ajout dashboard + jhipster) + kover codebase 80→79 | 8.5/10
-| 010 | 2026-06-24 | doc+i18n | README multilingues (20 fichiers, 10 langues × consumer+plugin) — dogfooding i18n-contracts (MEM-3). Badges Maven Central/License, switcher i18n, RTL ar/ur. | 9.5/10
-| 011 | 2026-06-25 | ops+archi | BOM 0.0.3 + publication 5 contracts N0 0.0.2 (agent, codebase, llm-pool, opencode-session, i18n). Constraints internes activées. nmcp settings plugin ajouté au BOM racine. Codex-plugin 0.0.2 re-publié. | 9/10
-| 012 | 2026-06-29 | dev+pub+sécurité | BOM 0.0.5/0.0.6 registry + annotations + SEC-1 créé. bakery-plugin 0.0.3 publié. Purge deepseek (8 boroughs) + ports 11434-11436 → 11437-11465. | 7/10
-| 013 | 2026-06-29 | pub+audit | BOM 0.0.6 publié (bundle 3b886b28). SEC-1 audit statique + dynamique : 1 borough coupable (planner-gradle, 6 tests) corrigé. 3 alertes port 11434 dans plantuml corrigées → 11438/11440. Notebook Colab mis à jour BOM 0.0.6 + port 11440. | 9/10
-| 014 | 2026-06-30 | ci | CI runAllTests workflow créé (.github/workflows/test.yml). 1er run GitHub Actions #28412781846 : 10/13 OK, 3 échecs (api-key-pool wrapper jar gitignoré, readme/slider check not found — consommateur sans check). Ollama qwen3:0.6b 11466-11467 planifié session 015. | 7/10
-| 015 | 2026-06-30 | sec | SEC-1 purge deepseek-v4-pro des docs live. BACKLOG.adoc → gpt-oss:120b-cloud. Extension cross-borough (10 repos). | 10/10
-| 016 | 2026-07-04 | dev | MEM-2 Pipeline Contracts (restauration) — pipeline-contracts supprimé session 084, restauré en baby-step DDD/TDD/BDD (22 JUnit5 + 11 Cucumber = 33/33 PASS). Publié mavenLocal 0.0.2. BOM racine constraint ajouté. | 10/10
-| 017 | 2026-07-05 | ops+dev | PUB-3.06 pipeline-contracts:0.0.2 publié Maven Central (bundle f235a1da). BOM 0.0.7 publiée (bundle ff4ead73, constraint pipeline-contracts:0.0.2). DOC-8.1 vérifié (29 unit + 14 functional + 3 cucumber @doc8 = 46 PASS). TODO DocumentI18nBridge nettoyé. Bug cucumberTest Gradle 9.6.1 (EOFException) documenté. | 9/10
+
+| 019 | 2026-08-06 | ops+pub+rattrapage | **BOM 0.0.17** (constraint slider 0.0.15 → 0.0.16) suite à slider 0.0.16 (S-066 slider-gradle). Bundle `b432cc13-f08b-489c-8f67-c80d9d5d8b04` AUTOMATIC, POM HTTP 200 repo1.maven.org. BOM 0.0.16 publiée S-062 gardait constraint 0.0.15 — bump strictement montant à 0.0.17. Session rattrapage INDEX : versions 0.0.10→0.0.16 publiées hors-session opencode MEMPHIS rattrapées dans la table. | 9/10
+
 | 018 | 2026-07-14 | ops+pub | BOM 0.0.9 + slider 0.0.10 — slider constraint 0.0.1 → 0.0.10, module name fix (`slider-plugin` → `slider`). Bundle `79395cf5` AUTOMATIC. BOM 0.0.8 → 0.0.9. | 9/10
+
+// ── RATTRAPAGE 0.0.10→0.0.16 (publié hors-session opencode MEMPHIS) ──
+// Source : git log workspace-bom. Publications coordonnées depuis d'autres boroughs.
+
+| 0.0.16 | 2026-08-05 | ops (rattrapé) | BOM 0.0.16 (codebase-plugin 0.0.3 → 0.0.5, commit `e0b2ae9`). Publié pour débloquer slider US-8.3a (koog-agents constraint). Constraint slider 0.0.15 gardée. | 9/10
+
+| 0.0.15 | 2026-08-05 | ops (rattrapé) | BOM 0.0.15 (slider constraint 0.0.14 → 0.0.15, commit `aeae36f`). Coordination slider S-059 (post-SLD-11 expulsion). | 9/10
+
+| 0.0.14 | 2026-08-04 | ops (rattrapé) | BOM 0.0.14 (slider constraint 0.0.12 → 0.0.14, commit `4d6f175`). Coordination slider S-055. | 9/10
+
+| 0.0.13 | 2026-07-06 | ops (rattrapé) | BOM 0.0.13 (Kotlin 2.3.20 → 2.4.10 + conventions-plugin 0.0.3 constraint, commits `0c7b98c` + `0b0ecf2`). Upgrade toolchain JDK 25. | 9/10
+
+| 0.0.12 | 2026-06-30 | ops (rattrapé) | BOM 0.0.12 (hyperframes 0.0.3 + asciidoctorj 3.0.1, commit `7aa24a8`). | 9/10
+
+| 0.0.11 | 2026-07-15 | ops (rattrapé) | BOM 0.0.11 (slider 0.0.12 constraint, commit `dcb3274`). Coordination slider S-034 (Playwright fix). | 9/10
+
+| 0.0.10 | 2026-07-15 | ops (rattrapé) | BOM 0.0.10 (slider 0.0.11 constraint, commit `a4301c7`). Coordination slider S-034. | 9/10
+
+| 017 | 2026-07-05 | ops+dev | PUB-3.06 pipeline-contracts:0.0.2 publié Maven Central (bundle f235a1da). BOM 0.0.7 publiée (bundle ff4ead73, constraint pipeline-contracts:0.0.2). DOC-8.1 vérifié (29 unit + 14 functional + 3 cucumber @doc8 = 46 PASS). TODO DocumentI18nBridge nettoyé. Bug cucumberTest Gradle 9.6.1 (EOFException) documenté. | 9/10
+
+| 016 | 2026-07-04 | dev | MEM-2 Pipeline Contracts (restauration) — pipeline-contracts supprimé session 084, restauré en baby-step DDD/TDD/BDD (22 JUnit5 + 11 Cucumber = 33/33 PASS). Publié mavenLocal 0.0.2. BOM racine constraint ajouté. | 10/10
+
+| 015 | 2026-06-30 | sec | SEC-1 purge deepseek-v4-pro des docs live. BACKLOG.adoc → gpt-oss:120b-cloud. Extension cross-borough (10 repos). | 10/10
+
+| 014 | 2026-06-30 | ci | CI runAllTests workflow créé (.github/workflows/test.yml). 1er run GitHub Actions #28412781846 : 10/13 OK, 3 échecs (api-key-pool wrapper jar gitignoré, readme/slider check not found — consommateur sans check). Ollama qwen3:0.6b 11466-11467 planifié session 015. | 7/10
+
+| 013 | 2026-06-29 | pub+audit | BOM 0.0.6 publié (bundle 3b886b28). SEC-1 audit statique + dynamique : 1 borough coupable (planner-gradle, 6 tests) corrigé. 3 alertes port 11434 dans plantuml corrigées → 11438/11440. Notebook Colab mis à jour BOM 0.0.6 + port 11440. | 9/10
+
+| 012 | 2026-06-29 | dev+pub+sécurité | BOM 0.0.5/0.0.6 registry + annotations + SEC-1 créé. bakery-plugin 0.0.3 publié. Purge deepseek (8 boroughs) + ports 11434-11436 → 11437-11465. | 7/10
+
+| 011 | 2026-06-25 | ops+archi | BOM 0.0.3 + publication 5 contracts N0 0.0.2 (agent, codebase, llm-pool, opencode-session, i18n). Constraints internes activées. nmcp settings plugin ajouté au BOM racine. Codex-plugin 0.0.2 re-publié. | 9/10
+
+| 010 | 2026-06-24 | doc+i18n | README multilingues (20 fichiers, 10 langues × consumer+plugin) — dogfooding i18n-contracts (MEM-3). Badges Maven Central/License, switcher i18n, RTL ar/ur. | 9.5/10
+
+| 009 | 2026-06-19 | bugfix+ops | runAllTests BOM coverage (ajout dashboard + jhipster) + kover codebase 80→79 | 8.5/10
+
+| 008 | 2026-06-18 | bugfix | Fix runAllTests cross-borough + Dépendance codebase-gradle manquante + Import conflict AgentContext | 8.5/10
+
+| 007 | 2026-06-17 | audit | MEM-5 Migration(workspace-bom) — Audit 49 boroughs publics. 2 utilisent codebase-contracts (planner, codex). BOM ne référence que opencode-session-contracts. | 9/10
+
+| 006 | 2026-06-14 | dev | MEM-3 i18n + MEM-4 opencode-session — 6ème et 7ème artefacts N0 (~28 + ~22 tests). Mise à jour BOM. | 10/10
+
+| 005 | 2026-06-14 | dev | MEM-2 Pipeline Contracts — 5ème artefact N0 (ConventionalCommit, ReleaseNotesConfig, GitLogParser, ReleaseNotesRenderer, ReleaseNotesGenerator). 22/22 JUnit5 + 11/11 Cucumber PASS. | 10/10
+
+| 004 | 2026-06-13 | ops | Liquidation N0 — PUB-2.2 RELOCATION màj 5 build.gradle.kts + fix root BOM mavenCentral() + vérification 4 contrats sur Central | 9/10
+
+| 003 | 2026-06-11 | ops/archi | EPIC PUB — publication 4 contrats N0 + leçon nmcp multi-module. Token regénéré, 4 builds indépendants (pattern 0124). | 9/10
+
+| 002 | 2026-06-09 | ops | EPIC PUB — config Nmcp + signing + version 0.0.1 + build nmcp | 8/10
+
+| 001 | 2026-06-02 | governance | Borough-isation — workspace-bom devient MEMPHIS 🎸, 22ème borough. Création .agents/sessions/, INDEX.adoc, SESSIONS_HISTORY.adoc. | 10/10
 |===
-'''
 
 == Roadmap — Etat Actuel
 
@@ -48,8 +84,68 @@ _Session en cours_ : —
 | MEM-4 | opencode-session-contracts — Protocole Thin Client opencode↔Gradle | ✅ TERMINÉ (session 006) | P1
 | MEM-5 | Audit migration workspace-bom — 16 boroughs publics, plan de migration documenté | ✅ TERMINÉ (session 007) | P1
 | DOC-8 | document-gradle — Consommer les contrats N0 (i18n, pipeline, session) | 🔄 À FAIRE | P2
-| PUB | Publication Maven Central + Plugin Portal | 🔄 EN COURS (BOM 0.0.9 + 7 contrats N0 publiés, slider 0.0.10 constraint) | P0
+| PUB | Publication Maven Central + Plugin Portal | 🔄 EN COURS (BOM 0.0.17 + 7 contrats N0 publiés, slider 0.0.16 constraint) | P0
 |===
+
+== Publications Maven Central — Historique complet
+
+[cols="2,3,2"]
+|===
+| Version | Sujet | Bundle nmcp
+
+| BOM 0.0.17
+| constraint slider 0.0.15 → 0.0.16 (S-019, suite slider 0.0.16 S-066)
+| `b432cc13`
+
+| BOM 0.0.16
+| codebase-plugin 0.0.3 → 0.0.5 (S-062 slider, débloque US-8.3a koog)
+| `e12c25b5`
+
+| BOM 0.0.15
+| slider constraint 0.0.14 → 0.0.15 (S-059 slider, post-SLD-11)
+| `02307b00`
+
+| BOM 0.0.14
+| slider constraint 0.0.12 → 0.0.14 (S-055 slider)
+| `c8bf911c`
+
+| BOM 0.0.13
+| Kotlin 2.3.20 → 2.4.10 + conventions-plugin 0.0.3 constraint (upgrade toolchain JDK 25)
+| `0c7b98c`
+
+| BOM 0.0.12
+| hyperframes 0.0.3 + asciidoctorj 3.0.1
+| `7aa24a8`
+
+| BOM 0.0.11
+| slider 0.0.12 constraint (S-034 slider)
+| `dcb3274`
+
+| BOM 0.0.10
+| slider 0.0.11 constraint (S-034 slider)
+| `a4301c7`
+
+| BOM 0.0.9
+| slider constraint 0.0.1 → 0.0.10 + module name fix (S-018)
+| `79395cf5`
+
+| BOM 0.0.7
+| pipeline-contracts 0.0.2 constraint (S-017)
+| `ff4ead73`
+
+| BOM 0.0.6
+| SEC-1 purge deepseek + ports (S-013)
+| `3b886b28`
+
+| BOM 0.0.5
+| registry boroughs + annotations:26.0.2-1 (S-012)
+| `77e1f71b`
+
+| BOM 0.0.3
+| 5 contracts N0 0.0.2 + nmcp settings (S-011)
+| (multi)
+|===
+
 '''
 
 == Fichiers Associes
@@ -62,6 +158,7 @@ _Session en cours_ : —
 | `.agents/INDEX.adoc` | Dashboard + roadmap + portefeuille | EAGER
 | `.agents/SESSIONS_HISTORY.adoc` | Historique complet des sessions | EAGER
 |===
+
 '''
 
 _Note_ : Cet index est maintenu automatiquement par l'agent en fin de session.
