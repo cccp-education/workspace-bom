@@ -56,7 +56,7 @@ readme-plugin = "0.0.1"
 hyperframes-plugin = "0.0.3"
 graphify-plugin = "0.0.2"
 api-key-pool-plugin = "0.0.1"
-codebase-plugin = "0.0.3"
+codebase-plugin = "0.0.5"
 capsule-plugin = "0.0.1"
 conventions-plugin = "0.0.3"
 
