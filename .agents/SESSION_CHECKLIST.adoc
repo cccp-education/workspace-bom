@@ -19,10 +19,46 @@
 . Historique : `.agents/SESSIONS_HISTORY.adoc` (ajouter entrée)
 . Tests : `.agents/TEST_COVERAGE_ANALYSIS.adoc` (si tests modifiés)
 . Archivage : `.agents/archives/COMPLETED_TASKS_ARCHIVE_{mois}.adoc`
-. Synchronisation backlog : `BACKLOG.adoc` + `TODO.adoc`
+. Synchronisation backlog : `BACKLOG.adoc` + `TODO.adoc` (voir détail ci-dessous)
 
-.RÈGLE CRITIQUE
-Aucune étape ne peut être marquée OK si le fichier n'a pas été effectivement modifié et vérifié.
+== Étape 7 — Synchronisation backlog (détail obligatoire)
+
+*Récurremment mal appliquée* : la table de statut final est mise à jour
+mais les *sections détaillées* des EPICs gardent des marqueurs périmés
+(`🟡 à faire`, `⏳ À FAIRE`, `À PLANIFIER`, `EN PAUSE`) alors que l'INDEX
+marque `✅ TERMINÉ`. Faux positif qui fausse l'ouverture de session suivante.
+
+Portée de la synchronisation (à exécuter à CHAQUE clôture de session) :
+
+. *Table de statut final* — si une US/EPIC est terminé cette session,
+  marquer `✅ TERMINÉ (S-NNN)` dans la table agrégée.
+. *Sections détaillées des EPICs* — pour CHAQUE US/EPIC terminé cette
+  session, mettre à jour la colonne `Statut` dans le tableau détaillé de
+  l'EPIC (pas seulement la table agrégée). Marqueurs à remplacer :
+  `🟡` → `✅`, `⏳ À FAIRE` → `✅ TERMINÉ (S-NNN)`, `À PLANIFIER` →
+  `✅ TERMINÉ` ou `✅ CADUQUE`, `EN PAUSE` → `✅ TERMINÉ`.
+. *En-têtes de section* — si l'EPIC est terminé, remplacer `🟡 EPIC X
+  (Session NNN — Cadrage/EN PAUSE/à planifier)` par `✅ EPIC X (Session
+  NNN — TERMINÉ)`.
+. *Paragraphes de statut* — mettre à jour le paragraphe récapitulatif
+  sous la table de statut final (versions publiées, sessions de
+  référence, dependencies clôturées).
+. *TODO.adoc* (si présent) — cocher les items terminés `[ ]` → `[x]`,
+  ajouter les nouveaux items découverts.
+
+Vérification post-synchronisation (obligatoire avant de marquer l'étape 7 OK) :
+
+----
+grep -n "🟡\|⏳\|À FAIRE\|À PLANIFIER\|EN PAUSE\|à planifier\|à faire" BACKLOG.adoc
+----
+
+Si la commande retourne des matches pour des EPICs/US *déjà terminés*
+(selon l'INDEX), la synchronisation n'est *pas* terminée — corriger les
+marqueurs et re-vérifier.
+
+*Note* : cette vérification ne s'applique qu'aux EPICs/US *terminés*. Un
+marqueur `🟡` pour un EPIC *réellement en cours* ou *à planifier* est
+légitime et ne doit pas être supprimé.
 
 == Git — Règles
 
