@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "education.cccp"
-version = "0.0.17"
+version = "0.0.18"
 
 javaPlatform {
     allowDependencies()
@@ -97,7 +97,7 @@ dependencies {
         api("com.microsoft.playwright:playwright:1.52.0")
 
         // ── Internal education.cccp contracts (N0) — source unique de vérité ──
-        api("education.cccp:agent-contracts:0.0.2")
+        api("education.cccp:agent-contracts:0.0.3")
         api("education.cccp:codebase-contracts:0.0.2")
         api("education.cccp:llm-pool-contracts:0.0.2")
         api("education.cccp:opencode-session-contracts:0.0.2")

@@ -1,0 +1,55 @@
+= Session 020 — PLN-VERIFY US-1 BOM cross-borough (agent-contracts 0.0.3)
+:date: 2026-08-11
+:borough: MEMPHIS (workspace-bom)
+:epic: PLN-VERIFY
+:us: PLN-VERIFY-1
+:type: dev+pub
+:score: 9/10
+
+== Mission
+
+US-1 de l'EPIC PLN-VERIFY (cadré S-063 planner-gradle, exécuté en
+cross-borough depuis MEMPHIS). Étendre `contracts.agent.GradleTask`
+(N0) avec 3 champs de vérification + 2 invariants. Bumper
+`agent-contracts` 0.0.2 → 0.0.3 et publier sur Maven Central. Propager
+la constraint dans le BOM racine (0.0.17 → 0.0.18).
+
+== Baby-step TDD
+
+* RED : `GradleTaskVerifyTest` 12 unit tests — `Unresolved reference
+  'expectedOutput'/'maxRetries'/'verifyHook'`.
+* GREEN : `GradleTask` (`AgentState.kt:126`) +3 champs + 2 invariants
+  `init` (expectedOutput non-blank, maxRetries 1..10).
+* REFACTOR : none — code minimal.
+
+Defaults backward compat : `"BUILD SUCCESSFUL"`/`3`/`null` préservent
+le comportement du bridge codebase `VibecodingGraph.extractCurrentStep`.
+
+== Publications Maven Central
+
+* `agent-contracts` 0.0.2 → 0.0.3 — bundle `cd4d2d44-4324-4224-9e38-
+  b39a0a2d3ed3` AUTOMATIC.
+* BOM racine 0.0.17 → 0.0.18 (constraint agent-contracts 0.0.3) —
+  bundle `3d2702bf-e75a-49ed-a67a-0e7d6b4e63e4` AUTOMATIC.
+
+== Tests
+
+* agent-contracts : 12 new + 9 existing + 3 Plan = 24 unit VERT
+* agent-contracts cucumber : 31 scénarios VERT
+* planner-gradle non-régression : `:planner-plugin:check` VERT contre
+  0.0.3 (38 unit + 8 cucumber PLN-CONTRACTS + 4 cucumber PLN-VIBE +
+  ToolCatalog).
+
+== Fichiers modifiés
+
+* `agent-contracts/src/main/kotlin/contracts/agent/AgentState.kt` —
+  GradleTask +3 champs + 2 invariants
+* `agent-contracts/src/test/kotlin/contracts/agent/
+  GradleTaskVerifyTest.kt` — nouveau, 12 unit
+* `agent-contracts/build.gradle.kts` — version 0.0.3
+* `build.gradle.kts` (BOM racine) — constraint 0.0.3 + version 0.0.18
+
+== Prochaine session MEMPHIS
+
+Prochain bump à la prochaine publication borough. DOC-8
+(document-gradle consomme contrats N0) toujours 🔄 À FAIRE.

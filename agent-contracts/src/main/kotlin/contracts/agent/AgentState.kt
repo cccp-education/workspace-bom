@@ -128,7 +128,10 @@ data class GradleTask(
     val gradleTask: String,
     val toolType: TaskType = TaskType.GRADLE,
     val target: String = "",
-    val project: String = ""
+    val project: String = "",
+    val expectedOutput: String = "BUILD SUCCESSFUL",
+    val maxRetries: Int = 3,
+    val verifyHook: String? = null
 ) {
     init {
         require(description.isNotBlank()) {
@@ -139,6 +142,12 @@ data class GradleTask(
         }
         require(!(toolType != TaskType.GRADLE && target.isBlank())) {
             "GradleTask.target must not be blank when toolType is $toolType"
+        }
+        require(expectedOutput.isNotBlank()) {
+            "GradleTask.expectedOutput must not be blank"
+        }
+        require(maxRetries in 1..10) {
+            "GradleTask.maxRetries must be between 1 and 10, got $maxRetries"
         }
     }
 }
