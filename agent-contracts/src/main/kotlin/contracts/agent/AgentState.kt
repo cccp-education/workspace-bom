@@ -93,13 +93,52 @@ data class Epic(
     val userStories: List<UserStory> = emptyList()
 )
 
+/**
+ * Plan de décomposition — structure de données pure N0.
+ * Source unique de vérité pour planner (N2), codebase (N1), runner (N3).
+ */
+data class Plan(
+    val title: String,
+    val epics: List<Epic>,
+    val totalPoints: Int,
+    val estimatedSessions: String
+)
+
 data class UserStory(
     val description: String,
     val tasks: List<GradleTask> = emptyList()
 )
 
+/**
+ * Type of tool a [GradleTask] drives. A plan may emit multi-tool tasks:
+ * [GRADLE] invokes a Gradle task via `./gradlew`, while [EDIT_FILE] and
+ * [EXEC_SHELL] delegate to the codebase vibecoding hub (ToolRegistry).
+ *
+ * Default is [GRADLE] to preserve the legacy contract of `PlannerIntegration`
+ * (codebase) which only consumes `gradleTask`.
+ */
+enum class TaskType {
+    GRADLE,
+    EDIT_FILE,
+    EXEC_SHELL
+}
+
 data class GradleTask(
     val description: String,
     val gradleTask: String,
+    val toolType: TaskType = TaskType.GRADLE,
+    val target: String = "",
     val project: String = ""
-)
+) {
+    init {
+        require(description.isNotBlank()) {
+            "GradleTask.description must not be blank"
+        }
+        require(!(toolType == TaskType.GRADLE && gradleTask.isBlank())) {
+            "GradleTask.gradleTask must not be blank when toolType is GRADLE"
+        }
+        require(!(toolType != TaskType.GRADLE && target.isBlank())) {
+            "GradleTask.target must not be blank when toolType is $toolType"
+        }
+    }
+}
