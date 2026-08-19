@@ -5,9 +5,9 @@
 
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
-_Derniere mise a jour_ : 2026-08-11
-_session terminee_ : 020 — PLN-VERIFY US-1 BOM cross-borough. Étendu `contracts.agent.GradleTask` (N0) avec `expectedOutput`/`maxRetries`/`verifyHook` + 2 invariants (non-blank, 1..10). Baby-step TDD RED → GREEN (12 unit `GradleTaskVerifyTest` + 9 non-régression + 31 cucumber VERT). Bump `agent-contracts` 0.0.2 → 0.0.3 (bundle `cd4d2d44` AUTOMATIC). Bump BOM 0.0.17 → 0.0.18 (bundle `3d2702bf` AUTOMATIC, constraint agent-contracts 0.0.3). Non-régression planner `:check` VERT contre 0.0.3. Cross-borough MEMPHIS (planner-gradle S-064).
-_Prochaine session_ : 021 — prochain bump à la prochaine publication borough. DOC-8 (document-gradle consomme contrats N0) toujours 🔄 À FAIRE.
+_Derniere mise a jour_ : 2026-08-19 (rattrapage gouvernance 0.0.19→0.0.22 + fix catalogue libs.versions.toml désynchronisé)
+_session terminee_ : 021 — Rattrapage gouvernance MEMPHIS (depuis codex-gradle S-075). 4 versions publiées hors-session opencode MEMPHIS rattrapées dans INDEX + SESSIONS_HISTORY : BOM 0.0.19 (slider 0.0.16→0.0.18 + codebase 0.0.5→0.0.8 + bakery 0.0.3→0.0.6 + plantuml 0.0.3→0.0.4, commit `ce80bf0`, bundle `2160075f`), BOM 0.0.20 (bakery 0.0.6→0.0.8, commit `04729ed`), BOM 0.0.21 (bakery 0.0.8→0.0.9, commit `4b94171`), BOM 0.0.22 (codex 0.0.2→0.0.3, commit `78c34e4`, bundle `f913774d`). Bug désynchronisation catalogue corrigé : `workspace-bom = "0.0.20"` → `"0.0.22"` dans `gradle/libs.versions.toml` (4 bumps manqués — build.gradle.kts était déjà à 0.0.22, le catalogue n'avait pas suivi). Table Publications Maven Central enrichie (+4 entrées). Roadmap PUB mise à jour (BOM 0.0.22). Zéro code de production modifié (catalogue = metadata, pas logique), zéro secret, zéro bump BOM.
+_Prochaine session_ : 022 — prochain bump à la prochaine publication borough. DOC-8 (document-gradle consomme contrats N0) toujours 🔄 À FAIRE.
 _Session en cours_ : —
 
 '''
@@ -16,6 +16,8 @@ _Session en cours_ : —
 
 |===
 | # | Date | Type | Sujet | Score
+
+| 021 | 2026-08-19 | ops+rattrapage | **Rattrapage gouvernance MEMPHIS 0.0.19→0.0.22** (depuis codex-gradle S-075). 4 versions publiées hors-session rattrapées + bug catalogue `libs.versions.toml` corrigé (`workspace-bom = "0.0.20"` → `"0.0.22"`, build.gradle.kts était déjà à 0.0.22). | 9/10
 
 | 020 | 2026-08-11 | dev+pub | **PLN-VERIFY US-1 BOM cross-borough** — étendu `contracts.agent.GradleTask` (N0) avec `expectedOutput`/`maxRetries`/`verifyHook` + 2 invariants (non-blank, 1..10). Baby-step TDD RED → GREEN (12 unit `GradleTaskVerifyTest` + 9 non-régression + 3 `PlanTest` + 31 cucumber VERT). Bump `agent-contracts` 0.0.2 → 0.0.3 (bundle `cd4d2d44` AUTOMATIC). Bump BOM 0.0.17 → 0.0.18 (bundle `3d2702bf` AUTOMATIC, constraint agent-contracts 0.0.3). Non-régression planner `:check` VERT contre 0.0.3. Cross-borough MEMPHIS (planner-gradle S-064). | 9/10
 
@@ -86,7 +88,7 @@ _Session en cours_ : —
 | MEM-4 | opencode-session-contracts — Protocole Thin Client opencode↔Gradle | ✅ TERMINÉ (session 006) | P1
 | MEM-5 | Audit migration workspace-bom — 16 boroughs publics, plan de migration documenté | ✅ TERMINÉ (session 007) | P1
 | DOC-8 | document-gradle — Consommer les contrats N0 (i18n, pipeline, session) | 🔄 À FAIRE | P2
-| PUB | Publication Maven Central + Plugin Portal | 🔄 EN COURS (BOM 0.0.18 + agent-contracts 0.0.3 + 7 contrats N0 publiés, slider 0.0.16 constraint) | P0
+| PUB | Publication Maven Central + Plugin Portal | 🔄 EN COURS (BOM 0.0.22 + agent-contracts 0.0.3 + 7 contrats N0 publiés, slider 0.0.18 constraint, codebase 0.0.8, codex 0.0.3, bakery 0.0.9, plantuml 0.0.4) | P0
 |===
 
 == Publications Maven Central — Historique complet
@@ -94,6 +96,22 @@ _Session en cours_ : —
 [cols="2,3,2"]
 |===
 | Version | Sujet | Bundle nmcp
+
+| BOM 0.0.22
+| constraint codex-plugin 0.0.2 → 0.0.3 (S-074 sync, commit `78c34e4`)
+| `f913774d`
+
+| BOM 0.0.21
+| constraint bakery-plugin 0.0.8 → 0.0.9 (S207 bakery, commit `4b94171`)
+| (AUTOMATIC)
+
+| BOM 0.0.20
+| constraint bakery-plugin 0.0.6 → 0.0.8 (S206 bakery, commit `04729ed`, bundle bakery `a3931440`)
+| (AUTOMATIC)
+
+| BOM 0.0.19
+| constraint slider 0.0.16 → 0.0.18 + codebase 0.0.5 → 0.0.8 + bakery 0.0.3 → 0.0.6 + plantuml 0.0.3 → 0.0.4 (S-073 N1 adapter consumption, commit `ce80bf0`)
+| `2160075f`
 
 | BOM 0.0.18
 | constraint agent-contracts 0.0.2 → 0.0.3 (S-020, PLN-VERIFY US-1 — GradleTask +3 champs verify + 2 invariants)

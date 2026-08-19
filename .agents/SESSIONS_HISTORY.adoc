@@ -5,6 +5,19 @@ _Date creation : 2026-06-02_
 |===
 | # | Date | Type | Sujet | Score
 
+| 021 | 2026-08-19 | ops+rattrapage | **Rattrapage gouvernance MEMPHIS 0.0.19→0.0.22** (depuis codex-gradle S-075). 4 versions publiées hors-session opencode MEMPHIS rattrapées dans INDEX + SESSIONS_HISTORY + table Publications Maven Central. Bug désynchronisation catalogue `gradle/libs.versions.toml` corrigé : `workspace-bom = "0.0.20"` → `"0.0.22"` (4 bumps manqués — build.gradle.kts était déjà à 0.0.22, le catalogue n'avait pas suivi depuis BOM 0.0.19). Versions rattrapées : BOM 0.0.19 (slider 0.0.16→0.0.18 + codebase 0.0.5→0.0.8 + bakery 0.0.3→0.0.6 + plantuml 0.0.3→0.0.4, commit `ce80bf0`, bundle `2160075f`), BOM 0.0.20 (bakery 0.0.6→0.0.8, commit `04729ed`), BOM 0.0.21 (bakery 0.0.8→0.0.9, commit `4b94171`), BOM 0.0.22 (codex 0.0.2→0.0.3, commit `78c34e4`, bundle `f913774d`). Zéro code de production modifié (catalogue = metadata, pas logique), zéro secret, zéro bump BOM. | 9/10
+
+// ── RATTRAPAGE 0.0.19→0.0.22 (publié hors-session opencode MEMPHIS) ──
+// Source : git log workspace-bom. Publications coordonnées depuis d'autres boroughs.
+
+| 0.0.22 | 2026-08-19 | ops (rattrapé) | BOM 0.0.22 (codex-plugin 0.0.2 → 0.0.3, commit `78c34e4`). Synchronisation amont après publication codex-plugin:0.0.3 (bundle `3b4d1915`). Bundle BOM `f913774d` AUTOMATIC. | 9/10
+
+| 0.0.21 | 2026-08-18 | ops (rattrapé) | BOM 0.0.21 (bakery-plugin 0.0.8 → 0.0.9, commit `4b94171`). Coordination bakery S207. | 9/10
+
+| 0.0.20 | 2026-08-18 | ops (rattrapé) | BOM 0.0.20 (bakery-plugin 0.0.6 → 0.0.8, commit `04729ed`). Bakery-plugin 0.0.8 published Central (bundle `a3931440`) — aligns catalog on Central 0.0.7 + pulls document-plugin 0.0.2. | 9/10
+
+| 0.0.19 | 2026-08-17 | ops (rattrapé) | BOM 0.0.19 (slider 0.0.16 → 0.0.18 + codebase 0.0.5 → 0.0.8 + bakery 0.0.3 → 0.0.6 + plantuml 0.0.3 → 0.0.4, commit `ce80bf0`). Constraint alignment S-073 N1 adapter consumption. Bundle `2160075f` AUTOMATIC. | 9/10
+
 | 019 | 2026-08-06 | ops+pub+rattrapage | **BOM 0.0.17** (constraint slider 0.0.15 → 0.0.16) suite à slider 0.0.16 (S-066 slider-gradle). Bundle `b432cc13-f08b-489c-8f67-c80d9d5d8b04` AUTOMATIC, POM HTTP 200 repo1.maven.org. BOM 0.0.16 publiée S-062 gardait constraint 0.0.15 — bump strictement montant à 0.0.17. Session rattrapage INDEX : versions 0.0.10→0.0.16 publiées hors-session opencode MEMPHIS (bump coordonnés depuis slider-gradle / conventions-gradle / agentic-gradle) rattrapées dans la table. | 9/10
 
 // ── RATTRAPAGE 0.0.10→0.0.16 (publié hors-session opencode MEMPHIS) ──
