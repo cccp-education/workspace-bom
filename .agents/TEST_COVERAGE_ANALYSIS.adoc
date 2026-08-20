@@ -1,6 +1,34 @@
 = TEST_COVERAGE_ANALYSIS — workspace-bom (MEMPHIS)
-:date: 2026-07-04
-:session: 016
+:date: 2026-08-21
+:session: 022
+
+== runtime-contracts (EPIC RUNTIME-CONTRACTS — session 022)
+
+[cols="3,2,2,2"]
+|===
+| Classe | JUnit5 | Cucumber | Total
+| LlmProviderKind | (enum, couvert par ByokLlmConfig) | — | —
+| ByokLlmConfig | 8 | 2 | 10
+| SessionBootstrap | 5 | 2 | 7
+| ToolExposure | 2 | — | 2
+| LearnerProfile | 6 | 2 | 8
+| SessionMemoryContract (interface) | 2 | 2 | 4
+| FormationTurn | 3 | — | 3
+| InteractionProtocol (interface) | 2 | — | 2
+| SessionId | 2 | — | 2
+| SessionSummary | 2 | — | 2
+| FormationRuntimePort (interface) | 1 | 1 | 2
+| MaterialUpdateContract | 3 | — | 3
+| MaterialUpdateResult | 3 | — | 3
+| MaterialUpdateResolver (interface) | 5 | 2 | 7
+| **Total** | **43** | **11** | **55** (1 background)
+|===
+
+*Note* : runtime-contracts consomme opencode-session-contracts (SessionPrompt,
+SessionResponse, SessionStatus, ToolCallRecord) et i18n-contracts
+(SupportedLanguage). Les tests utilisent des fakes anonymes pour les
+interfaces (SessionMemoryContract, InteractionProtocol, FormationRuntimePort,
+MaterialUpdateResolver) — pattern DDD contrat.
 
 == i18n-contracts (MEM-3)
 

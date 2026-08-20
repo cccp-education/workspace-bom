@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "education.cccp"
-version = "0.0.23"
+version = "0.0.24"
 
 javaPlatform {
     allowDependencies()
@@ -103,6 +103,7 @@ dependencies {
         api("education.cccp:opencode-session-contracts:0.0.2")
         api("education.cccp:i18n-contracts:0.0.2")
         api("education.cccp:pipeline-contracts:0.0.2")
+        api("education.cccp:runtime-contracts:0.0.1")
 
         // ── Internal education.cccp plugins (N2) — pilotés par le BOM ───────
         api(libs.bakery.plugin)

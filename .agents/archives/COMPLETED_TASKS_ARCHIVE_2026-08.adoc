@@ -1,5 +1,29 @@
 = COMPLETED_TASKS_ARCHIVE — Août 2026
-:date: 2026-08-06
+:date: 2026-08-21
+
+== Session 022 — EPIC RUNTIME-CONTRACTS TERMINÉ 7/7 US ✅
+
+EPIC RUNTIME-CONTRACTS TERMINÉ 7/7 US. 8e artefact N0 `runtime-contracts:0.0.1`
+créé et publié Maven Central. Contrats purs du bootstrapping d'une session
+formation agentique (SessionBootstrap, ByokLlmConfig, LearnerProfile,
+SessionMemoryContract, FormationTurn, InteractionProtocol, FormationRuntimePort,
+MaterialUpdateContract/Resolver/Result, SessionId, SessionSummary, ToolExposure,
+LlmProviderKind). 13 fichiers prod, 7 fichiers test, 1 feature Cucumber 11 scénarios.
+55 tests 0 FAIL (43 unit + 11 cucumber). Baby-step TDD/BDD strict 3 niveaux.
+Publications Maven Central : runtime-contracts 0.0.1 (bundle `04af4f31`) + BOM 0.0.24
+(bundle `d3b82434`). Débloque codex CDX-RC-04 (pont RAG SessionMemoryContract).
+Zéro régression (nouvel artefact, zéro consommateur antérieur).
+
+Tâches terminées :
+. US-1 SessionBootstrap + ByokLlmConfig (13 unit, RED → GREEN → REFACTOR)
+. US-2 ToolExposure simplifié (2 unit)
+. US-3 SessionMemoryContract + LearnerProfile (8 unit)
+. US-4 InteractionProtocol + FormationTurn (5 unit)
+. US-5 FormationRuntimePort + SessionId + SessionSummary (5 unit)
+. US-6 MaterialUpdateContract + MaterialUpdateResolver (10 unit, bug test fix)
+. US-7 Publication Maven Central runtime-contracts 0.0.1 + BOM 0.0.24
+. Cucumber BDD rc_runtime_contracts.feature 11 scénarios
+. Clôture session 7 étapes (rapport, PROMPT_REPRISE, INDEX, HISTORY, TEST_COVERAGE, archives, backlog)
 
 == Session 019 — Publication BOM 0.0.17 ✅
 

@@ -1,36 +1,32 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-018 — BOM 0.0.9 + slider 0.0.10 (terminée)
+022 — EPIC RUNTIME-CONTRACTS TERMINÉ 7/7 US (terminée)
 
-== Session 018 terminée
+== Session 022 terminée
 
-BOM 0.0.9 publiée (bundle `79395cf5`). slider constraint 0.0.1 → 0.0.10 +
-correction module name (`slider-plugin` → `slider`). BOM 0.0.8 → 0.0.9.
+EPIC RUNTIME-CONTRACTS TERMINÉ 7/7 US. 8e artefact N0 `runtime-contracts:0.0.1`
+publié Maven Central (bundle `04af4f31`). BOM 0.0.24 publiée (bundle `d3b82434`).
+13 fichiers prod, 7 fichiers test, 1 feature, 55 tests 0 FAIL (43 unit + 11 cucumber).
+Débloque codex CDX-RC-04 (pont RAG SessionMemoryContract).
 
-== Mission session 019
+== Mission session 023
 
 Audit alignement cross-boroughs + mise à jour des consommateurs BOM.
 
-=== Priorité 1 — Audit alignement BOM 0.0.9 cross-boroughs
-. Lister tous les boroughs consommant `workspace-bom` (grep `workspace-bom`
-  dans `foundry/public/**/build.gradle.kts` et `libs.versions.toml`).
-. Pour chacun, vérifier la version référencée (0.0.6/0.0.7 vs 0.0.9).
-. Planifier montée de version globale (0.0.9) — sans forcer, juste inventorier.
-. Vérifier que les autres plugins (bakery 0.0.3, codex 0.0.2, planner 0.0.1,
-  plantuml 0.0.1, readme 0.0.1, hyperframes 0.0.3, graphify 0.0.2,
-  api-key-pool 0.0.1, codebase 0.0.3, capsule 0.0.1) sont à jour vs Central.
+=== Priorité 1 — Vérifier propagation Maven Central
+. `runtime-contracts:0.0.1` disponible sur repo1.maven.org (propagation 15-30 min)
+. `workspace-bom:0.0.24` disponible sur repo1.maven.org
+. Vérifier https://central.sonatype.com/artifact/education.cccp/runtime-contracts
 
-=== Priorité 2 — Bug cucumberTest Gradle 9.6.1
-. `document-plugin` cucumberTest échoue avec `java.io.EOFException`
-  (`getPreviousFailedTestClasses` — fichiers binaires vides).
-. Investiguer : bug Gradle 9.6.1 connu ? Contournement propre ?
-. Voir `conventions-gradle` CucumberConventionsPlugin.
+=== Priorité 2 — Débloquer codex CDX-RC-04
+. Codex peut désormais `implementation("education.cccp:runtime-contracts:0.0.1")`
+. Démarrer US CDX-RC-04 en baby-step TDD/BDD (pont RAG SessionMemoryContract,
+  persistence pgvector `codex_learner_profiles`, domaine `codex.profile`)
 
-=== Priorité 3 — Migrer document-gradle vers BOM 0.0.9
-. `document-plugin/gradle/libs.versions.toml` : `workspace-bom` version → `"0.0.9"`.
-. `document-plugin/build.gradle.kts` : `platform("education.cccp:workspace-bom:0.0.9")`.
-. `./gradlew compileKotlin` verify.
+=== Priorité 3 — Audit alignement BOM 0.0.24 cross-boroughs
+. Lister tous les boroughs consommant `workspace-bom`.
+. Pour chacun, vérifier la version référencée (vs 0.0.24).
 
 == Règles
 - Voir `AGENT.adoc` — zéro initiative, permission explicite pour commit/push.

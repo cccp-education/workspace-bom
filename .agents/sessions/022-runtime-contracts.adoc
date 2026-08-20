@@ -1,0 +1,124 @@
+= Session 022 — EPIC RUNTIME-CONTRACTS TERMINÉ 7/7 US
+:session: 022
+:date: 2026-08-21
+:borough: MEMPHIS (workspace-bom)
+:status: TERMINÉ
+:epic: RUNTIME-CONTRACTS
+
+== Résumé
+
+EPIC RUNTIME-CONTRACTS TERMINÉ 7/7 US. Création du 8e artefact N0
+`runtime-contracts:0.0.1` (contrats purs du bootstrapping d'une session
+formation agentique) + publication Maven Central + BOM 0.0.24.
+Débloque codex CDX-RC-04 (pont RAG SessionMemoryContract).
+
+== US réalisées
+
+=== US-1 — SessionBootstrap + ByokLlmConfig (baby-step TDD, ~13 unit)
+- `LlmProviderKind` enum (OLLAMA_LOCAL/OLLAMA_CLOUD/GEMINI/HUGGINGFACE/CUSTOM)
+- `ByokLlmConfig` data class (provider, model, baseUrl?, apiKeyEnvVar?, poolPorts)
+  - Invariants : OLLAMA_LOCAL=baseUrl requis, GEMINI/HUGGINGFACE/CUSTOM=apiKeyEnvVar requis
+  - OLLAMA_CLOUD poolPorts défaut 11437..11465
+- `SessionBootstrap` data class (learnerId, formationId, byokLlmConfig, workspaceRoot, locale)
+  - Invariants : learnerId/formationId/workspaceRoot non-blank, locale défaut English
+- 13 unit tests (8 ByokLlmConfig + 5 SessionBootstrap)
+
+=== US-2 — ToolExposure simplifié (doc only, ~2 unit)
+- `ToolExposure` data class (publicBoroughsRoot, rule) — formalise le guardrail
+  `foundry/public` vs `foundry/private`. Pas de sealed enum roles.
+- 2 unit tests
+
+=== US-3 — SessionMemoryContract + LearnerProfile (baby-step TDD, ~8 unit)
+- `LearnerProfile` data class (learnerId, formationId, completedModules, currentModule,
+  progressionPct 0-100, comprehensionScore 0-100, weakPoints, lastInteractionAt, annotations)
+  - Invariants : learnerId/formationId non-blank, progressionPct/comprehensionScore 0..100
+- `SessionMemoryContract` interface (save(profile), load(learnerId, formationId): LearnerProfile?)
+- 8 unit tests (6 LearnerProfile + 2 SessionMemoryContract avec FakeSessionMemory)
+
+=== US-4 — InteractionProtocol + FormationTurn (baby-step TDD, ~5 unit)
+- `FormationTurn` data class (prompt: SessionPrompt, response: SessionResponse, timestamp: Instant)
+  - Consomme opencode-session-contracts (pas de duplication — toolCalls déjà dans SessionResponse)
+- `InteractionProtocol` interface (nextTurn(current: FormationTurn): FormationTurn?)
+  - null = fin de session
+- 5 unit tests (3 FormationTurn + 2 InteractionProtocol avec FakeInteractionProtocol)
+
+=== US-5 — FormationRuntimePort + SessionId + SessionSummary (baby-step TDD, ~5 unit)
+- `SessionId` data class (value: String, invariant non-blank)
+- `SessionSummary` data class (learnerId, formationId, totalTurns, finalProfile, endedAt)
+  - Invariants : learnerId/formationId non-blank, totalTurns >= 0
+- `FormationRuntimePort` interface (startSession, executeTurn, endSession)
+  - Port public OSS, implémentation privée workspace-gradle
+- 5 unit tests (2 SessionId + 2 SessionSummary + 1 FormationRuntimePort avec FakeFormationRuntime)
+
+=== US-6 — MaterialUpdateContract + MaterialUpdateResolver (baby-step TDD, ~10 unit)
+- `MaterialUpdateContract` data class (remoteUrl, currentVersion?, latestVersion?)
+  - Invariant : remoteUrl non-blank
+- `MaterialUpdateResult` sealed interface (UpToDate/Updated/Error)
+- `MaterialUpdateResolver` interface (fetchLatest, pull)
+- 10 unit tests (3 MaterialUpdateContract + 3 MaterialUpdateResult + 5 MaterialUpdateResolver)
+- Bug test fix : `pull returns Updated` — latestVersion représente current, pas target
+
+=== US-7 — Publication Maven Central
+- `runtime-contracts:0.0.1` publié Maven Central (bundle `04af4f31-22bc-4e9b-9b2d-856b39822235` AUTOMATIC)
+- BOM 0.0.23 → 0.0.24 (constraint runtime-contracts:0.0.1, bundle `d3b82434-a4f8-41d2-8a61-f06bd998388d` AUTOMATIC)
+- Catalogue `libs.versions.toml` synchronisé (workspace-bom = "0.0.24")
+
+== Cucumber BDD (3e niveau tests)
+
+Feature `rc_runtime_contracts.feature` 11 scénarios `@runtime @contracts` :
+1. ByokLlmConfig ollama local requires baseUrl
+2. ByokLlmConfig gemini requires apiKeyEnvVar
+3. SessionBootstrap requires non-blank learnerId
+4. SessionBootstrap creates session with English default locale
+5. LearnerProfile defaults are zero and empty
+6. LearnerProfile progressionPct must be 0 to 100
+7. SessionMemoryContract save and load profile
+8. SessionMemoryContract load returns null when not found
+9. FormationRuntimePort start execute end lifecycle
+10. MaterialUpdateResolver pull returns UpToDate when target equals current
+11. MaterialUpdateResolver pull returns Updated when target differs
+
+Runner dédié `CucumberTestRunner` + `RuntimeContractsStepDefs` 16 step defs.
+11/11 scénarios PASSED.
+
+== Métriques
+
+- *Tests* : 55 tests 0 FAIL (43 unit + 11 cucumber + 1 background)
+  - Baseline : 0 (nouveau module) → +55
+- *Fichiers prod* : 13 créés
+  (LlmProviderKind, ByokLlmConfig, SessionBootstrap, ToolExposure, LearnerProfile,
+  SessionMemoryContract, FormationTurn, InteractionProtocol, SessionId, SessionSummary,
+  FormationRuntimePort, MaterialUpdateContract, MaterialUpdateResult, MaterialUpdateResolver)
+- *Fichiers test* : 7 créés
+  (SessionBootstrapTest, ToolExposureTest, LearnerProfileTest, FormationTurnTest,
+  FormationRuntimePortTest, MaterialUpdateContractTest, CucumberTestRunner, RuntimeContractsStepDefs)
+- *Feature* : 1 créée (`rc_runtime_contracts.feature`)
+- *Build* : `check` BUILD SUCCESSFUL
+- *Publications Maven Central* : 2 (runtime-contracts 0.0.1 + BOM 0.0.24)
+
+== Méthode
+
+Baby-step TDD/BDD strict (pattern DDD/TDD 3 niveaux) :
+RED (Unresolved reference) → GREEN (code minimal) → REFACTOR (check vert)
+pour chaque US. Cucumber BDD pour le 3e niveau.
+
+== Dépendances cross-borough
+
+- Consomme `opencode-session-contracts:0.0.2` (SessionPrompt, SessionResponse, SessionStatus, ToolCallRecord)
+- Consomme `i18n-contracts:0.0.2` (SupportedLanguage)
+- Débloque codex CDX-RC-04 (pont RAG SessionMemoryContract — codex peut désormais
+  `implementation("education.cccp:runtime-contracts:0.0.1")` et démarrer l'US)
+
+== Zéro régression
+
+Nouvel artefact N0, zéro consommateur actuel avant cette session.
+Pas de risque de casser un borough existant. Backward compat total.
+
+== Publications Maven Central
+
+[cols="2,3,3"]
+|===
+| Artefact | Bundle | Statut
+| runtime-contracts:0.0.1 | `04af4f31-22bc-4e9b-9b2d-856b39822235` | AUTOMATIC (publishing)
+| workspace-bom:0.0.24 | `d3b82434-a4f8-41d2-8a61-f06bd998388d` | AUTOMATIC (publishing)
+|===

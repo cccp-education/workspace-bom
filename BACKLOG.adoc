@@ -4,7 +4,7 @@
 :toc: left
 :sectnums:
 
-_Dernière mise à jour : 2026-08-19 (rattrapage S-021 — BOM 0.0.22, bug catalogue libs.versions.toml corrigé)_
+_Dernière mise à jour : 2026-08-21 (EPIC RUNTIME-CONTRACTS TERMINÉ 7/7 US S-022, runtime-contracts:0.0.1 + BOM 0.0.24 publiés Central)_
 
 _Source : configuration/EPIC_PUB.adoc (Session 096)_
 
@@ -502,3 +502,64 @@ besoin LLM des tests d'intégration avec `qwen3:0.6b` (exception CI AGENTS.adoc)
 - `GITHUB_TOKEN` natif suffit pour cloner les 13 repos publics.
 - Aucun secret additionnel requis pour `runAllTests`.
 - Pour publication Maven Central (futur) : GPG key + Maven Central credentials.
+
+'''
+== ✅ EPIC RUNTIME-CONTRACTS — 8e artefact N0 (session 022 — TERMINÉ)
+
+_Source_ : `CADRAGE_EPIC_RUNTIME_AGENTIQUE.adoc` (jardin secret).
+_Constat_ : aucun des 7 artefacts N0 existants ne formalise le bootstrapping
+d'une session formation agentique. `opencode-session-contracts` décrit une
+session _dev opencode_, pas une session _stagiaire non-dev_.
+
+=== US réalisées (7/7)
+
+[cols="1,3,2,2"]
+|===
+| US | Description | Pts | Statut
+
+| RUNTIME-CONTRACTS-0
+| *Cadrage EPIC* — audit 7 artefacts, constats, décisions, découpage US
+| 1
+| ✅ TERMINÉ (cadrage 2026-08-12)
+
+| RUNTIME-CONTRACTS-1
+| *SessionBootstrap + ByokLlmConfig* — data class immutable + LlmProviderKind enum. Invariants OLLAMA_LOCAL=baseUrl, GEMINI/HUGGINGFACE/CUSTOM=apiKeyEnvVar. 13 unit
+| 2
+| ✅ TERMINÉ (S-022)
+
+| RUNTIME-CONTRACTS-2
+| *ToolExposure* simplifié — guardrail foundry/public. Data class + 2 unit
+| 1
+| ✅ TERMINÉ (S-022)
+
+| RUNTIME-CONTRACTS-3
+| *SessionMemoryContract + LearnerProfile* — interface + data class 9 champs. 8 unit
+| 2
+| ✅ TERMINÉ (S-022)
+
+| RUNTIME-CONTRACTS-4
+| *InteractionProtocol + FormationTurn* — interface + data class consommant opencode-session-contracts. 5 unit
+| 2
+| ✅ TERMINÉ (S-022)
+
+| RUNTIME-CONTRACTS-5
+| *FormationRuntimePort + SessionId + SessionSummary* — port public OSS + data classes. 5 unit
+| 2
+| ✅ TERMINÉ (S-022)
+
+| RUNTIME-CONTRACTS-6
+| *MaterialUpdateContract + MaterialUpdateResolver* — data class + sealed result + interface. 10 unit
+| 2
+| ✅ TERMINÉ (S-022)
+
+| RUNTIME-CONTRACTS-7
+| *Publication Maven Central* — runtime-contracts:0.0.1 (bundle `04af4f31`) + BOM 0.0.24 (bundle `d3b82434`)
+| 1
+| ✅ TERMINÉ (S-022)
+|===
+
+_Total_ : 8 US, ~14 pts. _Méthode_ : baby-step DDD/TDD/BDD 3 niveaux.
+_Tests_ : 55 tests 0 FAIL (43 unit + 11 cucumber + 1 background).
+_Fichiers_ : 13 prod + 7 test + 1 feature.
+_Publications_ : runtime-contracts 0.0.1 + BOM 0.0.24 sur Maven Central.
+_Débloque_ : codex CDX-RC-04 (pont RAG SessionMemoryContract).

@@ -5,9 +5,9 @@
 
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
-_Derniere mise a jour_ : 2026-08-19 (rattrapage gouvernance 0.0.19→0.0.22 + fix catalogue libs.versions.toml désynchronisé)
-_session terminee_ : 021 — Rattrapage gouvernance MEMPHIS (depuis codex-gradle S-075). 4 versions publiées hors-session opencode MEMPHIS rattrapées dans INDEX + SESSIONS_HISTORY : BOM 0.0.19 (slider 0.0.16→0.0.18 + codebase 0.0.5→0.0.8 + bakery 0.0.3→0.0.6 + plantuml 0.0.3→0.0.4, commit `ce80bf0`, bundle `2160075f`), BOM 0.0.20 (bakery 0.0.6→0.0.8, commit `04729ed`), BOM 0.0.21 (bakery 0.0.8→0.0.9, commit `4b94171`), BOM 0.0.22 (codex 0.0.2→0.0.3, commit `78c34e4`, bundle `f913774d`). Bug désynchronisation catalogue corrigé : `workspace-bom = "0.0.20"` → `"0.0.22"` dans `gradle/libs.versions.toml` (4 bumps manqués — build.gradle.kts était déjà à 0.0.22, le catalogue n'avait pas suivi). Table Publications Maven Central enrichie (+4 entrées). Roadmap PUB mise à jour (BOM 0.0.22). Zéro code de production modifié (catalogue = metadata, pas logique), zéro secret, zéro bump BOM.
-_Prochaine session_ : 022 — prochain bump à la prochaine publication borough. DOC-8 (document-gradle consomme contrats N0) toujours 🔄 À FAIRE.
+_Derniere mise a jour_ : 2026-08-21 (EPIC RUNTIME-CONTRACTS TERMINÉ 7/7 US — 8e artefact N0 runtime-contracts:0.0.1 + BOM 0.0.24)
+_session terminee_ : 022 — EPIC RUNTIME-CONTRACTS TERMINÉ 7/7 US. 8e artefact N0 `runtime-contracts:0.0.1` créé (13 fichiers prod : SessionBootstrap, ByokLlmConfig, LlmProviderKind, ToolExposure, LearnerProfile, SessionMemoryContract, FormationTurn, InteractionProtocol, SessionId, SessionSummary, FormationRuntimePort, MaterialUpdateContract, MaterialUpdateResult, MaterialUpdateResolver) + Cucumber BDD 11 scénarios `rc_runtime_contracts.feature`. 55 tests 0 FAIL (43 unit + 11 cucumber). Baby-step TDD/BDD strict 3 niveaux (RED → GREEN → REFACTOR). Publications Maven Central : runtime-contracts 0.0.1 (bundle `04af4f31`) + BOM 0.0.24 (bundle `d3b82434`). Consomme opencode-session-contracts 0.0.2 + i18n-contracts 0.0.2. Débloque codex CDX-RC-04 (pont RAG SessionMemoryContract). Zéro régression (nouvel artefact, zéro consommateur antérieur).
+_Prochaine session_ : 023 — vérifier propagation Maven Central + débloquer codex CDX-RC-04 + audit alignement BOM 0.0.24 cross-boroughs.
 _Session en cours_ : —
 
 '''
@@ -16,6 +16,8 @@ _Session en cours_ : —
 
 |===
 | # | Date | Type | Sujet | Score
+
+| 022 | 2026-08-21 | dev+pub | **EPIC RUNTIME-CONTRACTS TERMINÉ 7/7 US** — 8e artefact N0 `runtime-contracts:0.0.1` créé (13 fichiers prod contrats purs + 7 test + 1 feature Cucumber 11 scénarios). 55 tests 0 FAIL (43 unit + 11 cucumber). Baby-step TDD/BDD strict 3 niveaux. Publications Maven Central : runtime-contracts 0.0.1 (bundle `04af4f31`) + BOM 0.0.24 (bundle `d3b82434`). Consomme opencode-session 0.0.2 + i18n 0.0.2. Débloque codex CDX-RC-04. Zéro régression (nouvel artefact). | 10/10
 
 | 021 | 2026-08-19 | ops+rattrapage | **Rattrapage gouvernance MEMPHIS 0.0.19→0.0.22** (depuis codex-gradle S-075). 4 versions publiées hors-session rattrapées + bug catalogue `libs.versions.toml` corrigé (`workspace-bom = "0.0.20"` → `"0.0.22"`, build.gradle.kts était déjà à 0.0.22). | 9/10
 
@@ -87,8 +89,9 @@ _Session en cours_ : —
 | MEM-3 | i18n-contracts — Contrats d'internationalisation N0 (10 langues) | ✅ TERMINÉ (session 006) | P1
 | MEM-4 | opencode-session-contracts — Protocole Thin Client opencode↔Gradle | ✅ TERMINÉ (session 006) | P1
 | MEM-5 | Audit migration workspace-bom — 16 boroughs publics, plan de migration documenté | ✅ TERMINÉ (session 007) | P1
+| RUNTIME-CONTRACTS | 8e artefact N0 — Contrats bootstrapping session formation agentique | ✅ TERMINÉ (session 022, 7/7 US, runtime-contracts:0.0.1 publié Central) | P1
 | DOC-8 | document-gradle — Consommer les contrats N0 (i18n, pipeline, session) | 🔄 À FAIRE | P2
-| PUB | Publication Maven Central + Plugin Portal | 🔄 EN COURS (BOM 0.0.22 + agent-contracts 0.0.3 + 7 contrats N0 publiés, slider 0.0.18 constraint, codebase 0.0.8, codex 0.0.3, bakery 0.0.9, plantuml 0.0.4) | P0
+| PUB | Publication Maven Central + Plugin Portal | 🔄 EN COURS (BOM 0.0.24 + agent-contracts 0.0.3 + 8 contrats N0 publiés dont runtime-contracts 0.0.1, slider 0.0.18 constraint, codebase 0.0.8, codex 0.0.4, bakery 0.0.9, plantuml 0.0.4) | P0
 |===
 
 == Publications Maven Central — Historique complet
@@ -96,6 +99,14 @@ _Session en cours_ : —
 [cols="2,3,2"]
 |===
 | Version | Sujet | Bundle nmcp
+
+| BOM 0.0.24
+| constraint runtime-contracts 0.0.1 (S-022, EPIC RUNTIME-CONTRACTS TERMINÉ)
+| `d3b82434`
+
+| runtime-contracts 0.0.1
+| 8e artefact N0 — SessionBootstrap, ByokLlmConfig, LearnerProfile, SessionMemoryContract, FormationTurn, InteractionProtocol, FormationRuntimePort, MaterialUpdateContract (S-022)
+| `04af4f31`
 
 | BOM 0.0.22
 | constraint codex-plugin 0.0.2 → 0.0.3 (S-074 sync, commit `78c34e4`)
