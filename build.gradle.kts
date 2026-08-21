@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "education.cccp"
-version = "0.0.24"
+version = "0.0.25"
 
 javaPlatform {
     allowDependencies()
