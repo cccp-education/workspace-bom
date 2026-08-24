@@ -1,6 +1,6 @@
 [versions]
 # ── Workspace BOM shared versions ─────────────────────────────────────────────
-workspace-bom = "0.0.24"
+workspace-bom = "0.0.26"
 
 # ── Kotlin ────────────────────────────────────────────────────────────────────
 kotlin = "2.4.10"
@@ -48,7 +48,7 @@ jetbrains-annotations = "26.0.2-1"
 
 # ── Plugin versions (published by education.cccp) ────────────────────────────
 bakery-plugin = "0.0.9"
-codex-plugin = "0.0.5"
+codex-plugin = "0.0.6"
 planner-plugin = "0.0.1"
 slider-plugin = "0.0.18"
 plantuml-plugin = "0.0.4"
@@ -70,6 +70,7 @@ asciidoctorj-diagram-plantuml = "1.2025.3"
 
 # ── Agent Contracts ───────────────────────────────────────────────────────────
 agent-contracts = "0.0.2"
+ocr-contracts = "0.0.1"
 
 # ── Docker / Infrastructure ───────────────────────────────────────────────────
 docker-java = "3.7.0"
@@ -253,6 +254,7 @@ playwright = { module = "com.microsoft.playwright:playwright", version.ref = "pl
 jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
 
 # ── Borough plugins (education.cccp) ──
+ocr-contracts = { module = "education.cccp:ocr-contracts", version.ref = "ocr-contracts" }
 bakery-plugin = { module = "education.cccp:bakery-plugin", version.ref = "bakery-plugin" }
 codex-plugin = { module = "education.cccp:codex-plugin", version.ref = "codex-plugin" }
 planner-plugin = { module = "education.cccp:planner-plugin", version.ref = "planner-plugin" }

@@ -1,0 +1,37 @@
+= Session 023 — Artefact N0 ocr-contracts (9e) + BOM 0.0.26
+:date: 2026-08-24
+:epic: CDX-OCR-CONTRACTS US-1 (cross-borough codex+codebase pilotes)
+:type: dev
+:status: ✅ TERMINÉ
+
+== Contexte
+
+EPIC CDX-OCR-CONTRACTS (cadrage codex S-103) — extraction du port OCR
+`codex.ocr.{OcrEngine,OcrRequest,OcrResult}` en artefact N0 pour tuer la
+dernière inversion N1→N2 (`libs.codex.plugin` côté codebase).
+
+== Actions
+
+* Module standalone `ocr-contracts/` pattern `runtime-contracts`
+  (settings.gradle.kts nmcp, build.gradle.kts java-library+maven-publish+
+  signing, libs.versions.toml minimal zéro dep inter-N0).
+* 3 types purs package `contracts.ocr` : `OcrEngine` fun interface,
+  `OcrRequest` data class 4 champs (+equals/hashCode content-based),
+  `OcrResult` data class 7 champs + factory `of` companion.
+  Zéro Jackson (helpers restent côté codex en top-level functions).
+* Baby-step TDD strict RED → GREEN : 14/14 unit PASSED
+  (5 OcrRequestTest + 6 OcrResultTest + 3 OcrEngineTest).
+* `publishToMavenLocal` VERT — `ocr-contracts:0.0.1`.
+* BOM racine bump 0.0.25 → 0.0.26 + constraint
+  `api("education.cccp:ocr-contracts:0.0.1")` + catalog codex-plugin 0.0.6.
+
+== Consommateurs (livrés en parallèle)
+
+* codex S-104 : typealiases `codex.ocr.*` → `contracts.ocr.*`, bump 0.0.6.
+* codebase S-201 : imports basculés + retrait `libs.codex.plugin`
+  — RAG-4 FINAL, inversion N1→N2 morte.
+
+== Résultats
+
+* 9e artefact N0 MEMPHIS. Zéro secret. Publication Central (ocr-contracts
+  0.0.1 + BOM 0.0.26) À FAIRE prochaine session — accord pilote requis.

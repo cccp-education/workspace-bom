@@ -1,40 +1,30 @@
 = PROMPT_REPRISE — workspace-bom (MEMPHIS)
 
-_Session terminee_ : 019 — Publication BOM 0.0.17 (constraint slider 0.0.16)
-_Prochaine session_ : 020 — prochain bump à la prochaine publication borough
+_Session terminee_ : 023 — Artefact N0 `ocr-contracts` (9e) + BOM 0.0.26 locale
+_Prochaine session_ : 024 — Publication Central `ocr-contracts:0.0.1` + BOM 0.0.26
 
-== Mission session 019 (TERMINÉE)
+== Mission session 024 (À FAIRE)
 
-. Publication BOM 0.0.17 sur Maven Central (nmcp bundle
-  `b432cc13-f08b-489c-8f67-c80d9d5d8b04` AUTOMATIC, POM HTTP 200
-  repo1.maven.org).
-. Bump `build.gradle.kts` version 0.0.16 → 0.0.17 + catalogue
-  `slider-plugin` 0.0.15 → 0.0.16 (constraint).
-. BOM 0.0.16 publiée S-062 gardait constraint 0.0.15 — bump strictement
-  montant à 0.0.17 pour exposer slider 0.0.16 (publié S-066 slider-gradle).
-. Session rattrapage INDEX : versions 0.0.10→0.0.16 publiées hors-session
-  opencode MEMPHIS (bump coordonnés depuis slider-gradle /
-  conventions-gradle / agentic-gradle) rattrapées dans la table Sessions.
-. 2 fichiers build bumpés + 3 fichiers gouvernance (INDEX, HISTORY, archive).
-. Commit + push cette session (accord pilote donné).
+. Publier `ocr-contracts:0.0.1` sur Maven Central :
+  `cd ocr-contracts && ./gradlew publishAggregationToCentralPortal --no-daemon`
+. Publier BOM 0.0.26 sur Maven Central (constraint ocr-contracts 0.0.1 +
+  codex-plugin 0.0.6) — accord pilote requis avant chaque publication.
+. Vérifier propagation repo1 (HTTP 200, ~20 min — ne pas conclure à 5 min).
 
-== Contexte reprise session 020
+== Contexte post-session 023
 
-- EPIC PUB EN COURS — BOM 0.0.17 publiée. Prochain bump à la prochaine
-  publication borough (slider 0.0.17 ou autre).
-- DOC-8 (document-gradle consomme contrats N0 i18n/pipeline/session) —
-  toujours 🔄 À FAIRE (P2).
-- Artefacts N0 publiés Central : agent-contracts 0.0.1,
-  codebase-contracts 0.0.1, llm-pool-contracts 0.0.1,
-  opencode-session-contracts 0.0.1, i18n-contracts 0.0.2,
-  pipeline-contracts 0.0.2.
-- Version BOM Central : 0.0.17 (dernière).
-- Baseline : `main` propre (après commit + push session 019).
-- Règle 1 — AUCUN commit sans permission.
+* 9e artefact N0 : `ocr-contracts` (package `contracts.ocr`, 3 types purs,
+  zéro dep inter-N0, zéro Jackson). 14/14 unit PASSED. mavenLocal OK.
+* Cross-borough livré en parallèle : codex S-104 typealiases bump 0.0.6,
+  codebase S-201 retrait `libs.codex.plugin` — RAG-4 FINAL.
+* Ordre DAG publication : ocr-contracts AVANT codex 0.0.6 et BOM 0.0.26.
+* Artefacts N0 déjà publiés Central : agent-contracts 0.0.3,
+  codebase-contracts 0.0.2, llm-pool-contracts 0.0.2,
+  opencode-session-contracts 0.0.2, i18n-contracts 0.0.2,
+  pipeline-contracts 0.0.2, runtime-contracts 0.0.1.
 
-== Rappels
+== Règles absolues
 
-* GroupId : `education.cccp`
-* BOM = `java-platform` (pas de tests)
-* Méthode nmcp (AGENTS.adoc racine § Méthode de Publication)
-* INDEX borough en retard avant S-019 (s'arrêtait 0.0.9) — rattrapé.
+* Zéro commit/push sans permission explicite du pilote.
+* Baby-step TDD strict si code modifié.
+* Zéro secret, zéro token dans le code ou les logs.
