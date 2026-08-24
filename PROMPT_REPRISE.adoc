@@ -1,32 +1,35 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-022 — EPIC RUNTIME-CONTRACTS TERMINÉ 7/7 US (terminée)
+104 (cross-borough codex) — 9e artefact N0 `ocr-contracts:0.0.1` + BOM 0.0.26 publiés (terminée)
 
-== Session 022 terminée
+== Session 104 terminée (exécutée depuis Brooklyn codex)
 
-EPIC RUNTIME-CONTRACTS TERMINÉ 7/7 US. 8e artefact N0 `runtime-contracts:0.0.1`
-publié Maven Central (bundle `04af4f31`). BOM 0.0.24 publiée (bundle `d3b82434`).
-13 fichiers prod, 7 fichiers test, 1 feature, 55 tests 0 FAIL (43 unit + 11 cucumber).
-Débloque codex CDX-RC-04 (pont RAG SessionMemoryContract).
+9e artefact N0 `ocr-contracts:0.0.1` publié Maven Central (bundle `0d81da46`)
+— package `contracts.ocr`, 3 types purs port OCR cross-borough (`OcrEngine`
+fun interface, `OcrRequest`, `OcrResult` + factory `of`), 14 unit VERT,
+module standalone pattern `runtime-contracts`.
+BOM bump 0.0.25 → 0.0.26 publié Central (bundle `43e7da4c`) — constraint
+`ocr-contracts:0.0.1` + constraint `codex-plugin` anticipée 0.0.6.
+Débloque RAG-4 final (codebase retrait `libs.codex.plugin` — EPIC
+CDX-RAG-SOCLE TERMINÉ) et clôture l'EPIC CDX-OCR-CONTRACTS.
 
-== Mission session 023
+== Mission session MEMPHIS suivante
 
-Audit alignement cross-boroughs + mise à jour des consommateurs BOM.
+Rattrapage INDEX MEMPHIS (en retard — s'arrête à S-018/0.0.9) :
+synchroniser INDEX/SESSIONS_HISTORY avec les versions réelles publiées
+(BOM 0.0.26, runtime-contracts 0.0.1, pipeline-contracts 0.0.2,
+agent-contracts 0.0.3, codebase-contracts 0.0.2, ocr-contracts 0.0.1,
+codex 0.0.6).
 
 === Priorité 1 — Vérifier propagation Maven Central
-. `runtime-contracts:0.0.1` disponible sur repo1.maven.org (propagation 15-30 min)
-. `workspace-bom:0.0.24` disponible sur repo1.maven.org
-. Vérifier https://central.sonatype.com/artifact/education.cccp/runtime-contracts
+. `ocr-contracts:0.0.1` disponible sur repo1.maven.org (propagation 15-30 min)
+. `workspace-bom:0.0.26` disponible sur repo1.maven.org
+. `codex-plugin:0.0.6` disponible sur repo1.maven.org
 
-=== Priorité 2 — Débloquer codex CDX-RC-04
-. Codex peut désormais `implementation("education.cccp:runtime-contracts:0.0.1")`
-. Démarrer US CDX-RC-04 en baby-step TDD/BDD (pont RAG SessionMemoryContract,
-  persistence pgvector `codex_learner_profiles`, domaine `codex.profile`)
-
-=== Priorité 3 — Audit alignement BOM 0.0.24 cross-boroughs
-. Lister tous les boroughs consommant `workspace-bom`.
-. Pour chacun, vérifier la version référencée (vs 0.0.24).
+=== Priorité 2 — Consommateurs BOM 0.0.26
+. Lister les boroughs référençant workspace-bom < 0.0.26.
+. codebase-plugin 0.0.9 à publier (POM slim sans codex transitif — accord pilote).
 
 == Règles
 - Voir `AGENT.adoc` — zéro initiative, permission explicite pour commit/push.
