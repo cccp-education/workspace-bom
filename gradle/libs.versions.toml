@@ -258,7 +258,7 @@ ocr-contracts = { module = "education.cccp:ocr-contracts", version.ref = "ocr-co
 bakery-plugin = { module = "education.cccp:bakery-plugin", version.ref = "bakery-plugin" }
 codex-plugin = { module = "education.cccp:codex-plugin", version.ref = "codex-plugin" }
 planner-plugin = { module = "education.cccp:planner-plugin", version.ref = "planner-plugin" }
-slider-plugin = { module = "education.cccp:slider", version.ref = "slider-plugin" }
+slider-plugin = { module = "education.cccp:slider-plugin", version.ref = "slider-plugin" }
 plantuml-plugin = { module = "education.cccp:plantuml-plugin", version.ref = "plantuml-plugin" }
 readme-plugin = { module = "education.cccp:readme-plugin", version.ref = "readme-plugin" }
 hyperframes-plugin = { module = "education.cccp:hyperframes-plugin", version.ref = "hyperframes-plugin" }
