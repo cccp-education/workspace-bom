@@ -1,27 +1,23 @@
 = PROMPT_REPRISE — workspace-bom (MEMPHIS)
 
-_Session terminee_ : 023 — Artefact N0 `ocr-contracts` (9e) + BOM 0.0.26 locale
-_Prochaine session_ : 024 — Publication Central `ocr-contracts:0.0.1` + BOM 0.0.26
+_Session terminee_ : 024 — EPIC MEMPHIS-BOM-FIX US-3 TERMINÉ. BOM 0.0.27
+publié Central (bundle `648c037e`). Fix catalogue `slider` → `slider-plugin`.
+Cross-borough : codebase 0.0.10 Central (S-209) + capsule 917 unit 0 FAIL
+(S-120). Bug bloquant capsule résolu.
+_Prochaine session_ : 025 — Maintenance (DSH-8 Git Sync optionnel, ou
+publication backlog boroughs).
 
-== Mission session 024 (À FAIRE)
+== Contexte post-session 024
 
-. Publier `ocr-contracts:0.0.1` sur Maven Central :
-  `cd ocr-contracts && ./gradlew publishAggregationToCentralPortal --no-daemon`
-. Publier BOM 0.0.26 sur Maven Central (constraint ocr-contracts 0.0.1 +
-  codex-plugin 0.0.6) — accord pilote requis avant chaque publication.
-. Vérifier propagation repo1 (HTTP 200, ~20 min — ne pas conclure à 5 min).
-
-== Contexte post-session 023
-
-* 9e artefact N0 : `ocr-contracts` (package `contracts.ocr`, 3 types purs,
-  zéro dep inter-N0, zéro Jackson). 14/14 unit PASSED. mavenLocal OK.
-* Cross-borough livré en parallèle : codex S-104 typealiases bump 0.0.6,
-  codebase S-201 retrait `libs.codex.plugin` — RAG-4 FINAL.
-* Ordre DAG publication : ocr-contracts AVANT codex 0.0.6 et BOM 0.0.26.
-* Artefacts N0 déjà publiés Central : agent-contracts 0.0.3,
-  codebase-contracts 0.0.2, llm-pool-contracts 0.0.2,
-  opencode-session-contracts 0.0.2, i18n-contracts 0.0.2,
-  pipeline-contracts 0.0.2, runtime-contracts 0.0.1.
+* BOM 0.0.27 sur Central (HTTP 200, POM `slider-plugin:0.0.18`).
+* codebase-plugin 0.0.10 sur Central (HTTP 200, POM importe BOM 0.0.27).
+* capsule fixé (catalogue `slider-plugin` + BOM 0.0.27 + codebase 0.0.10,
+  917 unit 0 FAIL, cucumberTestTranscript 4/4 PASSED).
+* 9e artefact N0 ocr-contracts:0.0.1 publié Central (S-023/104).
+* Artefacts N0 publiés Central : agent-contracts 0.0.3, codebase-contracts
+  0.0.2, llm-pool-contracts 0.0.2, opencode-session-contracts 0.0.2,
+  i18n-contracts 0.0.2, pipeline-contracts 0.0.2, runtime-contracts 0.0.1,
+  ocr-contracts 0.0.1.
 
 == Règles absolues
 

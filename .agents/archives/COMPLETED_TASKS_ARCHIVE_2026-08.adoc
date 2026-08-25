@@ -91,3 +91,17 @@ BOM 0.0.11 publiée (commit `dcb3274`). slider 0.0.12 constraint
 
 BOM 0.0.10 publiée (commit `a4301c7`). slider 0.0.11 constraint
 (coordination slider S-034).
+== Session 024 — EPIC MEMPHIS-BOM-FIX US-3 TERMINÉ (2026-08-25)
+
+BOM 0.0.27 publié Central (bundle `648c037e`). Fix catalogue `slider` →
+`slider-plugin` (artifactId réel depuis aplatissement slider S-067).
+POM Central `slider-plugin:0.0.18` vérifié.
+
+Cross-borough :
+* US-4 codebase 0.0.10 Central (S-209 Queens) — fix kotlin-stdlib-jdk8
+  version explicite + BOM 0.0.27 import.
+* US-5 capsule fix (S-120 Detroit) — catalogue slider-plugin + BOM 0.0.27
+  + codebase 0.0.10 + retrait testImplementation(libs.slider) (Groovy 3.x
+  conflit ProjectBuilder, 79/917 tests préexistantes restaurés).
+
+EPIC MEMPHIS-BOM-FIX TERMINÉ 5/5 US. Bug bloquant capsule résolu.

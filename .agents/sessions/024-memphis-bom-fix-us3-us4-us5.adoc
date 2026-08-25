@@ -1,0 +1,83 @@
+= Session 024 — MEMPHIS (workspace-bom) — EPIC MEMPHIS-BOM-FIX US-3/4/5 TERMINÉ
+
+:borough: Memphis — workspace-bom (N0, BOM multi-module)
+:session: 024
+:date: 2026-08-25
+:session_precedente: 023 — ocr-contracts 0.0.1 + BOM 0.0.26 Central
+
+== Mission
+
+EPIC MEMPHIS-BOM-FIX — US-3 : Publier BOM 0.0.27 sur Central (fix catalogue
+`slider` → `slider-plugin`).
+
+== Contexte
+
+Session 208 (codebase S-208) avait cadré l'EPIC et exécuté US-1 (catalogue
+MEMPHIS fixé + BOM 0.0.27 publishToMavenLocal). US-3/4/5 restants À FAIRE.
+
+Bug root cause : BOM MEMPHIS catalogue ligne 261 déclarait
+`slider-plugin = { module = "education.cccp:slider", ... }` (ancien artifactId,
+max 0.0.16 Central) au lieu de `slider-plugin` (artifactId réel depuis
+aplatissement S-067, 0.0.18 publié Central). BOM 0.0.24/0.0.26 Central
+référencent `slider:0.0.18` → 404. Cascade bloquante capsule.
+
+== Réalisations
+
+=== US-3 — Publication BOM 0.0.27 Central
+
+. `./gradlew publishAggregationToCentralPortal --no-daemon` (workspace-bom).
+. Bundle `648c037e-b06b-4366-a313-fecc6c12024d` uploaded AUTOMATIC.
+. Propagation repo1 confirmée : `workspace-bom:0.0.27` HTTP 200.
+. POM Central vérifié : `<artifactId>slider-plugin</artifactId>` +
+  `<version>0.0.18</version>` (fix propagated).
+
+=== Cross-borough US-4 (codebase S-209)
+
+. codebase-plugin 0.0.9 → 0.0.10 (bump version build.gradle.kts).
+. Catalogue codebase BOM 0.0.24 → 0.0.27 (libs.versions.toml ligne 9).
+. Fix POM Central : `kotlin-stdlib-jdk8` version explicite ajoutée au
+  catalogue (oubli EPIC C-BOM-FIX S-172 — Central rejette deps sans version).
+. `compileKotlin --rerun-tasks` VERT, `publishToMavenLocal` VERT.
+. POM local vérifié : `kotlin-stdlib-jdk8:2.4.10` + importe BOM 0.0.27.
+. Publication Central : `codebase-plugin:0.0.10` HTTP 200, POM importe
+  BOM 0.0.27 ✅.
+
+=== Cross-borough US-5 (capsule S-120)
+
+. Catalogue capsule : `slider` → `slider-plugin` (artifactId), `slider` 0.0.16 →
+  0.0.18, `codebase` 0.0.8 → 0.0.10, `workspace-bom` 0.0.16 → 0.0.27.
+. **Bug discovery** : `testImplementation(libs.slider)` amenait Groovy 3.0.17
+  (via asciidoctor-gradle-jvm-slides → jrubygradle-resolver) sur le classpath
+  de test, cassant `ProjectBuilder` (`NoClassDefFoundError InvokerHelper`).
+  79/917 tests unitaires FAILED (préexistant depuis bump codebase 0.0.8).
+. Fix : retrait `testImplementation(libs.slider)` — aucun test n'importait
+  slider (vérifié : `grep -rn "import slider\." src/` = zéro).
+. Gate : `test` BUILD SUCCESSFUL 917 tests 0 FAIL (baseline restaurée),
+  `cucumberTestTranscript` 4/4 scénarios PASSED.
+
+== Gates
+
+| Gate | Résultat |
+|------|----------|
+| `publishToMavenLocal` (workspace-bom) | ✅ BUILD SUCCESSFUL |
+| `publishAggregationToCentralPortal` (workspace-bom) | ✅ bundle `648c037e` |
+| repo1 `workspace-bom:0.0.27` | ✅ HTTP 200 |
+| POM Central `slider-plugin:0.0.18` | ✅ vérifié |
+| `compileKotlin` (codebase 0.0.10 + BOM 0.0.27) | ✅ BUILD SUCCESSFUL |
+| `test` (capsule 917 unit) | ✅ 0 FAIL |
+| `cucumberTestTranscript` (capsule 4 scénarios) | ✅ 4/4 PASSED |
+| repo1 `codebase-plugin:0.0.10` | ✅ HTTP 200 |
+
+== Publications Maven Central
+
+[cols="2,2,3"]
+|===
+| Artefact | Version | Bundle
+| workspace-bom | 0.0.27 | `648c037e`
+| codebase-plugin | 0.0.10 | (AUTOMATIC, session codebase S-209)
+|===
+
+== Zéro
+
+Zéro code production modifié (catalogue + version bumps uniquement).
+Zéro secret, zéro token, zéro régression.
