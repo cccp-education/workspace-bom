@@ -40,7 +40,7 @@ assertj = "3.25.3"
 # ── Gradle tooling ────────────────────────────────────────────────────────────
 plugin-publish = "2.1.0"
 kover = "0.9.8"
-gradle-tooling = "9.5.1"
+gradle-tooling = "9.7.1"
 node-gradle = "7.1.0"
 
 # ── JetBrains annotations (conflit koog 26.0.2-1 vs testcontainers 17.0.0) ────
@@ -56,7 +56,7 @@ readme-plugin = "0.0.1"
 hyperframes-plugin = "0.0.3"
 graphify-plugin = "0.0.2"
 api-key-pool-plugin = "0.0.1"
-codebase-plugin = "0.0.8"
+codebase-plugin = "0.0.11"
 capsule-plugin = "0.0.1"
 conventions-plugin = "0.0.3"
 
