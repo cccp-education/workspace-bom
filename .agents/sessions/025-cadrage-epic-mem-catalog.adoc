@@ -65,6 +65,17 @@ Projection : 4 sessions (S-026..S-028).
 Zéro code modifié. Zéro secret. Working tree MEMPHIS pré-existant (epub3 WIP)
 inchangé.
 
+== Incident commit (transparence)
+
+Commit `b062d85` inclut par accident la portion *stagée avant session* de
+`build.gradle.kts` (`MM` initial) : bump `version = "0.0.28" → "0.0.29"` +
+ligne constraint `asciidoctorj-epub3:3.0.0` — travail en cours de la session
+concurrente MEMPHIS, capturé car déjà dans l'index avant le staging
+gouvernance. Aucune publication effectuée (Central reste `<latest>0.0.27</latest>`,
+aucun effet d'exécution — metadata source uniquement). Le résidu epub3
+3.0.0→3.0.1 reste non-stagé dans le working tree, intact pour sa session.
+Historique non réécrit (force push interdit). MEM-CAT-1 absorbera l'alignement.
+
 == Suite
 
 S-026 : MEM-CAT-1 — alignement toml↔platform (POM avant/après identique).
