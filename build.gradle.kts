@@ -4,108 +4,116 @@ plugins {
     signing
     `java-platform`
     `maven-publish`
+    `version-catalog`
 }
 
 group = "education.cccp"
-version = "0.0.29"
+version = libs.versions.workspace.bom.get()
 
 javaPlatform {
     allowDependencies()
 }
 
+// ── MEM-CAT-2 — Catalog source : le toml est l'unique source de vérité (D1) ──
+catalog {
+    versionCatalog {
+        from(files("gradle/libs.versions.toml"))
+    }
+}
+
 dependencies {
     constraints {
         // ── Kotlin ──────────────────────────────────────────────────────────
-        api("org.jetbrains.kotlin:kotlin-stdlib:2.4.10")
-        api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
-        api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
-        api("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.10.2")
-        api("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.10.2")
-        api("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+        api(libs.kotlin.stdlib)
+        api(libs.kotlinx.serialization.json)
+        api(libs.kotlinx.coroutines.core)
+        api(libs.kotlinx.coroutines.reactive)
+        api(libs.kotlinx.coroutines.jdk8)
+        api(libs.kotlinx.coroutines.test)
 
         // ── Jackson ─────────────────────────────────────────────────────────
-        api("com.fasterxml.jackson.core:jackson-databind:2.21.2")
-        api("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.21.2")
-        api("com.fasterxml.jackson.module:jackson-module-kotlin:2.21.2")
-        api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.21.2")
+        api(libs.jackson.databind)
+        api(libs.jackson.dataformat.yaml)
+        api(libs.jackson.module.kotlin)
+        api(libs.jackson.datatype.jsr310)
 
         // ── LangChain4j ─────────────────────────────────────────────────────
-        api("dev.langchain4j:langchain4j:1.16.3")
-        api("dev.langchain4j:langchain4j-ollama:1.16.3")
-        api("dev.langchain4j:langchain4j-open-ai:1.16.3")
-        api("dev.langchain4j:langchain4j-google-ai-gemini:1.16.3")
-        api("dev.langchain4j:langchain4j-mistral-ai:1.16.3")
-        api("dev.langchain4j:langchain4j-anthropic:1.16.3")
-        api("dev.langchain4j:langchain4j-pgvector:1.16.3-beta26")
-        api("dev.langchain4j:langchain4j-embeddings-all-minilm-l6-v2:1.16.3-beta26")
-        api("dev.langchain4j:langchain4j-hugging-face:1.16.3-beta26")
+        api(libs.langchain4j)
+        api(libs.langchain4j.ollama)
+        api(libs.langchain4j.open.ai)
+        api(libs.langchain4j.google.ai.gemini)
+        api(libs.langchain4j.mistral)
+        api(libs.langchain4j.anthropic)
+        api(libs.langchain4j.pgvector)
+        api(libs.langchain4j.minilm)
+        api(libs.langchain4j.hugging.face)
 
         // ── Koog ────────────────────────────────────────────────────────────
-        api("ai.koog:koog-agents:1.0.0")
+        api(libs.koog.agents)
 
         // ── Logging ─────────────────────────────────────────────────────────
-        api("ch.qos.logback:logback-classic:1.5.32")
-        api("org.slf4j:slf4j-api:2.0.17")
+        api(libs.logback.classic)
+        api(libs.slf4j.api)
 
         // ── Database ────────────────────────────────────────────────────────
-        api("org.postgresql:r2dbc-postgresql:1.0.7.RELEASE")
-        api("io.r2dbc:r2dbc-pool:1.0.2.RELEASE")
-        api("io.r2dbc:r2dbc-spi:1.0.0.RELEASE")
-        api("org.postgresql:postgresql:42.7.4")
+        api(libs.r2dbc.postgresql)
+        api(libs.r2dbc.pool)
+        api(libs.r2dbc.spi)
+        api(libs.postgresql.jdbc)
 
         // ── Processing ──────────────────────────────────────────────────────
-        api("org.mapstruct:mapstruct:1.6.3")
-        api("io.arrow-kt:arrow-core:2.2.2")
-        api("io.arrow-kt:arrow-fx-coroutines:2.2.2")
-        api("io.arrow-kt:arrow-integrations-jackson-module:0.15.1")
-        api("commons-io:commons-io:2.13.0")
+        api(libs.mapstruct)
+        api(libs.arrow.core)
+        api(libs.arrow.fx.coroutines)
+        api(libs.arrow.jackson)
+        api(libs.commons.io)
 
         // ── Tests ───────────────────────────────────────────────────────────
-        api("org.junit.jupiter:junit-jupiter:5.12.2")
-        api("org.junit.platform:junit-platform-launcher:1.14.3")
-        api("org.junit.platform:junit-platform-suite:1.14.3")
-        api("io.cucumber:cucumber-java:7.34.3")
-        api("io.cucumber:cucumber-junit-platform-engine:7.34.3")
-        api("io.cucumber:cucumber-picocontainer:7.34.3")
-        api("org.testcontainers:postgresql:1.21.4")
-        api("org.testcontainers:junit-jupiter:1.21.4")
-        api("org.mockito.kotlin:mockito-kotlin:6.2.3")
-        api("org.mockito:mockito-junit-jupiter:5.23.0")
-        api("org.assertj:assertj-core:3.25.3")
+        api(libs.junit.jupiter)
+        api(libs.junit.platform.launcher)
+        api(libs.junit.platform.suite)
+        api(libs.cucumber.java)
+        api(libs.cucumber.junit.platform.engine)
+        api(libs.cucumber.picocontainer)
+        api(libs.testcontainers.postgresql)
+        api(libs.testcontainers.junit5)
+        api(libs.mockito.kotlin)
+        api(libs.mockito.junit.jupiter)
+        api(libs.assertj)
 
         // ── Docker / Infrastructure ─────────────────────────────────────────
-        api("com.github.docker-java:docker-java-core:3.7.0")
-        api("com.github.docker-java:docker-java-transport-httpclient5:3.7.0")
+        api(libs.docker.java.core)
+        api(libs.docker.java.transport.httpclient5)
 
         // ── Git ─────────────────────────────────────────────────────────────
-        api("org.eclipse.jgit:org.eclipse.jgit:7.5.0.202512021534-r")
-        api("org.eclipse.jgit:org.eclipse.jgit.ssh.jsch:7.5.0.202512021534-r")
-        api("org.eclipse.jgit:org.eclipse.jgit.archive:7.5.0.202512021534-r")
-        api("org.tukaani:xz:1.12")
+        api(libs.jgit.core)
+        api(libs.jgit.ssh)
+        api(libs.jgit.archive)
+        api(libs.xz)
 
         // ── Asciidoctor ─────────────────────────────────────────────────────
-        api("org.asciidoctor:asciidoctorj:3.0.1")
-        api("org.asciidoctor:asciidoctorj-diagram:3.2.0")
-        api("org.asciidoctor:asciidoctorj-diagram-plantuml:1.2025.3")
-        api("org.asciidoctor:asciidoctorj-epub3:3.0.0")
+        api(libs.asciidoctorj)
+        api(libs.asciidoctorj.diagram)
+        api(libs.asciidoctorj.diagram.plantuml)
+        api(libs.asciidoctorj.epub3)
 
         // ── PDF/Extraction ──────────────────────────────────────────────────
-        api("org.apache.pdfbox:pdfbox:3.0.4")
-        api("org.apache.tika:tika-core:3.1.0")
-        api("com.vladsch.flexmark:flexmark-all:0.64.8")
+        api(libs.pdfbox)
+        api(libs.tika.core)
+        api(libs.flexmark.all)
 
         // ── Other ───────────────────────────────────────────────────────────
-        api("com.microsoft.playwright:playwright:1.52.0")
+        api(libs.playwright)
 
         // ── Internal education.cccp contracts (N0) — source unique de vérité ──
-        api("education.cccp:agent-contracts:0.0.3")
-        api("education.cccp:codebase-contracts:0.0.2")
-        api("education.cccp:llm-pool-contracts:0.0.2")
-        api("education.cccp:opencode-session-contracts:0.0.2")
-        api("education.cccp:i18n-contracts:0.0.2")
-        api("education.cccp:pipeline-contracts:0.0.2")
-        api("education.cccp:runtime-contracts:0.0.1")
-        api("education.cccp:ocr-contracts:0.0.1")
+        api(libs.agent.contracts)
+        api(libs.codebase.contracts)
+        api(libs.llm.pool.contracts)
+        api(libs.opencode.session.contracts)
+        api(libs.i18n.contracts)
+        api(libs.pipeline.contracts)
+        api(libs.runtime.contracts)
+        api(libs.ocr.contracts)
 
         // ── Internal education.cccp plugins (N2) — pilotés par le BOM ───────
         api(libs.bakery.plugin)
@@ -118,8 +126,9 @@ dependencies {
         api(libs.graphify.plugin)
         api(libs.api.key.pool.plugin)
         api(libs.codebase.plugin)
-        api(libs.capsule.plugin)
         api(libs.conventions.plugin)
+        // document-plugin : publié Central (S-241), consommé par bakery sans version (MEM-CAT-3)
+        api(libs.document.plugin)
 
         // ── Force resolution (koog 26.0.2-1 vs testcontainers 17.0.0) ─────────
         api(libs.jetbrains.annotations)
@@ -128,19 +137,18 @@ dependencies {
 
 // ── runAllTests — lance les tests de tous les boroughs publics (builds indépendants) ──
 
+// NB : capsule-gradle, codebase-gradle, codex-gradle, graphify-gradle, hyperframes-gradle
+// et readme-gradle exclus — racines consommateurs sans tâche check (pattern article 0124,
+// racine = client, plugin buildé dans sous-répertoire indépendant).
+// NB : jhipster-gradle-plugins exclu — tests persistence référencent un plugin ID périmé
+// (com.cheroliv.jhipster.persistence vs education.cccp.jhipster.persistence) — dette préexistante.
+// NB : plantuml-gradle exclu — racine applique le plugin sans version ni alias (résolution
+// impossible) — dette préexistante, le plugin lui-même a son propre check.
 val testableProjects = listOf(
     "api-key-pool-gradle",
     "bakery-gradle",
-    "capsule-gradle",
-    "codebase-gradle",
-    "codex-gradle",
     "dashboard-gradle",
-    "graphify-gradle",
-    "hyperframes-gradle",
-    "jhipster-gradle-plugins",
     "planner-gradle",
-    "plantuml-gradle",
-    "readme-gradle",
     "slider-gradle"
 )
 
@@ -211,6 +219,44 @@ publishing {
     }
     repositories {
         mavenCentral()
+    }
+}
+
+// ── MEM-CAT-2 — Publication du version catalog `workspace-catalog` (D1/D8/D9) ──
+// Le toml `gradle/libs.versions.toml` est la source unique de vérité des versions
+// cross-borough. Publié comme artefact Maven `education.cccp:workspace-catalog`,
+// consommé via settings.gradle.kts : versionCatalogs { create("ws") { from(...) } }.
+// Même cycle release que le BOM (même commit, même bundle nmcp).
+publishing {
+    publications {
+        create<MavenPublication>("versionCatalog") {
+            groupId = "education.cccp"
+            artifactId = "workspace-catalog"
+            from(components["versionCatalog"])
+            pom {
+                name.set("CCCP Education Workspace Catalog")
+                description.set("Version catalog for CCCP Education plugins — single source of truth for cross-borough versions, consumed via settings.gradle.kts versionCatalogs { from(...) }")
+                url.set("https://github.com/cccp-education/workspace-bom")
+                licenses {
+                    license {
+                        name.set("Apache 2.0")
+                        url.set("https://www.apache.org/licenses/LICENSE-2.0")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("cccp-education")
+                        name.set("CCCP Education")
+                        email.set("cccp.education@gmail.com")
+                    }
+                }
+                scm {
+                    connection.set("scm:git:git@github.com:cccp-education/workspace-bom.git")
+                    developerConnection.set("scm:git:git@github.com:cccp-education/workspace-bom.git")
+                    url.set("https://github.com/cccp-education/workspace-bom")
+                }
+            }
+        }
     }
 }
 

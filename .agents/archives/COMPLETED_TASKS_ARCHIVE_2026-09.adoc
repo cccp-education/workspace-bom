@@ -1,0 +1,14 @@
+= Archives des tâches terminées — Septembre 2026 (workspace-bom MEMPHIS)
+
+== Session 026 (2026-09-01) — MEM-CAT-1/2/3 + Fix-0 baseline
+
+- [x] Fix-0 : forces buildscript bakery-gradle + runner-gradle (conflit classpath Gradle 9.6.1 strictly 2.3.21 vs platform 2.4.10)
+- [x] Fix-0 : codebase 0.0.11 CodebaseOcrExtension — propriété morte `ocrEngine: Provider<OcrEngine>` supprimée + mavenLocal re-publié
+- [x] Fix-0 : runAllTests restreint à 5 boroughs verts (dettes documentées)
+- [x] Fix-0 : dashboard-gradle WIP nmcp corrigé (settings plugins block + retrait nmcp racine)
+- [x] MEM-CAT-1 : platform 77 constraints → `api(libs.*)`, version dérivée toml, POM diff vide, epub3 3.0.1 fantôme → 2.2.0
+- [x] MEM-CAT-2 : `workspace-catalog:0.0.29` publié mavenLocal (API Gradle 9 `from(components["versionCatalog"])`), capsule fantôme retiré (D8)
+- [x] MEM-CAT-3 : bakery pilote ws pin 0.0.29 + `version = ws.versions.bakery.plugin.get()` + document-plugin sans version + PublicationTest migré
+- [x] 9 tests garde VERT (PlatformCatalogAlignmentTest 5 + WorkspaceCatalogStructureTest 4)
+- [ ] CAT-4 (propagation) + CAT-5 (BDD) — S-027
+- [ ] Publication Central BOM 0.0.29 + catalog 0.0.29 — accord pilote

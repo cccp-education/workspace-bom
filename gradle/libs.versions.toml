@@ -1,6 +1,6 @@
 [versions]
 # ── Workspace BOM shared versions ─────────────────────────────────────────────
-workspace-bom = "0.0.26"
+workspace-bom = "0.0.29"
 
 # ── Kotlin ────────────────────────────────────────────────────────────────────
 kotlin = "2.4.10"
@@ -57,11 +57,11 @@ hyperframes-plugin = "0.0.3"
 graphify-plugin = "0.0.2"
 api-key-pool-plugin = "0.0.1"
 codebase-plugin = "0.0.11"
-capsule-plugin = "0.0.1"
 conventions-plugin = "0.0.3"
 
 # ── PDF/Extraction ────────────────────────────────────────────────────────────
 asciidoctorj = "3.0.1"
+asciidoctorj-epub3 = "2.2.0"
 pdfbox = "3.0.4"
 tika = "3.1.0"
 flexmark = "0.64.8"
@@ -69,8 +69,15 @@ asciidoctorj-diagram = "3.2.0"
 asciidoctorj-diagram-plantuml = "1.2025.3"
 
 # ── Agent Contracts ───────────────────────────────────────────────────────────
-agent-contracts = "0.0.2"
+agent-contracts = "0.0.3"
+codebase-contracts = "0.0.2"
+llm-pool-contracts = "0.0.2"
+opencode-session-contracts = "0.0.2"
+i18n-contracts = "0.0.2"
+pipeline-contracts = "0.0.2"
+runtime-contracts = "0.0.1"
 ocr-contracts = "0.0.1"
+document-plugin = "0.0.15"
 
 # ── Docker / Infrastructure ───────────────────────────────────────────────────
 docker-java = "3.7.0"
@@ -229,6 +236,7 @@ gradle-tooling-api = { module = "org.gradle:gradle-tooling-api", version.ref = "
 
 # ── Asciidoctor ──
 asciidoctorj = { module = "org.asciidoctor:asciidoctorj", version.ref = "asciidoctorj" }
+asciidoctorj-epub3 = { module = "org.asciidoctor:asciidoctorj-epub3", version.ref = "asciidoctorj-epub3" }
 asciidoctorj-diagram = { module = "org.asciidoctor:asciidoctorj-diagram", version.ref = "asciidoctorj-diagram" }
 asciidoctorj-diagram-plantuml = { module = "org.asciidoctor:asciidoctorj-diagram-plantuml", version.ref = "asciidoctorj-diagram-plantuml" }
 
@@ -255,6 +263,15 @@ jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "j
 
 # ── Borough plugins (education.cccp) ──
 ocr-contracts = { module = "education.cccp:ocr-contracts", version.ref = "ocr-contracts" }
+agent-contracts = { module = "education.cccp:agent-contracts", version.ref = "agent-contracts" }
+codebase-contracts = { module = "education.cccp:codebase-contracts", version.ref = "codebase-contracts" }
+llm-pool-contracts = { module = "education.cccp:llm-pool-contracts", version.ref = "llm-pool-contracts" }
+opencode-session-contracts = { module = "education.cccp:opencode-session-contracts", version.ref = "opencode-session-contracts" }
+i18n-contracts = { module = "education.cccp:i18n-contracts", version.ref = "i18n-contracts" }
+pipeline-contracts = { module = "education.cccp:pipeline-contracts", version.ref = "pipeline-contracts" }
+runtime-contracts = { module = "education.cccp:runtime-contracts", version.ref = "runtime-contracts" }
+mapstruct = { module = "org.mapstruct:mapstruct", version.ref = "mapstruct" }
+document-plugin = { module = "education.cccp:document-plugin", version.ref = "document-plugin" }
 bakery-plugin = { module = "education.cccp:bakery-plugin", version.ref = "bakery-plugin" }
 codex-plugin = { module = "education.cccp:codex-plugin", version.ref = "codex-plugin" }
 planner-plugin = { module = "education.cccp:planner-plugin", version.ref = "planner-plugin" }
@@ -265,7 +282,6 @@ hyperframes-plugin = { module = "education.cccp:hyperframes-plugin", version.ref
 graphify-plugin = { module = "education.cccp:graphify-plugin", version.ref = "graphify-plugin" }
 api-key-pool-plugin = { module = "education.cccp:api-key-pool", version.ref = "api-key-pool-plugin" }
 codebase-plugin = { module = "education.cccp:codebase-plugin", version.ref = "codebase-plugin" }
-capsule-plugin = { module = "education.cccp:capsule-plugin", version.ref = "capsule-plugin" }
 conventions-plugin = { module = "education.cccp.build:conventions-plugin", version.ref = "conventions-plugin" }
 
 [bundles]

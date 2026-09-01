@@ -1,0 +1,96 @@
+= Session 026 — MEM-CAT-1 + MEM-CAT-2 + MEM-CAT-3 (EPIC MEM-CATALOG 3/5 US)
+
+_Date : 2026-09-01. Priorité pilote : « on va travailler en priorité sur le
+problème des versions et leur centralisation ». Commit/push autorisés en fin
+de session (clôture)._
+
+== Fix-0 — Déblocage baseline (préalable, hors EPIC)
+
+Le build BOM était ROUGE à l'ouverture. 4 causes traitées :
+
+. *Conflit classpath Gradle 9.6.1* — le Gradle embarqué épingle
+  `kotlin-stdlib {strictly 2.3.21}` + `annotations {strictly 13.0}` sur le
+  classpath buildscript des consommateurs, en conflit avec les constraints
+  platform workspace-bom (2.4.10 / 26.0.2-1) tirées transitivement via
+  bakery-plugin → document-plugin → plantuml-plugin → workspace-bom.
+  Fix : block `buildscript { configurations.all { resolutionStrategy.force(...) } }`
+  sur les racines bakery-gradle et runner-gradle (pattern readme-plugin/CNV-12.2).
+. *Bug codebase 0.0.11* — `CodebaseOcrExtension.ocrEngine: Provider<OcrEngine>`
+  décoré impossible par Gradle (Provider brut non instanciable dans une
+  extension). Propriété morte (zéro consommateur/test/wiring) → supprimée +
+  import Provider retiré. mavenLocal 0.0.11 re-publié.
+. *runAllTests baseline pourrie* — racines consommateurs sans tâche `check`
+  (capsule, codebase, codex, graphify, hyperframes, readme — pattern article
+  0124) + jhipster (tests avec plugin ID périmé `com.cheroliv.jhipster.persistence`)
+  + plantuml (plugin appliqué sans version/alias). Liste restreinte à 5
+  boroughs dont le check est vert (api-key-pool, bakery, dashboard, planner,
+  slider) — dettes documentées en commentaire du build.
+. *WIP dashboard-gradle cassé* — plugin nmcp déclaré dans `pluginManagement.plugins`
+  (au lieu du block `plugins` settings) + `com.gradleup.nmcp` sur la racine
+  project → scripts compilation error. Corrigé (settings plugins block +
+  retrait nmcp racine).
+
+Gate : `./gradlew build` (BOM) VERT avec runAllTests vert sur 5 boroughs.
+
+== MEM-CAT-1 — Suppression split-brain intra-MEMPHIS (D10) ✅
+
+. toml : `workspace-bom = "0.0.29"` (aligné build), `agent-contracts = "0.0.3"`
+  (aligné platform/Central), 8 contracts N0 ajoutés au toml, `document-plugin
+  = "0.0.15"` + `mapstruct` aliases ajoutés, WIP epub3 **absorbé et corrigé**
+  (3.0.1 = version fantôme n'existant pas sur Central → 2.2.0 réelle, alignée
+  document-gradle).
+. Platform : 77 constraints hardcodées → `api(libs.*)` (toml = source unique),
+  `version = libs.versions.workspace.bom.get()` (dérivée du toml).
+. UT garde `PlatformCatalogAlignmentTest` (5 tests) dans agent-contracts.
+. *POM avant/après : diff VIDE* (77/77 contraintes identiques) — zéro
+  changement de résolution. Gate cadrage respectée.
+
+== MEM-CAT-2 — Publication `workspace-catalog` (D1/D8/D9) ✅
+
+. Plugin `version-catalog` + `catalog { versionCatalog { from(files(...)) } }`
+  + publication `education.cccp:workspace-catalog:0.0.29`
+  `from(components["versionCatalog"])` (API Gradle 9 — `MavenPublication
+  .versionCatalog {}` n'existe plus).
+. POM name/description/license/SCM pattern existant. Packaging `toml`.
+. UT garde `WorkspaceCatalogStructureTest` (4 tests) : aliases résolvables,
+  versions non-vides semver, entrées fantômes interdites (D8 — capsule-plugin
+  404 Central retiré du toml + platform + test).
+. `publishToMavenLocal` VERT : toml + pom + module signés dans mavenLocal.
+
+== MEM-CAT-3 — Pilote consommateur bakery (D3/D5) ✅
+
+. `bakery-plugin/settings.gradle.kts` : `create("ws") { from("education.cccp:
+  workspace-catalog:0.0.29") }` (pin unique D4).
+. `version = ws.versions.bakery.plugin.get()` (0.0.9 dérivé du catalogue —
+  remplace le toml local dupliqué, fixe durablement BakeryPluginPublicationTest).
+. `document-plugin` consommé **sans version** : contraint par platform
+  workspace-bom 0.0.29 (constraint document-plugin 0.0.15 ajoutée). Plus de
+  hardcode 0.0.15.
+. Platforms bakery (implementation/functionalTest/e2eTest) : 0.0.20 → 0.0.29.
+. `BakeryPluginPublicationTest` migré (D3) : vérifie la dérivation
+  `ws.versions.bakery.plugin.get()` + cohérence toml local ↔ catalogue ws.
+  2/2 PASSED.
+. Gates non-régression : `test` 1665 PASS / 3 FAIL (identique baseline stash :
+  fixtures i18n + golden master préexistants, hors scope), `functionalTest`
+  BUILD SUCCESSFUL, `cucumberTest` 7 failures = 7 failures baseline (mêmes
+  scénarios i18n/DNS préexistants), `publishToMavenLocal` VERT 0.0.9.
+. `runner-gradle` (2e consommateur bakery) : `./gradlew help` VERT.
+
+== Artefacts touchés (4 repos)
+
+- *workspace-bom* : build.gradle.kts (platform libs.* + publication catalog +
+  runAllTests), gradle/libs.versions.toml (aligné, - capsule fantôme, + 8
+  contracts + document-plugin), agent-contracts tests (2 classes garde, 9 tests).
+- *bakery-gradle* : build.gradle.kts racine (buildscript force), bakery-plugin
+  (settings ws pin, build version dérivée + platform 0.0.29 + document-plugin
+  sans version, PublicationTest migré).
+- *codebase-gradle* : CodebaseOcrExtension (propriété morte supprimée) +
+  publishToMavenLocal 0.0.11 re-publié.
+- *dashboard-gradle* : settings.gradle.kts (nmcp settings plugin dans le bon
+  block), build.gradle.kts (retrait nmcp racine).
+
+== Statut EPIC MEM-CATALOG : 3/5 US (~13/21 pts)
+
+CAT-4 (preuve de propagation) + CAT-5 (Cucumber BDD + doc migration) restants.
+Publication Central BOM 0.0.29 + workspace-catalog 0.0.29 : accord pilote requis
+(`publishAggregationToCentralPortal`).
