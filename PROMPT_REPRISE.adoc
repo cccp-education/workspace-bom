@@ -1,37 +1,60 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-104 (cross-borough codex) — 9e artefact N0 `ocr-contracts:0.0.1` + BOM 0.0.26 publiés (terminée)
+026 — MEM-CAT-1 (fix split-brain intra-MEMPHIS)
 
-== Session 104 terminée (exécutée depuis Brooklyn codex)
+== Mission session 026 — MEM-CAT-1
 
-9e artefact N0 `ocr-contracts:0.0.1` publié Maven Central (bundle `0d81da46`)
-— package `contracts.ocr`, 3 types purs port OCR cross-borough (`OcrEngine`
-fun interface, `OcrRequest`, `OcrResult` + factory `of`), 14 unit VERT,
-module standalone pattern `runtime-contracts`.
-BOM bump 0.0.25 → 0.0.26 publié Central (bundle `43e7da4c`) — constraint
-`ocr-contracts:0.0.1` + constraint `codex-plugin` anticipée 0.0.6.
-Débloque RAG-4 final (codebase retrait `libs.codex.plugin` — EPIC
-CDX-RAG-SOCLE TERMINÉ) et clôture l'EPIC CDX-OCR-CONTRACTS.
+L'EPIC MEM-CATALOG est cadré (S-025, `.agents/CADRAGE_EPIC_MEM_VERSION_CATALOG.adoc`) :
+le BOM devient unique source de vérité des versions plugins via un version
+catalog publié (`education.cccp:workspace-catalog`), consommé par artefact
+Maven (zéro référence physique au repo BOM — demande pilote).
 
-== Mission session MEMPHIS suivante
+S-026 = première US :
 
-Rattrapage INDEX MEMPHIS (en retard — s'arrête à S-018/0.0.9) :
-synchroniser INDEX/SESSIONS_HISTORY avec les versions réelles publiées
-(BOM 0.0.26, runtime-contracts 0.0.1, pipeline-contracts 0.0.2,
-agent-contracts 0.0.3, codebase-contracts 0.0.2, ocr-contracts 0.0.1,
-codex 0.0.6).
+. Aligner le toml sur les valeurs réelles : `agent-contracts = "0.0.3"`
+  (platform hardcode déjà 0.0.3, toml en retard), `workspace-bom` (version
+  BOM réelle), absorber le WIP epub3 3.0.1.
+. Faire consommer la platform le toml (`api(libs.*)` au lieu de hardcoder,
+  lignes 19-125) + `version` dérivée du toml.
+. UT `PlatformCatalogAlignmentTest` (toml↔platform cohérents).
+. POM `generatePomFile` comparé avant/après — contraintes identiques
+  (zéro changement de résolution).
+. Gate : `./gradlew build -x test` VERT + POM diff vide.
 
-=== Priorité 1 — Vérifier propagation Maven Central
-. `ocr-contracts:0.0.1` disponible sur repo1.maven.org (propagation 15-30 min)
-. `workspace-bom:0.0.26` disponible sur repo1.maven.org
-. `codex-plugin:0.0.6` disponible sur repo1.maven.org
+Puis S-027 publication catalog (CAT-2), S-028 pilote bakery (CAT-3 —
+COORDONNER avec la session bakery active, hardcode document-plugin 0.0.15
+à remplacer par platform BOM) + CAT-4/5.
 
-=== Priorité 2 — Consommateurs BOM 0.0.26
-. Lister les boroughs référençant workspace-bom < 0.0.26.
-. codebase-plugin 0.0.9 à publier (POM slim sans codex transitif — accord pilote).
+== État du code (S-025)
+
+- BOM 0.0.27 dernière publiée Central ; working tree a un WIP epub3 3.0.1
+  (toml + platform) non commité — à absorber dans CAT-1.
+- 8 modules contrats N0 publiés (agent/codebase/llm-pool/opencode-session/
+  i18n/pipeline/runtime/ocr contracts).
+- `gradle/libs.versions.toml` référence déjà les 12 plugins education.cccp —
+  ce sera la source du catalogue publié (CAT-2).
+
+== Pièges à retenir
+
+1. *Polling Central* : `<latest>` périmé ~27 min — vérifier aussi HTTP 200 POM.
+2. *POM avant/après* : le fix CAT-1 ne doit RIEN changer aux contraintes résolues.
+3. *Gradle refuse les versions dynamiques* dans `versionCatalogs { from(...) }` — pin explicite.
+4. *Block `plugins {}`* : seul un catalog (alias) fournit une version de plugin — pas un platform.
+5. *Entrées fantômes* : ne mettre au catalogue que des artefacts résolvables Central (capsule/jhipster pas encore).
+6. *Sessions concurrentes* : bakery active (version sync 0.0.9 + pub Central) — coordonner avant CAT-3.
 
 == Règles
-- Voir `AGENT.adoc` — zéro initiative, permission explicite pour commit/push.
-- Baby-step DDD/TDD/BDD : un type à la fois, test d'abord, build verify.
-- Publication Maven Central : `./gradlew publishAggregationToCentralPortal`.
+
+- Voir `AGENT.adoc` — zéro initiative, permission explicite pour commit/push/publish.
+- Baby-step DDD/TDD/BDD : test d'abord, build verify.
+- Publication Maven Central : `./gradlew publishAggregationToCentralPortal` (aggrégatif,
+  couvrira les 2 publications BOM + catalog).
+- Zéro Python — outputs analysés Read/Grep/xmllint/rapports Gradle natifs.
+
+== À vérifier en ouverture S-026
+
+1. `git status` — WIP epub3 toujours présent ?
+2. Central `<latest>` BOM (0.0.27 attendu, ou plus si publication entre-temps).
+3. `./gradlew build -x test` VERT.
+4. Lire `CADRAGE_EPIC_MEM_VERSION_CATALOG.adoc` (constats C1-C8, décisions D1-D12).

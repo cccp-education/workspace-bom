@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "education.cccp"
-version = "0.0.28"
+version = "0.0.29"
 
 javaPlatform {
     allowDependencies()
@@ -87,6 +87,7 @@ dependencies {
         api("org.asciidoctor:asciidoctorj:3.0.1")
         api("org.asciidoctor:asciidoctorj-diagram:3.2.0")
         api("org.asciidoctor:asciidoctorj-diagram-plantuml:1.2025.3")
+        api("org.asciidoctor:asciidoctorj-epub3:3.0.0")
 
         // ── PDF/Extraction ──────────────────────────────────────────────────
         api("org.apache.pdfbox:pdfbox:3.0.4")

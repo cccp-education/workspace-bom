@@ -1,0 +1,71 @@
+= Session 025 — Cadrage EPIC MEM-CATALOG (version catalog publié)
+
+_Date_ : 2026-09-01
+_Type_ : cadrage — gouvernance pure, zéro code modifié (pattern S-057)
+_Score_ : 10/10
+
+== Origine
+
+Demande pilote (session 243 document-gradle) : centraliser les numéros de
+version des plugins dans le BOM comme unique source de vérité, transportée
+par artefact Maven (« dans le jar »), sans référence physique au repo BOM —
+pour contrôler les versions sans corrections éparpillées par borough.
+Pilote bakery-plugin cité en exemple.
+
+== Constats clés (audité 2026-09-01)
+
+- *Split-brain intra-MEMPHIS* : toml `agent-contracts = "0.0.2"` vs platform
+  hardcode `0.0.3` (build.gradle.kts:101).
+- *Tri-split version BOM* : toml 0.0.26 / build.gradle.kts 0.0.29 / Central
+  `<latest>0.0.27</latest>`.
+- *Hardcode consommateur* : bakery `document-plugin:0.0.15` hardcodé
+  (build.gradle.kts:43) — le BOM ne sert pas pour ça.
+- *Douleur récurrente* : bumps éparpillés (S-241, S-209, S-120, MEMPHIS-BOM-FIX)
+  + classe de bug hygiène (`BakeryPluginPublicationTest` 0.0.9 vs 0.0.8).
+- Le toml MEMPHIS référence déjà les 12 plugins — la source de vérité existe,
+  elle n'est pas transportée.
+- Block `plugins { id(...) version }` non couvert par un platform → seul le
+  version catalog couvre (runner-gradle `id("education.cccp.bakery") version "0.0.9"`).
+- Gradle natif : `MavenPublication.versionCatalog { from(...) }` + settings
+  `versionCatalogs { create("ws") { from("education.cccp:workspace-catalog:X") } }`.
+- WIP concurrent présent (epub3 3.0.1 non commité) — laissé en l'état, absorbé
+  par MEM-CAT-1.
+
+== Décisions (12 — détail cadrage)
+
+D1 2 artefacts MEMPHIS (bom platform + catalog), même release · D2 périmètre
+plugins education.cccp + cross-borough seulement · D3 version PROPRE d'un
+plugin reste dans son repo (le BOM câble ENTRE, pas DEDANS) · D4 pin unique
+`from(...)` par borough, pas de version dynamique · D5 adoption paresseuse ·
+D6 `libs` local conservé (préfixe `ws` distinct) · D7 plugins appliqués via
+`alias(ws.plugins.bakery)` · D8 entrée catalog seulement à la 1re publication
+Central (pas de fantôme) · D9 publication suit le cycle release BOM ·
+D10 fix split intra-MEMPHIS AVANT publication (platform consomme le toml) ·
+D11 gardes (UT structure + FT consommateur + test hygiène pas-de-hardcode) ·
+D12 transmission Maven only (zéro includeBuild/chemin FS — demande pilote).
+
+== Découpage (5 US ~21 pts)
+
+CAT-1 fix split intra-BOM (3) → CAT-2 publication workspace-catalog (5) →
+CAT-3 pilote bakery (5, coordonner session bakery active) → CAT-4 preuve
+propagation (3) → CAT-5 Cucumber BDD + doc migration (5).
+Projection : 4 sessions (S-026..S-028).
+
+== Livrables session
+
+- `.agents/CADRAGE_EPIC_MEM_VERSION_CATALOG.adoc` (cadrage complet :
+  8 constats, 12 décisions, 5 US, 6 risques, hors périmètre, bénéfices).
+- `BACKLOG.adoc` — EPIC MEM-CATALOG 🟡 ajouté (US détaillées + décisions + risques).
+- `.agents/INDEX.adoc` — roadmap + session 025 + prochaine session 026 (MEM-CAT-1).
+- `.agents/SESSIONS_HISTORY.adoc` — entrée 025.
+- `PROMPT_REPRISE.adoc` — mission S-026 MEM-CAT-1.
+
+== Gates
+
+Zéro code modifié. Zéro secret. Working tree MEMPHIS pré-existant (epub3 WIP)
+inchangé.
+
+== Suite
+
+S-026 : MEM-CAT-1 — alignement toml↔platform (POM avant/après identique).
+Puis publication catalog S-027, pilote bakery S-028 (coordination pilote).

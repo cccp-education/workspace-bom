@@ -1,0 +1,253 @@
+= CADRAGE EPIC MEM-CATALOG — Version Catalog publié : le BOM comme unique source de vérité des versions plugins
+
+_Session 025 MEMPHIS (2026-09-01). Gouvernance pure — zéro code modifié (pattern S-057/S-063)._
+_Origine : demande pilote 2026-09-01 (session 243 document-gradle) — « centraliser les numéros de
+version des plugins dans le BOM comme unique source de vérité, transportée par artefact Maven, sans
+référence physique au repo BOM ». Pilote bakery-plugin cité en exemple._
+
+'''
+
+== 1. Constats (audité 2026-09-01, preuves réelles)
+
+[cols="1,5,2", options="header"]
+|===
+| # | Constat | Preuve
+| C1
+| *Split-brain intra-MEMPHIS* : le toml dit `agent-contracts = "0.0.2"` mais la platform
+  hardcode `0.0.3` — 2 sources de vérité divergentes DANS le BOM lui-même.
+| `gradle/libs.versions.toml:75` vs `build.gradle.kts:101`
+
+| C2
+| *Tri-split version BOM* : toml `workspace-bom = "0.0.26"`, build.gradle.kts
+  `version = "0.0.29"`, Central `<latest>0.0.27</latest>` — 3 valeurs différentes au même instant.
+| toml:3, build.gradle.kts:10, repo1 (2026-09-01)
+
+| C3
+| *Version plugin dupliquée chez chaque consommateur* : bakery porte
+  `document-plugin:0.0.15` hardcodé (`build.gradle.kts:43`) alors que le BOM contraint déjà
+  `document`... sauf que bakery ne consomme PAS le BOM pour ça — la version vit en double
+  (toml local si catalog, string si hardcode).
+| `bakery-plugin/build.gradle.kts:43`
+
+| C4
+| *Douleur récurrente : bumps éparpillés* — S-241 (bakery bump document 0.0.12→0.0.15 manuel),
+  S-209/S-120 (codebase/capsule bumps), EPIC MEMPHIS-BOM-FIX 5 US (bug cascade `slider:0.0.18`
+  404). Chaque publication plugin = N edits consommateurs manuels.
+| SESSIONS_HISTORY cross-borough
+
+| C5
+| *Hygiène version = classe de bug récurrente* : la failure bakery
+  `BakeryPluginPublicationTest` (0.0.9 build vs 0.0.8 catalogue) existe précisément parce que la
+  version est écrite 2× par borough. Fix manuel S-243 (session concurrente bakery) : dériver du
+  catalogue local — mais le catalogue local reste une 2e source.
+| `BakeryPluginPublicationTest` + fix 2026-09-01
+
+| C6
+| *Le toml MEMPHIS référence DÉJÀ tous les plugins education.cccp* (12 entrées `*-plugin`) —
+  la source de vérité existe, elle n'est simplement pas transportée comme artefact : chaque
+  borough copie-colle les versions au lieu de les consommer.
+| `gradle/libs.versions.toml:50-62`
+
+| C7
+| *Le block `plugins { id(...) version "..." }` n'est pas couvert par un platform* — seul un
+  version catalog (ou un alias) peut alimenter la version d'un plugin appliqué. Ex réel :
+  runner-gradle `id("education.cccp.bakery") version "0.0.9"`.
+| `runner-gradle/build.gradle.kts:2`
+
+| C8
+| *Gradle supporte nativement la publication d'un version catalog comme artefact Maven*
+  (`MavenPublication.versionCatalog { from(...) }` — stable depuis Gradle 7.x) — zéro
+  invention, mécanisme standard.
+| Gradle docs `version_catalog.md`
+|===
+
+'''
+
+== 2. Vision
+
+*Le BOM devient l'unique source de vérité des versions cross-borough, transportée par artefact
+Maven Central.* Un borough consomme le catalogue publié (pas le repo physique) et n'écrit plus
+aucune version de plugin education.cccp en dur. Un bump MEMPHIS suffit à propager — le
+consommateur ne bump que son *pin de catalogue* (1 ligne, même rythme, jamais éparpillé).
+
+----
+[MEMPHIS N0] libs.versions.toml (source unique)
+     │  publish versionCatalog
+     ▼
+education.cccp:workspace-catalog:0.0.X  ──►  Central
+     │
+     │  settings.gradle.kts (pin UNIQUE par borough) :
+     │    versionCatalogs { create("ws") { from("education.cccp:workspace-catalog:0.0.X") } }
+     ▼
+[BOROUGH N2] version = ws.versions.slider.plugin.get()
+             dependencies { implementation("education.cccp:document-plugin") }  ← platform BOM fournit la version
+----
+
+=== Périmètre exact (ce que le BOM contrôle / ne contrôle pas)
+
+[cols="2,3,3"]
+|===
+| Élément | Source de vérité cible | Rationale
+| Versions des *plugins education.cccp* consommés (document, codebase, slider, ...) | `workspace-catalog` (MEMPHIS) | La douleur : bumps éparpillés C4
+| Versions des *contracts N0* | déjà platform BOM ✅ (compléter si trous) | Pattern existant
+| *Version propre* du plugin publié par le repo (ex: bakery 0.0.10) | *reste locale* (repo) | Une version d'artefact est intrinsèque à son repo (tags, release, dogfooding). Le BOM câble ENTRE artefacts, il ne possède pas la version DE chaque artefact.
+| Déps tierces propres au borough (asciidoctorj-jar, jbake, ...) | `libs` local | Série de versions non cross-borough — les centraliser serait l'inverse de la bonne direction
+| Le *pin* `from("education.cccp:workspace-catalog:X")` | 1 ligne locale par borough | Irréductible (Gradle refuse les versions dynamiques dans `from()` — reproductibilité) ; c'est le seul résidu, 1 au lieu de N
+|===
+
+=== Deux mécanismes Gradle natifs (complémentaires, pas exclusifs)
+
+. *Platform BOM (existant)* — contraint les *dépendances* :
+  `implementation(platform("education.cccp:workspace-bom:0.0.X"))` puis
+  `implementation("education.cccp:document-plugin")` sans version. Couvre les deps
+  `implementation/api` entre boroughs.
+. *Version Catalog publié (nouveau)* — contraint les *versions* consultables + les
+  *plugins appliqués* :
+  [source,kotlin]
+  ----
+  // MEMPHIS build.gradle.kts — 2e publication
+  create<MavenPublication>("versionCatalog") {
+      versionCatalog { from(files("gradle/libs.versions.toml")) }
+      groupId = "education.cccp"; artifactId = "workspace-catalog"
+  }
+  ----
+  ----
+  // Consommateur settings.gradle.kts
+  dependencyResolutionManagement {
+      repositories { mavenCentral() }
+      versionCatalogs { create("ws") { from("education.cccp:workspace-catalog:0.0.X") } }
+  }
+  // build.gradle.kts : accesseurs typés générés (ws.versions.bakery.plugin.get(),
+  // ws.plugins.kotlin.jvm, ws.libs.document.plugin)
+  ----
+
+'''
+
+== 3. Décisions architecturales (12)
+
+[cols="1,6", options="header"]
+|===
+| # | Décision
+| D1 | *2 artefacts MEMPHIS* : `workspace-bom` (platform, existant) + `workspace-catalog` (nouveau, publication `versionCatalog` du toml). Même repo, même release, même bump.
+| D2 | *Périmètre catalog* : les 12 plugins `education.cccp:*` + les versions partagées cross-borough. HORS SCOPE : déps tierces propres (asciidoctorj, jbake, playwright) — elles restent dans `libs` local ou dans la platform.
+| D3 | *Version propre d'un plugin* : reste dans son repo (règle « le BOM câble entre, pas dedans »). Le test d'hygiène type `BakeryPluginPublicationTest` évolue pour vérifier `version = ws.versions.<self>.get()` au lieu d'un toml local dupliqué.
+| D4 | *Pin unique* : chaque consommateur garde exactement 1 version locale — `from("...workspace-catalog:0.0.X")` dans settings. Pas de version dynamique (reproductibilité, D-Gradle).
+| D5 | *Adoption paresseuse* : un borough peut rester sur son ancien câblage tant qu'il veut. Migration borough par borough, jamais big bang.
+| D6 | *`libs` local conservé* pour les aliases spécifiques au borough ; les aliases cross-borough migrent sous `ws` (collision impossible — préfixes distincts).
+| D7 | *Plugin `id(...) version`* (C7) : les consommateurs qui appliquent les plugins via block `plugins` passent à `alias(ws.plugins.bakery)` — couvert par le catalog, pas par la platform. US dédiée (le changement est dans `build.gradle.kts` racine des consommateurs).
+| D8 | *Boroughs jamais publiés* (capsule 0.0.1-SNAPSHOT, jhipster SNAPSHOT) : entrée catalog = fantôme non résolvable depuis Central. Décision : l'entrée est créée au moment de la première publication Central (pas avant) — le catalog ne référence que du résolvable.
+| D9 | *Publication* : le catalogue suit le cycle release du BOM (même commit, même bundle nmcp). Vérifier que nmcp 1.5.0 agrège les 2 publications du module racine (déjà le cas pour les 8 modules contrats → oui, `publishAggregationToCentralPortal` est aggrégatif).
+| D10 | *Anti-split-brain* : une US dédiée supprime la divergence intra-MEMPHIS (C1/C2) — la platform `build.gradle.kts` consomme le toml via `libs.*` AU LIEU de hardcoder (les lignes 19-125 deviennent `api(libs.kotlin.stdlib)` etc.), et la version BOM est dérivée du toml (`version = libs.versions.workspace.bom.get()`).
+| D11 | *Tests de garde* : (a) UT structurels sur le catalogue publié (chaque plugin résolvable, versions non-vides) ; (b) FT consommateur pilote (`ws` accessor compile + résout depuis Central/mavenLocal) ; (c) test d'hygiène « pas de version hardcodée education.cccp dans build.gradle.kts des consommateurs migrés » (grep-like).
+| D12 | *Zéro couplage physique au repo BOM* : la transmission est Maven (Central + mavenLocal), jamais `includeBuild` ni chemin de filesystem — c'est la demande explicite du pilote.
+|===
+
+'''
+
+== 4. User Stories — baby steps DDD/TDD/BDD
+
+[cols="1,4,2,2,2"]
+|===
+| US | Description | Tests | Pts | Dépend de
+| MEM-CAT-0
+| *Cadrage* (cette session) — constats, 12 décisions, découpage.
+  Zéro code.
+| —
+| 0 ✅
+| —
+| MEM-CAT-1
+| *Suppression du split-brain intra-MEMPHIS (D10)* — la platform
+  consomme le toml (`api(libs.*)` partout, `version = ws-derivation`),
+  le toml est mis à jour vers les valeurs réelles (agent-contracts 0.0.3,
+  epub3 3.0.1 déjà en WIP, BOM version alignée). Zéro changement de
+  contraintes résolues (vérif POM avant/après identique).
+| UT : test d'alignement toml↔platform (nouveau `PlatformCatalogAlignmentTest`) + POM `generatePomFile` comparé avant/après
+| 3
+| —
+| MEM-CAT-2
+| *Publication `workspace-catalog`* (D1, D8, D9) — 2e publication
+  MavenPublication dans workspace-bom/build.gradle.kts + POM name/desc/
+  license/scm (pattern existant) + UT structurels : versions plugins
+  présentes, résolvables, non-vides (D11a). `publishToMavenLocal` VERT.
+| UT : 8-10 (structure catalog : plugins présents, versions semantiques, aliases valides)
+| 5
+| MEM-CAT-1
+| MEM-CAT-3
+| *Pilote consommateur bakery (D3, D5)* — settings.gradle.kts bakery :
+  `create("ws") { from("education.cccp:workspace-catalog:0.0.X") }` ;
+  `version = ws.versions.bakery.plugin.get()` (remplace toml local +
+  fixe BakeryPluginPublicationTest durablement) ; `document-plugin`
+  consommé via platform BOM sans version (remplace hardcode 0.0.15) ;
+  test d'hygiène D11c. Gate : `check` bakery VERTE (baseline connue).
+| FT : consommateur mavenLocal + Central ; `check` bakery non-régression
+| 5
+| MEM-CAT-2
+| MEM-CAT-4
+| *Preuve de propagation (D4)* — bump 1 version plugin dans le toml
+  MEMPHIS → publication catalogue → le consommateur pilote voit la
+  nouvelle version SANS éditer son build (seul le pin settings peut
+  suivre). Test de la chaîne complète + documentation du protocole de
+  release (bump BOM + catalog ensemble).
+| FT : propagation mavenLocal ; doc protocole release
+| 3
+| MEM-CAT-3
+| MEM-CAT-5
+| *Cucumber BDD + doc migration* — scénarios `@version-catalog`
+  (catalog résolvable / accessor typé / hygiène pas-de-hardcode) +
+  README migration pour les autres boroughs. Généralisation = borough
+  par borough HORS EPIC (à la demande, jamais big bang).
+| BDD : 3 scénarios + runner dédié
+| 5
+| MEM-CAT-4
+|===
+
+*Total* : ~21 pts, 5 US. Séquentiel : CAT-1 → CAT-2 → CAT-3 → CAT-4 → CAT-5.
+
+=== Dépendances (DAG)
+
+----
+CAT-1 (fix split intra-BOM) ─→ CAT-2 (publication catalog) ─→ CAT-3 (pilote bakery) ─→ CAT-4 (preuve propagation) ─→ CAT-5 (BDD + doc)
+----
+
+=== Projection sessions
+
+* *S-026* — CAT-1 (3 pts, alignement toml↔platform, supprime C1/C2)
+* *S-027* — CAT-2 (5 pts, publication workspace-catalog, publishToMavenLocal)
+* *S-028* — CAT-3 (5 pts, pilote bakery — **coordination avec la session bakery active**)
+* *S-028* — CAT-4 + CAT-5 (8 pts, propagation + BDD, clôture EPIC)
+
+Projection conservatrice : 4 sessions, ~21 pts, méthodo baby-step DDD/TDD/BDD.
+
+'''
+
+== 5. Risques
+
+[cols="1,4,2,2", options="header"]
+|===
+| ID | Risque | Impact | Mitigation
+| R-VC-1 | Couplage d'ordonnancement : publier borough X exige un release BOM/catalog (polling Central 7-27 min, Piège #11) | Moyen | Le release BOM n'est requis que pour PROPAGER une version aux consommateurs — un borough peut publier son plugin sans toucher le BOM (adoption paresseuse D5)
+| R-VC-2 | Entrées fantômes (capsule/jhipster non publiés) → 404 à la résolution | Moyen | D8 : entrée créée seulement à la 1re publication Central
+| R-VC-3 | Collisions `ws` vs `libs` (alias en double) | Faible | Préfixes distincts ; règle : cross-borough → `ws`, propre → `libs`
+| R-VC-4 | includeBuild conventions-gradle ne passe pas par la résolution Maven | Faible | HORS SCOPE acté — conventions reste includeBuild (CNV-6 pattern)
+| R-VC-5 | Consommateurs qui hardcodent encore `id(...) version` (runner-gradle) non migrés | Faible | D7 : alias `ws.plugins.*` documenté en CAT-5 ; migration borough par borough
+| R-VC-6 | Sessions concurrentes actives (bakery, MEMPHIS epub3 WIP) | Moyen | Coordination pilote avant CAT-3 ; MEMPHIS CAT-1 absorbe le WIP epub3 existant
+|===
+
+'''
+
+== 6. Hors périmètre (explicite)
+
+- *Version propre des plugins* (chaque repo garde sa release — D3).
+- *conventions-gradle* (`includeBuild`, pas de résolution Maven).
+- *Migration des autres boroughs* (généralisation post-EPIC, borough par borough).
+- *Déps tierces borough-spécifiques* (restent locales).
+- Le *bump de versions réelles* des plugins (l'EPIC installe le MÉCANISME ;
+  les bumps restent des actes de release pilotés).
+
+== 7. Bénéfices attendus
+
+. Une seule ligne à bumpé par consommateur (le pin catalog) au lieu de N versions hardcodées.
+. Fin des classes de bugs C4/C5 (cascade 404, hygiène version) — gardes D11.
+. Le toml MEMPHIS devient réellement la source de vérité (il l'est déjà sur le papier — C6).
+. Pattern standard Gradle (zero custom code) — auditable, documenté, versionné Central.
+. Évolution naturelle du rôle N0 de MEMPHIS : shared kernel des CONTRATS → aussi du CÂBLAGE.

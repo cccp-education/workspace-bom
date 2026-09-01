@@ -563,3 +563,102 @@ _Tests_ : 55 tests 0 FAIL (43 unit + 11 cucumber + 1 background).
 _Fichiers_ : 13 prod + 7 test + 1 feature.
 _Publications_ : runtime-contracts 0.0.1 + BOM 0.0.24 sur Maven Central.
 _Débloque_ : codex CDX-RC-04 (pont RAG SessionMemoryContract).
+
+'''
+== 🟡 EPIC MEM-CATALOG — Version Catalog publié : le BOM comme unique source de vérité des versions plugins
+
+_Cadré Session 025 (2026-09-01) — `.agents/CADRAGE_EPIC_MEM_VERSION_CATALOG.adoc`._
+_Origine : demande pilote (session 243 document-gradle) — centraliser les versions plugins dans
+le BOM, transportées par artefact Maven (pas de référence physique au repo BOM)._
+
+[CAUTION]
+====
+**Motivation** : les versions des plugins `education.cccp:*` sont dupliquées chez chaque
+consommateur (hardcode ou toml local) → bumps éparpillés récurrents (S-241, S-209, S-120,
+EPIC MEMPHIS-BOM-FIX) + classe de bug hygiène version (`BakeryPluginPublicationTest`).
+Constat déclencheur : MEMPHIS a déjà 3 sources de version divergentes en lui-même
+(toml 0.0.26 / platform 0.0.29 / Central 0.0.27) et un split-brain `agent-contracts`
+(toml 0.0.2 vs platform 0.0.3). Le toml référence déjà les 12 plugins — la source de
+vérité existe, elle n'est pas transportée.
+
+**Solution** : 2 mécanismes Gradle natifs complémentaires — (1) platform BOM (existant)
+pour les *dépendances* sans version ; (2) *version catalog publié* (`workspace-catalog`)
+consommé via `versionCatalogs { create("ws") { from("education.cccp:workspace-catalog:X") } }`
+dans settings — accesseurs typés `ws.versions.*` pour la version propre du plugin +
+les plugins appliqués (`alias(ws.plugins.bakery)`). Pin unique par borough (1 ligne),
+adoption paresseuse, zéro couplage physique au repo BOM (Maven only).
+====
+
+=== User Stories — baby steps DDD/TDD/BDD
+
+[cols="1,4,2,2,2"]
+|===
+| US | Description | Tests | Pts | Dépend de
+
+| MEM-CAT-1
+| *Suppression du split-brain intra-MEMPHIS* — platform consomme le toml
+  (`api(libs.*)` au lieu de hardcoder), toml aligné sur les valeurs réelles
+  (agent-contracts 0.0.3, epub3 3.0.1, version BOM dérivée). POM avant/après
+  identique.
+| UT alignement toml↔platform + POM comparé
+| 3
+| —
+
+| MEM-CAT-2
+| *Publication `workspace-catalog`* — 2e MavenPublication
+  (`versionCatalog { from(toml) }`) + POM complet + UT structurels
+  (plugins présents, résolvables, non-vides). `publishToMavenLocal` VERT.
+| UT : 8-10 structure catalog
+| 5
+| CAT-1
+
+| MEM-CAT-3
+| *Pilote consommateur bakery* — settings `create("ws") { from(...) }`,
+  `version = ws.versions.bakery.plugin.get()`, `document-plugin` via
+  platform sans version, test hygiène pas-de-hardcode. Gate `check` VERTE.
+| FT mavenLocal + Central + check bakery
+| 5
+| CAT-2
+
+| MEM-CAT-4
+| *Preuve de propagation* — bump 1 plugin dans le toml → publication →
+  consommateur voit la nouvelle version sans éditer son build. Protocole
+  de release documenté (BOM + catalog ensemble).
+| FT propagation + doc protocole
+| 3
+| CAT-3
+
+| MEM-CAT-5
+| *Cucumber BDD + doc migration* — `@version-catalog` (résolvable /
+  accessor typé / hygiène) + README migration boroughs. Généralisation
+  borough par borough HORS EPIC.
+| BDD : 3 scénarios + runner dédié
+| 5
+| CAT-4
+|===
+
+_Total_ : ~21 pts, 5 US. Séquentiel CAT-1 → CAT-5.
+
+=== Décisions clés (détail dans le cadrage)
+
+- D1 : 2 artefacts MEMPHIS (`workspace-bom` platform + `workspace-catalog` catalog), même release.
+- D2 : périmètre = plugins education.cccp + versions cross-borough uniquement (déps tierces restent locales).
+- D3 : la version *propre* d'un plugin reste dans son repo — le BOM câble ENTRE, pas DEDANS.
+- D4 : pin unique `from(...)` par borough, jamais de version dynamique (reproductibilité).
+- D5 : adoption paresseuse, borough par borough, jamais big bang.
+- D8 : entrée catalog créée seulement à la 1re publication Central (pas de fantôme).
+- D10 : le fix intra-MEMPHIS précède la publication (l'exemple doit être clean).
+- D12 : transmission Maven only (Central + mavenLocal), zéro includeBuild/chemin FS.
+
+=== Risques (détail dans le cadrage)
+
+R-VC-1 couplage ordonnancement (polling Central) · R-VC-2 entrées fantômes · R-VC-3 collisions
+`ws`/`libs` · R-VC-4 conventions includeBuild HORS SCOPE · R-VC-5 hardcodes `id(...) version`
+restants · R-VC-6 sessions concurrentes (bakery, MEMPHIS epub3 WIP absorbé par CAT-1).
+
+=== Projection sessions
+
+* *S-026* — CAT-1 (3 pts, alignement toml↔platform)
+* *S-027* — CAT-2 (5 pts, publication workspace-catalog)
+* *S-028* — CAT-3 (5 pts, pilote bakery — coordination session bakery active)
+* *S-028* — CAT-4 + CAT-5 (8 pts, propagation + BDD, clôture EPIC)
