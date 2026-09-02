@@ -1,6 +1,25 @@
 = TEST_COVERAGE_ANALYSIS — workspace-bom (MEMPHIS)
 :date: 2026-09-02
-:session: 028
+:session: 032
+
+== Gardes publication boroughs (EPIC MEM-CAT-ROLLOUT — S-244/S-211/S-030/S-031)
+
+4 gardes publication créées dans les boroughs adoptés (pattern
+`BakeryPluginPublicationTest` bakery S-026, propagé en cascade) — 3 tests
+chacune (version dérivée D3 + hygiène toml↔ws D5 + pin platform) :
+
+[cols="3,2,2,2"]
+|===
+| Garde | Borough | Gate | Split-brain attrapé
+| `DocumentPluginPublicationTest` | document | test 3272/0 + FT 126/126 | toml 0.0.3 vs hardcode 0.0.15 ✅
+| `CodexPluginPublicationTest` | codex | check 754/0 | aucun (dérivation propre) ✅
+| `PlantumlPluginPublicationTest` | plantuml | unit 2531/0 + FT 85/1 baseline | toml 0.0.3 vs hardcode 0.0.4 ✅
+| `HyperframesPluginPublicationTest` | hyperframes | check 214/0 | aucun ✅
+|===
+
+*Valeur cumulée* : 2 split-brains locaux éliminés (document, plantuml) + 2
+verrouillages préventifs (codex, hyperframes). Chaque garde lit le toml du
+catalog ws (fallback : toml MEMPHIS local) et épinglera les bumps futurs.
 
 == Gardes anti split-brain (S-028 — extension garde alignement)
 

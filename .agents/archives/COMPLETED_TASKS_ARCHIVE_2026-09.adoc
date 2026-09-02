@@ -1,5 +1,15 @@
 = Archives des tâches terminées — Septembre 2026 (workspace-bom MEMPHIS)
 
+== Session 032 (2026-09-02) — EPIC MEM-CAT-ROLLOUT 5/6 + US-CI-1.2 + Release 0.0.31
+
+- [x] ROLLOUT-2 codex : garde 3/3 + pin ws + version dérivée + platform 0.0.30 — check 754/0, mavenLocal VERT (commit `bf6a337`)
+- [x] ROLLOUT-3 plantuml : garde 3/3 + split-brain local 0.0.3/0.0.4 éliminé — unit 2531/0 + FT 85/1 baseline stash (commit `52d6352`)
+- [x] ROLLOUT-4 hyperframes : garde 3/3 + pin ws + platform 0.0.7→0.0.30 — check 214/0 (commit `3a2d01d`)
+- [x] ROLLOUT-5 runner cas C7 : entrées `[plugins]` 8 boroughs toml BOM + alias `ws.plugins.bakery` remplace hardcode `id(...) version "0.0.9"` — tasks VERT + buildEnvironment prouve 0.0.9 via ws (commit `ad9036b`)
+- [x] Release Central BOM 0.0.31 + catalog 0.0.31 — repo1 HTTP 200 ×2 (poll 10), entrée plugin bakery vérifiée
+- [x] US-CI-1.2 : wrapper jar api-key-pool committé (root+plugin), `.gitignore` retiré (commit `cf20c3b`)
+- [x] Sync gouvernance 5 repos : BACKLOG/INDEX/rapports sessions boroughs + référentiel MEMPHIS + PROMPT_REPRISE/INDEX/SESSIONS_HISTORY/TEST_COVERAGE/archive
+
 == Session 028 (2026-09-02) — Audit transverse versions + fix split-brain conventions + Release 0.0.30
 
 - [x] US-0 audit transverse : maven-metadata.xml 22 artefacts education.cccp — 21/22 alignés, 1 split-brain (conventions-plugin toml 0.0.3 vs Central 0.0.4, bump raté S-011)

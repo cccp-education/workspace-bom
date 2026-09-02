@@ -74,7 +74,7 @@ BOM + 5 libraries de contrats partagés (N0). Premier artefact publié (VAGUE 1)
 **Statut** : ✅ TERMINÉ
 
 '''
-== 🟡 EPIC MEM-CAT-ROLLOUT — Généralisation version catalog borough par borough (D5, adoption paresseuse)
+== ✅ EPIC MEM-CAT-ROLLOUT (5/6) — Généralisation version catalog borough par borough (D5, adoption paresseuse)
 
 _Origine : S-028 (audit transverse versions) + demande pilote transverse._
 _Le pilote bakery (S-208/S-028) prouve le pattern : 1 pin settings + version
@@ -91,7 +91,7 @@ mise à jour BACKLOG + INDEX borough à chaque fois) :
 | 2 | codex-gradle | platform BOM 0.0.26 | idem | ✅ TERMINÉ (S-211 — garde 3/3, check 754/0, mavenLocal VERT POM 0.0.6/platform 0.0.30, version déjà dérivée toml local → ws sans split-brain)
 | 3 | plantuml-gradle | platform BOM 0.0.21 | idem | ✅ TERMINÉ (S-030 — garde 3/3, unit 2531/0, FT 85/1 baseline stash-confirmée, split-brain local 0.0.3/0.0.4 éliminé)
 | 4 | hyperframes-gradle | platform BOM 0.0.7 | idem | ✅ TERMINÉ (S-031 — garde 3/3, check 214/0, mavenLocal VERT, pas de split-brain local)
-| 5 | runner-gradle | hardcode `id(...) version "0.0.9"` (C7) | pin ws + alias(ws.plugins.bakery) | 🟡 À FAIRE (prochaine)
+| 5 | runner-gradle | hardcode `id(...) version "0.0.9"` (C7) | pin ws + alias(ws.plugins.bakery) | ✅ TERMINÉ (S-031 — alias D7 via entrée [plugins] toml BOM 0.0.31 mavenLocal, gate tasks VERT, buildEnvironment prouve 0.0.9 via ws)
 | 6 | dashboard, readme, graphify... | divers | idem, à la demande | ⏳ À PLANIFIER
 |===
 
@@ -505,10 +505,9 @@ besoin LLM des tests d'intégration avec `qwen3:0.6b` (exception CI AGENTS.adoc)
 
 === US-CI-1.2 — Fix api-key-pool-gradle wrapper jar
 **Pts** : 0.5
-**Statut** : 🟡 À FAIRE (re-confirmé S-028 — wrapper jar toujours gitignoré, `git check-ignore` positif)
-- `gradle-wrapper.jar` gitignoré dans api-key-pool-gradle (`.gitignore` ligne 23).
-- Fix : retirer la ligne `.gitignore` + committer le jar, OU step CI `gradle wrapper`.
-- *Ordre suggéré S-029* : après ROLLOUT-1 (document), 0.5 pt — quick win.
+**Statut** : ✅ TERMINÉ (S-031 — jar committé root + plugin, ignore retiré)
+- `gradle-wrapper.jar` était gitignoré dans api-key-pool-gradle (`.gitignore` ligne 23, pattern `**/`).
+- Fix appliqué : ligne `.gitignore` retirée + jar committé (root + api-key-pool-plugin, 46 Ko Apache-2.0).
 
 === US-CI-1.3 — Fix readme-gradle + slider-gradle (check not found)
 **Pts** : 1

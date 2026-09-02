@@ -1,6 +1,6 @@
 [versions]
 # ── Workspace BOM shared versions ─────────────────────────────────────────────
-workspace-bom = "0.0.30"
+workspace-bom = "0.0.31"
 
 # ── Kotlin ────────────────────────────────────────────────────────────────────
 kotlin = "2.4.10"
@@ -116,6 +116,15 @@ versions = { id = "com.github.ben-manes.versions", version.ref = "deps-versions"
 plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "plugin-publish" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 node-gradle = { id = "com.github.node-gradle.node", version.ref = "node-gradle" }
+# ── Borough plugins (education.cccp) — alias pour block plugins {} consommateurs (D7) ──
+bakery = { id = "education.cccp.bakery", version.ref = "bakery-plugin" }
+document = { id = "education.cccp.document", version.ref = "document-plugin" }
+codex = { id = "education.cccp.codex", version.ref = "codex-plugin" }
+plantuml = { id = "education.cccp.plantuml", version.ref = "plantuml-plugin" }
+hyperframes = { id = "education.cccp.hyperframes", version.ref = "hyperframes-plugin" }
+planner = { id = "education.cccp.planner", version.ref = "planner-plugin" }
+readme = { id = "education.cccp.readme", version.ref = "readme-plugin" }
+graphify = { id = "education.cccp.graphify", version.ref = "graphify-plugin" }
 
 [libraries]
 # ── Kotlin ──

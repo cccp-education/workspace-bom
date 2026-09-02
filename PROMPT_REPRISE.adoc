@@ -1,35 +1,31 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-028 — TERMINÉE (audit transverse versions + fix split-brain conventions-plugin + release Central 0.0.30)
+032 — TERMINÉE (EPIC MEM-CAT-ROLLOUT 5/6 : ROLLOUT-2 codex, ROLLOUT-3 plantuml, ROLLOUT-4 hyperframes, ROLLOUT-5 runner cas C7 + US-CI-1.2 + release Central 0.0.31 avec entrées [plugins])
 
-== Mission session 029 — MEM-CAT-ROLLOUT ordre 1 (document-gradle)
+== État du code (S-032)
 
-Plan transverse acté S-028 (détaillé BACKLOG.adoc § EPIC MEM-CAT-ROLLOUT) :
+- Central : BOM 0.0.31 + workspace-catalog 0.0.31 (repo1 HTTP 200 ×2, entrées
+  `[plugins]` 8 boroughs education.cccp transportées — `bakery = {id = ...,
+  version.ref = "bakery-plugin"}` vérifié).
+- 4 boroughs adoptés : codex (754/0), plantuml (2531/0, FT 85/1 baseline),
+  hyperframes (214/0), runner (alias ws.plugins.bakery, tasks VERT). document
+  (3272/0) adopté en S-244. US-CI-1.2 wrapper jar api-key-pool committé.
+- Garde `PlatformCatalogAlignmentTest` épinglée BOM 0.0.31 + conventions 0.0.4.
+- ROLLOUT-6+ (dashboard, readme, graphify...) ⏳ À PLANIFIER à la demande.
 
-. *ROLLOUT-1 document-gradle* — pin ws 0.0.30 + version dérivée + platform
-  0.0.26→0.0.30, gate baseline exacte (UT 3039/0, FT 126/126). 3 pts.
-. *ROLLOUT-2 codex-gradle* — idem (baseline 679 tests). 3 pts.
-. *ROLLOUT-3 plantuml-gradle* — idem (baseline 1312 unit). 3 pts.
-. *ROLLOUT-4 hyperframes-gradle* — idem. 3 pts.
-. *ROLLOUT-5 runner-gradle* — cas C7 : `alias(ws.plugins.bakery)` remplace
-  `id(...) version "0.0.9"`. 3 pts.
-. *US-CI-1.2* — wrapper jar api-key-pool (quick win 0.5 pt, re-confirmé S-028).
-. *US-CI-1.4* — qwen3:0.6b CI (dépend de 1.2). 1 pt.
+== Mission session 033 — à la demande
 
-Parallèle (EPIC bakery dédié BKY-TEST-FLAKY, inscrit BACKLOG/TODO bakery) :
-FLAKY-2 → FLAKY-1 → FLAKY-3 pour un `check` bakery 100% vert.
+. *ROLLOUT-6+* boroughs restants (dashboard, readme, graphify, bureau...) :
+   pattern d'adoption réutilisable documenté rapport S-032 (garde RED → pin ws
+   → version dérivée → platform 0.0.31 → gate → mavenLocal).
+. *Confirmation CI runner* : déclencher un run deploy réel magic-stick /
+   cheroliv.com (alias ws.plugins.bakery en conditions réelles gh-pages).
+. *US-CI-1.4* : Ollama qwen3:0.6b en CI (dépend workflow test.yml, 1 pt).
+. *Dette bakery* : EPIC BKY-TEST-FLAKY (3 FAIL i18n, BACKLOG+TODO bakery S-028).
+. *DOC-8 reste* (P3) : opencode-session-contracts (deps présentes, 0 usage).
 
-== État du code (S-028)
-
-- Central : BOM 0.0.30 + workspace-catalog 0.0.30 (repo1 HTTP 200 ×2).
-- toml : `workspace-bom = "0.0.30"`, `conventions-plugin = "0.0.4"`
-  (split-brain 0.0.3 corrigé — le toml avait raté le bump S-011 conventions).
-- Garde `PlatformCatalogAlignmentTest` épinglée sur conventions 0.0.4 + BOM 0.0.30.
-- Bakery pilote : pin catalog 0.0.30 (settings) + platform 0.0.30 (build, 3 occ).
-- Baseline bakery : 3 FAIL i18n flaky préexistants (avant = après, stash vérifié).
-
-== Pièges à retenir (cumul S-026 + S-027 + S-028)
+== Pièges à retenir (cumul S-026 + S-027 + S-028 + S-032)
 
 1. *Gradle 9 API* : publication catalog = plugin `version-catalog` +
    `catalog { versionCatalog { from(...) } }` + `from(components["versionCatalog"])`.
@@ -48,11 +44,19 @@ FLAKY-2 → FLAKY-1 → FLAKY-3 pour un `check` bakery 100% vert.
    preuve propagation via settings consommateur réel ou test FT.
 8. *2 suites Cucumber même source set* : `cucumber.filter.tags` system property
    prime sur la config du runner (2 glues coexistantes sans source set séparé).
-9. *S-028* : `:agent-contracts:test` n'existe PAS depuis la racine BOM —
-   agent-contracts est un build standalone (lancer depuis `agent-contracts/`).
-   Idem bakery : `test` n'existe qu'à la racine `bakery-plugin/`.
-10. *S-028* : les tests gardes `PlatformCatalogAlignmentTest` épinglent les
-   versions (BOM + conventions) — après CHAQUE bump toml, bump la garde.
+9. *`:agent-contracts:test` n'existe pas depuis la racine BOM* — build
+   standalone (lancer depuis `agent-contracts/`). Idem bakery : `test`
+   n'existe qu'à la racine `bakery-plugin/`.
+10. *Gardes épinglent les versions* (BOM + conventions + contrats) — après
+   CHAQUE bump toml, bump la garde dans le même commit.
+11. *runner* : `dependencyResolutionManagement.repositories` manquant →
+    catalog ws irrésolvable ("no repositories are defined") — même si
+    pluginManagement couvre les plugins.
+12. *alias dans block plugins {}* : nécessite une entrée `[plugins]` dans le
+    toml du catalog publié (D7) — le block `plugins {}` n'accède pas aux
+    accesseurs version, seul alias marche.
+13. *Transport plugins* : les entrées `[plugins]` du toml sont bien publiées
+    et consommables via `ws.plugins.*` (vérifié repo1 0.0.31).
 
 == Règles
 
@@ -64,10 +68,10 @@ FLAKY-2 → FLAKY-1 → FLAKY-3 pour un `check` bakery 100% vert.
 - Le pilote autorise commit/push en fin de session + bump/publication
   mavenLocal/Central dès que nécessaire (S-028).
 
-== À vérifier en ouverture S-029
+== À vérifier en ouverture S-033
 
-1. `git status` — workspace-bom committé/poussé ? (S-028 clôturé)
-2. Central `<latest>` BOM + catalog (0.0.30 attendu).
+1. `git status` — workspace-bom committé/poussé ? (S-032 clôturé)
+2. Central `<latest>` BOM + catalog (0.0.31 attendu).
 3. `./gradlew test versionCatalogCucumberTest` depuis `agent-contracts/` VERT.
-4. Demande pilote si généralisation catalog vers un nouveau borough.
-5. Backlog : EPIC MEM-CATALOG marqué ✅ TERMINÉ (S-027) — ne pas rouvrir.
+4. Demande pilote : ROLLOUT-6+ (quels boroughs) OU confirmation CI runner.
+5. Backlog : EPIC MEM-CATALOG ✅ ne pas rouvrir ; MEM-CAT-ROLLOUT 5/6 (6e à la demande).
