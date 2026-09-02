@@ -89,8 +89,8 @@ mise à jour BACKLOG + INDEX borough à chaque fois) :
 | Ordre | Borough | État actuel | Cible | Statut
 | 1 | document-gradle | platform BOM 0.0.26 | pin ws + version dérivée + platform 0.0.30 | ✅ TERMINÉ (S-244 — garde 3/3, test 3272/0, FT 126/126, mavenLocal VERT, split-brain local 0.0.3/0.0.15 éliminé)
 | 2 | codex-gradle | platform BOM 0.0.26 | idem | ✅ TERMINÉ (S-211 — garde 3/3, check 754/0, mavenLocal VERT POM 0.0.6/platform 0.0.30, version déjà dérivée toml local → ws sans split-brain)
-| 3 | plantuml-gradle | platform BOM 0.0.21 | idem | 🟡 À FAIRE (prochaine)
-| 4 | hyperframes-gradle | platform BOM 0.0.7 | idem | 🟡 À FAIRE
+| 3 | plantuml-gradle | platform BOM 0.0.21 | idem | ✅ TERMINÉ (S-030 — garde 3/3, unit 2531/0, FT 85/1 baseline stash-confirmée, split-brain local 0.0.3/0.0.4 éliminé)
+| 4 | hyperframes-gradle | platform BOM 0.0.7 | idem | 🟡 À FAIRE (prochaine)
 | 5 | runner-gradle | hardcode `id(...) version "0.0.9"` (C7) | pin ws + alias(ws.plugins.bakery) | 🟡 À FAIRE
 | 6 | dashboard, readme, graphify... | divers | idem, à la demande | ⏳ À PLANIFIER
 |===
