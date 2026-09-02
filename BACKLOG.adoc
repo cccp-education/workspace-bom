@@ -87,8 +87,8 @@ mise à jour BACKLOG + INDEX borough à chaque fois) :
 [cols="1,3,2,2,2"]
 |===
 | Ordre | Borough | État actuel | Cible | Statut
-| 1 | document-gradle | platform BOM 0.0.26 | pin ws + version dérivée + platform 0.0.30 | 🟡 À FAIRE
-| 2 | codex-gradle | platform BOM 0.0.26 | idem | 🟡 À FAIRE
+| 1 | document-gradle | platform BOM 0.0.26 | pin ws + version dérivée + platform 0.0.30 | ✅ TERMINÉ (S-244 — garde 3/3, test 3272/0, FT 126/126, mavenLocal VERT, split-brain local 0.0.3/0.0.15 éliminé)
+| 2 | codex-gradle | platform BOM 0.0.26 | idem | 🟡 À FAIRE (prochaine)
 | 3 | plantuml-gradle | platform BOM 0.0.21 | idem | 🟡 À FAIRE
 | 4 | hyperframes-gradle | platform BOM 0.0.7 | idem | 🟡 À FAIRE
 | 5 | runner-gradle | hardcode `id(...) version "0.0.9"` (C7) | pin ws + alias(ws.plugins.bakery) | 🟡 À FAIRE
