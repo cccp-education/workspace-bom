@@ -3,6 +3,23 @@
 == Session en cours
 028 — TERMINÉE (audit transverse versions + fix split-brain conventions-plugin + release Central 0.0.30)
 
+== Mission session 029 — MEM-CAT-ROLLOUT ordre 1 (document-gradle)
+
+Plan transverse acté S-028 (détaillé BACKLOG.adoc § EPIC MEM-CAT-ROLLOUT) :
+
+. *ROLLOUT-1 document-gradle* — pin ws 0.0.30 + version dérivée + platform
+  0.0.26→0.0.30, gate baseline exacte (UT 3039/0, FT 126/126). 3 pts.
+. *ROLLOUT-2 codex-gradle* — idem (baseline 679 tests). 3 pts.
+. *ROLLOUT-3 plantuml-gradle* — idem (baseline 1312 unit). 3 pts.
+. *ROLLOUT-4 hyperframes-gradle* — idem. 3 pts.
+. *ROLLOUT-5 runner-gradle* — cas C7 : `alias(ws.plugins.bakery)` remplace
+  `id(...) version "0.0.9"`. 3 pts.
+. *US-CI-1.2* — wrapper jar api-key-pool (quick win 0.5 pt, re-confirmé S-028).
+. *US-CI-1.4* — qwen3:0.6b CI (dépend de 1.2). 1 pt.
+
+Parallèle (EPIC bakery dédié BKY-TEST-FLAKY, inscrit BACKLOG/TODO bakery) :
+FLAKY-2 → FLAKY-1 → FLAKY-3 pour un `check` bakery 100% vert.
+
 == État du code (S-028)
 
 - Central : BOM 0.0.30 + workspace-catalog 0.0.30 (repo1 HTTP 200 ×2).
@@ -11,19 +28,6 @@
 - Garde `PlatformCatalogAlignmentTest` épinglée sur conventions 0.0.4 + BOM 0.0.30.
 - Bakery pilote : pin catalog 0.0.30 (settings) + platform 0.0.30 (build, 3 occ).
 - Baseline bakery : 3 FAIL i18n flaky préexistants (avant = après, stash vérifié).
-
-== Mission session 029 — maintenance / généralisation (à la demande)
-
-Aucun EPIC ouvert. Piste prioritaire (demande pilote transverse) :
-
-. *Généralisation catalog* borough par borough (D5, HORS EPIC) :
-   document (platform 0.0.26), codex (0.0.26), plantuml (0.0.21),
-   runner (hardcode `id(...) version "0.0.9"`), dashboard, hyperframes...
-   1 pin settings + version dérivée par borough.
-. *Dette bakery* : 3 FAIL i18n flaky (RealSiteI18nMigration,
-   FixtureAlignmentAuditor, I18nDeltaWire) — EPIC bakery dédié, pas MEMPHIS.
-. *US-CI-1.2/1.4* (BACKLOG) : wrapper jar api-key-pool + qwen3:0.6b CI.
-. *DOC-8* (P2) : document-gradle consommer les contrats N0.
 
 == Pièges à retenir (cumul S-026 + S-027 + S-028)
 

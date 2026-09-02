@@ -102,7 +102,7 @@ _Session en cours_ : —
 | RUNTIME-CONTRACTS | 8e artefact N0 — Contrats bootstrapping session formation agentique | ✅ TERMINÉ (session 022, 7/7 US, runtime-contracts:0.0.1 publié Central) | P1
 | MEMPHIS-BOM-FIX | BOM référence `slider` (artifactId périmé) au lieu de `slider-plugin` → 404 Central. Bug bloquant capsule. | ✅ TERMINÉ (S-024, 5/5 US — US-1 catalogue fix S-208, US-3 BOM 0.0.27 Central, US-4 codebase 0.0.10 Central S-209, US-5 capsule fix S-120) | P0
 | MEM-CATALOG | Version Catalog publié `workspace-catalog` — le BOM unique source de vérité des versions plugins, transportée par artefact Maven (settings `from(...)`, accesseurs `ws.*`). Fix split-brain intra-BOM inclus. | ✅ TERMINÉ (S-026 CAT-1/2/3 + S-027 CAT-4/5 — 5/5 US ~21/21 pts, Central 0.0.29 BOM + catalog bundle `e6f571c2`, preuve propagation Central, protocole release RELEASE_PROTOCOL.adoc) | P1
-| DOC-8 | document-gradle — Consommer les contrats N0 (i18n, pipeline, session) | 🔄 À FAIRE | P2
+| DOC-8 | document-gradle — Consommer les contrats N0. *État S-028* : i18n-contracts ✅ consommé (TranslationService/FakeTranslationService) + pipeline-contracts ✅ (release notes). Reste : opencode-session-contracts (traçabilité release notes, dépendance présente, 0 usage — P3). | 🔄 PARTIEL (2/3 contrats consommés) | P2
 | PUB | Publication Maven Central + Plugin Portal | 🔄 EN COURS (BOM 0.0.24 + agent-contracts 0.0.3 + 8 contrats N0 publiés dont runtime-contracts 0.0.1, slider 0.0.18 constraint, codebase 0.0.8, codex 0.0.4, bakery 0.0.9, plantuml 0.0.4) | P0
 |===
 

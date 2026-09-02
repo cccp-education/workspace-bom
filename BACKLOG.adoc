@@ -74,6 +74,34 @@ BOM + 5 libraries de contrats partagés (N0). Premier artefact publié (VAGUE 1)
 **Statut** : ✅ TERMINÉ
 
 '''
+== 🟡 EPIC MEM-CAT-ROLLOUT — Généralisation version catalog borough par borough (D5, adoption paresseuse)
+
+_Origine : S-028 (audit transverse versions) + demande pilote transverse._
+_Le pilote bakery (S-208/S-028) prouve le pattern : 1 pin settings + version
+dérivée + platform sans version. Objectif : éliminer définitivement les bumps
+éparpillés type split-brain conventions S-028._
+
+*Référentiel des adoptions* (1 borough = 1 session courte, gate tests verts,
+mise à jour BACKLOG + INDEX borough à chaque fois) :
+
+[cols="1,3,2,2,2"]
+|===
+| Ordre | Borough | État actuel | Cible | Statut
+| 1 | document-gradle | platform BOM 0.0.26 | pin ws + version dérivée + platform 0.0.30 | 🟡 À FAIRE
+| 2 | codex-gradle | platform BOM 0.0.26 | idem | 🟡 À FAIRE
+| 3 | plantuml-gradle | platform BOM 0.0.21 | idem | 🟡 À FAIRE
+| 4 | hyperframes-gradle | platform BOM 0.0.7 | idem | 🟡 À FAIRE
+| 5 | runner-gradle | hardcode `id(...) version "0.0.9"` (C7) | pin ws + alias(ws.plugins.bakery) | 🟡 À FAIRE
+| 6 | dashboard, readme, graphify... | divers | idem, à la demande | ⏳ À PLANIFIER
+|===
+
+*Pattern à reproduire* (voir bakery `bakery-plugin/settings.gradle.kts` +
+`build.gradle.kts` S-026) : settings `create("ws") { from("education.cccp:
+workspace-catalog:0.0.30") }` + `version = ws.versions.<plugin>.plugin.get()` +
+platform BOM sans version (ou pin 0.0.30). *Gate* : `check`/`test` vert (baseline
+exacte) + `publishToMavenLocal` si release.
+
+'''
 == EPIC DOC-I18N — README multilingues workspace-bom
 
 *Session 010 (2026-06-24)* — Documentation multilingue alignée sur `i18n-contracts` (MEM-3).
@@ -477,9 +505,10 @@ besoin LLM des tests d'intégration avec `qwen3:0.6b` (exception CI AGENTS.adoc)
 
 === US-CI-1.2 — Fix api-key-pool-gradle wrapper jar
 **Pts** : 0.5
-**Statut** : 🔄 À FAIRE (session 015)
+**Statut** : 🟡 À FAIRE (re-confirmé S-028 — wrapper jar toujours gitignoré, `git check-ignore` positif)
 - `gradle-wrapper.jar` gitignoré dans api-key-pool-gradle (`.gitignore` ligne 23).
 - Fix : retirer la ligne `.gitignore` + committer le jar, OU step CI `gradle wrapper`.
+- *Ordre suggéré S-029* : après ROLLOUT-1 (document), 0.5 pt — quick win.
 
 === US-CI-1.3 — Fix readme-gradle + slider-gradle (check not found)
 **Pts** : 1
@@ -491,10 +520,11 @@ reste pertinente si on veut tester les SOUS-RÉPERTOIRES plugin.
 
 === US-CI-1.4 — Ollama qwen3:0.6b en CI
 **Pts** : 1
-**Statut** : 🔄 À FAIRE (session 015)
+**Statut** : 🟡 À FAIRE (re-confirmé S-028 — pas de step Ollama dans test.yml)
 - Step CI : `docker run -d -p 11466:11467 ollama/ollama` + `ollama pull qwen3:0.6b`.
 - Env vars : `OLLAMA_TEST_PORT=11466`, `OLLAMA_TEST_MODEL=qwen3:0.6b`.
 - Tests `assumeTrue(isOllamaReady(port))` se débloquent. Pas de secret requis.
+- *Dépend de* : US-CI-1.2 (wrapper) — même workflow CI à durcir.
 
 === US-CI-1.5 — Secrets workspace-bom
 **Pts** : 0.5
