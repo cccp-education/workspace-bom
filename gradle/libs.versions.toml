@@ -1,6 +1,6 @@
 [versions]
 # ── Workspace BOM shared versions ─────────────────────────────────────────────
-workspace-bom = "0.0.29"
+workspace-bom = "0.0.30"
 
 # ── Kotlin ────────────────────────────────────────────────────────────────────
 kotlin = "2.4.10"
@@ -57,7 +57,7 @@ hyperframes-plugin = "0.0.3"
 graphify-plugin = "0.0.2"
 api-key-pool-plugin = "0.0.1"
 codebase-plugin = "0.0.11"
-conventions-plugin = "0.0.3"
+conventions-plugin = "0.0.4"
 
 # ── PDF/Extraction ────────────────────────────────────────────────────────────
 asciidoctorj = "3.0.1"

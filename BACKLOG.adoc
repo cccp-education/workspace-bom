@@ -4,7 +4,7 @@
 :toc: left
 :sectnums:
 
-_Dernière mise à jour : 2026-08-21 (EPIC RUNTIME-CONTRACTS TERMINÉ 7/7 US S-022, runtime-contracts:0.0.1 + BOM 0.0.24 publiés Central)_
+_Dernière mise à jour : 2026-09-02 (S-028 — audit transverse versions : fix split-brain conventions-plugin 0.0.3→0.0.4 + release Central BOM+catalog 0.0.30 + bakery pilote aligné. EPIC MEM-CATALOG TERMINÉ S-026/S-027 — ne pas rouvrir.)_
 
 _Source : configuration/EPIC_PUB.adoc (Session 096)_
 
@@ -17,10 +17,10 @@ BOM + 5 libraries de contrats partagés (N0). Premier artefact publié (VAGUE 1)
 **Priorite** : P0
 **Estimation** : 1 pt
 **Dependances** : PUB-0 et PUB-1 complets (DNS TXT + GPG)
-**Statut** : ✅ PUBLIÉ + VÉRIFIÉ (dernière version 0.0.22 — rattrapage S-021, 2026-08-19, bundle `f913774d` AUTOMATIC)
+**Statut** : ✅ PUBLIÉ + VÉRIFIÉ (dernière version 0.0.30 — S-028, 2026-09-02, audit transverse + fix conventions-plugin)
 
-. Artefact : `education.cccp:workspace-bom:0.0.22` (dernière)
-. Versions publiées : 0.0.1 → 0.0.22 (historique complet INDEX.adoc § Publications Maven Central)
+. Artefact : `education.cccp:workspace-bom:0.0.30` (dernière)
+. Versions publiées : 0.0.1 → 0.0.30 (historique complet INDEX.adoc § Publications Maven Central)
 . Verifiée sur https://central.sonatype.com/artifact/education.cccp/workspace-bom
 
 === PUB-3.02 — agent-contracts
@@ -221,7 +221,7 @@ BOM + 5 libraries de contrats partagés (N0). Premier artefact publié (VAGUE 1)
   vérification https://central.sonatype.com/artifact/education.cccp/i18n-contracts.
   Mise à jour BOM racine.
 | 0.5
-| 🟡 P2
+| ✅ TERMINÉ (S-011 — 0.0.2 sur Central)
 |===
 
 === Consommateurs prévus
@@ -357,7 +357,7 @@ codebase-gradle (N1) — moteur LLM + RAG + tools
   vérification https://central.sonatype.com/artifact/education.cccp/opencode-session-contracts.
   Mise à jour BOM racine.
 | 0.5
-| 🟡 P2
+| ✅ TERMINÉ (S-011 — 0.0.2 sur Central)
 |===
 
 === Consommateurs prévus

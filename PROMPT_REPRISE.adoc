@@ -1,38 +1,31 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-027 — TERMINÉE (MEM-CAT-4 + CAT-5 + publication Central 0.0.29 — EPIC MEM-CATALOG 5/5)
+028 — TERMINÉE (audit transverse versions + fix split-brain conventions-plugin + release Central 0.0.30)
 
-== Mission session 028 — maintenance / adoption
+== État du code (S-028)
 
-EPIC MEM-CATALOG TERMINÉ (S-027). Le BOM est désormais la source de vérité des
-versions plugins cross-borough, transportée par 2 artefacts Maven ensemble :
+- Central : BOM 0.0.30 + workspace-catalog 0.0.30 (repo1 HTTP 200 ×2).
+- toml : `workspace-bom = "0.0.30"`, `conventions-plugin = "0.0.4"`
+  (split-brain 0.0.3 corrigé — le toml avait raté le bump S-011 conventions).
+- Garde `PlatformCatalogAlignmentTest` épinglée sur conventions 0.0.4 + BOM 0.0.30.
+- Bakery pilote : pin catalog 0.0.30 (settings) + platform 0.0.30 (build, 3 occ).
+- Baseline bakery : 3 FAIL i18n flaky préexistants (avant = après, stash vérifié).
 
-. `education.cccp:workspace-bom:0.0.29` — platform (deps sans version)
-. `education.cccp:workspace-catalog:0.0.29` — catalog (`ws.versions.*`, `ws.plugins.*`)
+== Mission session 029 — maintenance / généralisation (à la demande)
 
-== État du code (S-027)
+Aucun EPIC ouvert. Piste prioritaire (demande pilote transverse) :
 
-- Platform 100% `api(libs.*)`, version BOM dérivée du toml (gardes D10/D11a).
-- Catalog publié (plugin `version-catalog`, API Gradle 9) — même release BOM.
-- `planner-plugin = "0.0.2"` dans le toml (bump CAT-4, propagé Central — preuve).
-- Runner Cucumber dédié `versionCatalogCucumberTest` (3 scénarios `@version-catalog`).
-- `.agents/RELEASE_PROTOCOL.adoc` — protocole release officiel (6 étapes).
-- Bakery pilote : pin ws 0.0.29, version dérivée, document-plugin sans version.
-- Central : BOM 0.0.29 + catalog 0.0.29 HTTP 200 (bundle `e6f571c2` AUTOMATIC).
-
-== Prochaines missions possibles (aucune urgente)
-
-. *Généralisation catalog* (HORS EPIC, D5 — à la demande par borough) :
-  runner-gradle (hardcode `id(...) version "0.0.9"` C7), document, dashboard,
-  codebase, codex... 1 pin settings + version dérivée par borough.
-. *Dette bakery* : cucumber flaky (i18n-delta/dns/jbake-native, 6-7 FAIL
-  variables) — EPIC bakery dédié, pas MEMPHIS.
-. *US-CI-1.2/1.4* (BACKLOG) : wrapper jar api-key-pool + qwen3:0.6b CI — restés
-  🔄 À FAIRE depuis S-014.
+. *Généralisation catalog* borough par borough (D5, HORS EPIC) :
+   document (platform 0.0.26), codex (0.0.26), plantuml (0.0.21),
+   runner (hardcode `id(...) version "0.0.9"`), dashboard, hyperframes...
+   1 pin settings + version dérivée par borough.
+. *Dette bakery* : 3 FAIL i18n flaky (RealSiteI18nMigration,
+   FixtureAlignmentAuditor, I18nDeltaWire) — EPIC bakery dédié, pas MEMPHIS.
+. *US-CI-1.2/1.4* (BACKLOG) : wrapper jar api-key-pool + qwen3:0.6b CI.
 . *DOC-8* (P2) : document-gradle consommer les contrats N0.
 
-== Pièges à retenir (cumul S-026 + S-027)
+== Pièges à retenir (cumul S-026 + S-027 + S-028)
 
 1. *Gradle 9 API* : publication catalog = plugin `version-catalog` +
    `catalog { versionCatalog { from(...) } }` + `from(components["versionCatalog"])`.
@@ -44,13 +37,18 @@ versions plugins cross-borough, transportée par 2 artefacts Maven ensemble :
 4. *Extension Gradle* : `Provider<T>` brut NON décorable — utiliser `Property<T>`.
 5. *runAllTests* : liste restreinte à 5 boroughs verts (dettes documentées
    build.gradle.kts BOM).
-6. *nmcp collision* : 2 uploads de la même coordonnée → le 2e échoue tant que
-   le 1er est en course ; l'API `publisher/status` peut renvoyer HTTP 500 —
-   vérifier repo1 avant de re-tenter.
+6. *nmcp collision* : 2 uploads même coordonnée → 2e échoue tant que le 1er
+   est en course ; API `publisher/status` peut renvoyer HTTP 500 — vérifier
+   repo1 avant de re-tenter.
 7. *Init scripts* : accesseurs `ws.*` non visibles dans les init scripts —
    preuve propagation via settings consommateur réel ou test FT.
 8. *2 suites Cucumber même source set* : `cucumber.filter.tags` system property
    prime sur la config du runner (2 glues coexistantes sans source set séparé).
+9. *S-028* : `:agent-contracts:test` n'existe PAS depuis la racine BOM —
+   agent-contracts est un build standalone (lancer depuis `agent-contracts/`).
+   Idem bakery : `test` n'existe qu'à la racine `bakery-plugin/`.
+10. *S-028* : les tests gardes `PlatformCatalogAlignmentTest` épinglent les
+   versions (BOM + conventions) — après CHAQUE bump toml, bump la garde.
 
 == Règles
 
@@ -59,11 +57,13 @@ versions plugins cross-borough, transportée par 2 artefacts Maven ensemble :
 - Publication Central : `./gradlew publishAggregationToCentralPortal` (aggrégatif
   — couvre BOM + catalog en 1 bundle). Protocole : `.agents/RELEASE_PROTOCOL.adoc`.
 - Zéro Python — outputs analysés Read/Grep/xmllint/rapports Gradle natifs.
+- Le pilote autorise commit/push en fin de session + bump/publication
+  mavenLocal/Central dès que nécessaire (S-028).
 
-== À vérifier en ouverture S-028
+== À vérifier en ouverture S-029
 
-1. `git status` — workspace-bom committé/poussé ? (S-027 clôturé)
-2. Central `<latest>` BOM + catalog (0.0.29 attendu).
-3. `./gradlew :agent-contracts:test versionCatalogCucumberTest` VERT.
+1. `git status` — workspace-bom committé/poussé ? (S-028 clôturé)
+2. Central `<latest>` BOM + catalog (0.0.30 attendu).
+3. `./gradlew test versionCatalogCucumberTest` depuis `agent-contracts/` VERT.
 4. Demande pilote si généralisation catalog vers un nouveau borough.
 5. Backlog : EPIC MEM-CATALOG marqué ✅ TERMINÉ (S-027) — ne pas rouvrir.

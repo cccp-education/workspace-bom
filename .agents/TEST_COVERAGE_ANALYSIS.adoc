@@ -1,6 +1,20 @@
 = TEST_COVERAGE_ANALYSIS — workspace-bom (MEMPHIS)
 :date: 2026-09-02
-:session: 027
+:session: 028
+
+== Gardes anti split-brain (S-028 — extension garde alignement)
+
+*US-1* : `PlatformCatalogAlignmentTest.tomp agent contracts versions aligned with
+published central()` étendue avec
+`assertEquals("0.0.4", tomlVersions["conventions-plugin"])` — la garde épinglait
+les 8 contrats, elle couvre désormais aussi `conventions-plugin` (dernier
+split-brain détecté, audit transverse maven-metadata 22 artefacts).
+Baby-step TDD strict : RED (`expected: <0.0.4> but was: <0.0.3>`) → GREEN
+(toml 0.0.4) → suite complète 111 unit 0 FAIL.
+
+*Règle de maintenance* : les gardes épinglent les versions (`workspace-bom`,
+`conventions-plugin`, 8 contrats, epub3) — à CHAQUE bump toml, bump la garde
+dans le même commit (le test échoue sinon, c'est le but).
 
 == version-catalog (EPIC MEM-CATALOG — sessions 026/027)
 
@@ -19,7 +33,14 @@
 même test source set — le filtre se fait par `cucumber.filter.tags` system property
 (qui prime sur la config du runner), pas par tag de suite.
 
-*Gate S-027* : 192 tests 0 FAIL au total (111 unit + 78 cucumber agent + 3 version-catalog,
+*Gate S-028* : 189 tests 0 FAIL (`test versionCatalogCucumberTest` depuis
+`agent-contracts/` — unit 111 dont 5 garde alignement + 78 cucumber agent
+forks + 3 version-catalog, comptes XML croisés). Gate bakery : 3 FAIL i18n
+= baseline exacte (stash vérifié avant=après pin 0.0.30).
+
+== Gate S-027 (historique)
+
+192 tests 0 FAIL au total (111 unit + 78 cucumber agent + 3 version-catalog,
 comptes croisés incluant les forks dupliqués).
 
 *Note* : VersionCatalogSteps parse le toml source (pas l'artefact) + vérifie la

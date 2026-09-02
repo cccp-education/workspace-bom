@@ -1,5 +1,15 @@
 = Archives des tâches terminées — Septembre 2026 (workspace-bom MEMPHIS)
 
+== Session 028 (2026-09-02) — Audit transverse versions + fix split-brain conventions + Release 0.0.30
+
+- [x] US-0 audit transverse : maven-metadata.xml 22 artefacts education.cccp — 21/22 alignés, 1 split-brain (conventions-plugin toml 0.0.3 vs Central 0.0.4, bump raté S-011)
+- [x] US-1 baby-step TDD strict : garde `PlatformCatalogAlignmentTest` étendue `assertEquals("0.0.4", conventions-plugin)` — RED (1/5 FAILED) → GREEN (toml 0.0.4, 111 unit 0 FAIL)
+- [x] Impact consommateurs vérifié nul (zéro usage platform de conventions-plugin cross-borough)
+- [x] Release 0.0.30 protocole 6 étapes : bump toml + garde → gates 189 tests 0 FAIL → mavenLocal (2 artefacts signés) → Central `publishAggregationToCentralPortal` → repo1 HTTP 200 ×2 (poll 8), toml Central `conventions-plugin = "0.0.4"` vérifié
+- [x] US-2 gate bakery pilote : pin catalog + platform 0.0.29→0.0.30 (settings + build 3 occ) — 3 FAIL i18n = baseline exacte (stash avant=après)
+- [x] Audit pins platform autres boroughs (D5 adoption paresseuse) : codex 0.0.26, document 0.0.26, plantuml 0.0.21, hyperframes 0.0.7, container 0.0.5, conventions/flow 0.0.4, bureau 0.0.18 — zéro bump forcé
+- [x] Sync backlog : PUB-3.01 → 0.0.30, US-MEM-3.6/4.5 faux négatifs corrigés (✅ TERMINÉ S-011, contrats 0.0.2 sur Central)
+
 == Session 026 (2026-09-01) — MEM-CAT-1/2/3 + Fix-0 baseline
 
 - [x] Fix-0 : forces buildscript bakery-gradle + runner-gradle (conflit classpath Gradle 9.6.1 strictly 2.3.21 vs platform 2.4.10)

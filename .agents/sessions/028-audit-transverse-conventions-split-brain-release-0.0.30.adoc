@@ -1,0 +1,103 @@
+= Session 028 — Audit transverse versions + fix split-brain conventions-plugin + Release 0.0.30
+
+_Date_ : 2026-09-02
+_Type_ : maintenance + pub
+_Mission pilote_ : reprise transverse — alignement des numéros de version
+cross-borough + gates de tests verts + baby-step DDD/TDD/BDD.
+
+== Contexte
+
+Session de maintenance post EPIC MEM-CATALOG (S-025→S-027). Demande pilote :
+audit transverse de l'impact des versions sur les autres boroughs + vérifier
+que leur couverture de tests passe en vert.
+
+== US-0 — Audit transverse Central ↔ toml BOM
+
+Interrogation `maven-metadata.xml` (`<latest>`) pour les 22 artefacts
+education.cccp + lecture du toml BOM + vérification du toml catalog publié.
+
+*Résultat* : 21/22 artefacts alignés. 1 split-brain détecté :
+
+|===
+| Artefact | Central | toml BOM | Verdict
+| 20 artefacts (BOM, catalog, 8 contrats, 10 plugins) | alignés | alignés | ✅
+| conventions-plugin | 0.0.4 | 0.0.3 | ❌ split-brain
+|===
+
+Le catalog 0.0.29 publié embarquait lui-même la version périmée
+(`conventions-plugin = "0.0.3"`). Le repo conventions-gradle est à 0.0.4
+depuis S-011 (commit `0f541fc`, "align conventions-plugin to 0.0.4") —
+le toml BOM avait raté le bump.
+
+== US-1 — Fix split-brain (baby-step TDD strict)
+
+*RED* — Extension de la garde `PlatformCatalogAlignmentTest`
+(`toml agent contracts versions aligned with published central`) :
+`assertEquals("0.0.4", tomlVersions["conventions-plugin"])`.
+Exécution : 1/5 FAILED — `expected: <0.0.4> but was: <0.0.3>` ✅ RED confirmé.
+
+*GREEN* — toml `conventions-plugin = "0.0.3"` → `"0.0.4"`.
+Suite `:agent-contracts:test` : 111 tests, 0 failures.
+
+Impact consommateurs vérifié : aucun autre borough ne consomme
+`conventions-plugin` via la platform BOM (grep cross-borough négatif) —
+les consumers conventions-gradle appliquent le plugin par `version "0.0.4"`
+directement. Le fix est sûr, backward compatible.
+
+== Bump release 0.0.30 (protocole RELEASE_PROTOCOL.adoc)
+
+Le toml change → release obligatoire BOM + catalog ensemble :
+
+. Bump `workspace-bom = "0.0.30"` dans le toml + garde test alignée.
+. `./gradlew :agent-contracts:test versionCatalogCucumberTest` VERT
+   (189 tests, 0 FAIL — inclut 9 gardes + 3 scénarios @version-catalog).
+. `./gradlew publishToMavenLocal` VERT (2 artefacts signés, toml vérifié :
+   `conventions-plugin = "0.0.4"`, `workspace-bom = "0.0.30"`).
+. `./gradlew publishAggregationToCentralPortal --no-daemon` — BUILD SUCCESSFUL.
+. Vérification repo1 (polling, 7 polls ≈ 7 min) : BOM 0.0.30 HTTP 200 +
+   catalog 0.0.30 HTTP 200. Toml Central : `conventions-plugin = "0.0.4"` ✅.
+
+== US-2 — Gate transverse bakery (consommateur pilote)
+
+- Pin catalog `bakery-plugin/settings.gradle.kts` : 0.0.29 → 0.0.30.
+- Platform pins `bakery-plugin/build.gradle.kts` (3 occurrences) : 0.0.29 → 0.0.30.
+- Gate `./gradlew test` (bakery-plugin) : 3 FAIL i18n
+  (RealSiteI18nMigrationIntegrationTest, FixtureAlignmentAuditorTest,
+  I18nDeltaWireCucumberTest) — **baseline exacte préservée** : vérifiée par
+  `git stash` (les 3 mêmes FAIL avec pin 0.0.29). Dette flaky i18n bakery
+  documentée PROMPT_REPRISE S-027, hors scope MEMPHIS (EPIC bakery dédié).
+- Zéro régression introduite par le pin 0.0.30.
+
+== Audit pins platform des autres boroughs (adoption paresseuse D5)
+
+|===
+| Borough | Pin platform | Verdict
+| bakery (pilote) | 0.0.29 → 0.0.30 | ✅ aligné cette session
+| codex, document | 0.0.26 | ✅ fonctionnel (pas de delta utile)
+| plantuml | 0.0.21 | ✅ fonctionnel
+| hyperframes | 0.0.7 | ✅ fonctionnel
+| container-provision | 0.0.5 | ✅ fonctionnel
+| conventions, flow | 0.0.4 | ✅ fonctionnel
+| bureau | 0.0.18 | ✅ fonctionnel
+|===
+
+La release 0.0.30 ne porte qu'une delta (constraint conventions-plugin 0.0.4)
+— aucun autre borough n'en dépend, pas de bump forcé (D5).
+
+== Pièges à retenir
+
+1. `:agent-contracts:test` n'existe pas depuis la racine BOM —
+   agent-contracts est un build standalone, lancer depuis `agent-contracts/`.
+2. `test` n'existe pas à la racine bakery-gradle — lancer depuis
+   `bakery-plugin/` (la racine est un consommateur).
+3. Le test garde `PlatformCatalogAlignmentTest` lit le toml via un chemin
+   relatif — un edit raté (sans quotes) casse le test lui-même, vérifier
+   le diff avant de relancer.
+
+== Scores
+
+- Baseline BOM : 192 tests 0 FAIL (111 unit agent-contracts dont gardes +
+  78 cucumber agent + 3 version-catalog).
+- Gate bakery : baseline exacte (3 FAIL i18n préexistants, avant = après).
+- Publication Central : 1 bundle (BOM + catalog 0.0.30).
+- Commit + push : autorisés par le pilote en clôture.
