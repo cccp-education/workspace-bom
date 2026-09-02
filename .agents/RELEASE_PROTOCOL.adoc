@@ -1,0 +1,79 @@
+= RELEASE PROTOCOL — workspace-bom (MEMPHIS) : BOM + Catalog ensemble
+
+_Session 027 — MEM-CAT-4 (preuve de propagation). Établit le protocole officiel
+de release après EPIC MEM-CATALOG : le BOM et le catalog partagent le même
+numéro de version et le même bundle nmcp._
+
+== Principe (D1/D9)
+
+2 artefacts MEMPHIS, 1 release :
+
+[cols="3,4,3"]
+|===
+| Artefact | Rôle | Publication
+
+| `education.cccp:workspace-bom:0.0.X`
+| platform — contraint les *dépendances* (deps sans version côté consommateur)
+| `from(components["javaPlatform"])`
+
+| `education.cccp:workspace-catalog:0.0.X`
+| catalog — contraint les *versions* consultables + plugins appliqués (`ws.*`)
+| `from(components["versionCatalog"])`
+|===
+
+Le toml `gradle/libs.versions.toml` est la source unique. Les 2 publications
+dérivent du même commit — un seul `publishAggregationToCentralPortal` couvre
+les 2 (nmcp 1.5.0 agrège les publications du build racine).
+
+== Protocole de release (6 étapes)
+
+. *Bump le toml* — `gradle/libs.versions.toml` :
+   * `workspace-bom = "0.0.X"` (la version BOM est dérivée : `version =
+     libs.versions.workspace.bom.get()` dans build.gradle.kts — jamais hardcodée)
+   * bump des versions plugins propagées cette release (ex: `planner-plugin`)
+. *Vérifier l'alignement* — `./gradlew :agent-contracts:test` VERT
+   (`PlatformCatalogAlignmentTest` + `WorkspaceCatalogStructureTest` = gardes
+   anti split-brain D10/D11a).
+. *Publier mavenLocal* — `./gradlew publishToMavenLocal` (2 artefacts signés :
+   toml + pom + module du catalog, pom du BOM).
+. *Preuve de propagation (optionnelle, release avec bump plugin)* — consommateur
+   pilote (bakery) : le pin settings `from("education.cccp:workspace-catalog:0.0.X")`
+   est INCHANGÉ, la nouvelle version plugin est visible via
+   `ws.versions.<plugin>.get()` (test FT jetable ou init script).
+. *Publier Central* — `./gradlew publishAggregationToCentralPortal --no-daemon`
+   (AUTOMATIC). UN SEUL bundle = BOM 0.0.X + catalog 0.0.X ensemble.
+. *Vérifier Central* (polling 7-27 min, Piège #11) :
+   * https://repo1.maven.org/maven2/education/cccp/workspace-bom/0.0.X/
+   * https://repo1.maven.org/maven2/education/cccp/workspace-catalog/0.0.X/
+   * Le toml Central liste bien les versions bumpées.
+
+== Ce que le consommateur fait / ne fait pas
+
+[cols="2,3"]
+|===
+| Action | Fréquence
+
+| Bumper le pin settings `from(...workspace-catalog:0.0.X)` | à chaque release BOM (1 ligne)
+| Éditer une version plugin education.cccp dans son build | *JAMAIS* (source : `ws.versions.*` ou platform sans version)
+| Bumper sa version propre (self) | à sa propre release (D3 — le BOM câble ENTRE, pas DEDANS)
+|===
+
+== Règles d'or
+
+* *D8* : une entrée catalog n'est créée qu'à la première publication Central de
+  l'artefact — zéro entrée fantôme (capsule-plugin/jhipster absents du toml).
+* *D10* : la platform consomme le toml (`api(libs.*)`) — zéro hardcode
+  education.cccp dans build.gradle.kts (garde automatique).
+* *D12* : transmission Maven only (Central + mavenLocal) — jamais includeBuild
+  ni chemin filesystem.
+* *Version dérivée* : la version BOM n'est écrite nulle part sauf dans le toml
+  (tri-split C2 banni).
+
+== Historique releases
+
+[cols="2,3,2"]
+|===
+| Release | Contenu | Bundle
+| 0.0.29 (S-027) | 1re release catalog + BOM ensemble (MEM-CAT-2/4). planner-plugin 0.0.1→0.0.2 (preuve propagation CAT-4). | (AUTOMATIC)
+| 0.0.27 (S-024) | BOM seul — fix catalogue `slider` → `slider-plugin`. | `648c037e`
+|===

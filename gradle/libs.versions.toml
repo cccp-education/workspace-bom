@@ -49,7 +49,7 @@ jetbrains-annotations = "26.0.2-1"
 # ── Plugin versions (published by education.cccp) ────────────────────────────
 bakery-plugin = "0.0.9"
 codex-plugin = "0.0.6"
-planner-plugin = "0.0.1"
+planner-plugin = "0.0.2"
 slider-plugin = "0.0.18"
 plantuml-plugin = "0.0.4"
 readme-plugin = "0.0.1"

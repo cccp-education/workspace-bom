@@ -10,5 +10,15 @@
 - [x] MEM-CAT-2 : `workspace-catalog:0.0.29` publié mavenLocal (API Gradle 9 `from(components["versionCatalog"])`), capsule fantôme retiré (D8)
 - [x] MEM-CAT-3 : bakery pilote ws pin 0.0.29 + `version = ws.versions.bakery.plugin.get()` + document-plugin sans version + PublicationTest migré
 - [x] 9 tests garde VERT (PlatformCatalogAlignmentTest 5 + WorkspaceCatalogStructureTest 4)
-- [ ] CAT-4 (propagation) + CAT-5 (BDD) — S-027
-- [ ] Publication Central BOM 0.0.29 + catalog 0.0.29 — accord pilote
+- [x] CAT-4 (propagation) + CAT-5 (BDD) — S-027
+- [x] Publication Central BOM 0.0.29 + catalog 0.0.29 — accord pilote
+
+== Session 027 (2026-09-02) — MEM-CAT-4 + CAT-5 + Publication Central 0.0.29 (EPIC MEM-CATALOG TERMINÉ)
+
+- [x] MEM-CAT-4 : bump planner-plugin 0.0.1→0.0.2 toml (aligné Central S-074) → mavenLocal → preuve propagation (FT bakery jetable + consommateur Gradle réel, pin inchangé)
+- [x] MEM-CAT-4 : `.agents/RELEASE_PROTOCOL.adoc` — protocole release BOM + catalog ensemble (6 étapes, 1 bundle nmcp)
+- [x] MEM-CAT-5 : feature `@version-catalog` 3 scénarios (12 plugins D8, accessor typé, hygiène D10) + VersionCatalogSteps + VersionCatalogCucumberRunner + task dédiée `versionCatalogCucumberTest` (pattern S-082)
+- [x] MEM-CAT-5 : README migration version catalog (README.md master EN + README.fr.md)
+- [x] Publication Central 0.0.29 : BOM + workspace-catalog, bundle `e6f571c2` AUTOMATIC — repo1 HTTP 200 ×2, planner-plugin 0.0.2 propagé Central
+- [x] Gates : BOM 192 tests 0 FAIL (111 unit + 78 cucumber agent + 3 version-catalog), bakery 3 FAIL test = baseline exacte, 6 FAIL cucumber = baseline préexistante
+- [x] CucumberTestRunner : exclude @version-catalog (2 suites coexistantes via `cucumber.filter.tags` system property)

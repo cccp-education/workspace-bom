@@ -1,6 +1,30 @@
 = TEST_COVERAGE_ANALYSIS — workspace-bom (MEMPHIS)
-:date: 2026-08-21
-:session: 022
+:date: 2026-09-02
+:session: 027
+
+== version-catalog (EPIC MEM-CATALOG — sessions 026/027)
+
+[cols="3,2,2,2"]
+|===
+| Classe / Feature | JUnit5 | Cucumber | Total
+| PlatformCatalogAlignmentTest (garde D10/D11a) | 5 | — | 5
+| WorkspaceCatalogStructureTest (garde D11a) | 4 | — | 4
+| ac_6_version_catalog.feature (`@version-catalog`) | — | 3 | 3
+| **Total garde catalog** | **9** | **3** | **12**
+|===
+
+*Tasks* : `:agent-contracts:test` (unit, inclut gardes) · `:agent-contracts:cucumberTest`
+(agent, exclut `@version-catalog`) · `:agent-contracts:versionCatalogCucumberTest`
+(dédié `@version-catalog`, pattern S-082). Les 2 suites cucumber coexistent dans le
+même test source set — le filtre se fait par `cucumber.filter.tags` system property
+(qui prime sur la config du runner), pas par tag de suite.
+
+*Gate S-027* : 192 tests 0 FAIL au total (111 unit + 78 cucumber agent + 3 version-catalog,
+comptes croisés incluant les forks dupliqués).
+
+*Note* : VersionCatalogSteps parse le toml source (pas l'artefact) + vérifie la
+résolvabilité mavenLocal/Central (HTTP). Zéro tâche Gradle dans le domaine test —
+le catalogue est un artefact Maven, pas une tâche.
 
 == runtime-contracts (EPIC RUNTIME-CONTRACTS — session 022)
 

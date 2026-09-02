@@ -565,12 +565,12 @@ _Publications_ : runtime-contracts 0.0.1 + BOM 0.0.24 sur Maven Central.
 _Débloque_ : codex CDX-RC-04 (pont RAG SessionMemoryContract).
 
 '''
-== 🔄 EPIC MEM-CATALOG — Version Catalog publié : le BOM comme unique source de vérité des versions plugins
+== ✅ EPIC MEM-CATALOG — Version Catalog publié : le BOM comme unique source de vérité des versions plugins (session 027 — TERMINÉ)
 
-_Cadré Session 025 (2026-09-01) — `.agents/CADRAGE_EPIC_MEM_VERSION_CATALOG.adoc`._
+_Cadré Session 025 (2026-09-01) — `.agents/CADRAGe_EPIC_MEM_VERSION_CATALOG.adoc`._
 _Origine : demande pilote (session 243 document-gradle) — centraliser les versions plugins dans
 le BOM, transportées par artefact Maven (pas de référence physique au repo BOM)._
-_**S-026 : CAT-1/2/3 ✅ TERMINÉES (~13/21 pts)** — reste CAT-4 (propagation) + CAT-5 (BDD)._
+_**TERMINÉ S-026 (CAT-1/2/3) + S-027 (CAT-4/5 + publication Central 0.0.29) — 5/5 US ~21/21 pts.**_
 
 [CAUTION]
 ====
@@ -627,23 +627,28 @@ adoption paresseuse, zéro couplage physique au repo BOM (Maven only).
 | CAT-2
 
 | MEM-CAT-4
-| *Preuve de propagation* — bump 1 plugin dans le toml → publication →
-  consommateur voit la nouvelle version sans éditer son build. Protocole
-  de release documenté (BOM + catalog ensemble).
-| FT propagation + doc protocole
-| 3
+| ✅ TERMINÉ (S-027)
+| *Preuve de propagation* — bump planner-plugin 0.0.1→0.0.2 (toml aligné
+  Central S-074) → publication → consommateur voit la nouvelle version sans
+  éditer son build (FT jetable + consommateur Gradle réel, pin inchangé).
+  Protocole de release documenté `.agents/RELEASE_PROTOCOL.adoc`.
+| FT propagation mavenLocal + Central + doc protocole
+| 3 ✅
 | CAT-3
 
 | MEM-CAT-5
-| *Cucumber BDD + doc migration* — `@version-catalog` (résolvable /
-  accessor typé / hygiène) + README migration boroughs. Généralisation
-  borough par borough HORS EPIC.
-| BDD : 3 scénarios + runner dédié
-| 5
+| ✅ TERMINÉ (S-027)
+| *Cucumber BDD + doc migration* — `@version-catalog` (12 plugins résolvable /
+  accessor typé / hygiène pas-de-hardcode, 3 scénarios PASSED) + README
+  migration boroughs EN/FR. Généralisation borough par borough HORS EPIC.
+| BDD : 3 scénarios + runner dédié (versionCatalogCucumberTest)
+| 5 ✅
 | CAT-4
 |===
 
-_Total_ : ~21 pts, 5 US. Séquentiel CAT-1 → CAT-5.
+_Total_ : ~21 pts, 5 US, **TERMINÉ** (S-026 + S-027). Publication Central
+0.0.29 : BOM + workspace-catalog, un seul bundle `e6f571c2` (AUTOMATIC),
+vérifiés repo1 HTTP 200 — planner-plugin 0.0.2 propagé Central.
 
 === Décisions clés (détail dans le cadrage)
 

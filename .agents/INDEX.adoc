@@ -5,9 +5,9 @@
 
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
-_Derniere mise a jour_ : 2026-09-01 (session 026 — **MEM-CAT-1/2/3 TERMINÉS** : platform 100% libs.* (POM diff vide), workspace-catalog:0.0.29 publié mavenLocal, pilote bakery migré ws pin + version dérivée + document-plugin sans version. 9 tests garde VERT. Fix-0 : baseline débloquée (forces buildscript bakery/runner, codebase Provider bug, runAllTests, dashboard nmcp WIP).)
-_session terminee_ : 026 — MEM-CAT-1 + CAT-2 + CAT-3 (EPIC MEM-CATALOG 3/5 US).
-_prochaine session_ : 027 — MEM-CAT-4 (preuve propagation) + CAT-5 (BDD) + publication Central BOM 0.0.29 + catalog 0.0.29 (accord pilote).
+_Derniere mise a jour_ : 2026-09-02 (session 027 — **EPIC MEM-CATALOG TERMINÉ 5/5 US** : MEM-CAT-4 preuve propagation (planner-plugin 0.0.1→0.0.2 toml → catalog → consommateur sans éditer son build, Central vérifié) + MEM-CAT-5 Cucumber BDD @version-catalog 3 scénarios runner dédié + README migration EN/FR + RELEASE_PROTOCOL.adoc. Publication Central : BOM 0.0.29 + workspace-catalog 0.0.29 (bundle `e6f571c2`, un seul publishAggregationToCentralPortal). BOM 192 tests 0 FAIL, bakery baseline exacte.)
+_session terminee_ : 027 — MEM-CAT-4 + CAT-5 + publication Central 0.0.29 (EPIC MEM-CATALOG 5/5 US ✅).
+_prochaine session_ : 028 — maintenance / généralisation catalog borough par borough (HORS EPIC, à la demande).
 _Session en cours_ : —
 
 '''
@@ -16,6 +16,8 @@ _Session en cours_ : —
 
 |===
 | # | Date | Type | Sujet | Score
+
+| 027 | 2026-09-02 | dev+pub | **EPIC MEM-CATALOG TERMINÉ 5/5 US** — MEM-CAT-4 : bump planner-plugin 0.0.1→0.0.2 (toml aligné sur Central S-074) → publishToMavenLocal → preuve propagation 2 niveaux (FT jetable bakery + consommateur Gradle réel pin inchangé → `ws.versions.planner.plugin` = 0.0.2). Protocole release `.agents/RELEASE_PROTOCOL.adoc` (BOM + catalog ensemble, 1 bundle). MEM-CAT-5 : feature `@version-catalog` 3 scénarios (12 plugins résolvables/zéro fantôme D8, accessor typé, hygiène pas-de-hardcode D10) + `VersionCatalogSteps` + runner dédié + task `versionCatalogCucumberTest` (pattern S-082, filtre `cucumber.filter.tags`). README migration EN/FR. Publication Central 0.0.29 : BOM + catalog bundle `e6f571c2` AUTOMATIC (1er essai bloqué par collision deployment nmcp `62f2e66c`, résolu). Vérif repo1 : 2 artefacts HTTP 200, planner-plugin 0.0.2 propagé Central. Gates : BOM 192 tests 0 FAIL, bakery 3 FAIL = baseline exacte. | 10/10
 
 | 026 | 2026-09-01 | dev+pub(mavenLocal) | **MEM-CAT-1/2/3 TERMINÉS (EPIC MEM-CATALOG 3/5 US)** — Fix-0 : baseline débloquée (conflit classpath Gradle 9.6.1 strictly 2.3.21 vs platform 2.4.10 → forces buildscript bakery/runner ; codebase 0.0.11 CodebaseOcrExtension Provider brut non-décorable → propriété morte supprimée ; runAllTests restreint à 5 boroughs verts ; dashboard nmcp WIP corrigé). CAT-1 : platform 77 constraints → `api(libs.*)`, version dérivée toml, POM avant/après **diff vide**, WIP epub3 corrigé (3.0.1 fantôme → 2.2.0 réelle). CAT-2 : `workspace-catalog:0.0.29` publié mavenLocal (plugin `version-catalog` API Gradle 9, packaging toml), capsule fantôme retiré (D8). CAT-3 : bakery pilote — pin ws 0.0.29 settings, `version = ws.versions.bakery.plugin.get()`, document-plugin sans version via platform 0.0.29, BakeryPluginPublicationTest migré D3. Gates : 9 tests garde VERT, bakery test 1665 PASS/3 FAIL (= baseline), functionalTest VERT, cucumber 7 FAIL (= baseline préexistants), runner help VERT. | 10/10
 
@@ -97,7 +99,7 @@ _Session en cours_ : —
 | MEM-5 | Audit migration workspace-bom — 16 boroughs publics, plan de migration documenté | ✅ TERMINÉ (session 007) | P1
 | RUNTIME-CONTRACTS | 8e artefact N0 — Contrats bootstrapping session formation agentique | ✅ TERMINÉ (session 022, 7/7 US, runtime-contracts:0.0.1 publié Central) | P1
 | MEMPHIS-BOM-FIX | BOM référence `slider` (artifactId périmé) au lieu de `slider-plugin` → 404 Central. Bug bloquant capsule. | ✅ TERMINÉ (S-024, 5/5 US — US-1 catalogue fix S-208, US-3 BOM 0.0.27 Central, US-4 codebase 0.0.10 Central S-209, US-5 capsule fix S-120) | P0
-| MEM-CATALOG | Version Catalog publié `workspace-catalog` — le BOM unique source de vérité des versions plugins, transportée par artefact Maven (settings `from(...)`, accesseurs `ws.*`). Fix split-brain intra-BOM inclus. | 🔄 EN COURS (S-026 CAT-1/2/3 ✅ ~13/21 pts — reste CAT-4 propagation + CAT-5 BDD + publication Central 0.0.29 accord pilote) | P1
+| MEM-CATALOG | Version Catalog publié `workspace-catalog` — le BOM unique source de vérité des versions plugins, transportée par artefact Maven (settings `from(...)`, accesseurs `ws.*`). Fix split-brain intra-BOM inclus. | ✅ TERMINÉ (S-026 CAT-1/2/3 + S-027 CAT-4/5 — 5/5 US ~21/21 pts, Central 0.0.29 BOM + catalog bundle `e6f571c2`, preuve propagation Central, protocole release RELEASE_PROTOCOL.adoc) | P1
 | DOC-8 | document-gradle — Consommer les contrats N0 (i18n, pipeline, session) | 🔄 À FAIRE | P2
 | PUB | Publication Maven Central + Plugin Portal | 🔄 EN COURS (BOM 0.0.24 + agent-contracts 0.0.3 + 8 contrats N0 publiés dont runtime-contracts 0.0.1, slider 0.0.18 constraint, codebase 0.0.8, codex 0.0.4, bakery 0.0.9, plantuml 0.0.4) | P0
 |===
@@ -111,6 +113,10 @@ _Session en cours_ : —
 | BOM 0.0.27
 | fix catalogue `slider` → `slider-plugin` (EPIC MEMPHIS-BOM-FIX US-3, S-024). POM Central `slider-plugin:0.0.18`.
 | `648c037e`
+
+| BOM 0.0.29 + catalog 0.0.29
+| 1re release BOM + catalog ensemble (EPIC MEM-CATALOG S-026/S-027) — planner-plugin 0.0.1→0.0.2 propagé, 1 seul bundle nmcp.
+| `e6f571c2`
 
 | BOM 0.0.24
 | constraint runtime-contracts 0.0.1 (S-022, EPIC RUNTIME-CONTRACTS TERMINÉ)

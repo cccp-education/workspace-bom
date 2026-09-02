@@ -1,0 +1,107 @@
+= Session 027 — MEM-CAT-4 + CAT-5 + Publication Central 0.0.29 — EPIC MEM-CATALOG TERMINÉ
+
+_Date : 2026-09-02. Borough : MEMPHIS (workspace-bom). Accord pilote accordé en début de session
+(CAT-4 propagation + CAT-5 BDD + publication Central 0.0.29 BOM + catalog, un seul bundle)._
+
+== 1. Mission réalisée
+
+=== MEM-CAT-4 — Preuve de propagation (3 pts)
+
+. *Bump réel* : `planner-plugin` 0.0.1 → 0.0.2 dans `gradle/libs.versions.toml`
+  (0.0.2 = version réellement publiée Central S-074 — le toml était en retard,
+  alignement réel et résolvable mavenLocal + Central, D8 respecté).
+. *Publication mavenLocal* : `publishToMavenLocal` VERT — le toml embarqué dans
+  `workspace-catalog-0.0.29.toml` porte `planner-plugin = "0.0.2"`.
+. *Preuve consommateur* (2 niveaux) :
+  * FT jetable bakery (`Cat4PropagationProofTest`) — PASSED : le pin settings
+    0.0.29 inchangé, le bump traversé, `planner-plugin:0.0.2` résolvable.
+    Test retiré en fin de session (caractère jetable acté).
+  * Consommateur Gradle réel (/tmp) : pin `from("education.cccp:workspace-catalog:0.0.29")`
+    inchangé → accesseur typé `ws.versions.planner.plugin.get()` retourne `0.0.2`
+    — zéro édition du build consommateur.
+. *Protocole de release documenté* : `.agents/RELEASE_PROTOCOL.adoc`
+  (6 étapes : bump toml → gardes → mavenLocal → preuve propagation → Central
+  `publishAggregationToCentralPortal` → vérif repo1 ; BOM + catalog ensemble,
+  même bundle nmcp, même numéro).
+
+=== MEM-CAT-5 — Cucumber BDD + doc migration (5 pts)
+
+. Feature `ac_6_version_catalog.feature` `@version-catalog` — 3 scénarios :
+  * Catalog résolvable : 12 plugins présents, versions semver, zéro fantôme
+    (capsule/jhipster/training absents — D8).
+  * Accessor typé : `planner-plugin` = `0.0.2` résolvable mavenLocal/Central.
+  * Hygiène : zéro coordinate education.cccp hardcodé dans la platform (D10).
+. Step defs `VersionCatalogSteps` (glue `contracts.catalog.scenarios`) +
+  runner dédié `VersionCatalogCucumberRunner` (pattern S-082).
+. Task dédiée `versionCatalogCucumberTest` + filtres croisés :
+  `cucumberTest` exclut `@version-catalog`, la task dédiée ne filtre qu'elle.
+  Filtrage par `cucumber.filter.tags` system property (prime sur la config
+  runner — les 2 suites coexistent dans le même test source set).
+. README migration : section "Version catalog — workspace-catalog" ajoutée au
+  README.md (master EN) + README.fr.md (pin D4, version dérivée D3, alias
+  plugins D7, adoption paresseuse D5, zéro fantôme D8).
+
+=== Publication Maven Central 0.0.29
+
+. `publishAggregationToCentralPortal` — bundle `e6f571c2-0d2a-444a-b4cf-d2b7a466ffb5`
+  (AUTOMATIC). 1er essai échoué : le déploiement précédent `62f2e66c` (tenté
+  juste avant, resté en course) bloquait la coordonnée
+  `education.cccp:workspace-bom:0.0.29` ("currently being published in another
+  deployment"). Le déploiement initial a finalement abouti.
+. Vérification repo1 : BOM 0.0.29 HTTP 200 + catalog 0.0.29 HTTP 200 (toml + asc).
+. POM Central contraint `planner-plugin:0.0.2` ✅ — la preuve CAT-4 est
+  désormais valable **depuis Central**, pas seulement mavenLocal.
+
+== 2. Gates
+
+| Gate | Résultat
+| BOM `:agent-contracts:test` | 111 unit PASSED (dont 9 garde CAT-1/2) 0 FAIL
+| BOM `cucumberTest` (agent, @version-catalog exclu) | 78 PASSED 0 FAIL
+| BOM `versionCatalogCucumberTest` | 3/3 PASSED
+| Total BOM | 192 tests, 0 FAIL (baseline 84 → +108 comptés croisés forks)
+| bakery `check` | 1866 tests, 6 FAIL cucumber = baseline préexistante
+  (familles i18n-delta/dns/jbake-native, flaky forks ; S-026 = 7 FAIL).
+  `test` 1668 tests, 3 FAIL = baseline exacte S-026
+| publishToMavenLocal | VERT (BOM + catalog 0.0.29 signés)
+| Central repo1 | BOM 0.0.29 + catalog 0.0.29 HTTP 200, planner 0.0.2 propagé
+| Secrets | scan TOKEN/SECRET/PASSWORD/API_KEY/gho_/ghp_ — zéro alerte
+
+== 3. EPIC MEM-CATALOG — TERMINÉ 5/5 US (~21/21 pts)
+
+CAT-0 cadrage (S-025) → CAT-1/2/3 (S-026) → CAT-4/5 + publication (S-027).
+Le BOM MEMPHIS devient la source de vérité des versions cross-borough
+transportée par artefact Maven (platform pour les deps, catalog pour les
+versions plugins). Généralisation borough par borough HORS EPIC (D5).
+
+== 4. Découvertes / pièges S-027
+
+. *nmcp collision deployment* : 2 uploads successifs de la même coordonnée
+  → le 2e échoue tant que le 1er est en course ("currently being published in
+  another deployment"). Le statut API `publisher/status` peut renvoyer HTTP 500
+  pendant la course — ne pas re-tenter immédiatement, attendre et vérifier repo1.
+. *Init scripts Gradle* : les accesseurs `ws.*` générés ne sont pas visibles
+  dans les init scripts (extension `VersionCatalogsExtension` non résolvable
+  sur le projet racine d'un init script) — preuve via settings consommateur réel.
+. *Filtrage 2 suites Cucumber dans un même test source set* : la system
+  property `cucumber.filter.tags` prime sur `FILTER_TAGS_PROPERTY_NAME` du
+  runner — permet 2 runners (glue différentes) coexistants sans source set séparé.
+. *Bakery flaky cucumber* : familles i18n-delta/dns/jbake-native échouent
+  de façon variable (6 vs 7 FAIL S-026) selon l'ordre des forks — dette
+  préexistante, à traiter dans un EPIC bakery dédié (pas MEMPHIS).
+
+== 5. Fichiers modifiés
+
+- `gradle/libs.versions.toml` — bump planner-plugin 0.0.2
+- `agent-contracts/build.gradle.kts` — task versionCatalogCucumberTest + check
+- `agent-contracts/src/test/.../CucumberTestRunner.kt` — exclude @version-catalog
+- `agent-contracts/src/test/kotlin/contracts/catalog/scenarios/` — Steps + Runner
+- `agent-contracts/src/test/resources/features/ac_6_version_catalog.feature`
+- `README.md` + `README.fr.md` — section version catalog
+- `.agents/RELEASE_PROTOCOL.adoc` — protocole release BOM+catalog
+- bakery : test FT jetable créé puis retiré (zéro trace)
+
+== 6. Publication
+
+| Artefact | Version | Bundle | Vérif
+| workspace-bom | 0.0.29 | `e6f571c2` (AUTOMATIC) | repo1 HTTP 200
+| workspace-catalog | 0.0.29 | (même bundle) | repo1 HTTP 200 (toml + asc)

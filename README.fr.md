@@ -61,6 +61,47 @@ dependencies {
 | PDF | `pdfbox`, `tika-core`, `flexmark-all` |
 | Autre | `playwright` |
 
+## Catalog de versions — `workspace-catalog` (versions plugins)
+
+Depuis la release `0.0.29`, la BOM publie **deux artefacts en une release** : la
+platform (`workspace-bom`, gère les *dépendances*) et un version catalog publié
+(`workspace-catalog`, gère les *versions des plugins* de l'écosystème
+`education.cccp`).
+
+### 3. Consommer le catalog publié (pin d'une ligne)
+
+```kotlin
+// settings.gradle.kts — la SEULE version qu'un borough conserve (D4)
+versionCatalogs {
+    create("ws") {
+        from("education.cccp:workspace-catalog:0.0.29")
+    }
+}
+```
+
+```kotlin
+// build.gradle.kts — accesseurs typés, zéro version de plugin hardcodée
+version = ws.versions.bakery.plugin.get()          // version propre (D3)
+
+dependencies {
+    implementation(platform("education.cccp:workspace-bom:0.0.29"))
+    implementation("education.cccp:document-plugin") // version via constraint BOM
+}
+// block plugins : alias(ws.plugins.bakery) couvre `id(...) version "..."` (D7)
+```
+
+### Pourquoi
+
+- Une seule ligne à bumpé par borough (le pin catalog) au lieu de N versions hardcodées.
+- Les bumps de versions plugins publiés par MEMPHIS se propagent à chaque consommateur
+  sans éditer son build (preuve MEM-CAT-4).
+- Zéro entrée fantôme : le catalog ne référence que des artefacts résolvables depuis
+  Maven Central (D8).
+
+Migration des autres boroughs *paresseuse* (D5) : un borough à la fois, jamais big-bang.
+Voir `.agents/RELEASE_PROTOCOL.adoc` pour le protocole de release (BOM + catalog bumpés
+ensemble, un seul bundle nmcp).
+
 ## Contrats N0 publiés via cette BOM
 
 | Contrat | Artefact | Fournit |
