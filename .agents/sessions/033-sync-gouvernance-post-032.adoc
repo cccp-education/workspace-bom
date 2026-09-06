@@ -1,0 +1,55 @@
+= Session 033 — Synchronisation gouvernance post-S-032 (zéro code)
+:date: 2026-09-07
+:source: Session 033 (gouvernance pure)
+:type: governance
+:borough: MEMPHIS — workspace-bom (N0, BOM + version catalog)
+:status: TERMINÉE
+
+== Contexte hérité
+
+Session 032 (2026-09-02) — EPIC MEM-CAT-ROLLOUT 5/6 : ROLLOUT-2 codex
+(S-211), ROLLOUT-3 plantuml, ROLLOUT-4 hyperframes, ROLLOUT-5 runner cas
+C7, US-CI-1.2 wrapper jar. Release Central BOM+catalog 0.0.31 (entrées
+`[plugins]` 8 boroughs). 5 repos poussés.
+
+== Mission Session 033
+
+Synchroniser la gouvernance documentaire avec l'état réel (demande pilote,
+suite à code review écosystème foundry/public). Constat : statut EPIC CI
+dans BACKLOG périmé — "session 014 — 3 échecs à fixer session 015" alors
+que CI-1.1/1.2/1.3/1.5 sont ✅ (S-014→S-031) et seul CI-1.4 reste 🟡
+(re-confirmé S-028).
+
+== Déroulement
+
+1. Lecture BACKLOG § EPIC CI-1 + vérification statuts US réels
+   (CI-1.1 ✅ S-014, CI-1.2 ✅ S-031, CI-1.3 ✅ partiel S-026, CI-1.5 ✅
+   S-014, CI-1.4 🟡 À FAIRE).
+2. Statut EPIC corrigé : "🔄 EN COURS — CI-1.1/1.2/1.3/1.5 ✅
+   (S-014→S-031), reste uniquement CI-1.4 qwen3:0.6b (🟡 À FAIRE, 1 pt,
+   re-confirmé S-028)".
+
+== Résultats
+
+- ✅ BACKLOG § EPIC CI-1 aligné sur l'état réel.
+- ✅ Zéro code production modifié — gouvernance pure.
+- ✅ Reste à faire MEMPHIS inchangé : CI-1.4 (1 pt) + ROLLOUT-6 à la demande.
+
+== Prochaine session — 034
+
+* US-CI-1.4 : step Ollama qwen3:0.6b dans test.yml (1 pt) — step CI
+  `docker run ollama/ollama` + `ollama pull qwen3:0.6b`, env vars
+  `OLLAMA_TEST_PORT=11466`/`OLLAMA_TEST_MODEL=qwen3:0.6b`, tests
+  `assumeTrue(isOllamaReady(port))` se débloquent.
+* ROLLOUT-6 (dashboard, readme, graphify, bureau) à planifier à la demande.
+* EPIC DOC-8 partiel (opencode-session-contracts P3).
+
+== Méthodologie
+
+Gouvernance pure — zéro code, zéro test modifié.
+
+== Références
+
+- `.agents/INDEX.adoc` (S-032)
+- `.agents/sessions/032-rollout-2-3-4-5-ci-1.2-release-0.0.31.adoc`
+- `BACKLOG.adoc` § EPIC CI-1 (resynchronisé)

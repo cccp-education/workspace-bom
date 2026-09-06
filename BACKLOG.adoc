@@ -495,7 +495,7 @@ besoin LLM des tests d'intégration avec `qwen3:0.6b` (exception CI AGENTS.adoc)
 
 *Charge* : ~4 pts (~1 session)
 *Priorité* : 🔴 P0
-*Statut EPIC* : 🔄 EN COURS (session 014 — workflow créé, 3 échecs à fixer session 015)
+*Statut EPIC* : 🔄 EN COURS — CI-1.1/1.2/1.3/1.5 ✅ (S-014→S-031), reste uniquement CI-1.4 qwen3:0.6b (🟡 À FAIRE, 1 pt, re-confirmé S-028)
 
 === US-CI-1.1 — Workflow test.yml créé
 **Pts** : 1
