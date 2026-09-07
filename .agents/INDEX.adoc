@@ -5,9 +5,9 @@
 
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
-_Derniere mise a jour_ : 2026-09-07 (session S-214 codex — **bump graphify-plugin 0.0.2 → 0.0.3 piloté depuis Brooklyn** : toml graphify 0.0.3 + workspace-bom 0.0.33, gates `:agent-contracts:check` VERT 267 tests 0 FAIL (PlatformCatalogAlignment + WorkspaceCatalogStructure), publication mavenLocal BOM+catalog 0.0.33 (Central hors périmètre S-214). Cross-borough : graphify pin ws 0.0.33 (ROLLOUT-6 ✅, 63/0, DAG acyclic OK) + codex platform pin 0.0.33 réaligné (guards 3/3, 682/0) + bakery migré imports graphify.model canonique.)
-_session terminee_ : 032 — ROLLOUT-2/3/4/5 + CI-1.2 + release 0.0.31. (S-214 graphify 0.0.3 + BOM 0.0.33 mavenLocal piloté depuis Brooklyn/codex.)
-_prochaine session_ : 034 — release Central BOM 0.0.33 + graphify 0.0.3 (à la demande) OU ROLLOUT-6 dashboard (bump requis) OU confirmation CI runner / US-CI-1.4.
+_Derniere mise a jour_ : 2026-09-07 (session S-215 — **release Central 0.0.33 + graphify 0.0.3 + ROLLOUT-6 dashboard** : graphify-plugin 0.0.3 publié Central (bundle `d6479d38`, prérequis DAG), BOM+catalog 0.0.33 Central (bundle `9381527a`), dashboard-plugin 0.0.1 1re release Central (bundle `e0619a49`, fix creds nmcp settings), entrée catalog dashboard + bump BOM 0.0.34 + garde réalignée + adoption pin ws (check 58/0) + release 0.0.34 Central (bundle `b2189fa6`). Fix garde 0.0.32→0.0.33 ratée S-214 (piège #10). EPIC MEM-CAT-ROLLOUT TERMINÉ 6/6.)
+_session terminee_ : 215 — release 0.0.33 + graphify 0.0.3 + ROLLOUT-6 dashboard + release 0.0.34.
+_prochaine session_ : 216 — confirmation CI runner réel OU US-CI-1.4 qwen3:0.6b OU audit adoption catalog (à la demande).
 _Session en cours_ : —
 
 '''
@@ -16,6 +16,8 @@ _Session en cours_ : —
 
 |===
 | # | Date | Type | Sujet | Score
+
+| S-215 | 2026-09-07 | dev+pub | **Release Central 0.0.33 + graphify 0.0.3 + ROLLOUT-6 dashboard** — Demande pilote (release OU ROLLOUT-6 ; les deux réalisés, la release était le prérequis DAG). Fix garde `PlatformCatalogAlignmentTest` épinglée 0.0.32 sur toml 0.0.33 (piège #10 raté S-214, INDEX S-214 affirmait « aucune garde » — inexact) → 111 unit 0 FAIL. graphify-plugin 0.0.3 Central (bundle `d6479d38`, check 63/0). BOM+catalog 0.0.33 Central (bundle `9381527a`, toml Central graphify 0.0.3 vérifié). Piège #6 mordu : 2e invocation publishAggregation re-déclenchée pendant polling → collision silencieuse sans conséquence. dashboard-plugin 0.0.1 1re release Central (bundle `e0619a49`, fix creds nmcp settings pattern graphify, check 58/0 baseline). ROLLOUT-6 : entrées toml `[versions]`/`[plugins]`/`[libraries]` dashboard + bump 0.0.34 + garde réalignée 0.0.34 (gates 267/0 + cucumber) + mavenLocal 0.0.34 + adoption pin ws + `version = ws.versions.dashboard.plugin` + release Central 0.0.34 (bundle `b2189fa6`, D12 Maven only). EPIC MEM-CAT-ROLLOUT **TERMINÉ 6/6**. | 10/10
 
 | S-214 | 2026-09-07 | cross-borough (piloté Brooklyn) | **Bump graphify-plugin 0.0.3 + BOM 0.0.33** — Demande pilote (session codex S-214, adoption ROLLOUT-6 graphify puis bump). Toml : `graphify-plugin = 0.0.3` + `workspace-bom = 0.0.33`. Gates : `:agent-contracts:check` VERT 267 tests 0 FAIL (PlatformCatalogAlignmentTest semver-only sur graphify — aucune garde version dure à réaligner). Publication mavenLocal : workspace-bom 0.0.33 + workspace-catalog 0.0.33 (toml vérifié graphify 0.0.3 + bom 0.0.33). Cross-borough aval : graphify pin ws 0.0.33 (check 63/0 + collectAndVerify DAG acyclic OK + publishToMavenLocal 0.0.3), codex réaligné platform pin 0.0.30→0.0.33 (guards 3/3, check 682/0), bakery bump graphify 0.0.3 + migration imports `graphify.model` canonique (lens 144/0, FT 117/0). Release Central BOM 0.0.33 reportée à la demande du pilote. | 9/10
 
@@ -107,7 +109,8 @@ _Session en cours_ : —
 | MEMPHIS-BOM-FIX | BOM référence `slider` (artifactId périmé) au lieu de `slider-plugin` → 404 Central. Bug bloquant capsule. | ✅ TERMINÉ (S-024, 5/5 US — US-1 catalogue fix S-208, US-3 BOM 0.0.27 Central, US-4 codebase 0.0.10 Central S-209, US-5 capsule fix S-120) | P0
 | MEM-CATALOG | Version Catalog publié `workspace-catalog` — le BOM unique source de vérité des versions plugins, transportée par artefact Maven (settings `from(...)`, accesseurs `ws.*`). Fix split-brain intra-BOM inclus. | ✅ TERMINÉ (S-026 CAT-1/2/3 + S-027 CAT-4/5 — 5/5 US ~21/21 pts, Central 0.0.29 BOM + catalog bundle `e6f571c2`, preuve propagation Central, protocole release RELEASE_PROTOCOL.adoc) | P1
 | DOC-8 | document-gradle — Consommer les contrats N0. *État S-028* : i18n-contracts ✅ consommé (TranslationService/FakeTranslationService) + pipeline-contracts ✅ (release notes). Reste : opencode-session-contracts (traçabilité release notes, dépendance présente, 0 usage — P3). | 🔄 PARTIEL (2/3 contrats consommés) | P2
-| PUB | Publication Maven Central + Plugin Portal | 🔄 EN COURS (BOM 0.0.24 + agent-contracts 0.0.3 + 8 contrats N0 publiés dont runtime-contracts 0.0.1, slider 0.0.18 constraint, codebase 0.0.8, codex 0.0.4, bakery 0.0.9, plantuml 0.0.4) | P0
+| MEM-CAT-ROLLOUT | Généralisation version catalog borough par borough (D5, adoption paresseuse) — document S-244, codex S-211, plantuml S-030, hyperframes S-031, runner S-031, readme S-212, graphify S-214, dashboard S-215 | ✅ TERMINÉ (6/6 + ordre 6 élargi : tous boroughs restants adoptés) | P1
+| PUB | Publication Maven Central + Plugin Portal | 🔄 EN COURS (BOM 0.0.34 + catalog 0.0.34 + graphify 0.0.3 + dashboard 0.0.1 publiés S-215 ; 8 contrats N0 ; agent-contracts 0.0.3) | P0
 |===
 
 == Publications Maven Central — Historique complet
@@ -116,9 +119,21 @@ _Session en cours_ : —
 |===
 | Version | Sujet | Bundle nmcp
 
+| BOM 0.0.34 + catalog 0.0.34
+| entrées catalog dashboard-plugin 0.0.1 (D8) + garde réalignée 0.0.34 + adoption pin ws dashboard (ROLLOUT-6, S-215).
+| `b2189fa6`
+
+| dashboard-plugin 0.0.1
+| 1re release Central dashboard (prérequis ROLLOUT-6 — entrée catalog D8, S-215). Fix creds nmcp settings.
+| `e0619a49`
+
 | BOM 0.0.33 + catalog 0.0.33
-| bump graphify-plugin 0.0.3 (S-214 codex — publication mavenLocal, Central reporté à la demande).
-| mavenLocal
+| bump graphify-plugin 0.0.3 (prérequis DAG : POM BOM contraint graphify 0.0.3, S-215). Fix garde 0.0.32→0.0.33 ratée S-214.
+| `9381527a`
+
+| graphify-plugin 0.0.3
+| publication Central (prérequis DAG BOM 0.0.33, S-214 bump piloté Brooklyn, S-215 release).
+| `d6479d38`
 
 | BOM 0.0.31 + catalog 0.0.31
 | entrées `[plugins]` 8 boroughs education.cccp ajoutées au toml (D7 — débloque `alias(ws.plugins.*)` dans block `plugins {}` des consommateurs, ROLLOUT-5 runner S-032).

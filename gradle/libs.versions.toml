@@ -1,6 +1,6 @@
 [versions]
 # ── Workspace BOM shared versions ─────────────────────────────────────────────
-workspace-bom = "0.0.33"
+workspace-bom = "0.0.34"
 
 # ── Kotlin ────────────────────────────────────────────────────────────────────
 kotlin = "2.4.10"
@@ -55,6 +55,7 @@ plantuml-plugin = "0.0.4"
 readme-plugin = "0.0.1"
 hyperframes-plugin = "0.0.3"
 graphify-plugin = "0.0.3"
+dashboard-plugin = "0.0.1"
 api-key-pool-plugin = "0.0.1"
 codebase-plugin = "0.0.11"
 conventions-plugin = "0.0.4"
@@ -125,6 +126,7 @@ hyperframes = { id = "education.cccp.hyperframes", version.ref = "hyperframes-pl
 planner = { id = "education.cccp.planner", version.ref = "planner-plugin" }
 readme = { id = "education.cccp.readme", version.ref = "readme-plugin" }
 graphify = { id = "education.cccp.graphify", version.ref = "graphify-plugin" }
+dashboard = { id = "education.cccp.dashboard", version.ref = "dashboard-plugin" }
 
 [libraries]
 # ── Kotlin ──
@@ -289,6 +291,7 @@ plantuml-plugin = { module = "education.cccp:plantuml-plugin", version.ref = "pl
 readme-plugin = { module = "education.cccp:readme-plugin", version.ref = "readme-plugin" }
 hyperframes-plugin = { module = "education.cccp:hyperframes-plugin", version.ref = "hyperframes-plugin" }
 graphify-plugin = { module = "education.cccp:graphify-plugin", version.ref = "graphify-plugin" }
+dashboard-plugin = { module = "education.cccp:dashboard-plugin", version.ref = "dashboard-plugin" }
 api-key-pool-plugin = { module = "education.cccp:api-key-pool", version.ref = "api-key-pool-plugin" }
 codebase-plugin = { module = "education.cccp:codebase-plugin", version.ref = "codebase-plugin" }
 conventions-plugin = { module = "education.cccp.build:conventions-plugin", version.ref = "conventions-plugin" }

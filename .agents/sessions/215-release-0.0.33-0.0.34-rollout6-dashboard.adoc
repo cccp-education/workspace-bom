@@ -1,0 +1,94 @@
+= Rapport Session 215 — Release Central 0.0.33 + ROLLOUT-6 dashboard (MEMPHIS)
+
+== Mission
+
+Demande pilote (prompt de reprise) : *release Central BOM 0.0.33 + graphify
+0.0.3* OU *ROLLOUT-6 dashboard* (gate bump MEMPHIS) OU maintenance.
+Les deux ont été réalisés — la release 0.0.33 était le prérequis DAG de
+ROLLOUT-6 (dashboard jamais publié Central → pas d'entrée catalog D8).
+
+== Déroulement
+
+=== 1. Ouverture + arbitrage
+
+- PROMPT_REPRISE MEMPHIS S-032 : ROLLOUT-6+ à la demande, release 0.0.33
+  mavenLocal reportée à la demande du pilote.
+- Backlog MEM-CAT-ROLLOUT ordre 6 : « dashboard reste ⏳ À PLANIFIER (pas
+  d'entrée catalog Central — bump MEMPHIS requis) ».
+- Vérification Central : graphify 0.0.3 = 404, BOM/catalog 0.0.33 = 404,
+  dashboard-plugin = 404 (jamais publié).
+- Arbitrage : release 0.0.33 d'abord (DAG nmcp), puis ROLLOUT-6 dashboard.
+
+=== 2. Baseline + fix garde (piège #10 raté S-214)
+
+- graphify `check` VERT (63 tests 0 FAIL, baseline S-214 préservée).
+- Gates BOM : `PlatformCatalogAlignmentTest` RED — garde épinglée
+  `0.0.32` en dur alors que le toml est 0.0.33. *L'INDEX S-214 affirmait
+  « aucune garde version dure à réaligner » : inexact.* Fix baby-step TDD
+  (RED constaté → pin 0.0.33 → GREEN 111 unit + cucumber VERT).
+
+=== 3. Release Central 0.0.33 (protocole RELEASE_PROTOCOL)
+
+- Audit DAG : 11/12 artefacts du toml déjà sur Central, seul graphify 0.0.3
+  manquant (contraint le POM BOM).
+- graphify-plugin 0.0.3 → bundle `d6479d38`, repo1 HTTP 200 (poll ~9 min).
+- BOM + catalog 0.0.33 → bundle `9381527a`, repo1 HTTP 200 ×2 (~13 min).
+- toml Central vérifié : `graphify-plugin = "0.0.3"` + POM BOM constraint.
+- *Piège #6 mordu* : 2e invocation `publishAggregationToCentralPortal`
+  re-déclenchée par erreur pendant le polling → 2e bundle sur la même
+  coordonnée. Le 1er a abouti, le 2e a échoué silencieusement — zéro
+  conséquence, mais re-vérifier repo1 AVANT de re-tenter.
+
+=== 4. Publication dashboard-plugin 0.0.1 (1re release, D8)
+
+- Baseline dashboard `check` VERT (58 tests 0 FAIL).
+- settings.gradle.kts nmcp sans credentials → BUILD FAILED « username is
+  missing ». Fix : chargement `~/.gradle/gradle.properties` (pattern
+  graphify settings).
+- Publication Central → bundle `e0619a49`, repo1 HTTP 200 (poll ~12 min).
+- mavenLocal 0.0.1 signée préalable (pom/jar/module + .asc).
+
+=== 5. ROLLOUT-6 — adoption dashboard version catalog ws
+
+- toml BOM : entrées `[versions] dashboard-plugin = "0.0.1"`,
+  `[plugins] dashboard`, `[libraries] dashboard-plugin` (pattern graphify).
+- Bump `workspace-bom = 0.0.34` + garde `PlatformCatalogAlignmentTest`
+  réalignée 0.0.33 → 0.0.34 (piège #10 appliqué cette fois).
+- Gates : 267 unit 0 FAIL + `versionCatalogCucumberTest` VERT.
+- `publishToMavenLocal` 0.0.34 (toml vérifié : entrées dashboard présentes).
+- Adoption dashboard : settings pin `from("education.cccp:workspace-catalog:0.0.34")`
+  + `version = ws.versions.dashboard.plugin.get()` dans dashboard-plugin
+  (pattern graphify S-214). `check` VERT 58/0, mavenLocal re-signée 0.0.1.
+- Release Central BOM + catalog 0.0.34 → bundle `b2189fa6`, repo1 HTTP 200
+  ×2, toml Central transporte `dashboard-plugin = "0.0.1"` (D12 Maven only
+  — le pin dashboard est consommable sans mavenLocal).
+
+== Versions publiées cette session
+
+[cols="2,3,2"]
+|===
+| Artefact | Version | Bundle
+| graphify-plugin | 0.0.3 | `d6479d38`
+| workspace-bom + workspace-catalog | 0.0.33 | `9381527a`
+| dashboard-plugin | 0.0.1 (1re) | `e0619a49`
+| workspace-bom + workspace-catalog | 0.0.34 | `b2189fa6`
+|===
+
+== État EPIC MEM-CAT-ROLLOUT
+
+*TERMINÉ 6/6* : document (S-244), codex (S-211), plantuml (S-030),
+hyperframes (S-031), runner (S-031), readme (S-212), graphify (S-214),
+dashboard (S-215). Ordre 6 élargi à tous les boroughs restants — plus
+aucun borough hardcode sa version propre hors catalog ws (à re-auditer
+en session future si de nouveaux boroughs apparaissent).
+
+== Pièges (nouveaux/cumulés)
+
+1. Piège #10 : la garde PlatformCatalogAlignmentTest épinle la version BOM
+   — le réalignement DOIT accompagner chaque bump toml (raté S-214, corrigé S-215).
+2. Piège #6 : ne JAMAIS re-invoquer publishAggregationToCentralPortal sans
+   vérifier repo1 d'abord — collision nmcp silencieuse.
+3. settings nmcp : le block nmcpSettings ne charge pas tout seul les creds
+   globaux — pattern `java.util.Properties` + `~/.gradle/gradle.properties`
+   obligatoire (graphify/dashboard).
+4. Polling repo1 : 9-13 min après « deployment is publishing » (AUTOMATIC).

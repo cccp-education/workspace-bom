@@ -1,5 +1,18 @@
 = Archives des tâches terminées — Septembre 2026 (workspace-bom MEMPHIS)
 
+== Session S-215 (2026-09-07) — Release Central 0.0.33 + graphify 0.0.3 + ROLLOUT-6 dashboard
+
+- [x] Fix garde `PlatformCatalogAlignmentTest` épinglée 0.0.32 sur toml 0.0.33 (piège #10 raté S-214) — RED constaté → pin 0.0.33 → GREEN 111 unit 0 FAIL
+- [x] Audit DAG : 11/12 artefacts toml sur Central, seul graphify 0.0.3 manquant
+- [x] graphify-plugin 0.0.3 Central — bundle `d6479d38`, repo1 200 (poll ~9 min), check 63/0
+- [x] BOM + catalog 0.0.33 Central — bundle `9381527a`, repo1 200 ×2 (~13 min), toml Central graphify 0.0.3 vérifié
+- [x] dashboard-plugin 0.0.1 1re release Central — bundle `e0619a49`, fix creds nmcp settings (pattern graphify), check 58/0
+- [x] ROLLOUT-6 dashboard : entrées toml `[versions]`/`[plugins]`/`[libraries]` + bump 0.0.34 + garde réalignée 0.0.34 (gates 267/0 + cucumber) + mavenLocal 0.0.34
+- [x] Adoption dashboard : pin ws 0.0.34 settings + `version = ws.versions.dashboard.plugin.get()` — check 58/0
+- [x] Release Central BOM + catalog 0.0.34 — bundle `b2189fa6`, toml Central dashboard-plugin 0.0.1 vérifié (D12 Maven only)
+- [x] EPIC MEM-CAT-ROLLOUT TERMINÉ 6/6 (document S-244, codex S-211, plantuml S-030, hyperframes S-031, runner S-031, readme S-212, graphify S-214, dashboard S-215)
+- [x] Clôture gouvernance : rapport `.agents/sessions/215-release-0.0.33-0.0.34-rollout6-dashboard.adoc` + PROMPT_REPRISE + INDEX + SESSIONS_HISTORY + BACKLOG sync (étape 7 grep vérifié)
+
 == Session 032 (2026-09-02) — EPIC MEM-CAT-ROLLOUT 5/6 + US-CI-1.2 + Release 0.0.31
 
 - [x] ROLLOUT-2 codex : garde 3/3 + pin ws + version dérivée + platform 0.0.30 — check 754/0, mavenLocal VERT (commit `bf6a337`)

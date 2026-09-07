@@ -4,7 +4,7 @@
 :toc: left
 :sectnums:
 
-_Dernière mise à jour : 2026-09-02 (S-028 — audit transverse versions : fix split-brain conventions-plugin 0.0.3→0.0.4 + release Central BOM+catalog 0.0.30 + bakery pilote aligné. EPIC MEM-CATALOG TERMINÉ S-026/S-027 — ne pas rouvrir.)_
+_Dernière mise à jour : 2026-09-07 (S-215 — release Central 0.0.33 + graphify 0.0.3 + ROLLOUT-6 dashboard : dashboard-plugin 0.0.1 1re release + adoption pin ws + release 0.0.34. EPIC MEM-CAT-ROLLOUT TERMINÉ 6/6 — ne pas rouvrir sauf nouveau borough.)_
 
 _Source : configuration/EPIC_PUB.adoc (Session 096)_
 
@@ -17,10 +17,10 @@ BOM + 5 libraries de contrats partagés (N0). Premier artefact publié (VAGUE 1)
 **Priorite** : P0
 **Estimation** : 1 pt
 **Dependances** : PUB-0 et PUB-1 complets (DNS TXT + GPG)
-**Statut** : ✅ PUBLIÉ + VÉRIFIÉ (dernière version 0.0.30 — S-028, 2026-09-02, audit transverse + fix conventions-plugin)
+**Statut** : ✅ PUBLIÉ + VÉRIFIÉ (dernière version 0.0.34 — S-215, 2026-09-07, ROLLOUT-6 dashboard + entrée catalog)
 
-. Artefact : `education.cccp:workspace-bom:0.0.30` (dernière)
-. Versions publiées : 0.0.1 → 0.0.30 (historique complet INDEX.adoc § Publications Maven Central)
+. Artefact : `education.cccp:workspace-bom:0.0.34` (dernière)
+. Versions publiées : 0.0.1 → 0.0.34 (historique complet INDEX.adoc § Publications Maven Central)
 . Verifiée sur https://central.sonatype.com/artifact/education.cccp/workspace-bom
 
 === PUB-3.02 — agent-contracts
@@ -74,7 +74,7 @@ BOM + 5 libraries de contrats partagés (N0). Premier artefact publié (VAGUE 1)
 **Statut** : ✅ TERMINÉ
 
 '''
-== ✅ EPIC MEM-CAT-ROLLOUT (5/6 + readme ordre 6) — Généralisation version catalog borough par borough (D5, adoption paresseuse)
+== ✅ EPIC MEM-CAT-ROLLOUT (TERMINÉ 6/6 — S-215) — Généralisation version catalog borough par borough (D5, adoption paresseuse)
 
 _Origine : S-028 (audit transverse versions) + demande pilote transverse._
 _Le pilote bakery (S-208/S-028) prouve le pattern : 1 pin settings + version
@@ -92,7 +92,7 @@ mise à jour BACKLOG + INDEX borough à chaque fois) :
 | 3 | plantuml-gradle | platform BOM 0.0.21 | idem | ✅ TERMINÉ (S-030 — garde 3/3, unit 2531/0, FT 85/1 baseline stash-confirmée, split-brain local 0.0.3/0.0.4 éliminé)
 | 4 | hyperframes-gradle | platform BOM 0.0.7 | idem | ✅ TERMINÉ (S-031 — garde 3/3, check 214/0, mavenLocal VERT, pas de split-brain local)
 | 5 | runner-gradle | hardcode `id(...) version "0.0.9"` (C7) | pin ws + alias(ws.plugins.bakery) | ✅ TERMINÉ (S-031 — alias D7 via entrée [plugins] toml BOM 0.0.31 mavenLocal, gate tasks VERT, buildEnvironment prouve 0.0.9 via ws)
-| 6 | dashboard, readme, graphify... | divers | idem, à la demande | readme ✅ TERMINÉ (S-212 codex-session — garde 3/3, check 83 tests 0 FAIL, mavenLocal VERT POM 0.0.1 version dérivée ws, id inline). graphify ✅ TERMINÉ (S-214 codex-session — garde 3/3, pin ws 0.0.33, version dérivée, check 63/0 + DAG acyclic OK ; bump graphify 0.0.3 + BOM 0.0.33 mavenLocal). dashboard reste ⏳ À PLANIFIER (pas d'entrée catalog Central — bump MEMPHIS requis)
+| 6 | dashboard, readme, graphify... | divers | idem, à la demande | readme ✅ TERMINÉ (S-212 codex-session — garde 3/3, check 83 tests 0 FAIL, mavenLocal VERT POM 0.0.1 version dérivée ws, id inline). graphify ✅ TERMINÉ (S-214 codex-session — garde 3/3, pin ws 0.0.33, version dérivée, check 63/0 + DAG acyclic OK ; bump graphify 0.0.3 + BOM 0.0.33 mavenLocal). dashboard ✅ TERMINÉ (S-215 — 1re release Central dashboard-plugin 0.0.1 bundle `e0619a49`, entrée catalog D8, bump BOM 0.0.34 + garde réalignée, pin ws 0.0.34, check 58/0, release 0.0.34 Central bundle `b2189fa6`). Aucun borough restant identifié — re-auditer si nouveau borough.
 |===
 
 *Pattern à reproduire* (voir bakery `bakery-plugin/settings.gradle.kts` +

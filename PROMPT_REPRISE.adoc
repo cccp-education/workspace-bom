@@ -1,62 +1,66 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-032 — TERMINÉE (EPIC MEM-CAT-ROLLOUT 5/6 : ROLLOUT-2 codex, ROLLOUT-3 plantuml, ROLLOUT-4 hyperframes, ROLLOUT-5 runner cas C7 + US-CI-1.2 + release Central 0.0.31 avec entrées [plugins])
+215 — TERMINÉE (release Central 0.0.33 + graphify 0.0.3 + ROLLOUT-6 dashboard :
+dashboard-plugin 0.0.1 1re release Central + adoption pin ws + release 0.0.34.
+EPIC MEM-CAT-ROLLOUT TERMINÉ 6/6.)
 
-== État du code (S-032)
+== État du code (S-215)
 
-- Central : BOM 0.0.31 + workspace-catalog 0.0.31 (repo1 HTTP 200 ×2, entrées
-  `[plugins]` 8 boroughs education.cccp transportées — `bakery = {id = ...,
-  version.ref = "bakery-plugin"}` vérifié).
-- 4 boroughs adoptés : codex (754/0), plantuml (2531/0, FT 85/1 baseline),
-  hyperframes (214/0), runner (alias ws.plugins.bakery, tasks VERT). document
-  (3272/0) adopté en S-244. US-CI-1.2 wrapper jar api-key-pool committé.
-- Garde `PlatformCatalogAlignmentTest` épinglée BOM 0.0.31 + conventions 0.0.4.
-- ROLLOUT-6+ (dashboard, readme, graphify...) ⏳ À PLANIFIER à la demande.
+- Central : BOM + catalog 0.0.34 (dernier état), graphify-plugin 0.0.3,
+  dashboard-plugin 0.0.1. Historique session : 0.0.33 (bundle `9381527a`)
+  puis 0.0.34 (bundle `b2189fa6`).
+- 4 bundles nmcp : graphify `d6479d38`, BOM/cat 0.0.33 `9381527a`,
+  dashboard `e0619a49`, BOM/cat 0.0.34 `b2189fa6`.
+- Garde `PlatformCatalogAlignmentTest` épinglée BOM 0.0.34 (réalignée 2×
+  cette session — le bump toml DOIT toujours accompagner le bump garde).
+- dashboard adopté : settings pin ws 0.0.34 + `version =
+  ws.versions.dashboard.plugin.get()` (check 58/0).
+- ROLLOUT-6+ : aucun borough restant identifié (readme S-212, graphify S-214,
+  dashboard S-215) — à re-auditer si nouveau borough.
 
-== Mission session 033 — à la demande
+== Mission session 216 — à la demande
 
-. *ROLLOUT-6+* boroughs restants (dashboard, readme, graphify, bureau...) :
-   pattern d'adoption réutilisable documenté rapport S-032 (garde RED → pin ws
-   → version dérivée → platform 0.0.31 → gate → mavenLocal).
 . *Confirmation CI runner* : déclencher un run deploy réel magic-stick /
    cheroliv.com (alias ws.plugins.bakery en conditions réelles gh-pages).
-. *US-CI-1.4* : Ollama qwen3:0.6b en CI (dépend workflow test.yml, 1 pt).
-. *Dette bakery* : EPIC BKY-TEST-FLAKY (3 FAIL i18n, BACKLOG+TODO bakery S-028).
+. *US-CI-1.4* : Ollama qwen3:0.6b en CI (1 pt).
+. *Audit complet adoption catalog* : vérifier qu'aucun borough education.cccp
+   ne hardcode sa version propre hors ws (D5/D12).
+. *Dette bakery* : EPIC BKY-TEST-FLAKY (3 FAIL i18n, bakery S-028).
 . *DOC-8 reste* (P3) : opencode-session-contracts (deps présentes, 0 usage).
 
-== Pièges à retenir (cumul S-026 + S-027 + S-028 + S-032)
+== Pièges à retenir (cumul + S-215)
 
 1. *Gradle 9 API* : publication catalog = plugin `version-catalog` +
-   `catalog { versionCatalog { from(...) } }` + `from(components["versionCatalog"])`.
-   `MavenPublication.versionCatalog {}` N'EXISTE PLUS.
+   `from(components["versionCatalog"])`. `MavenPublication.versionCatalog {}` N'EXISTE PLUS.
 2. *Versions fantômes* : epub3 `3.0.1` n'existe pas Central (→ 2.2.0) ;
    capsule-plugin 404 Central (entrée retirée du toml — D8).
 3. *Conflit classpath Gradle 9.6.1* : strictly 2.3.21 embarqué vs platform
    2.4.10 → forces buildscript sur racines consommateurs (bakery, runner).
 4. *Extension Gradle* : `Provider<T>` brut NON décorable — utiliser `Property<T>`.
-5. *runAllTests* : liste restreinte à 5 boroughs verts (dettes documentées
-   build.gradle.kts BOM).
-6. *nmcp collision* : 2 uploads même coordonnée → 2e échoue tant que le 1er
-   est en course ; API `publisher/status` peut renvoyer HTTP 500 — vérifier
-   repo1 avant de re-tenter.
+5. *runAllTests* : liste restreinte (dettes documentées build.gradle.kts BOM).
+6. *nmcp collision* : NE JAMAIS re-invoquer publishAggregationToCentralPortal
+   sans vérifier repo1 d'abord (2 bundles même coordonnée — mordu S-215,
+   2e upload échoue silencieusement si le 1er est en course).
 7. *Init scripts* : accesseurs `ws.*` non visibles dans les init scripts —
    preuve propagation via settings consommateur réel ou test FT.
 8. *2 suites Cucumber même source set* : `cucumber.filter.tags` system property
-   prime sur la config du runner (2 glues coexistantes sans source set séparé).
+   prime sur la config du runner.
 9. *`:agent-contracts:test` n'existe pas depuis la racine BOM* — build
    standalone (lancer depuis `agent-contracts/`). Idem bakery : `test`
    n'existe qu'à la racine `bakery-plugin/`.
 10. *Gardes épinglent les versions* (BOM + conventions + contrats) — après
-   CHAQUE bump toml, bump la garde dans le même commit.
+    CHAQUE bump toml, bump la garde dans le même commit. *Raté S-214
+    (garde 0.0.32 laissée sur toml 0.0.33), corrigé S-215.*
 11. *runner* : `dependencyResolutionManagement.repositories` manquant →
-    catalog ws irrésolvable ("no repositories are defined") — même si
-    pluginManagement couvre les plugins.
+    catalog ws irrésolvable.
 12. *alias dans block plugins {}* : nécessite une entrée `[plugins]` dans le
-    toml du catalog publié (D7) — le block `plugins {}` n'accède pas aux
-    accesseurs version, seul alias marche.
-13. *Transport plugins* : les entrées `[plugins]` du toml sont bien publiées
-    et consommables via `ws.plugins.*` (vérifié repo1 0.0.31).
+    toml du catalog publié (D7).
+13. *settings nmcp* : le block `nmcpSettings` ne charge pas tout seul les
+    creds globaux — pattern `java.util.Properties` +
+    `~/.gradle/gradle.properties` obligatoire (mordu dashboard S-215).
+14. *Polling repo1* : 9-13 min après « deployment is publishing » (AUTOMATIC)
+    — armer le polling AVANT de continuer.
 
 == Règles
 
@@ -66,12 +70,13 @@
   — couvre BOM + catalog en 1 bundle). Protocole : `.agents/RELEASE_PROTOCOL.adoc`.
 - Zéro Python — outputs analysés Read/Grep/xmllint/rapports Gradle natifs.
 - Le pilote autorise commit/push en fin de session + bump/publication
-  mavenLocal/Central dès que nécessaire (S-028).
+  mavenLocal/Central dès que nécessaire (S-028, confirmé S-215).
 
-== À vérifier en ouverture S-033
+== À vérifier en ouverture S-216
 
-1. `git status` — workspace-bom committé/poussé ? (S-032 clôturé)
-2. Central `<latest>` BOM + catalog (0.0.31 attendu).
+1. `git status` — workspace-bom + dashboard-gradle + graphify-gradle committés/poussés ?
+2. Central `<latest>` BOM + catalog (0.0.34 attendu) + graphify 0.0.3 + dashboard 0.0.1.
 3. `./gradlew test versionCatalogCucumberTest` depuis `agent-contracts/` VERT.
-4. Demande pilote : ROLLOUT-6+ (quels boroughs) OU confirmation CI runner.
-5. Backlog : EPIC MEM-CATALOG ✅ ne pas rouvrir ; MEM-CAT-ROLLOUT 5/6 (6e à la demande).
+4. Demande pilote : CI runner réel OU US-CI-1.4 OU audit adoption catalog.
+5. Backlog : EPIC MEM-CAT-ROLLOUT ✅ TERMINÉ 6/6 (S-215) — ne pas rouvrir
+   sauf nouveau borough.

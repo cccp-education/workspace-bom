@@ -2,8 +2,10 @@
 
 _Date creation : 2026-06-02_
 
-|===
+|=== 
 | # | Date | Type | Sujet | Score
+
+| S-215 | 2026-09-07 | dev+pub | **Release Central 0.0.33 + graphify 0.0.3 + ROLLOUT-6 dashboard** — Demande pilote (release OU ROLLOUT-6 ; les deux réalisés). Fix garde `PlatformCatalogAlignmentTest` épinglée 0.0.32 sur toml 0.0.33 (piège #10 raté S-214 — l'INDEX S-214 affirmait « aucune garde version dure » : inexact) → RED constaté → pin 0.0.33 → GREEN 111 unit 0 FAIL. graphify-plugin 0.0.3 Central (bundle `d6479d38`, check 63/0, ~9 min repo1). BOM+catalog 0.0.33 Central (bundle `9381527a`, toml Central graphify 0.0.3 vérifié, ~13 min). Piège #6 mordu : 2e invocation publishAggregation re-déclenchée pendant polling → collision nmcp silencieuse sans conséquence. dashboard-plugin 0.0.1 1re release Central (bundle `e0619a49`, ~12 min) — fix creds nmcp settings (pattern graphify `java.util.Properties` + `~/.gradle/gradle.properties`), check 58/0 baseline. ROLLOUT-6 : entrées toml `[versions] dashboard-plugin=0.0.1` + `[plugins] dashboard` + `[libraries] dashboard-plugin` (pattern graphify) + bump `workspace-bom = 0.0.34` + garde réalignée 0.0.34 (gates 267 unit + versionCatalogCucumberTest 0 FAIL) + mavenLocal 0.0.34 + adoption dashboard pin ws 0.0.34 + `version = ws.versions.dashboard.plugin.get()` + release Central 0.0.34 (bundle `b2189fa6`, D12 Maven only). EPIC MEM-CAT-ROLLOUT **TERMINÉ 6/6**. | 10/10
 
 | S-214 | 2026-09-07 | cross-borough (piloté Brooklyn/codex) | **Bump graphify-plugin 0.0.3 + BOM 0.0.33** — Demande pilote (session codex S-214 : adoption ROLLOUT-6 graphify puis bump). Toml : `graphify-plugin = 0.0.3` + `workspace-bom = 0.0.33`. Gates : `:agent-contracts:check` VERT 267 tests 0 FAIL (PlatformCatalogAlignmentTest semver-only sur graphify — aucune garde version dure à réaligner). Publication mavenLocal : workspace-bom 0.0.33 + workspace-catalog 0.0.33 (toml vérifié graphify 0.0.3 + bom 0.0.33). Cross-borough aval : graphify pin ws 0.0.33 (check 63/0 + collectAndVerify DAG acyclic OK + publishToMavenLocal 0.0.3), codex réaligné platform pin 0.0.30→0.0.33 (guards 3/3, check 682/0), bakery bump graphify 0.0.3 + migration imports `graphify.model` canonique (lens 144/0, FT 117/0). Release Central BOM 0.0.33 reportée à la demande du pilote. | 9/10
 
