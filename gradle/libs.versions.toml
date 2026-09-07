@@ -57,7 +57,7 @@ hyperframes-plugin = "0.0.3"
 graphify-plugin = "0.0.3"
 dashboard-plugin = "0.0.1"
 api-key-pool-plugin = "0.0.1"
-codebase-plugin = "0.0.11"
+codebase-plugin = "0.0.12"
 conventions-plugin = "0.0.4"
 
 # ── PDF/Extraction ────────────────────────────────────────────────────────────
