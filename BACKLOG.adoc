@@ -92,7 +92,7 @@ mise à jour BACKLOG + INDEX borough à chaque fois) :
 | 3 | plantuml-gradle | platform BOM 0.0.21 | idem | ✅ TERMINÉ (S-030 — garde 3/3, unit 2531/0, FT 85/1 baseline stash-confirmée, split-brain local 0.0.3/0.0.4 éliminé)
 | 4 | hyperframes-gradle | platform BOM 0.0.7 | idem | ✅ TERMINÉ (S-031 — garde 3/3, check 214/0, mavenLocal VERT, pas de split-brain local)
 | 5 | runner-gradle | hardcode `id(...) version "0.0.9"` (C7) | pin ws + alias(ws.plugins.bakery) | ✅ TERMINÉ (S-031 — alias D7 via entrée [plugins] toml BOM 0.0.31 mavenLocal, gate tasks VERT, buildEnvironment prouve 0.0.9 via ws)
-| 6 | dashboard, readme, graphify... | divers | idem, à la demande | readme ✅ TERMINÉ (S-212 codex-session — garde 3/3, check 83 tests 0 FAIL, mavenLocal VERT POM 0.0.1 version dérivée ws, id inline). dashboard/graphify restent ⏳ À PLANIFIER (dashboard : pas d'entrée catalog Central — bump MEMPHIS requis)
+| 6 | dashboard, readme, graphify... | divers | idem, à la demande | readme ✅ TERMINÉ (S-212 codex-session — garde 3/3, check 83 tests 0 FAIL, mavenLocal VERT POM 0.0.1 version dérivée ws, id inline). graphify ✅ TERMINÉ (S-214 codex-session — garde 3/3, pin ws 0.0.33, version dérivée, check 63/0 + DAG acyclic OK ; bump graphify 0.0.3 + BOM 0.0.33 mavenLocal). dashboard reste ⏳ À PLANIFIER (pas d'entrée catalog Central — bump MEMPHIS requis)
 |===
 
 *Pattern à reproduire* (voir bakery `bakery-plugin/settings.gradle.kts` +

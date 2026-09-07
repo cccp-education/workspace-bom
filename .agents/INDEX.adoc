@@ -5,9 +5,9 @@
 
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
-_Derniere mise a jour_ : 2026-09-02 (session 032 — **EPIC MEM-CAT-ROLLOUT 5/6** : ROLLOUT-2 codex (754/0) + ROLLOUT-3 plantuml (2531/0, FT 85/1 baseline stash, split-brain 0.0.3/0.0.4 éliminé) + ROLLOUT-4 hyperframes (214/0) + ROLLOUT-5 runner cas C7 (`alias(ws.plugins.bakery)`, tasks VERT) + US-CI-1.2 wrapper jar committé. Release Central BOM+catalog 0.0.31 avec entrées `[plugins]` 8 boroughs (repo1 vérifié). 5 repos poussés.)
-_session terminee_ : 032 — ROLLOUT-2/3/4/5 + CI-1.2 + release 0.0.31.
-_prochaine session_ : 033 — ROLLOUT-6+ à la demande / confirmation CI runner / US-CI-1.4.
+_Derniere mise a jour_ : 2026-09-07 (session S-214 codex — **bump graphify-plugin 0.0.2 → 0.0.3 piloté depuis Brooklyn** : toml graphify 0.0.3 + workspace-bom 0.0.33, gates `:agent-contracts:check` VERT 267 tests 0 FAIL (PlatformCatalogAlignment + WorkspaceCatalogStructure), publication mavenLocal BOM+catalog 0.0.33 (Central hors périmètre S-214). Cross-borough : graphify pin ws 0.0.33 (ROLLOUT-6 ✅, 63/0, DAG acyclic OK) + codex platform pin 0.0.33 réaligné (guards 3/3, 682/0) + bakery migré imports graphify.model canonique.)
+_session terminee_ : 032 — ROLLOUT-2/3/4/5 + CI-1.2 + release 0.0.31. (S-214 graphify 0.0.3 + BOM 0.0.33 mavenLocal piloté depuis Brooklyn/codex.)
+_prochaine session_ : 034 — release Central BOM 0.0.33 + graphify 0.0.3 (à la demande) OU ROLLOUT-6 dashboard (bump requis) OU confirmation CI runner / US-CI-1.4.
 _Session en cours_ : —
 
 '''
@@ -16,6 +16,8 @@ _Session en cours_ : —
 
 |===
 | # | Date | Type | Sujet | Score
+
+| S-214 | 2026-09-07 | cross-borough (piloté Brooklyn) | **Bump graphify-plugin 0.0.3 + BOM 0.0.33** — Demande pilote (session codex S-214, adoption ROLLOUT-6 graphify puis bump). Toml : `graphify-plugin = 0.0.3` + `workspace-bom = 0.0.33`. Gates : `:agent-contracts:check` VERT 267 tests 0 FAIL (PlatformCatalogAlignmentTest semver-only sur graphify — aucune garde version dure à réaligner). Publication mavenLocal : workspace-bom 0.0.33 + workspace-catalog 0.0.33 (toml vérifié graphify 0.0.3 + bom 0.0.33). Cross-borough aval : graphify pin ws 0.0.33 (check 63/0 + collectAndVerify DAG acyclic OK + publishToMavenLocal 0.0.3), codex réaligné platform pin 0.0.30→0.0.33 (guards 3/3, check 682/0), bakery bump graphify 0.0.3 + migration imports `graphify.model` canonique (lens 144/0, FT 117/0). Release Central BOM 0.0.33 reportée à la demande du pilote. | 9/10
 
 | 032 | 2026-09-02 | cross-borough+pub | **EPIC MEM-CAT-ROLLOUT 5/6** — ROLLOUT-2 codex (garde 3/3 RED→GREEN, `version = ws.versions.codex.plugin`, platform 0.0.26→0.0.30, check 754/0, id inline gradlePlugin piège parsing) + ROLLOUT-3 plantuml (garde 3/3, split-brain local toml 0.0.3 vs hardcode 0.0.4 éliminé, unit 2531/0, FT 85/1 = baseline stash `PlantumlFunctionalSuite$FilePermission` préexistant) + ROLLOUT-4 hyperframes (garde 3/3, check 214/0, pas de split-brain) + ROLLOUT-5 runner cas C7 (entrées `[plugins]` 8 boroughs ajoutées toml BOM + bump 0.0.31 + release Central repo1 vérifiée ×2, runner pin ws + piège `dependencyResolutionManagement.repositories` manquant corrigé + `alias(ws.plugins.bakery)`, tasks VERT, buildEnvironment prouve 0.0.9 via ws) + US-CI-1.2 wrapper jar api-key-pool committé (root+plugin). 5 repos poussés : codex `bf6a337`, plantuml `52d6352`, hyperframes `3a2d01d`, runner `ad9036b`, api-key-pool `cf20c3b`. | 10/10
 
@@ -113,6 +115,10 @@ _Session en cours_ : —
 [cols="2,3,2"]
 |===
 | Version | Sujet | Bundle nmcp
+
+| BOM 0.0.33 + catalog 0.0.33
+| bump graphify-plugin 0.0.3 (S-214 codex — publication mavenLocal, Central reporté à la demande).
+| mavenLocal
 
 | BOM 0.0.31 + catalog 0.0.31
 | entrées `[plugins]` 8 boroughs education.cccp ajoutées au toml (D7 — débloque `alias(ws.plugins.*)` dans block `plugins {}` des consommateurs, ROLLOUT-5 runner S-032).
