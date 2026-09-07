@@ -1,6 +1,6 @@
 [versions]
 # ── Workspace BOM shared versions ─────────────────────────────────────────────
-workspace-bom = "0.0.31"
+workspace-bom = "0.0.32"
 
 # ── Kotlin ────────────────────────────────────────────────────────────────────
 kotlin = "2.4.10"
@@ -77,7 +77,7 @@ i18n-contracts = "0.0.2"
 pipeline-contracts = "0.0.2"
 runtime-contracts = "0.0.1"
 ocr-contracts = "0.0.1"
-document-plugin = "0.0.15"
+document-plugin = "0.0.16"
 
 # ── Docker / Infrastructure ───────────────────────────────────────────────────
 docker-java = "3.7.0"
