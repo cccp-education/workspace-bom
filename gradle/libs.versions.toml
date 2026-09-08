@@ -1,6 +1,6 @@
 [versions]
 # ── Workspace BOM shared versions ─────────────────────────────────────────────
-workspace-bom = "0.0.34"
+workspace-bom = "0.0.36"
 
 # ── Kotlin ────────────────────────────────────────────────────────────────────
 kotlin = "2.4.10"
@@ -47,7 +47,7 @@ node-gradle = "7.1.0"
 jetbrains-annotations = "26.0.2-1"
 
 # ── Plugin versions (published by education.cccp) ────────────────────────────
-bakery-plugin = "0.0.9"
+bakery-plugin = "0.0.10"
 codex-plugin = "0.0.6"
 planner-plugin = "0.0.2"
 slider-plugin = "0.0.18"
@@ -57,7 +57,7 @@ hyperframes-plugin = "0.0.3"
 graphify-plugin = "0.0.3"
 dashboard-plugin = "0.0.1"
 api-key-pool-plugin = "0.0.1"
-codebase-plugin = "0.0.12"
+codebase-plugin = "0.0.13"
 conventions-plugin = "0.0.4"
 
 # ── PDF/Extraction ────────────────────────────────────────────────────────────
@@ -78,7 +78,7 @@ i18n-contracts = "0.0.2"
 pipeline-contracts = "0.0.2"
 runtime-contracts = "0.0.1"
 ocr-contracts = "0.0.1"
-document-plugin = "0.0.16"
+document-plugin = "0.0.17"
 
 # ── Docker / Infrastructure ───────────────────────────────────────────────────
 docker-java = "3.7.0"
