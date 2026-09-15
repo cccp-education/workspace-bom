@@ -1,6 +1,6 @@
 [versions]
 # ── Workspace BOM shared versions ─────────────────────────────────────────────
-workspace-bom = "0.0.42"
+workspace-bom = "0.0.43"
 
 # ── Kotlin ────────────────────────────────────────────────────────────────────
 kotlin = "2.4.10"
@@ -74,7 +74,7 @@ agent-contracts = "0.0.3"
 codebase-contracts = "0.0.2"
 llm-pool-contracts = "0.0.2"
 opencode-session-contracts = "0.0.2"
-i18n-contracts = "0.0.3"
+i18n-contracts = "0.0.4"
 pipeline-contracts = "0.0.2"
 runtime-contracts = "0.0.1"
 ocr-contracts = "0.0.1"

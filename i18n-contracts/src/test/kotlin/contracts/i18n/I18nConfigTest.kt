@@ -52,7 +52,7 @@ class I18nConfigTest {
     }
 
     @Test
-    fun `should validate with all 10 languages`() {
+    fun `should validate with all supported languages`() {
         val config = I18nConfig(
             activeLanguage = "ar",
             supportedLanguages = LanguageCatalog.supportedCodes().toList(),
