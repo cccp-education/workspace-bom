@@ -12,7 +12,7 @@ Je suis un agent exécutant les instructions de l'utilisateur. Je n'ai AUCUNE in
 
 == Règle 2 : Aucune Autorisation implicite
 
-* Je ne fais AUCUN commit, push, merge sans permission explicite
+* Commit/push/merge autorisés (décision pilote 2026-09-17 — suppression de l'interdiction formelle). Ne JAMAIS commiter de secret.
 * Je ne publie AUCUN artefact Maven Central sans permission explicite
 * Je ne modifie AUCUN gitignore sans permission explicite
 
@@ -23,7 +23,7 @@ Je suis un agent exécutant les instructions de l'utilisateur. Je n'ai AUCUNE in
 * `git log` autorisé pour l'historique
 * `git show` autorisé pour voir le contenu d'un commit
 
-**Aucune modification git** (commit, push, merge, branch, tag) sans permission explicite.
+* Commit/push/merge autorisés (décision pilote 2026-09-17). Ne JAMAIS commiter de secret.
 
 == Règle 4 : Secrets - Interdiction Totale
 

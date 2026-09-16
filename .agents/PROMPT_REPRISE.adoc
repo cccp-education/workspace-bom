@@ -21,6 +21,6 @@ publication backlog boroughs).
 
 == Règles absolues
 
-* Zéro commit/push sans permission explicite du pilote.
+* Git autorisé (décision pilote 2026-09-17) — zéro secret commité.
 * Baby-step TDD strict si code modifié.
 * Zéro secret, zéro token dans le code ou les logs.

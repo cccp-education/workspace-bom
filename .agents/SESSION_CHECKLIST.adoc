@@ -62,8 +62,8 @@ légitime et ne doit pas être supprimé.
 
 == Git — Règles
 
-* INTERDICTION FORMELLE de commit/push/merge sans permission explicite
-* Lecture seule autorisée : `git status`, `git diff`, `git log`, `git show`
+* Commit/push/merge autorisés (décision pilote 2026-09-17). Ne JAMAIS commiter de secret.
+* Lecture seule toujours autorisée : `git status`, `git diff`, `git log`, `git show`
 
 == Secrets — Règles
 
