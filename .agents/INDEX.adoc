@@ -5,9 +5,9 @@
 
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
-_Derniere mise a jour_ : 2026-09-17 (session S-216 — **BOM/catalog 0.0.44 + graphify-plugin 0.0.4** : bump dérivé du besoin graphify (version dérivée du catalogue, MEM-CAT-ROLLOUT-6) + *réparation baseline rouge à HEAD* (2 gardes périmées : workspace-bom 0.0.36 vs toml 0.0.43, i18n-contracts 0.0.2 vs toml 0.0.4 — dérives S-213/S-217, piège #10). Publication Central bundle `dbe3ef8e`, repo1 HTTP 200. Dette : gouvernance INDEX/HISTORY s'arrête à S-215 — releases 0.0.35→0.0.43 non tracées, session de resync recommandée.)
-_session terminee_ : 216 — BOM/catalog 0.0.44 + graphify-plugin 0.0.4 + fix gardes périmées.
-_prochaine session_ : 217 — à la demande (resync gouvernance MEMPHIS recommandée, OU CI runner, OU US-CI-1.4 qwen3:0.6b).
+_Derniere mise a jour_ : 2026-09-17 (session S-217 — **BOM/catalog 0.0.45 + 0.0.46 (codex-plugin 0.0.8 puis 0.0.9 corrective)** : deux releases pilotées Brooklyn (codex S-220), ordre DAG MEMPHIS-first. 0.0.45 = codex 0.0.8 nominal (OCR-QUALITY S-218 + DOUBT-BRIDGE S-219), bundle `d199bf00`. 0.0.46 = codex 0.0.9 corrective (fix P0 `generateCompositeContext` découvert en dogfooding), bundle `d1c09b5e`. Garde `PlatformCatalogAlignmentTest` réalignée à chaque bump, gates VERTES, propagation repo1 HTTP 200.)
+_session terminee_ : 217 — BOM/catalog 0.0.45 + 0.0.46 (codex-plugin 0.0.8 / 0.0.9).
+_prochaine session_ : 218 — à la demande (resync gouvernance recommandée).
 _Session en cours_ : —
 
 '''
@@ -16,6 +16,8 @@ _Session en cours_ : —
 
 |===
 | # | Date | Type | Sujet | Score
+
+| S-217 | 2026-09-17 | pub/ops | **BOM/catalog 0.0.45 + 0.0.46 (codex-plugin 0.0.8 puis 0.0.9)** — Deux releases pilotées Brooklyn (codex S-220). 0.0.45 : codex 0.0.8 nominal (OCR-QUALITY S-218 + DOUBT-BRIDGE S-219), bundle `d199bf00`. 0.0.46 : codex 0.0.9 corrective (bug P0 `generateCompositeContext` découvert en dogfooding `Serializer for class 'Any' is not found`), bundle `d1c09b5e`. Garde `PlatformCatalogAlignmentTest` épinglée réalignée à chaque bump (0.0.45/0.0.46), gates `contracts.catalog.*` VERTES, `publishToMavenLocal` VERT, propagation repo1 HTTP 200 (BOM/catalog 0.0.45 + 0.0.46). | 10/10 |
 
 | S-216 | 2026-09-17 | pub/ops | **BOM/catalog 0.0.44 + graphify-plugin 0.0.4** — Demande dérivée (graphify S-027 : publier 0.0.4 exige le bump MEMPHIS, version dérivée du catalogue). *Baseline rouge à HEAD réparée* : `PlatformCatalogAlignmentTest` épinglait workspace-bom 0.0.36 (vs toml 0.0.43) et i18n-contracts 0.0.2 (vs toml 0.0.4, dérive S-217 LANG-22) → réalignées (piège #10). Toml : workspace-bom 0.0.43→0.0.44, graphify-plugin 0.0.3→0.0.4. Gates `contracts.catalog.*` VERT + mavenLocal VERT. Publication Central bundle `dbe3ef8e` (AUTOMATIC, repo1 HTTP 200), toml Central vérifié. Dette : gouvernance INDEX/HISTORY s'arrête à S-215 (releases 0.0.35→0.0.43 non tracées). | 10/10 |
 

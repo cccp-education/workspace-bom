@@ -74,6 +74,8 @@ les 2 (nmcp 1.5.0 agrège les publications du build racine).
 [cols="2,3,2"]
 |===
 | Release | Contenu | Bundle
+| 0.0.46 (S-217) | codex-plugin 0.0.9 (corrective — bug P0 `generateCompositeContext` découvert en dogfooding codex S-220). | `d1c09b5e`
+| 0.0.45 (S-217) | codex-plugin 0.0.8 (OCR-QUALITY S-218 + DOUBT-BRIDGE S-219). | `d199bf00`
 | 0.0.44 (S-216) | graphify-plugin 0.0.4 (prérequis DAG publication graphify S-027). Baseline réparée (gardes workspace-bom + i18n-contracts). | `dbe3ef8e`
 | 0.0.34 (S-215) | entrées catalog dashboard-plugin 0.0.1 (D8) + adoption pin ws dashboard (ROLLOUT-6). | `b2189fa6`
 | 0.0.29 (S-027) | 1re release catalog + BOM ensemble (MEM-CAT-2/4). planner-plugin 0.0.1→0.0.2 (preuve propagation CAT-4). | (AUTOMATIC)

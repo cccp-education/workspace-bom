@@ -1,18 +1,17 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-216 — TERMINÉE (BOM/catalog 0.0.44 + graphify-plugin 0.0.4 + fix 2 gardes
-périmées). Découle de graphify S-027 (version dérivée du catalogue).
+217 — TERMINÉE (BOM/catalog 0.0.45 + 0.0.46 — codex-plugin 0.0.8 puis
+0.0.9 corrective). Deux releases pilotées Brooklyn (codex S-220).
 
-== État du code (S-216)
+== État du code (S-217)
 
-- Central : BOM + catalog 0.0.44 (dernier état), graphify-plugin 0.0.4,
-  dashboard-plugin 0.0.1. Bundle S-216 : `dbe3ef8e` (BOM/cat 0.0.44).
-  Bundle graphify : `96f87d32` (publication pilotée côté graphify S-027).
-- Gardes `PlatformCatalogAlignmentTest` réalignées : workspace-bom 0.0.44,
-  i18n-contracts 0.0.4 (2 dérives préexistantes S-213/S-217 — piège #10).
-- dashboard adopté : settings pin ws + `version = ws.versions.dashboard.plugin.get()`.
-- ROLLOUT-6 : tous boroughs adoptés (readme, graphify, dashboard).
+- Central : BOM + catalog 0.0.46 (dernier état), codex-plugin 0.0.9,
+  graphify-plugin 0.0.4, dashboard-plugin 0.0.1.
+  Bundles S-217 : `d199bf00` (BOM/cat 0.0.45), `d1c09b5e` (BOM/cat 0.0.46).
+- Gardes `PlatformCatalogAlignmentTest` réalignées : workspace-bom 0.0.46.
+- 0.0.45 = codex 0.0.8 nominal ; 0.0.46 = codex 0.0.9 corrective (bug P0
+  `generateCompositeContext` découvert en dogfooding codex S-220).
 
 == Dette constatée — gouvernance MEMPHIS en retard
 
@@ -22,9 +21,9 @@ LANG-22 S-217, codebase-plugin 0.0.15 S-213). S-216 enregistre 0.0.44 mais
 *ne reconstitue pas* l'historique manquant. Une session de resync de
 gouvernance MEMPHIS est recommandée.
 
-== Mission session 217 — à la demande
+== Mission session 218 — à la demande
 
-. *Resync gouvernance MEMPHIS* (recommandé) : delta BOM 0.0.35→0.0.44,
+. *Resync gouvernance MEMPHIS* (recommandé) : delta BOM 0.0.35→0.0.46,
    réalignement SESSIONS_HISTORY/INDEX.
 . *Confirmation CI runner* : déclencher un run deploy réel magic-stick /
    cheroliv.com (alias ws.plugins.bakery en conditions réelles gh-pages).
@@ -32,7 +31,7 @@ gouvernance MEMPHIS est recommandée.
 . *Audit complet adoption catalog* : vérifier qu'aucun borough education.cccp
    ne hardcode sa version propre hors ws (D5/D12).
 
-== Pièges à retenir (cumul + S-216)
+== Pièges à retenir (cumul + S-217)
 
 1. *Gradle 9 API* : publication catalog = plugin `version-catalog` +
    `from(components["versionCatalog"])`. `MavenPublication.versionCatalog {}` N'EXISTE PLUS.
@@ -57,6 +56,8 @@ gouvernance MEMPHIS est recommandée.
 14. *Polling repo1* : ~7-13 min après « deployment is publishing » (AUTOMATIC).
 15. *Version dérivée* : la version propre d'un borough vient du catalogue
     (`ws.versions.<plugin>.get()`) — publier exige le bump MEMPHIS d'abord.
+16. *Corrective si P0* : Central est immuable — un bug publié exige une
+    nouvelle release (bump MEMPHIS + codex), jamais un re-upload même bundle.
 
 == Règles
 
@@ -67,10 +68,10 @@ gouvernance MEMPHIS est recommandée.
 - Zéro Python — outputs analysés Read/Grep/xmllint/rapports Gradle natifs.
 - Le pilote autorise commit/push en fin de session + bump/publication dès que nécessaire.
 
-== À vérifier en ouverture S-217
+== À vérifier en ouverture S-218
 
-1. `git status` — workspace-bom + graphify-gradle committés/poussés ?
-2. Central `<latest>` BOM + catalog 0.0.44 + graphify 0.0.4.
+1. `git status` — workspace-bom + codex-gradle committés/poussés ?
+2. Central `<latest>` BOM + catalog 0.0.46 + codex 0.0.9.
 3. `./gradlew test --tests 'contracts.catalog.*'` depuis `agent-contracts/` VERT.
 4. Demande pilote : resync gouvernance MEMPHIS OU CI runner OU US-CI-1.4.
 

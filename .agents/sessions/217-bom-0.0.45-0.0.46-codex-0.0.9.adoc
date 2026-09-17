@@ -1,0 +1,42 @@
+= Session 217 — BOM/catalog 0.0.45 + 0.0.46 (codex-plugin 0.0.8 puis 0.0.9)
+:session: 217
+:date: 2026-09-17
+:borough: workspace-bom (MEMPHIS)
+
+== Contexte
+
+Deux releases pilotées depuis Brooklyn (codex S-220), dans l'ordre DAG
+MEMPHIS-first (D12 Maven only).
+
+== Release 0.0.45 (nominal — codex-plugin 0.0.8)
+
+- Toml : `workspace-bom` 0.0.44 → **0.0.45**, `codex-plugin` 0.0.7 → **0.0.8**.
+- Garde `PlatformCatalogAlignmentTest` épinglée mise à jour (0.0.45).
+- Gates `contracts.catalog.*` VERTS, `publishToMavenLocal` VERT.
+- Central : bundle `d199bf00-9183-4716-abb6-3bc79fdb2fd2` (AUTOMATIC).
+
+== Release 0.0.46 (corrective — codex-plugin 0.0.9)
+
+- Motif : 0.0.8 embarque le bug P0 découvert en dogfooding
+  (`generateCompositeContext` → `Serializer for class 'Any' is not found`).
+  Central immuable → correction par nouvelle release.
+- Toml : `workspace-bom` 0.0.45 → **0.0.46**, `codex-plugin` 0.0.8 → **0.0.9**.
+- Garde `PlatformCatalogAlignmentTest` épinglée mise à jour (0.0.46).
+- Gates `contracts.catalog.*` VERTS, `publishToMavenLocal` VERT.
+- Central : bundle `d1c09b5e-79d9-47ee-a504-2f180445f0a7` (AUTOMATIC).
+
+== Propagation repo1
+
+- `workspace-bom/0.0.45`, `workspace-bom/0.0.46` → HTTP 200.
+- `workspace-catalog/0.0.45`, `workspace-catalog/0.0.46` → HTTP 200.
+- toml Central 0.0.45/0.0.46 : `codex-plugin` = 0.0.8 / 0.0.9 vérifiés.
+
+== Gates
+
+- `agent-contracts` `contracts.catalog.*` : VERT (plateforme + structure + cucumber).
+- Zéro secret, zéro régression.
+
+== Prochaine session (218)
+
+À la demande. Dette documentée : gouvernance INDEX/HISTORY s'arrête à
+S-216 — releases 0.0.35→0.0.43 non tracées (session de resync recommandée).
