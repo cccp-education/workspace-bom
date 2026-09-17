@@ -4,7 +4,7 @@
 :toc: left
 :sectnums:
 
-_Dernière mise à jour : 2026-09-07 (S-215 — release Central 0.0.33 + graphify 0.0.3 + ROLLOUT-6 dashboard : dashboard-plugin 0.0.1 1re release + adoption pin ws + release 0.0.34. EPIC MEM-CAT-ROLLOUT TERMINÉ 6/6 — ne pas rouvrir sauf nouveau borough.)_
+_Dernière mise à jour : 2026-09-17 (S-227 — release Central **0.0.50** : codebase-plugin 0.0.16 (dogfood Newark A2 S-264 : PlannerPort câblé + `generateAugmentedPlan` + fix rotation pool S-263). Ordre DAG MEMPHIS-first. Gardes `PlatformCatalogAlignmentTest` (0.0.50 + codebase 0.0.16) + `WorkspaceCatalogStructureTest` réalignées. Bundles : MEMPHIS `547e3e46`, codebase `db5e1158`.)_
 
 _Source : configuration/EPIC_PUB.adoc (Session 096)_
 
@@ -17,7 +17,7 @@ BOM + 5 libraries de contrats partagés (N0). Premier artefact publié (VAGUE 1)
 **Priorite** : P0
 **Estimation** : 1 pt
 **Dependances** : PUB-0 et PUB-1 complets (DNS TXT + GPG)
-**Statut** : ✅ PUBLIÉ + VÉRIFIÉ (dernière version 0.0.34 — S-215, 2026-09-07, ROLLOUT-6 dashboard + entrée catalog)
+**Statut** : ✅ PUBLIÉ + VÉRIFIÉ (dernière version 0.0.50 — S-227, 2026-09-17, codebase-plugin 0.0.16 ; historique 0.0.34 S-215 ROLLOUT-6 dashboard)
 
 . Artefact : `education.cccp:workspace-bom:0.0.34` (dernière)
 . Versions publiées : 0.0.1 → 0.0.34 (historique complet INDEX.adoc § Publications Maven Central)

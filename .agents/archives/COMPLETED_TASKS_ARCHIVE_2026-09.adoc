@@ -1,5 +1,14 @@
 = Archives des tâches terminées — Septembre 2026 (workspace-bom MEMPHIS)
 
+== Session S-227 (2026-09-17) — Release Central 0.0.50 (codebase-plugin 0.0.16)
+
+- [x] Garde TDD RED : `PlatformCatalogAlignmentTest` (workspace-bom 0.0.49→0.0.50 + nouvelle garde `toml codebase plugin version is the published S-264 release` 0.0.15→0.0.16) — 2 FAILED constatés
+- [x] GREEN : toml `workspace-bom = "0.0.50"` + `codebase-plugin = "0.0.16"` — gardes 10/10 PASSED
+- [x] `publishToMavenLocal` VERT (BOM + catalog 0.0.50)
+- [x] BOM/catalog **0.0.50** Central — bundle `547e3e46`, repo1 200 ×2
+- [x] codebase-plugin **0.0.16** Central — bundle `db5e1158` (propagation repo1 en cours)
+- Ordre DAG MEMPHIS-first respecté. Release pilotée Queens (S-264 dogfood Newark A2).
+
 == Session S-215 (2026-09-07) — Release Central 0.0.33 + graphify 0.0.3 + ROLLOUT-6 dashboard
 
 - [x] Fix garde `PlatformCatalogAlignmentTest` épinglée 0.0.32 sur toml 0.0.33 (piège #10 raté S-214) — RED constaté → pin 0.0.33 → GREEN 111 unit 0 FAIL

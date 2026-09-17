@@ -1,6 +1,6 @@
 [versions]
 # ── Workspace BOM shared versions ─────────────────────────────────────────────
-workspace-bom = "0.0.49"
+workspace-bom = "0.0.50"
 
 # ── Kotlin ────────────────────────────────────────────────────────────────────
 kotlin = "2.4.10"
@@ -58,7 +58,7 @@ hyperframes-plugin = "0.0.3"
 graphify-plugin = "0.0.5"
 dashboard-plugin = "0.0.1"
 api-key-pool-plugin = "0.0.1"
-codebase-plugin = "0.0.15"
+codebase-plugin = "0.0.16"
 conventions-plugin = "0.0.4"
 
 # ── PDF/Extraction ────────────────────────────────────────────────────────────

@@ -1,19 +1,19 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-219 — TERMINÉE (BOM/catalog 0.0.48 — bakery 0.0.13 + capsule 0.0.1 + slider 0.0.19).
-Release pilotée bakery (S-226), EPIC transverse BKY-LANG-22 US-10.
+227 — TERMINÉE (BOM/catalog **0.0.50** — codebase-plugin 0.0.16).
+Release pilotée Queens (S-264, dogfood Newark A2), ordre DAG MEMPHIS-first.
 
-== État du code (S-219)
+== État du code (S-227)
 
-- Central : BOM + catalog 0.0.48 (dernier état), capsule-plugin 0.0.1,
-  bakery-plugin 0.0.13, slider-plugin 0.0.19.
-  Bundle S-219 : `9d43c5b7-5910-4edf-84ac-7fc46a4429a5` (AUTOMATIC).
-- **capsule-plugin = 0.0.1 ajouté au catalogue** (versions + libraries +
-  constraint). Ordre DAG réel : capsule publié AVANT le catalogue (garde D8
-  anti-ghost).
-- Gardes réalignées : `PlatformCatalogAlignmentTest` (0.0.48), `VersionCatalogSteps`
-  (13 plugins), `WorkspaceCatalogStructureTest` (capsule légitime).
+- Central : BOM + catalog **0.0.50** (dernier état), codebase-plugin **0.0.16**.
+  Bundle MEMPHIS S-227 : `547e3e46-c04a-485f-bb9e-c0cb429c7b69` (AUTOMATIC) ;
+  bundle codebase `db5e1158-e16c-4fb1-b962-a0cf9acea91b`.
+- **codebase-plugin 0.0.16** = fix rotation pool S-263 (`isQuotaError`
+  reconnaît `usage limit`) + `PlannerPort` câblé dans `AutonomousSessionTask`
+  + collision `generatePlan` corrigée (`generateAugmentedPlan`).
+- Gardes réalignées : `PlatformCatalogAlignmentTest` (0.0.50 + garde
+  codebase 0.0.16), `WorkspaceCatalogStructureTest` (inchangé).
 
 == Dette constatée — gouvernance MEMPHIS en retard
 
@@ -22,10 +22,10 @@ releases antérieures 0.0.35 → 0.0.46 ne sont pas toutes tracées. Une session
 de resync de gouvernance MEMPHIS est recommandée (elle reste en tête de la
 prochaine session).
 
-== Mission session 220 — à la demande
+== Mission session 228 — à la demande
 
-. *Resync gouvernance MEMPHIS* (recommandé) : delta BOM 0.0.35→0.0.47,
-   réalignement SESSIONS_HISTORY/INDEX.
+. *Resync gouvernance MEMPHIS* (recommandé, récurrent) : delta BOM
+   0.0.36→0.0.50 non tracé dans SESSIONS_HISTORY/INDEX.
 . *Confirmation CI runner* : déclencher un run deploy réel magic-stick /
    cheroliv.com (alias ws.plugins.bakery en conditions réelles gh-pages).
 . *US-CI-1.4* : Ollama qwen3:0.6b en CI (1 pt).
