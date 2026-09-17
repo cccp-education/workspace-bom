@@ -1,0 +1,60 @@
+= Session 227 — BOM/catalog 0.0.50 (codebase-plugin 0.0.16)
+:session: 227
+:date: 2026-09-17
+:borough: workspace-bom (MEMPHIS)
+
+== Contexte
+
+Release pilotée depuis Queens (codebase S-264, dogfood Newark A2), ordre
+DAG MEMPHIS-first. La version propre de codebase-plugin est dérivée du
+catalogue (`ws.versions.codebase.plugin.get()`), donc publier 0.0.16 exige
+le bump MEMPHIS d'abord (piège #15).
+
+== Contenu 0.0.50
+
+- Toml : `workspace-bom` 0.0.49 → **0.0.50**.
+- `codebase-plugin` 0.0.15 → **0.0.16** (fix rotation pool S-263
+  `isQuotaError` reconnaît `usage limit` + `PlannerPort` câblé dans
+  `AutonomousSessionTask` + collision `generatePlan` corrigée →
+  `generateAugmentedPlan`).
+
+== Gardes réalignées (baby-step TDD strict)
+
+- RED : `PlatformCatalogAlignmentTest` — épinglée `workspace-bom 0.0.49`
+  → `0.0.50` + nouvelle garde `toml codebase plugin version is the
+  published S-264 release` (`codebase-plugin 0.0.15` → `0.0.16`). 2 tests
+  FAILED constatés.
+- GREEN : toml bumpé (2 valeurs) → gardes 10/10 PASSED
+  (`PlatformCatalogAlignmentTest` 6 + `WorkspaceCatalogStructureTest` 4).
+
+== Gates
+
+- `agent-contracts` `test --tests contracts.catalog.*` : 10/0 PASSED.
+- `publishToMavenLocal` VERT (BOM + catalog 0.0.50, version BOM 0.0.50
+  vérifiée dans le POM publié).
+- `publishAggregationToCentralPortal` : bundle `547e3e46-c04a-485f-bb9e-c0cb429c7b69`
+  (AUTOMATIC). Propagation repo1 : BOM 0.0.50 HTTP 200, catalog 0.0.50
+  HTTP 200.
+
+== Ordre DAG (MEMPHIS-first)
+
+1. MEMPHIS 0.0.50 (cette session) — BOM/catalog Central.
+2. codebase-plugin 0.0.16 (bundle `db5e1158`, piloté S-264) — POM importe
+   BOM 0.0.50, zéro codex-plugin, propagation repo1 POM+JAR HTTP 200.
+
+== Dette constatée
+
+`INDEX.adoc` / `SESSIONS_HISTORY.adoc` restent en retard (releases
+0.0.36→0.0.49 non toutes tracées) — resync gouvernance recommandée en
+tête de session 228 (récurrent).
+
+== Fichiers
+
+- `gradle/libs.versions.toml` (2 bumps).
+- `agent-contracts/src/test/kotlin/contracts/catalog/PlatformCatalogAlignmentTest.kt`
+  (garde épinglée + 1 nouvelle garde).
+- Gouvernance : `PROMPT_REPRISE.adoc`, `BACKLOG.adoc`, `.agents/INDEX.adoc`,
+  `.agents/SESSIONS_HISTORY.adoc`, `.agents/archives/COMPLETED_TASKS_ARCHIVE_2026-09.adoc`,
+  ce rapport.
+
+Zéro secret, zéro code production modifié (catalogue + garde + gouvernance).
