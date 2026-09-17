@@ -1,25 +1,28 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-218 — TERMINÉE (BOM/catalog 0.0.47 — codex-plugin 0.0.10). Release pilotée
-Brooklyn (codex S-222), fix CDX-CONTEXT-HARDENING.
+219 — TERMINÉE (BOM/catalog 0.0.48 — bakery 0.0.13 + capsule 0.0.1 + slider 0.0.19).
+Release pilotée bakery (S-226), EPIC transverse BKY-LANG-22 US-10.
 
-== État du code (S-218)
+== État du code (S-219)
 
-- Central : BOM + catalog 0.0.47 (dernier état), codex-plugin 0.0.10.
-  Bundle S-218 : `48b061ce-20c5-4fd0-92d3-8a7508b21c88` (BOM/cat 0.0.47).
-- Garde `PlatformCatalogAlignmentTest` réalignée : workspace-bom 0.0.47.
-- 0.0.47 = codex 0.0.10 (input `enrichedJsonFile` tolérant `@InputFiles`,
-  S-221) ; 0.0.46 = codex 0.0.9 corrective.
+- Central : BOM + catalog 0.0.48 (dernier état), capsule-plugin 0.0.1,
+  bakery-plugin 0.0.13, slider-plugin 0.0.19.
+  Bundle S-219 : `9d43c5b7-5910-4edf-84ac-7fc46a4429a5` (AUTOMATIC).
+- **capsule-plugin = 0.0.1 ajouté au catalogue** (versions + libraries +
+  constraint). Ordre DAG réel : capsule publié AVANT le catalogue (garde D8
+  anti-ghost).
+- Gardes réalignées : `PlatformCatalogAlignmentTest` (0.0.48), `VersionCatalogSteps`
+  (13 plugins), `WorkspaceCatalogStructureTest` (capsule légitime).
 
 == Dette constatée — gouvernance MEMPHIS en retard
 
-`INDEX.adoc` / `SESSIONS_HISTORY.adoc` s'arrêtent à S-218 (2026-09-17). Les
+`INDEX.adoc` / `SESSIONS_HISTORY.adoc` s'arrêtent à S-219 (2026-09-17). Les
 releases antérieures 0.0.35 → 0.0.46 ne sont pas toutes tracées. Une session
 de resync de gouvernance MEMPHIS est recommandée (elle reste en tête de la
 prochaine session).
 
-== Mission session 219 — à la demande
+== Mission session 220 — à la demande
 
 . *Resync gouvernance MEMPHIS* (recommandé) : delta BOM 0.0.35→0.0.47,
    réalignement SESSIONS_HISTORY/INDEX.
@@ -56,6 +59,15 @@ prochaine session).
     (`ws.versions.<plugin>.get()`) — publier exige le bump MEMPHIS d'abord.
 16. *Corrective si P0* : Central est immuable — un bug publié exige une
     nouvelle release (bump MEMPHIS + codex), jamais un re-upload même bundle.
+17. *Catch-22 D8 (anti-ghost)* : une entrée catalogue exige que le plugin soit
+    DÉJÀ publié Central. Pour un plugin jamais publié (ex : capsule), l'ordre
+    réel est **publier le plugin d'abord**, puis l'ajouter au catalogue, puis
+    publier MEMPHIS. Ne pas ajouter une entrée fantôme (garde
+    `WorkspaceCatalogStructureTest`).
+18. *POM marker plugin* : Central valide chaque publication, y compris les
+    markers (`<pluginId>PluginMarkerMaven`) — un POM limité à `pluginMaven`
+    échoue « Project name is missing ». Configurer
+    `withType<MavenPublication> { pom { name/description } }`.
 
 == Règles
 

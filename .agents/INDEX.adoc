@@ -5,9 +5,9 @@
 
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
-_Derniere mise a jour_ : 2026-09-17 (session S-218 — **BOM/catalog 0.0.47 (codex-plugin 0.0.10)** : release pilotée Brooklyn (codex S-222), ordre DAG MEMPHIS-first. 0.0.47 = codex 0.0.10 (fix CDX-CONTEXT-HARDENING S-221 — input `enrichedJsonFile` tolérant), bundle `48b061ce`. Garde `PlatformCatalogAlignmentTest` réalignée 0.0.47 (RED → GREEN), gates `contracts.catalog.*` VERTES, `publishToMavenLocal` VERT, propagation repo1 HTTP 200.)
-_session terminee_ : 218 — BOM/catalog 0.0.47 (codex-plugin 0.0.10).
-_prochaine session_ : 219 — à la demande (resync gouvernance recommandée — releases 0.0.35→0.0.46 non tracées).
+_Derniere mise a jour_ : 2026-09-17 (session S-219 — **BOM/catalog 0.0.48 (bakery 0.0.13 + capsule 0.0.1 + slider 0.0.19)** : release pilotée bakery (S-226), EPIC transverse BKY-LANG-22 US-10, ordre DAG MEMPHIS-first. **Ordre réel révélé par les gardes D8 anti-ghost** : capsule publié Central AVANT d'entrer au catalogue. `capsule-plugin = 0.0.1` ajouté, bakery/slider bumpés. Gardes `PlatformCatalogAlignmentTest`/`WorkspaceCatalogStructureTest`/`VersionCatalogSteps` réalignées (12→13 plugins). Gate `agent-contracts` 111/0, bundle `9d43c5b7`, propagation repo1 HTTP 200.)
+_session terminee_ : 219 — BOM/catalog 0.0.48 (bakery 0.0.13 + capsule 0.0.1 + slider 0.0.19).
+_prochaine session_ : 220 — à la demande (resync gouvernance recommandée — releases 0.0.35→0.0.46 non tracées).
 _Session en cours_ : —
 
 '''

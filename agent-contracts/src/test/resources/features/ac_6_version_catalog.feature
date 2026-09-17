@@ -2,7 +2,7 @@
 Feature: workspace-catalog — single source of truth for cross-borough plugin versions
 
   MEM-CAT-5 — the published version catalog (education.cccp:workspace-catalog)
-  must carry the versions of the 12 education.cccp plugins so that consumers
+  must carry the versions of the 13 education.cccp plugins so that consumers
   read them via typed accessors (ws.versions.*) instead of hardcoding them.
   Hygiene: no ghost entries (never-published plugins) and no hardcoded
   education.cccp coordinates in the platform script.
@@ -11,7 +11,7 @@ Feature: workspace-catalog — single source of truth for cross-borough plugin v
     Given the published workspace catalog toml
 
   Scenario: Catalog is resolvable with all education cccp plugins
-    Then the catalog contains version entries for the 12 resolvable plugins
+    Then the catalog contains version entries for the 13 resolvable plugins
     And every plugin version is non-blank and semver-like
     And no ghost plugin entry exists in the catalog
 

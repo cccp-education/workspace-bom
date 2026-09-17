@@ -33,7 +33,7 @@ class PlatformCatalogAlignmentTest {
     @Test
     fun `toml version workspace-bom matches platform version`() {
         assertEquals(
-            "0.0.47", tomlVersions["workspace-bom"],
+            "0.0.48", tomlVersions["workspace-bom"],
             "workspace-bom dans le toml (tri-split C2 supprimé)"
         )
         assertTrue(
@@ -68,7 +68,7 @@ class PlatformCatalogAlignmentTest {
     @Test
     fun `toml plugin versions are non blank and semver like`() {
         val plugins = listOf(
-            "bakery-plugin", "codex-plugin", "planner-plugin", "slider-plugin",
+            "bakery-plugin", "capsule-plugin", "codex-plugin", "planner-plugin", "slider-plugin",
             "plantuml-plugin", "readme-plugin", "hyperframes-plugin", "graphify-plugin",
             "api-key-pool-plugin", "codebase-plugin", "conventions-plugin",
             "document-plugin"

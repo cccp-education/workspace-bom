@@ -37,6 +37,7 @@ class WorkspaceCatalogStructureTest {
     fun `all education cccp plugins have resolvable coordinates in catalog`() {
         val plugins = mapOf(
             "bakery-plugin" to "education.cccp:bakery-plugin",
+            "capsule-plugin" to "education.cccp:capsule-plugin",
             "codex-plugin" to "education.cccp:codex-plugin",
             "planner-plugin" to "education.cccp:planner-plugin",
             "slider-plugin" to "education.cccp:slider-plugin",
@@ -58,13 +59,19 @@ class WorkspaceCatalogStructureTest {
     @Test
     fun `ghost entries are not in catalog (D8 - only resolvable from Central)`() {
         val libraries = parseLibraries().joinToString("\n")
+        // capsule-plugin was published to Central in BKY-LANG-22-10 (S-225), so it
+        // is no longer a ghost entry — it is now legitimately in the catalog.
         assertTrue(
-            !libraries.contains("education.cccp:capsule-plugin"),
-            "capsule-plugin jamais publié Central — entrée fantôme interdite (D8)"
+            libraries.contains("education.cccp:capsule-plugin"),
+            "capsule-plugin publié Central (S-225) — doit être résolvable via le catalogue"
         )
         assertTrue(
-            !libraries.contains("education.cccp:planner-plugin:0.0.2"),
-            "n/a — planner plugin version doit être la version publiée"
+            !libraries.contains("jhipster"),
+            "jhipster jamais publié Central — entrée fantôme interdite (D8)"
+        )
+        assertTrue(
+            !libraries.contains("training-plugin"),
+            "training-plugin jamais publié Central — entrée fantôme interdite (D8)"
         )
     }
 

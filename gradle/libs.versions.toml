@@ -1,6 +1,6 @@
 [versions]
 # ── Workspace BOM shared versions ─────────────────────────────────────────────
-workspace-bom = "0.0.47"
+workspace-bom = "0.0.48"
 
 # ── Kotlin ────────────────────────────────────────────────────────────────────
 kotlin = "2.4.10"
@@ -47,10 +47,11 @@ node-gradle = "7.1.0"
 jetbrains-annotations = "26.0.2-1"
 
 # ── Plugin versions (published by education.cccp) ────────────────────────────
-bakery-plugin = "0.0.12"
+bakery-plugin = "0.0.13"
+capsule-plugin = "0.0.1"
 codex-plugin = "0.0.10"
 planner-plugin = "0.0.2"
-slider-plugin = "0.0.18"
+slider-plugin = "0.0.19"
 plantuml-plugin = "0.0.5"
 readme-plugin = "0.0.1"
 hyperframes-plugin = "0.0.3"
@@ -284,6 +285,7 @@ runtime-contracts = { module = "education.cccp:runtime-contracts", version.ref =
 mapstruct = { module = "org.mapstruct:mapstruct", version.ref = "mapstruct" }
 document-plugin = { module = "education.cccp:document-plugin", version.ref = "document-plugin" }
 bakery-plugin = { module = "education.cccp:bakery-plugin", version.ref = "bakery-plugin" }
+capsule-plugin = { module = "education.cccp:capsule-plugin", version.ref = "capsule-plugin" }
 codex-plugin = { module = "education.cccp:codex-plugin", version.ref = "codex-plugin" }
 planner-plugin = { module = "education.cccp:planner-plugin", version.ref = "planner-plugin" }
 slider-plugin = { module = "education.cccp:slider-plugin", version.ref = "slider-plugin" }

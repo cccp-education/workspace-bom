@@ -117,6 +117,7 @@ dependencies {
 
         // ── Internal education.cccp plugins (N2) — pilotés par le BOM ───────
         api(libs.bakery.plugin)
+        api(libs.capsule.plugin)
         api(libs.codex.plugin)
         api(libs.planner.plugin)
         api(libs.slider.plugin)

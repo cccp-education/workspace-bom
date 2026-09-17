@@ -54,24 +54,13 @@ class VersionCatalogSteps {
 
     @Then("the catalog contains version entries for the {int} resolvable plugins")
     fun thenCatalogContainsResolvablePlugins(expected: Int) {
-        val plugins = listOf(
-            "bakery-plugin", "codex-plugin", "planner-plugin", "slider-plugin",
-            "plantuml-plugin", "readme-plugin", "hyperframes-plugin", "graphify-plugin",
-            "api-key-pool-plugin", "codebase-plugin", "conventions-plugin",
-            "document-plugin"
-        )
-        val present = plugins.count { versionFromTomlOrNull(it) != null }
+        val present = resolvablePlugins().count { versionFromTomlOrNull(it) != null }
         assertThat(present).describedAs("plugins education.cccp présents dans le catalog").isEqualTo(expected)
     }
 
     @Then("every plugin version is non-blank and semver-like")
     fun thenEveryVersionSemver() {
-        listOf(
-            "bakery-plugin", "codex-plugin", "planner-plugin", "slider-plugin",
-            "plantuml-plugin", "readme-plugin", "hyperframes-plugin", "graphify-plugin",
-            "api-key-pool-plugin", "codebase-plugin", "conventions-plugin",
-            "document-plugin"
-        ).forEach { key ->
+        resolvablePlugins().forEach { key ->
             val v = versionFromToml(key)
             assertThat(v).describedAs(key).isNotBlank
             assertThat(Regex("""\d+\.\d+\.\d+""").matches(v)).describedAs("$key=$v doit être semver").isTrue
@@ -80,10 +69,17 @@ class VersionCatalogSteps {
 
     @Then("no ghost plugin entry exists in the catalog")
     fun thenNoGhostEntry() {
-        assertThat(tomlContent).doesNotContain("capsule-plugin")
+        // capsule-plugin published to Central in S-225 (BKY-LANG-22-10) — no longer a ghost.
         assertThat(tomlContent).doesNotContain("jhipster")
         assertThat(tomlContent).doesNotContain("training-plugin")
     }
+
+    private fun resolvablePlugins(): List<String> = listOf(
+        "bakery-plugin", "capsule-plugin", "codex-plugin", "planner-plugin", "slider-plugin",
+        "plantuml-plugin", "readme-plugin", "hyperframes-plugin", "graphify-plugin",
+        "api-key-pool-plugin", "codebase-plugin", "conventions-plugin",
+        "document-plugin"
+    )
 
     @Then("the accessor returns a published semver {string}")
     fun thenAccessorReturnsSemver(expected: String) {

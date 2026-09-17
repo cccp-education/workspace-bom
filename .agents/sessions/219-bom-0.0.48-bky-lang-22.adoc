@@ -1,0 +1,64 @@
+= Session 219 — BOM/catalog 0.0.48 (BKY-LANG-22-10 : bakery 0.0.13 + capsule 0.0.1 + slider 0.0.19)
+:session: 219
+:date: 2026-09-17
+:borough: workspace-bom (MEMPHIS)
+
+== Contexte
+
+Release pilotée depuis bakery (S-226), EPIC transverse BKY-LANG-22 US-10
+(publication Central consommateurs), ordre DAG MEMPHIS-first.
+
+== Ordre DAG réel révélé par les gardes (D8 anti-ghost)
+
+`WorkspaceCatalogStructureTest` interdit toute entrée fantôme « jamais publiée
+Central ». Le catch-22 : ajouter `capsule-plugin` au catalogue exige de l'avoir
+déjà publié. Ordre correct : **capsule d'abord**, puis MEMPHIS, puis bakery/slider.
+
+1. capsule-plugin 0.0.1 (infra nmcp créée côté Détroit) — bundle `54a58526`.
+2. MEMPHIS 0.0.48 (cette session).
+3. bakery-plugin 0.0.13 (`3d53b77e`) + slider-plugin 0.0.19 (`03289d70`).
+
+== Contenu 0.0.48
+
+- Toml : `workspace-bom` 0.0.47 → **0.0.48**.
+- `bakery-plugin` 0.0.12 → **0.0.13**.
+- `slider-plugin` 0.0.18 → **0.0.19**.
+- **`capsule-plugin = 0.0.1` ajouté** (entrée `[versions]` + `[libraries]` +
+  constraint `api(libs.capsule.plugin)` dans la platform) — capsule n'était
+  jamais catalogué (jamais publié).
+
+== Gardes réalignées (baby-step TDD)
+
+- `PlatformCatalogAlignmentTest` : épingle 0.0.48 + `capsule-plugin` ajouté à la
+  liste semver.
+- `WorkspaceCatalogStructureTest` : capsule désormais **légitime** (plus un
+  ghost) ; ghost = `jhipster`/`training-plugin` seulement.
+- `VersionCatalogSteps` (BDD) : 12 → **13 plugins** résolubles ;
+  `no ghost plugin entry` ne rejette plus `capsule-plugin`.
+- Feature `ac_6_version_catalog.feature` : « 13 education.cccp plugins ».
+
+Gate : `agent-contracts` `test` **111 tests, 0 FAIL** (39 skipped intégration).
+
+== Central
+
+- Bundle `9d43c5b7-5910-4edf-84ac-7fc46a4429a5` (AUTOMATIC).
+- Propagation repo1 : `workspace-bom/0.0.48` + `workspace-catalog/0.0.48` →
+  HTTP 200 (~13 min après upload).
+- Catalogue publié vérifié : bakery 0.0.13 + capsule 0.0.1 + slider 0.0.19.
+
+== Piège nmcp rencontré
+
+Re-invocation de `publishAggregationToCentralPortal` pendant qu'un deployment
+est encore en validation → « Component … is currently being published in
+another deployment ». Attendre la propagation repo1 avant tout re-run
+(piège #14/#6).
+
+== Gates
+
+- `agent-contracts` `contracts.catalog.*` : VERT.
+- Zéro secret, zéro régression.
+
+== Prochaine session (219)
+
+Resync gouvernance MEMPHIS recommandée (INDEX/HISTORY s'arrêtent à S-218). CI
+runner / US-CI-1.4 / audit adoption catalog (dette documentée).
