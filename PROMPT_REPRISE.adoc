@@ -1,35 +1,38 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-215 — TERMINÉE (release Central 0.0.33 + graphify 0.0.3 + ROLLOUT-6 dashboard :
-dashboard-plugin 0.0.1 1re release Central + adoption pin ws + release 0.0.34.
-EPIC MEM-CAT-ROLLOUT TERMINÉ 6/6.)
+216 — TERMINÉE (BOM/catalog 0.0.44 + graphify-plugin 0.0.4 + fix 2 gardes
+périmées). Découle de graphify S-027 (version dérivée du catalogue).
 
-== État du code (S-215)
+== État du code (S-216)
 
-- Central : BOM + catalog 0.0.34 (dernier état), graphify-plugin 0.0.3,
-  dashboard-plugin 0.0.1. Historique session : 0.0.33 (bundle `9381527a`)
-  puis 0.0.34 (bundle `b2189fa6`).
-- 4 bundles nmcp : graphify `d6479d38`, BOM/cat 0.0.33 `9381527a`,
-  dashboard `e0619a49`, BOM/cat 0.0.34 `b2189fa6`.
-- Garde `PlatformCatalogAlignmentTest` épinglée BOM 0.0.34 (réalignée 2×
-  cette session — le bump toml DOIT toujours accompagner le bump garde).
-- dashboard adopté : settings pin ws 0.0.34 + `version =
-  ws.versions.dashboard.plugin.get()` (check 58/0).
-- ROLLOUT-6+ : aucun borough restant identifié (readme S-212, graphify S-214,
-  dashboard S-215) — à re-auditer si nouveau borough.
+- Central : BOM + catalog 0.0.44 (dernier état), graphify-plugin 0.0.4,
+  dashboard-plugin 0.0.1. Bundle S-216 : `dbe3ef8e` (BOM/cat 0.0.44).
+  Bundle graphify : `96f87d32` (publication pilotée côté graphify S-027).
+- Gardes `PlatformCatalogAlignmentTest` réalignées : workspace-bom 0.0.44,
+  i18n-contracts 0.0.4 (2 dérives préexistantes S-213/S-217 — piège #10).
+- dashboard adopté : settings pin ws + `version = ws.versions.dashboard.plugin.get()`.
+- ROLLOUT-6 : tous boroughs adoptés (readme, graphify, dashboard).
 
-== Mission session 216 — à la demande
+== Dette constatée — gouvernance MEMPHIS en retard
 
+`INDEX.adoc` / `SESSIONS_HISTORY.adoc` s'arrêtent à S-215 (2026-09-07).
+Les releases 0.0.35 → 0.0.43 ne sont pas tracées (dont i18n-contracts 0.0.4
+LANG-22 S-217, codebase-plugin 0.0.15 S-213). S-216 enregistre 0.0.44 mais
+*ne reconstitue pas* l'historique manquant. Une session de resync de
+gouvernance MEMPHIS est recommandée.
+
+== Mission session 217 — à la demande
+
+. *Resync gouvernance MEMPHIS* (recommandé) : delta BOM 0.0.35→0.0.44,
+   réalignement SESSIONS_HISTORY/INDEX.
 . *Confirmation CI runner* : déclencher un run deploy réel magic-stick /
    cheroliv.com (alias ws.plugins.bakery en conditions réelles gh-pages).
 . *US-CI-1.4* : Ollama qwen3:0.6b en CI (1 pt).
 . *Audit complet adoption catalog* : vérifier qu'aucun borough education.cccp
    ne hardcode sa version propre hors ws (D5/D12).
-. *Dette bakery* : EPIC BKY-TEST-FLAKY (3 FAIL i18n, bakery S-028).
-. *DOC-8 reste* (P3) : opencode-session-contracts (deps présentes, 0 usage).
 
-== Pièges à retenir (cumul + S-215)
+== Pièges à retenir (cumul + S-216)
 
 1. *Gradle 9 API* : publication catalog = plugin `version-catalog` +
    `from(components["versionCatalog"])`. `MavenPublication.versionCatalog {}` N'EXISTE PLUS.
@@ -40,43 +43,34 @@ EPIC MEM-CAT-ROLLOUT TERMINÉ 6/6.)
 4. *Extension Gradle* : `Provider<T>` brut NON décorable — utiliser `Property<T>`.
 5. *runAllTests* : liste restreinte (dettes documentées build.gradle.kts BOM).
 6. *nmcp collision* : NE JAMAIS re-invoquer publishAggregationToCentralPortal
-   sans vérifier repo1 d'abord (2 bundles même coordonnée — mordu S-215,
-   2e upload échoue silencieusement si le 1er est en course).
-7. *Init scripts* : accesseurs `ws.*` non visibles dans les init scripts —
-   preuve propagation via settings consommateur réel ou test FT.
-8. *2 suites Cucumber même source set* : `cucumber.filter.tags` system property
-   prime sur la config du runner.
-9. *`:agent-contracts:test` n'existe pas depuis la racine BOM* — build
-   standalone (lancer depuis `agent-contracts/`). Idem bakery : `test`
-   n'existe qu'à la racine `bakery-plugin/`.
+   sans vérifier repo1 d'abord (2 bundles même coordonnée — mordu S-215).
+7. *Init scripts* : accesseurs `ws.*` non visibles dans les init scripts.
+8. *2 suites Cucumber même source set* : `cucumber.filter.tags` system property prime.
+9. *`:agent-contracts:test` n'existe pas depuis la racine BOM* — build standalone.
 10. *Gardes épinglent les versions* (BOM + conventions + contrats) — après
-    CHAQUE bump toml, bump la garde dans le même commit. *Raté S-214
-    (garde 0.0.32 laissée sur toml 0.0.33), corrigé S-215.*
+    CHAQUE bump toml, bump la garde dans le même commit. *Mordu S-216* :
+    baseline rouge à HEAD depuis S-213/S-217 (2 gardes jamais réalignées).
 11. *runner* : `dependencyResolutionManagement.repositories` manquant →
     catalog ws irrésolvable.
-12. *alias dans block plugins {}* : nécessite une entrée `[plugins]` dans le
-    toml du catalog publié (D7).
-13. *settings nmcp* : le block `nmcpSettings` ne charge pas tout seul les
-    creds globaux — pattern `java.util.Properties` +
-    `~/.gradle/gradle.properties` obligatoire (mordu dashboard S-215).
-14. *Polling repo1* : 9-13 min après « deployment is publishing » (AUTOMATIC)
-    — armer le polling AVANT de continuer.
+12. *alias dans block plugins {}* : nécessite une entrée `[plugins]` (D7).
+13. *settings nmcp* : pattern `java.util.Properties` + `~/.gradle/gradle.properties`.
+14. *Polling repo1* : ~7-13 min après « deployment is publishing » (AUTOMATIC).
+15. *Version dérivée* : la version propre d'un borough vient du catalogue
+    (`ws.versions.<plugin>.get()`) — publier exige le bump MEMPHIS d'abord.
 
 == Règles
 
-- Voir `AGENT.adoc` — zéro initiative, permission explicite pour commit/push/publish.
+- Voir `AGENT.adoc` — permission explicite pour commit/push/publish.
 - Baby-step DDD/TDD/BDD : test d'abord, build verify.
 - Publication Central : `./gradlew publishAggregationToCentralPortal` (aggrégatif
   — couvre BOM + catalog en 1 bundle). Protocole : `.agents/RELEASE_PROTOCOL.adoc`.
 - Zéro Python — outputs analysés Read/Grep/xmllint/rapports Gradle natifs.
-- Le pilote autorise commit/push en fin de session + bump/publication
-  mavenLocal/Central dès que nécessaire (S-028, confirmé S-215).
+- Le pilote autorise commit/push en fin de session + bump/publication dès que nécessaire.
 
-== À vérifier en ouverture S-216
+== À vérifier en ouverture S-217
 
-1. `git status` — workspace-bom + dashboard-gradle + graphify-gradle committés/poussés ?
-2. Central `<latest>` BOM + catalog (0.0.34 attendu) + graphify 0.0.3 + dashboard 0.0.1.
-3. `./gradlew test versionCatalogCucumberTest` depuis `agent-contracts/` VERT.
-4. Demande pilote : CI runner réel OU US-CI-1.4 OU audit adoption catalog.
-5. Backlog : EPIC MEM-CAT-ROLLOUT ✅ TERMINÉ 6/6 (S-215) — ne pas rouvrir
-   sauf nouveau borough.
+1. `git status` — workspace-bom + graphify-gradle committés/poussés ?
+2. Central `<latest>` BOM + catalog 0.0.44 + graphify 0.0.4.
+3. `./gradlew test --tests 'contracts.catalog.*'` depuis `agent-contracts/` VERT.
+4. Demande pilote : resync gouvernance MEMPHIS OU CI runner OU US-CI-1.4.
+

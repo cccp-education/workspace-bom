@@ -1,0 +1,68 @@
+= Session S-216 — BOM/catalog 0.0.44 + graphify-plugin 0.0.4 + fix gardes périmées
+:toc: left
+:date: 2026-09-17
+:type: pub/ops
+
+== Mission
+
+Session non planifiée initialement : elle découle de l'ordre pilote acté pour
+graphify (2 → 3 → 1), dont l'item 3 est la publication Central
+`graphify-plugin:0.0.4`. Or la version propre des boroughs est *dérivée du
+catalogue workspace* (MEM-CAT-ROLLOUT-6) :
+
+[source,kotlin]
+----
+version = ws.versions.graphify.plugin.get()
+----
+
+Publier 0.0.4 exigeait donc de bumper MEMPHIS d'abord (RELEASE_PROTOCOL).
+
+== Découverte — baseline MEMPHIS rouge à HEAD
+
+`./gradlew test --tests 'contracts.catalog.*'` depuis `agent-contracts/` a
+révélé 2 échecs *préexistants* (jamais réalignés) :
+
+[cols="2,3", options="header"]
+|===
+| Garde | Dérive
+| `PlatformCatalogAlignmentTest.workspace-bom` | épinglée `0.0.36` vs toml `0.0.43`
+| `PlatformCatalogAlignmentTest.i18n-contracts` | épinglée `0.0.2` vs toml `0.0.4` (dérive S-217 LANG-22)
+|===
+
+Les deux sont réalignées dans le même commit que le bump (piège #10).
+
+*Constat de gouvernance* : la baseline MEMPHIS était rouge depuis S-217. Ni la
+garde `workspace-bom` (dérive depuis au moins 0.0.43) ni la garde
+`i18n-contracts` (dérive S-217) n'ont été détectées — signe que
+`contracts.catalog.*` n'est pas systématiquement lancé en clôture de session
+MEMPHIS.
+
+== Livrable
+
+* `gradle/libs.versions.toml` : `workspace-bom 0.0.43 → 0.0.44`,
+  `graphify-plugin 0.0.3 → 0.0.4`.
+* `PlatformCatalogAlignmentTest` : 2 gardes réalignées.
+* Gates : `contracts.catalog.*` VERT, `publishToMavenLocal` VERT.
+* Publication Central (bundle `dbe3ef8e`, AUTOMATIC) : `workspace-bom:0.0.44`
+  + `workspace-catalog:0.0.44`, repo1 HTTP 200. Le toml Central liste
+  `graphify-plugin = "0.0.4"` et `workspace-bom = "0.0.44"`.
+* Ordre DAG : `graphify-plugin:0.0.4` d'abord (bundle `96f87d32`, piloté côté
+  graphify S-027), puis MEMPHIS agrégat.
+
+== Dette constatée — gouvernance MEMPHIS en retard
+
+`INDEX.adoc` et `SESSIONS_HISTORY.adoc` s'arrêtent à S-215 (2026-09-07).
+Les releases intermédiaires `0.0.35 → 0.0.43` (dont i18n-contracts 0.0.4 /
+LANG-22 S-217, codebase-plugin 0.0.15 S-213) ne sont pas tracées dans ces
+fichiers. La présente session enregistre `0.0.44` mais *ne reconstitue pas*
+l'historique manquant (impossible de le faire fidèlement a posteriori).
+
+*Recommandation* : une session de synchronisation de gouvernance MEMPHIS
+(delta BOM 0.0.35→0.0.44, réalignement SESSIONS_HISTORY) — hors périmètre ici.
+
+== Gates
+
+* `contracts.catalog.*` VERT (2 gardes réparées).
+* `publishToMavenLocal` VERT, toml mavenLocal 0.0.44 vérifié.
+* Central : bundle `dbe3ef8e`, repo1 HTTP 200.
+* Zéro secret.

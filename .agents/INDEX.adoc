@@ -5,14 +5,19 @@
 
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
-_Derniere mise a jour_ : 2026-09-07 (session S-215 — **release Central 0.0.33 + graphify 0.0.3 + ROLLOUT-6 dashboard** : graphify-plugin 0.0.3 publié Central (bundle `d6479d38`, prérequis DAG), BOM+catalog 0.0.33 Central (bundle `9381527a`), dashboard-plugin 0.0.1 1re release Central (bundle `e0619a49`, fix creds nmcp settings), entrée catalog dashboard + bump BOM 0.0.34 + garde réalignée + adoption pin ws (check 58/0) + release 0.0.34 Central (bundle `b2189fa6`). Fix garde 0.0.32→0.0.33 ratée S-214 (piège #10). EPIC MEM-CAT-ROLLOUT TERMINÉ 6/6.)
-_session terminee_ : 215 — release 0.0.33 + graphify 0.0.3 + ROLLOUT-6 dashboard + release 0.0.34.
-_prochaine session_ : 216 — confirmation CI runner réel OU US-CI-1.4 qwen3:0.6b OU audit adoption catalog (à la demande).
+_Derniere mise a jour_ : 2026-09-17 (session S-216 — **BOM/catalog 0.0.44 + graphify-plugin 0.0.4** : bump dérivé du besoin graphify (version dérivée du catalogue, MEM-CAT-ROLLOUT-6) + *réparation baseline rouge à HEAD* (2 gardes périmées : workspace-bom 0.0.36 vs toml 0.0.43, i18n-contracts 0.0.2 vs toml 0.0.4 — dérives S-213/S-217, piège #10). Publication Central bundle `dbe3ef8e`, repo1 HTTP 200. Dette : gouvernance INDEX/HISTORY s'arrête à S-215 — releases 0.0.35→0.0.43 non tracées, session de resync recommandée.)
+_session terminee_ : 216 — BOM/catalog 0.0.44 + graphify-plugin 0.0.4 + fix gardes périmées.
+_prochaine session_ : 217 — à la demande (resync gouvernance MEMPHIS recommandée, OU CI runner, OU US-CI-1.4 qwen3:0.6b).
 _Session en cours_ : —
 
 '''
 
 == Sessions Recentes
+
+|===
+| # | Date | Type | Sujet | Score
+
+| S-216 | 2026-09-17 | pub/ops | **BOM/catalog 0.0.44 + graphify-plugin 0.0.4** — Demande dérivée (graphify S-027 : publier 0.0.4 exige le bump MEMPHIS, version dérivée du catalogue). *Baseline rouge à HEAD réparée* : `PlatformCatalogAlignmentTest` épinglait workspace-bom 0.0.36 (vs toml 0.0.43) et i18n-contracts 0.0.2 (vs toml 0.0.4, dérive S-217 LANG-22) → réalignées (piège #10). Toml : workspace-bom 0.0.43→0.0.44, graphify-plugin 0.0.3→0.0.4. Gates `contracts.catalog.*` VERT + mavenLocal VERT. Publication Central bundle `dbe3ef8e` (AUTOMATIC, repo1 HTTP 200), toml Central vérifié. Dette : gouvernance INDEX/HISTORY s'arrête à S-215 (releases 0.0.35→0.0.43 non tracées). | 10/10 |
 
 |===
 | # | Date | Type | Sujet | Score
@@ -110,7 +115,7 @@ _Session en cours_ : —
 | MEM-CATALOG | Version Catalog publié `workspace-catalog` — le BOM unique source de vérité des versions plugins, transportée par artefact Maven (settings `from(...)`, accesseurs `ws.*`). Fix split-brain intra-BOM inclus. | ✅ TERMINÉ (S-026 CAT-1/2/3 + S-027 CAT-4/5 — 5/5 US ~21/21 pts, Central 0.0.29 BOM + catalog bundle `e6f571c2`, preuve propagation Central, protocole release RELEASE_PROTOCOL.adoc) | P1
 | DOC-8 | document-gradle — Consommer les contrats N0. *État S-028* : i18n-contracts ✅ consommé (TranslationService/FakeTranslationService) + pipeline-contracts ✅ (release notes). Reste : opencode-session-contracts (traçabilité release notes, dépendance présente, 0 usage — P3). | 🔄 PARTIEL (2/3 contrats consommés) | P2
 | MEM-CAT-ROLLOUT | Généralisation version catalog borough par borough (D5, adoption paresseuse) — document S-244, codex S-211, plantuml S-030, hyperframes S-031, runner S-031, readme S-212, graphify S-214, dashboard S-215 | ✅ TERMINÉ (6/6 + ordre 6 élargi : tous boroughs restants adoptés) | P1
-| PUB | Publication Maven Central + Plugin Portal | 🔄 EN COURS (BOM 0.0.34 + catalog 0.0.34 + graphify 0.0.3 + dashboard 0.0.1 publiés S-215 ; 8 contrats N0 ; agent-contracts 0.0.3) | P0
+| PUB | Publication Maven Central + Plugin Portal | 🔄 EN COURS (BOM 0.0.44 + catalog 0.0.44 + graphify 0.0.4 + dashboard 0.0.1 publiés ; 8 contrats N0 ; agent-contracts 0.0.3) | P0
 |===
 
 == Publications Maven Central — Historique complet
@@ -118,6 +123,10 @@ _Session en cours_ : —
 [cols="2,3,2"]
 |===
 | Version | Sujet | Bundle nmcp
+
+| BOM 0.0.44 + catalog 0.0.44
+| graphify-plugin 0.0.4 (prérequis DAG : publication graphify S-027, version dérivée du catalogue) + fix gardes périmées workspace-bom/i18n-contracts (S-216).
+| `dbe3ef8e`
 
 | BOM 0.0.34 + catalog 0.0.34
 | entrées catalog dashboard-plugin 0.0.1 (D8) + garde réalignée 0.0.34 + adoption pin ws dashboard (ROLLOUT-6, S-215).
