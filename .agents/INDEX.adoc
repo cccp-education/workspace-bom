@@ -5,9 +5,9 @@
 
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
-_Derniere mise a jour_ : 2026-09-17 (session S-217 — **BOM/catalog 0.0.45 + 0.0.46 (codex-plugin 0.0.8 puis 0.0.9 corrective)** : deux releases pilotées Brooklyn (codex S-220), ordre DAG MEMPHIS-first. 0.0.45 = codex 0.0.8 nominal (OCR-QUALITY S-218 + DOUBT-BRIDGE S-219), bundle `d199bf00`. 0.0.46 = codex 0.0.9 corrective (fix P0 `generateCompositeContext` découvert en dogfooding), bundle `d1c09b5e`. Garde `PlatformCatalogAlignmentTest` réalignée à chaque bump, gates VERTES, propagation repo1 HTTP 200.)
-_session terminee_ : 217 — BOM/catalog 0.0.45 + 0.0.46 (codex-plugin 0.0.8 / 0.0.9).
-_prochaine session_ : 218 — à la demande (resync gouvernance recommandée).
+_Derniere mise a jour_ : 2026-09-17 (session S-218 — **BOM/catalog 0.0.47 (codex-plugin 0.0.10)** : release pilotée Brooklyn (codex S-222), ordre DAG MEMPHIS-first. 0.0.47 = codex 0.0.10 (fix CDX-CONTEXT-HARDENING S-221 — input `enrichedJsonFile` tolérant), bundle `48b061ce`. Garde `PlatformCatalogAlignmentTest` réalignée 0.0.47 (RED → GREEN), gates `contracts.catalog.*` VERTES, `publishToMavenLocal` VERT, propagation repo1 HTTP 200.)
+_session terminee_ : 218 — BOM/catalog 0.0.47 (codex-plugin 0.0.10).
+_prochaine session_ : 219 — à la demande (resync gouvernance recommandée — releases 0.0.35→0.0.46 non tracées).
 _Session en cours_ : —
 
 '''
@@ -16,6 +16,8 @@ _Session en cours_ : —
 
 |===
 | # | Date | Type | Sujet | Score
+
+| S-218 | 2026-09-17 | pub/ops | **BOM/catalog 0.0.47 (codex-plugin 0.0.10)** — Release pilotée Brooklyn (codex S-222), ordre DAG MEMPHIS-first. Baby-step TDD : `PlatformCatalogAlignmentTest` épinglée 0.0.47 (RED 1 failed) → toml `workspace-bom 0.0.46→0.0.47` + `codex-plugin 0.0.9→0.0.10` (GREEN 48/0) → `publishToMavenLocal` VERT (BOM + catalog signés, `.toml` liste codex 0.0.10) → anti-collision repo1 404 → Central bundle `48b061ce-20c5-4fd0-92d3-8a7508b21c88` (AUTOMATIC). Propagation repo1 HTTP 200 (BOM/catalog 0.0.47). Contenu : fix CDX-CONTEXT-HARDENING S-221. | 10/10 |
 
 | S-217 | 2026-09-17 | pub/ops | **BOM/catalog 0.0.45 + 0.0.46 (codex-plugin 0.0.8 puis 0.0.9)** — Deux releases pilotées Brooklyn (codex S-220). 0.0.45 : codex 0.0.8 nominal (OCR-QUALITY S-218 + DOUBT-BRIDGE S-219), bundle `d199bf00`. 0.0.46 : codex 0.0.9 corrective (bug P0 `generateCompositeContext` découvert en dogfooding `Serializer for class 'Any' is not found`), bundle `d1c09b5e`. Garde `PlatformCatalogAlignmentTest` épinglée réalignée à chaque bump (0.0.45/0.0.46), gates `contracts.catalog.*` VERTES, `publishToMavenLocal` VERT, propagation repo1 HTTP 200 (BOM/catalog 0.0.45 + 0.0.46). | 10/10 |
 

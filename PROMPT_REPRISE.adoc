@@ -1,29 +1,27 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-217 — TERMINÉE (BOM/catalog 0.0.45 + 0.0.46 — codex-plugin 0.0.8 puis
-0.0.9 corrective). Deux releases pilotées Brooklyn (codex S-220).
+218 — TERMINÉE (BOM/catalog 0.0.47 — codex-plugin 0.0.10). Release pilotée
+Brooklyn (codex S-222), fix CDX-CONTEXT-HARDENING.
 
-== État du code (S-217)
+== État du code (S-218)
 
-- Central : BOM + catalog 0.0.46 (dernier état), codex-plugin 0.0.9,
-  graphify-plugin 0.0.4, dashboard-plugin 0.0.1.
-  Bundles S-217 : `d199bf00` (BOM/cat 0.0.45), `d1c09b5e` (BOM/cat 0.0.46).
-- Gardes `PlatformCatalogAlignmentTest` réalignées : workspace-bom 0.0.46.
-- 0.0.45 = codex 0.0.8 nominal ; 0.0.46 = codex 0.0.9 corrective (bug P0
-  `generateCompositeContext` découvert en dogfooding codex S-220).
+- Central : BOM + catalog 0.0.47 (dernier état), codex-plugin 0.0.10.
+  Bundle S-218 : `48b061ce-20c5-4fd0-92d3-8a7508b21c88` (BOM/cat 0.0.47).
+- Garde `PlatformCatalogAlignmentTest` réalignée : workspace-bom 0.0.47.
+- 0.0.47 = codex 0.0.10 (input `enrichedJsonFile` tolérant `@InputFiles`,
+  S-221) ; 0.0.46 = codex 0.0.9 corrective.
 
 == Dette constatée — gouvernance MEMPHIS en retard
 
-`INDEX.adoc` / `SESSIONS_HISTORY.adoc` s'arrêtent à S-215 (2026-09-07).
-Les releases 0.0.35 → 0.0.43 ne sont pas tracées (dont i18n-contracts 0.0.4
-LANG-22 S-217, codebase-plugin 0.0.15 S-213). S-216 enregistre 0.0.44 mais
-*ne reconstitue pas* l'historique manquant. Une session de resync de
-gouvernance MEMPHIS est recommandée.
+`INDEX.adoc` / `SESSIONS_HISTORY.adoc` s'arrêtent à S-218 (2026-09-17). Les
+releases antérieures 0.0.35 → 0.0.46 ne sont pas toutes tracées. Une session
+de resync de gouvernance MEMPHIS est recommandée (elle reste en tête de la
+prochaine session).
 
-== Mission session 218 — à la demande
+== Mission session 219 — à la demande
 
-. *Resync gouvernance MEMPHIS* (recommandé) : delta BOM 0.0.35→0.0.46,
+. *Resync gouvernance MEMPHIS* (recommandé) : delta BOM 0.0.35→0.0.47,
    réalignement SESSIONS_HISTORY/INDEX.
 . *Confirmation CI runner* : déclencher un run deploy réel magic-stick /
    cheroliv.com (alias ws.plugins.bakery en conditions réelles gh-pages).
@@ -68,10 +66,10 @@ gouvernance MEMPHIS est recommandée.
 - Zéro Python — outputs analysés Read/Grep/xmllint/rapports Gradle natifs.
 - Le pilote autorise commit/push en fin de session + bump/publication dès que nécessaire.
 
-== À vérifier en ouverture S-218
+== À vérifier en ouverture S-219
 
 1. `git status` — workspace-bom + codex-gradle committés/poussés ?
-2. Central `<latest>` BOM + catalog 0.0.46 + codex 0.0.9.
+2. Central `<latest>` BOM + catalog 0.0.47 + codex 0.0.10.
 3. `./gradlew test --tests 'contracts.catalog.*'` depuis `agent-contracts/` VERT.
 4. Demande pilote : resync gouvernance MEMPHIS OU CI runner OU US-CI-1.4.
 
