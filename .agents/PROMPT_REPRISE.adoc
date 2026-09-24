@@ -1,23 +1,37 @@
 = PROMPT_REPRISE — workspace-bom (MEMPHIS)
 
-_Session terminee_ : 024 — EPIC MEMPHIS-BOM-FIX US-3 TERMINÉ. BOM 0.0.27
-publié Central (bundle `648c037e`). Fix catalogue `slider` → `slider-plugin`.
-Cross-borough : codebase 0.0.10 Central (S-209) + capsule 917 unit 0 FAIL
-(S-120). Bug bloquant capsule résolu.
-_Prochaine session_ : 025 — Maintenance (DSH-8 Git Sync optionnel, ou
-publication backlog boroughs).
+_Session terminee_ : 265 — **BOM/catalog 0.0.57** (document-plugin 0.0.18).
+Release pilotée New Orleans (document S-264), ordre DAG MEMPHIS-first.
+Baby-step TDD : gardes `PlatformCatalogAlignmentTest` + `WorkspaceCatalogStructureTest`
+RED 2 failed → GREEN → `agent-contracts` `test` 0 FAIL → Central bundle
+`3f912bf6` AUTOMATIC. Propagation repo1 `<latest>0.0.57</latest>` ×2 +
+POM HTTP 200 + catalog porte `document-plugin = "0.0.18"`.
+_Prochaine session_ : 266 — à la demande (resync gouvernance INDEX/HISTORY
+recommandée — releases 0.0.36→0.0.57 non toutes tracées, dette récurrente
+notée S-227).
 
-== Contexte post-session 024
+== Contexte post-session 265
 
-* BOM 0.0.27 sur Central (HTTP 200, POM `slider-plugin:0.0.18`).
-* codebase-plugin 0.0.10 sur Central (HTTP 200, POM importe BOM 0.0.27).
-* capsule fixé (catalogue `slider-plugin` + BOM 0.0.27 + codebase 0.0.10,
-  917 unit 0 FAIL, cucumberTestTranscript 4/4 PASSED).
-* 9e artefact N0 ocr-contracts:0.0.1 publié Central (S-023/104).
+* BOM + workspace-catalog 0.0.57 sur Central (HTTP 200).
+* document-plugin 0.0.18 sur Central (bundle `aab4b880`, POM importe BOM
+  0.0.57, POM/JAR/plugin-marker HTTP 200, preuve consommateur tiers).
+* Dernières releases Central : 0.0.50 (S-227 codebase 0.0.16) puis 0.0.54/0.0.55/0.0.56
+  (bakery, hors-session opencode) puis **0.0.57 (S-265)**.
 * Artefacts N0 publiés Central : agent-contracts 0.0.3, codebase-contracts
   0.0.2, llm-pool-contracts 0.0.2, opencode-session-contracts 0.0.2,
-  i18n-contracts 0.0.2, pipeline-contracts 0.0.2, runtime-contracts 0.0.1,
+  i18n-contracts 0.0.4, pipeline-contracts 0.0.2, runtime-contracts 0.0.1,
   ocr-contracts 0.0.1.
+
+== Pièges
+
+1. `<latest>` peut rester périmé ~15-27 min — vérifier le **POM versionné
+   HTTP 200**, pas `<latest>` seul (re-confirmé S-265).
+2. WIP concurrent dans le working tree (`.agents/` newlines + CADRAGE staged) —
+   `git add` sélectif, jamais `-A`.
+3. Bump MEMPHIS obligatoire avant de publier un plugin dont la version est
+   dérivée du catalogue (`ws.versions.<plugin>.plugin.get()`).
+4. Les 2 gardes (`PlatformCatalogAlignmentTest` + `WorkspaceCatalogStructureTest`)
+   doivent être réalignées **dans le même commit** que le bump, sinon gate RED.
 
 == Règles absolues
 

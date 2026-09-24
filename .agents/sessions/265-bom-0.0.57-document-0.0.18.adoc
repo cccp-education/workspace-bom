@@ -1,0 +1,75 @@
+= Session 265 — BOM/catalog 0.0.57 (document-plugin 0.0.18)
+
+:session: 265
+:date: 2026-09-25
+:borough: workspace-bom (MEMPHIS 🎸)
+
+== Contexte
+
+Release pilotée depuis New Orleans (document S-264), ordre DAG MEMPHIS-first.
+La version propre de document-plugin est dérivée du catalogue
+(`ws.versions.document.plugin.get()`), donc publier 0.0.18 exige le bump
+MEMPHIS d'abord (piège #15).
+
+Demande pilote : « commence par 1 » = publication 0.0.18 (candidat #1 du
+PROMPT_REPRISE document S-264), distribution des dettes B1→B6 + DOC-BOOK-*
++ CROSS-DOC-BOOK-FIDELITY.
+
+== Contenu 0.0.57
+
+- Toml : `workspace-bom` 0.0.56 → **0.0.57**.
+- `document-plugin` 0.0.17 → **0.0.18** (RENAME-8 + RENAME Vague 4 +
+  DOC-BOOK-CONSISTENCY B1/B2 + DOC-BOOK-IMAGES + DOC-BOOK-MATTER +
+  DOC-BOOK-CONSISTENCY-B6 + CROSS-DOC-BOOK-FIDELITY test-only).
+
+== Gardes réalignées (baby-step TDD strict)
+
+- RED : `WorkspaceCatalogStructureTest.document plugin version matches
+  bakery consumer pin` (`expected: <0.0.17> but was: <0.0.18>`) +
+  `PlatformCatalogAlignmentTest.toml version workspace-bom matches platform
+  version` (`expected: <0.0.56> but was: <0.0.57>`) — 2 failed / 89 tests.
+- GREEN : toml bumpé (2 valeurs) → `test` complet `agent-contracts` 0 FAIL.
+
+== Gates
+
+- `agent-contracts` `test` : BUILD SUCCESSFUL 0 FAIL (gardes 2 réalignées).
+- `publishToMavenLocal` VERT (BOM + catalog 0.0.57, `.toml` publié porte
+  `document-plugin = "0.0.18"` vérifié).
+- `publishAggregationToCentralPortal` : bundle
+  `3f912bf6-48f5-49c1-b36a-e970961d889d` (AUTOMATIC). Propagation repo1 :
+  `<latest>0.0.57</latest>` ×2 (BOM + catalog), POM HTTP 200, catalog 0.0.57
+  porte `document-plugin = "0.0.18"`.
+
+== Ordre DAG (MEMPHIS-first)
+
+1. MEMPHIS 0.0.57 (cette session) — BOM/catalog Central.
+2. document-plugin 0.0.18 (bundle `aab4b880`, piloté S-264) — POM importe
+   BOM 0.0.57, propagation repo1 POM/JAR/plugin-marker HTTP 200, preuve
+   consommateur tiers `/tmp/opencode/doc-consumer-018` (Central sans
+   mavenLocal).
+
+== Constats
+
+- *Piège #11* : `<latest>` est resté périmé ~15 min (45 polls) — la preuve
+  fiable est le POM versionné HTTP 200, pas `<latest>` seul.
+- *Piège #26* : le working tree MEMPHIS porte des modifications `.agents/`
+  (newlines) + un `CADRAGE_EPIC_BUMP_KOOG_LANGCHAIN4J.adoc` staged d'une
+  session concurrente — commit sélectif uniquement (mes 3 fichiers).
+
+== Dette constatée
+
+`INDEX.adoc` / `SESSIONS_HISTORY.adoc` restent en retard (releases
+0.0.36→0.0.57 non toutes tracées) — resync gouvernance recommandée
+(récurrent, déjà noté S-227).
+
+== Fichiers
+
+- `gradle/libs.versions.toml` (2 bumps).
+- `agent-contracts/src/test/kotlin/contracts/catalog/PlatformCatalogAlignmentTest.kt`
+  (0.0.57).
+- `agent-contracts/src/test/kotlin/contracts/catalog/WorkspaceCatalogStructureTest.kt`
+  (0.0.18).
+- Gouvernance : `.agents/INDEX.adoc`, `.agents/PROMPT_REPRISE.adoc`,
+  `.agents/SESSIONS_HISTORY.adoc`, ce rapport.
+
+Zéro secret, zéro code production modifié (catalogue + gardes + gouvernance).

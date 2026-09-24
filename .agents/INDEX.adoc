@@ -5,9 +5,9 @@
 
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
-_Derniere mise a jour_ : 2026-09-17 (session S-227 — **BOM/catalog 0.0.50 (codebase-plugin 0.0.16)** : release pilotée Queens (S-264 dogfood Newark A2), ordre DAG MEMPHIS-first. codebase 0.0.16 = PlannerPort câblé + `generateAugmentedPlan` + fix rotation pool S-263. Gardes `PlatformCatalogAlignmentTest` (0.0.50 + garde codebase 0.0.16) réalignées, RED→GREEN TDD strict. Bundles : MEMPHIS `547e3e46`, codebase `db5e1158`. Propagation repo1 BOM/catalog HTTP 200.)
-_session terminee_ : 227 — BOM/catalog 0.0.50 (codebase-plugin 0.0.16).
-_prochaine session_ : 228 — à la demande (resync gouvernance recommandée — releases 0.0.36→0.0.50 non tracées).
+_Derniere mise a jour_ : 2026-09-25 (session S-265 — **BOM/catalog 0.0.57 (document-plugin 0.0.18)** : release pilotée New Orleans (document S-264), ordre DAG MEMPHIS-first. document 0.0.18 = RENAME-8 + Vague 4 + DOC-BOOK-CONSISTENCY B1/B2 + DOC-BOOK-IMAGES + DOC-BOOK-MATTER + DOC-BOOK-CONSISTENCY-B6 + CROSS-DOC-BOOK-FIDELITY. Gardes `PlatformCatalogAlignmentTest` (bom 0.0.57) + `WorkspaceCatalogStructureTest` (document 0.0.18) réalignées, RED→GREEN TDD strict. Bundle MEMPHIS `3f912bf6`, bundle document `aab4b880`. Propagation repo1 `<latest>0.0.57</latest>` ×2 + POM HTTP 200.)
+_session terminee_ : 265 — BOM/catalog 0.0.57 (document-plugin 0.0.18).
+_prochaine session_ : 266 — à la demande (resync gouvernance recommandée — releases 0.0.36→0.0.57 non toutes tracées).
 _Session en cours_ : —
 
 '''
