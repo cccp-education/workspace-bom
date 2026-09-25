@@ -1,87 +1,51 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-227 — TERMINÉE (BOM/catalog **0.0.50** — codebase-plugin 0.0.16).
-Release pilotée Queens (S-264, dogfood Newark A2), ordre DAG MEMPHIS-first.
+240 — TERMINÉE (release pilotée bakery) : **BOM/catalog 0.0.58 — bakery-plugin 0.0.20**.
+Bundle `1bef33da-929b-4115-afd9-bdb9e12c2829` (AUTOMATIC, propagation ~4m30).
+Motif : le Central `bakery-plugin:0.0.19` (S-233) était **périmé** (sans la feature
+BKY-LANG-NAV) → la CI cccp.education/magic-stick échouait `materializeTemplates`.
+Ordre DAG MEMPHIS-first respecté (bakery 0.0.20 publié ensuite, runner re-pinné).
 
-== État du code (S-227)
+== État du code (S-240)
 
-- Central : BOM + catalog **0.0.50** (dernier état), codebase-plugin **0.0.16**.
-  Bundle MEMPHIS S-227 : `547e3e46-c04a-485f-bb9e-c0cb429c7b69` (AUTOMATIC) ;
-  bundle codebase `db5e1158-e16c-4fb1-b962-a0cf9acea91b`.
-- **codebase-plugin 0.0.16** = fix rotation pool S-263 (`isQuotaError`
-  reconnaît `usage limit`) + `PlannerPort` câblé dans `AutonomousSessionTask`
-  + collision `generatePlan` corrigée (`generateAugmentedPlan`).
-- Gardes réalignées : `PlatformCatalogAlignmentTest` (0.0.50 + garde
-  codebase 0.0.16), `WorkspaceCatalogStructureTest` (inchangé).
+- Central : BOM + catalog **0.0.58** (dernier état), bakery-plugin **0.0.20**.
+- Garde `PlatformCatalogAlignmentTest` réalignée (workspace-bom 0.0.58 +
+  bakery-plugin 0.0.20) ; RED prouvé (2 failed) → GREEN.
+- `RELEASE_PROTOCOL.adoc` : entrée release 0.0.58.
 
-== Dette constatée — gouvernance MEMPHIS en retard
+== Mission session 241 — à la demande
 
-`INDEX.adoc` / `SESSIONS_HISTORY.adoc` s'arrêtent à S-219 (2026-09-17). Les
-releases antérieures 0.0.35 → 0.0.46 ne sont pas toutes tracées. Une session
-de resync de gouvernance MEMPHIS est recommandée (elle reste en tête de la
-prochaine session).
-
-== Mission session 228 — à la demande
-
-. *Resync gouvernance MEMPHIS* (recommandé, récurrent) : delta BOM
-   0.0.36→0.0.50 non tracé dans SESSIONS_HISTORY/INDEX.
-. *Confirmation CI runner* : déclencher un run deploy réel magic-stick /
-   cheroliv.com (alias ws.plugins.bakery en conditions réelles gh-pages).
+. *Resync gouvernance MEMPHIS* (recommandé, récurrent) : `.agents/INDEX.adoc` /
+   `SESSIONS_HISTORY.adoc` en retard (drift préexistant non committé).
+. *Adoption catalog par les boroughs* : re-pinner ws 0.0.58 là où utile.
 . *US-CI-1.4* : Ollama qwen3:0.6b en CI (1 pt).
-. *Audit complet adoption catalog* : vérifier qu'aucun borough education.cccp
-   ne hardcode sa version propre hors ws (D5/D12).
 
-== Pièges à retenir (cumul + S-217)
+== Pièges à retenir (cumul + S-240)
 
-1. *Gradle 9 API* : publication catalog = plugin `version-catalog` +
+1. *Version dérivée ≠ version publiée* : bumper le toml local d'un borough
+   (ex. `bakery = "0.0.20"`) est OBLIGATOIRE pour qu'une release porte les
+   changements — un artefact Central du même numéro peut être périmé (HTOWN S-218,
+   mordu S-240 : CI résolvait bakery 0.0.19 sans feature NAV).
+2. *Gradle 9.8.0* : wrappers workspace bumpés (S-240, 97 wrappers, méthode S-095
+   properties only).
+3. *Gradle 9 API* : publication catalog = plugin `version-catalog` +
    `from(components["versionCatalog"])`. `MavenPublication.versionCatalog {}` N'EXISTE PLUS.
-2. *Versions fantômes* : epub3 `3.0.1` n'existe pas Central (→ 2.2.0) ;
-   capsule-plugin 404 Central (entrée retirée du toml — D8).
-3. *Conflit classpath Gradle 9.6.1* : strictly 2.3.21 embarqué vs platform
-   2.4.10 → forces buildscript sur racines consommateurs (bakery, runner).
-4. *Extension Gradle* : `Provider<T>` brut NON décorable — utiliser `Property<T>`.
-5. *runAllTests* : liste restreinte (dettes documentées build.gradle.kts BOM).
-6. *nmcp collision* : NE JAMAIS re-invoquer publishAggregationToCentralPortal
+4. *Versions fantômes* : epub3 `3.0.1` n'existe pas Central (→ 2.2.0).
+5. *nmcp collision* : NE JAMAIS re-invoquer publishAggregationToCentralPortal
    sans vérifier repo1 d'abord (2 bundles même coordonnée — mordu S-215).
-7. *Init scripts* : accesseurs `ws.*` non visibles dans les init scripts.
-8. *2 suites Cucumber même source set* : `cucumber.filter.tags` system property prime.
-9. *`:agent-contracts:test` n'existe pas depuis la racine BOM* — build standalone.
-10. *Gardes épinglent les versions* (BOM + conventions + contrats) — après
-    CHAQUE bump toml, bump la garde dans le même commit. *Mordu S-216* :
-    baseline rouge à HEAD depuis S-213/S-217 (2 gardes jamais réalignées).
-11. *runner* : `dependencyResolutionManagement.repositories` manquant →
-    catalog ws irrésolvable.
-12. *alias dans block plugins {}* : nécessite une entrée `[plugins]` (D7).
-13. *settings nmcp* : pattern `java.util.Properties` + `~/.gradle/gradle.properties`.
-14. *Polling repo1* : ~7-13 min après « deployment is publishing » (AUTOMATIC).
-15. *Version dérivée* : la version propre d'un borough vient du catalogue
-    (`ws.versions.<plugin>.get()`) — publier exige le bump MEMPHIS d'abord.
-16. *Corrective si P0* : Central est immuable — un bug publié exige une
-    nouvelle release (bump MEMPHIS + codex), jamais un re-upload même bundle.
-17. *Catch-22 D8 (anti-ghost)* : une entrée catalogue exige que le plugin soit
-    DÉJÀ publié Central. Pour un plugin jamais publié (ex : capsule), l'ordre
-    réel est **publier le plugin d'abord**, puis l'ajouter au catalogue, puis
-    publier MEMPHIS. Ne pas ajouter une entrée fantôme (garde
-    `WorkspaceCatalogStructureTest`).
-18. *POM marker plugin* : Central valide chaque publication, y compris les
-    markers (`<pluginId>PluginMarkerMaven`) — un POM limité à `pluginMaven`
-    échoue « Project name is missing ». Configurer
-    `withType<MavenPublication> { pom { name/description } }`.
+6. *Gardes épinglent les versions* (BOM + conventions + contrats) — après
+   CHAQUE bump toml, bump la garde dans le même commit.
+7. *Polling repo1* : ~4-30 min après « deployment is publishing » (AUTOMATIC) —
+   plus lent que la moyenne pour bakery (18 min S-240).
+8. *Catch-22 D8 (anti-ghost)* : une entrée catalogue exige que le plugin soit
+   DÉJÀ publié Central. Pour un plugin jamais publié, publier le plugin d'abord.
 
 == Règles
 
 - Voir `AGENT.adoc` — permission explicite pour commit/push/publish.
-- Baby-step DDD/TDD/BDD : test d'abord, build verify.
-- Publication Central : `./gradlew publishAggregationToCentralPortal` (aggrégatif
-  — couvre BOM + catalog en 1 bundle). Protocole : `.agents/RELEASE_PROTOCOL.adoc`.
+- Publication Central : `./gradlew publishAggregationToCentralPortal` (agrégatif). Protocole : `.agents/RELEASE_PROTOCOL.adoc`.
 - Zéro Python — outputs analysés Read/Grep/xmllint/rapports Gradle natifs.
 - Le pilote autorise commit/push en fin de session + bump/publication dès que nécessaire.
 
-== À vérifier en ouverture S-219
-
-1. `git status` — workspace-bom + codex-gradle committés/poussés ?
-2. Central `<latest>` BOM + catalog 0.0.47 + codex 0.0.10.
-3. `./gradlew test --tests 'contracts.catalog.*'` depuis `agent-contracts/` VERT.
-4. Demande pilote : resync gouvernance MEMPHIS OU CI runner OU US-CI-1.4.
 
