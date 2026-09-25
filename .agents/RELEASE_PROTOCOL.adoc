@@ -74,6 +74,9 @@ les 2 (nmcp 1.5.0 agrège les publications du build racine).
 [cols="2,3,2"]
 |===
 | Release | Contenu | Bundle
+| 0.0.58 (S-240) | bakery-plugin 0.0.20 (BKY-LANG-NAV : brique N2 `bakeVariants` + `materializeTemplates` + sélecteur same-page + null-safety cœur). Débloque la CI réelle cccp.education/magic-stick. | à publier
+| 0.0.57 (S-265) | BOM/catalog 0.0.57 + document-plugin 0.0.18. | `c886e44`
+| 0.0.56 (S-233) | BOM/catalog 0.0.56 + bakery-plugin 0.0.19 (re-pin catalogue S-233). | `aaa0b96`
 | 0.0.47 (S-222) | codex-plugin 0.0.10 (fix CDX-CONTEXT-HARDENING S-221 — input `enrichedJsonFile` tolérant). | `48b061ce`
 | 0.0.46 (S-217) | codex-plugin 0.0.9 (corrective — bug P0 `generateCompositeContext` découvert en dogfooding codex S-220). | `d1c09b5e`
 | 0.0.45 (S-217) | codex-plugin 0.0.8 (OCR-QUALITY S-218 + DOUBT-BRIDGE S-219). | `d199bf00`

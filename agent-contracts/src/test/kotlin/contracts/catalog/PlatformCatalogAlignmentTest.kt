@@ -33,7 +33,7 @@ class PlatformCatalogAlignmentTest {
     @Test
     fun `toml version workspace-bom matches platform version`() {
         assertEquals(
-            "0.0.57", tomlVersions["workspace-bom"],
+            "0.0.58", tomlVersions["workspace-bom"],
             "workspace-bom dans le toml (tri-split C2 supprimé)"
         )
         assertTrue(
@@ -76,8 +76,8 @@ class PlatformCatalogAlignmentTest {
     @Test
     fun `toml bakery plugin version is the CHE-I18N-22 release`() {
         assertEquals(
-            "0.0.19", tomlVersions["bakery-plugin"],
-            "bakery-plugin 0.0.14 (CHE-I18N-22 : pool LLM activé pour migrateContentI18n/migrateToI18n + LanguageLabelCatalog 22 langues)",
+            "0.0.20", tomlVersions["bakery-plugin"],
+            "bakery-plugin 0.0.20 (BKY-LANG-NAV : brique i18n/variant bakeVariants + materializeTemplates + sélecteur same-page)",
         )
     }
 
