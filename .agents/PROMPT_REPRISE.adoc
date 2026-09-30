@@ -1,22 +1,26 @@
 = PROMPT_REPRISE — workspace-bom (MEMPHIS)
 
-_Session terminee_ : 265 — **BOM/catalog 0.0.57** (document-plugin 0.0.18).
-Release pilotée New Orleans (document S-264), ordre DAG MEMPHIS-first.
-Baby-step TDD : gardes `PlatformCatalogAlignmentTest` + `WorkspaceCatalogStructureTest`
-RED 2 failed → GREEN → `agent-contracts` `test` 0 FAIL → Central bundle
-`3f912bf6` AUTOMATIC. Propagation repo1 `<latest>0.0.57</latest>` ×2 +
-POM HTTP 200 + catalog porte `document-plugin = "0.0.18"`.
-_Prochaine session_ : 266 — à la demande (resync gouvernance INDEX/HISTORY
-recommandée — releases 0.0.36→0.0.57 non toutes tracées, dette récurrente
+_Session terminee_ : 277 — **BOM/catalog 0.0.61** (bakery-plugin 0.0.21).
+Fix drift cross-borough déclenché depuis cheroliv.com (S-058) : `bakery-plugin
+0.0.20` importait `workspace-bom:0.0.58` → document 0.0.18, alors que 0.0.19
+était publié (S-276). Nouvelle release bakery 0.0.21 (BOM 0.0.61 → document
+0.0.19). Gardes `PlatformCatalogAlignmentTest` (bom 0.0.61 + bakery 0.0.21)
+réalignées. Central bundle MEMPHIS `1b2a170e-5392-4453-a350-e179c5c908af` ;
+bakery bundle `05e89298-9019-4f63-8be7-c730e25f3ce4`. Propagation repo1
+HTTP 200.
+_Prochaine session_ : 278 — à la demande (resync gouvernance INDEX/HISTORY
+recommandée — releases 0.0.36→0.0.61 non toutes tracées, dette récurrente
 notée S-227).
 
-== Contexte post-session 265
+== Contexte post-session 277
 
-* BOM + workspace-catalog 0.0.57 sur Central (HTTP 200).
-* document-plugin 0.0.18 sur Central (bundle `aab4b880`, POM importe BOM
-  0.0.57, POM/JAR/plugin-marker HTTP 200, preuve consommateur tiers).
-* Dernières releases Central : 0.0.50 (S-227 codebase 0.0.16) puis 0.0.54/0.0.55/0.0.56
-  (bakery, hors-session opencode) puis **0.0.57 (S-265)**.
+* BOM + workspace-catalog 0.0.61 sur Central (HTTP 200).
+* bakery-plugin **0.0.21** sur Central (bundle `05e89298`, POM importe BOM
+  0.0.61 → document-plugin 0.0.19, plugin marker HTTP 200).
+* Chaîne cohérente : cheroliv → runner (catalog 0.0.61) → bakery 0.0.21 →
+  document 0.0.19.
+* Dernières releases Central : 0.0.60 (S-276 document 0.0.19) puis
+  **0.0.61 (S-277 bakery 0.0.21)**.
 * Artefacts N0 publiés Central : agent-contracts 0.0.3, codebase-contracts
   0.0.2, llm-pool-contracts 0.0.2, opencode-session-contracts 0.0.2,
   i18n-contracts 0.0.4, pipeline-contracts 0.0.2, runtime-contracts 0.0.1,

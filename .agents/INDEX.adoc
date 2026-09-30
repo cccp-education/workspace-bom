@@ -5,9 +5,9 @@
 
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
-_Derniere mise a jour_ : 2026-09-25 (session S-265 — **BOM/catalog 0.0.57 (document-plugin 0.0.18)** : release pilotée New Orleans (document S-264), ordre DAG MEMPHIS-first. document 0.0.18 = RENAME-8 + Vague 4 + DOC-BOOK-CONSISTENCY B1/B2 + DOC-BOOK-IMAGES + DOC-BOOK-MATTER + DOC-BOOK-CONSISTENCY-B6 + CROSS-DOC-BOOK-FIDELITY. Gardes `PlatformCatalogAlignmentTest` (bom 0.0.57) + `WorkspaceCatalogStructureTest` (document 0.0.18) réalignées, RED→GREEN TDD strict. Bundle MEMPHIS `3f912bf6`, bundle document `aab4b880`. Propagation repo1 `<latest>0.0.57</latest>` ×2 + POM HTTP 200.)
-_session terminee_ : 265 — BOM/catalog 0.0.57 (document-plugin 0.0.18).
-_prochaine session_ : 266 — à la demande (resync gouvernance recommandée — releases 0.0.36→0.0.57 non toutes tracées).
+_Derniere mise a jour_ : 2026-09-30 (session S-277 — **BOM/catalog 0.0.61 (bakery-plugin 0.0.21)** : fix drift cross-borough. `bakery-plugin 0.0.20` importait `workspace-bom:0.0.58` → constraint `document-plugin:0.0.18` alors que 0.0.19 était publié (S-276). Nouvelle release bakery 0.0.21 (BOM 0.0.61 → document 0.0.19). Gardes `PlatformCatalogAlignmentTest` (bom 0.0.61 + bakery 0.0.21) réalignées. Bundle MEMPHIS `1b2a170e`, bundle bakery `05e89298`. Propagation repo1 HTTP 200.)
+_session terminee_ : 277 — BOM/catalog 0.0.61 (bakery-plugin 0.0.21).
+_prochaine session_ : 278 — à la demande (resync gouvernance recommandée — releases 0.0.36→0.0.61 non toutes tracées).
 _Session en cours_ : —
 
 '''
@@ -16,6 +16,8 @@ _Session en cours_ : —
 
 |===
 | # | Date | Type | Sujet | Score
+
+| S-277 | 2026-09-30 | pub/ops | **BOM/catalog 0.0.61 (bakery-plugin 0.0.21)** — Fix drift cross-borough (question pilote cheroliv S-058 : « bakery utilise-t-il le dernier document ? »). `bakery-plugin 0.0.20` importait `workspace-bom:0.0.58` → constraint `document-plugin:0.0.18`, alors que 0.0.19 était publié (S-276) — tout consommateur de bakery **sans** le workaround du runner résolvait 0.0.18. Nouvelle release **bakery 0.0.21** portant BOM 0.0.61 → document 0.0.19. Gardes `PlatformCatalogAlignmentTest` (bom 0.0.61 + bakery 0.0.21) réalignées. `publishToMavenLocal` VERT ; Central bundle MEMPHIS `1b2a170e-5392-4453-a350-e179c5c908af` (propagation HTTP 200) ; bakery bundle `05e89298-9019-4f63-8be7-c730e25f3ce4` (POM HTTP 200 + marker 200). Chaîne finale : cheroliv → runner (catalog 0.0.61) → bakery 0.0.21 → document 0.0.19. | 9/10 |
 
 | S-218 | 2026-09-17 | pub/ops | **BOM/catalog 0.0.47 (codex-plugin 0.0.10)** — Release pilotée Brooklyn (codex S-222), ordre DAG MEMPHIS-first. Baby-step TDD : `PlatformCatalogAlignmentTest` épinglée 0.0.47 (RED 1 failed) → toml `workspace-bom 0.0.46→0.0.47` + `codex-plugin 0.0.9→0.0.10` (GREEN 48/0) → `publishToMavenLocal` VERT (BOM + catalog signés, `.toml` liste codex 0.0.10) → anti-collision repo1 404 → Central bundle `48b061ce-20c5-4fd0-92d3-8a7508b21c88` (AUTOMATIC). Propagation repo1 HTTP 200 (BOM/catalog 0.0.47). Contenu : fix CDX-CONTEXT-HARDENING S-221. | 10/10 |
 

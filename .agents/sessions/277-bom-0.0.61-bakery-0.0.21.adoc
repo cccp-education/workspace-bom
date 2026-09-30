@@ -1,0 +1,60 @@
+= Session 277 — BOM/catalog 0.0.61 (bakery-plugin 0.0.21) — fix drift workspace-bom
+
+:session: 277
+:date: 2026-09-30
+:borough: workspace-bom (MEMPHIS 🎸)
+
+== Contexte
+
+Session de maintenance cross-borough déclenchée depuis cheroliv.com (S-058).
+Question pilote : « est-ce que bakery utilise la dernière version de document et
+est-ce que cheroliv utilise la dernière version de bakery ? »
+
+Audit de la chaîne réelle :
+`cheroliv.com → runner-gradle (N3) → bakery-plugin (N2) → document-plugin`.
+
+**Faille trouvée** : `bakery-plugin 0.0.20` (publié S-247) importait
+`workspace-bom:0.0.58`, dont la constraint figeait `document-plugin:0.0.18` —
+alors que document 0.0.19 était déjà publié Central (S-276). Tout consommateur
+de bakery **sans** le workaround du runner résolvait donc document 0.0.18.
+
+C'est la classe de bug du **piège #13** (drift catalogue MEMPHIS) : le pin
+`platform workspace-bom` d'un borough n'a pas été bumpé lors de la release
+bakery 0.0.20.
+
+== Contenu 0.0.61
+
+- Toml : `workspace-bom` 0.0.60 → **0.0.61**.
+- `bakery-plugin` 0.0.20 → **0.0.21** (nouvelle release, Central immuable :
+  0.0.20 portait le BOM périmé).
+- Aucun changement de code N0 — bump de version uniquement.
+
+== Gardes réalignées (baby-step TDD strict)
+
+- `PlatformCatalogAlignmentTest.toml version workspace-bom matches platform
+  version` : `0.0.60` → `0.0.61`.
+- `PlatformCatalogAlignmentTest.toml bakery plugin version is the CHE-I18N-22
+  release` : `0.0.20` → `0.0.21` (message documenté : drift BOM).
+
+== Gates
+
+- `publishToMavenLocal` VERT (BOM + catalog 0.0.61, `.toml` publié porte
+  `bakery-plugin = "0.0.21"` + `document-plugin = "0.0.19"`, vérifié).
+- `publishAggregationToCentralPortal` : bundle
+  `1b2a170e-5392-4453-a350-e179c5c908af` (AUTOMATIC).
+- Propagation repo1 vérifiée : BOM + catalog 0.0.61 POM/catalog HTTP 200.
+
+== Suites
+
+- **bakery 0.0.21** (S-248) : re-pin catalog/BOM 0.0.58 → 0.0.61, résout
+  document-plugin **0.0.19** (prouvé `dependencyInsight`). Bundle
+  `05e89298-9019-4f63-8be7-c730e25f3ce4`, POM HTTP 200 + plugin marker 200.
+- **runner-gradle** (S-031) : re-pin catalog 0.0.60 → 0.0.61 + force BOM
+  0.0.60 → 0.0.61 ; `buildEnvironment` prouve bakery 0.0.21 → document 0.0.19.
+- Preuve consommateur tiers mavenCentral seul (sans mavenLocal) :
+  `chain-proof` → bakery 0.0.21 → document 0.0.19.
+
+== Verdict
+
+La chaîne est désormais cohérente de bout en bout :
+**cheroliv → runner (catalog 0.0.61) → bakery 0.0.21 → document 0.0.19**.
