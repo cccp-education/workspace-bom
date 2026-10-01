@@ -1,44 +1,51 @@
-= PROMPT_REPRISE — workspace-bom (MEMPHIS)
+= PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
-_Session terminee_ : 277 — **BOM/catalog 0.0.61** (bakery-plugin 0.0.21).
-Fix drift cross-borough déclenché depuis cheroliv.com (S-058) : `bakery-plugin
-0.0.20` importait `workspace-bom:0.0.58` → document 0.0.18, alors que 0.0.19
-était publié (S-276). Nouvelle release bakery 0.0.21 (BOM 0.0.61 → document
-0.0.19). Gardes `PlatformCatalogAlignmentTest` (bom 0.0.61 + bakery 0.0.21)
-réalignées. Central bundle MEMPHIS `1b2a170e-5392-4453-a350-e179c5c908af` ;
-bakery bundle `05e89298-9019-4f63-8be7-c730e25f3ce4`. Propagation repo1
-HTTP 200.
-_Prochaine session_ : 278 — à la demande (resync gouvernance INDEX/HISTORY
-recommandée — releases 0.0.36→0.0.61 non toutes tracées, dette récurrente
-notée S-227).
+== Session en cours
+278 — TERMINÉE (release pilotée bloc B) : **BOM/catalog 0.0.62 — codebase-plugin 0.0.17 + codex-plugin 0.0.12**.
+Bundle `7baf6567-e27d-40d0-8ad5-3ec1c66fcdae` (AUTOMATIC, propagation repo1 HTTP 200 ×4).
+Motif : bloc B (publication N1→N2) — le `codebase-plugin:0.0.16` Central était
+stale (précède l'US-1 `pages`), la CI codex échouait. Ordre DAG N0→N1→N2.
 
-== Contexte post-session 277
+== État du code (S-278)
 
-* BOM + workspace-catalog 0.0.61 sur Central (HTTP 200).
-* bakery-plugin **0.0.21** sur Central (bundle `05e89298`, POM importe BOM
-  0.0.61 → document-plugin 0.0.19, plugin marker HTTP 200).
-* Chaîne cohérente : cheroliv → runner (catalog 0.0.61) → bakery 0.0.21 →
-  document 0.0.19.
-* Dernières releases Central : 0.0.60 (S-276 document 0.0.19) puis
-  **0.0.61 (S-277 bakery 0.0.21)**.
-* Artefacts N0 publiés Central : agent-contracts 0.0.3, codebase-contracts
-  0.0.2, llm-pool-contracts 0.0.2, opencode-session-contracts 0.0.2,
-  i18n-contracts 0.0.4, pipeline-contracts 0.0.2, runtime-contracts 0.0.1,
-  ocr-contracts 0.0.1.
+- Central : BOM + catalog **0.0.62** (dernier état) ; `codebase-plugin 0.0.17` +
+  `codex-plugin 0.0.12` publiés (pilotés Queens S-272 / Brooklyn S-231).
+- Garde `PlatformCatalogAlignmentTest` réalignée (workspace-bom 0.0.62 +
+  codebase-plugin 0.0.17) ; `codex-plugin` semver-only.
+- `RELEASE_PROTOCOL.adoc` : entrée release 0.0.62.
 
-== Pièges
+== Mission session 279 — à la demande
 
-1. `<latest>` peut rester périmé ~15-27 min — vérifier le **POM versionné
-   HTTP 200**, pas `<latest>` seul (re-confirmé S-265).
-2. WIP concurrent dans le working tree (`.agents/` newlines + CADRAGE staged) —
-   `git add` sélectif, jamais `-A`.
-3. Bump MEMPHIS obligatoire avant de publier un plugin dont la version est
-   dérivée du catalogue (`ws.versions.<plugin>.plugin.get()`).
-4. Les 2 gardes (`PlatformCatalogAlignmentTest` + `WorkspaceCatalogStructureTest`)
-   doivent être réalignées **dans le même commit** que le bump, sinon gate RED.
+. *Resync gouvernance MEMPHIS* (recommandé, récurrent) : `.agents/INDEX.adoc` /
+   `SESSIONS_HISTORY.adoc` — releases 0.0.36→0.0.61 non toutes tracées.
+. *Suivi bloc C* (codex S-232/S-233) : C-3 dead code N1 + C-4 pollution TOC.
+. *US-CI-1.4* : Ollama qwen3:0.6b en CI (1 pt).
 
-== Règles absolues
+== Pièges à retenir (cumul + S-240)
 
-* Git autorisé (décision pilote 2026-09-17) — zéro secret commité.
-* Baby-step TDD strict si code modifié.
-* Zéro secret, zéro token dans le code ou les logs.
+1. *Version dérivée ≠ version publiée* : bumper le toml local d'un borough
+   (ex. `bakery = "0.0.20"`) est OBLIGATOIRE pour qu'une release porte les
+   changements — un artefact Central du même numéro peut être périmé (HTOWN S-218,
+   mordu S-240 : CI résolvait bakery 0.0.19 sans feature NAV).
+2. *Gradle 9.8.0* : wrappers workspace bumpés (S-240, 97 wrappers, méthode S-095
+   properties only).
+3. *Gradle 9 API* : publication catalog = plugin `version-catalog` +
+   `from(components["versionCatalog"])`. `MavenPublication.versionCatalog {}` N'EXISTE PLUS.
+4. *Versions fantômes* : epub3 `3.0.1` n'existe pas Central (→ 2.2.0).
+5. *nmcp collision* : NE JAMAIS re-invoquer publishAggregationToCentralPortal
+   sans vérifier repo1 d'abord (2 bundles même coordonnée — mordu S-215).
+6. *Gardes épinglent les versions* (BOM + conventions + contrats) — après
+   CHAQUE bump toml, bump la garde dans le même commit.
+7. *Polling repo1* : ~4-30 min après « deployment is publishing » (AUTOMATIC) —
+   plus lent que la moyenne pour bakery (18 min S-240).
+8. *Catch-22 D8 (anti-ghost)* : une entrée catalogue exige que le plugin soit
+   DÉJÀ publié Central. Pour un plugin jamais publié, publier le plugin d'abord.
+
+== Règles
+
+- Voir `AGENT.adoc` — permission explicite pour commit/push/publish.
+- Publication Central : `./gradlew publishAggregationToCentralPortal` (agrégatif). Protocole : `.agents/RELEASE_PROTOCOL.adoc`.
+- Zéro Python — outputs analysés Read/Grep/xmllint/rapports Gradle natifs.
+- Le pilote autorise commit/push en fin de session + bump/publication dès que nécessaire.
+
+
