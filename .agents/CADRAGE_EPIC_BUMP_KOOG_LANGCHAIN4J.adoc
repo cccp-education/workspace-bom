@@ -1,0 +1,110 @@
+= Cadrage EPIC BUMP-KOOG-LANGCHAIN4J — Bump koog + langchain4j cross-borough
+:sectnums:
+:date: 2026-09-18
+:borough: MEMPHIS (workspace-bom, N0) + Queens (codebase-gradle, N1) + 7 consommateurs N2
+
+== Contexte
+
+Le socle LLM cross-borough (`langchain4j` + `koog-agents`) est épinglé dans
+`workspace-bom/gradle/libs.versions.toml` (l.12-14) sur des versions anciennes :
+
+[cols="2,4,2,4"]
+|===
+| Dépendance | Version locale (toml BOM) | Version Central (2026-09-18) | Écart
+| `langchain4j`
+| **1.16.3**
+| **1.20.0** (2026-09-04)
+| +7 mineures
+| `langchain4j-beta`
+| **1.16.3-beta26**
+| **1.20.0-beta30** (2026-09-04)
+| alignée sur langchain4j (pgvector/minilm embarqué sur ligne beta)
+| `koog-agents`
+| **1.0.0**
+| **1.2.0** (2026-08-27)
+| +2 mineures
+|===
+
+*Découverte* : session S-228 (audit versions) — aucune demande pilote, aucune
+mise à jour depuis le koog 1.0.0 (EPIC L, migration langgraph4j → koog) et
+langchain4j 1.14.1 → 1.16.3 (SLD-8 / CDX-RAG). constat : les deux sont
+épinglés sur une ligne stable (tests verts), mais Central a progressé.
+
+== Verdict d'analyse (S-228)
+
+* **koog 1.0.0 → 1.2.0** : **faible risque**. Graphe koog figé depuis EPIC L
+  (pattern `AIAgentGraphStrategy`/`strategy<DeckState, DeckState>`), JDK 17+,
+  Kotlin 2.2.0+ — codebase/planner/capsule sur Kotlin 2.4.10, compatibles.
+  Bénéfice : fixes + stabilité depuis août.
+* **langchain4j 1.16.3 → 1.20.0** : **moyen risque**, bump « tout-ou-rien ».
+  `AllMiniLmL6V2EmbeddingModel` (pgvector embeddings) et le store pgvector
+  vivent sur la **ligne beta** (`langchain4j-pgvector` + modules embarqués
+  `langchain4j-embeddings`) → en cas de bump, les deux lignes (stable +
+  beta) montent **ensemble** (1.20.0 + 1.20.0-beta30). Un écart stable/beta
+  incohérent casse la résolution classpath.
+* Consommateurs impactés : `codebase` (N1 — socle, store pgvector, LlmBuildService,
+  OllamaChatModel), puis `slider`, `capsule`, `planner`, `plantuml`, `document`,
+  `codex` (N2). Les contrats N0 (`agent-contracts`, `llm-pool-contracts`,
+  `runtime-contracts`, `ocr-contracts`) sont **zéro dépendance** (Tier 0) —
+  non impactés.
+
+== Ordre DAG (MEMPHIS-first)
+
+#. **S-229 (MEMPHIS)** — bump toml N0 : `langchain4j` 1.16.3 → 1.20.0,
+   `langchain4j-beta` 1.16.3-beta26 → 1.20.0-beta30, `koog-agents` 1.0.0 →
+   1.2.0 + réaligner les gardes `PlatformCatalogAlignmentTest` /
+   `WorkspaceCatalogStructureTest` (elles épinglent les versions). Gate :
+   `:agent-contracts:check` VERT + `publishToMavenLocal` VERT (BOM + catalog).
+#. **S-230 (Queens)** — consommation N1 : `codebase-gradle` bump catalogue local →
+   0.0.5x, compileKotlin + `check` (unit + cucumber + kover). Zone de risque :
+   API langchain4j — `ChatModel` (nom en v1.x stable), `OllamaChatModel.builder()`,
+   `AiServices`, `TextSegment` → vérifier signature 1.20.0. `RagVectorStore.kt`
+   (ONNX embeddings via ligne beta) → vérifier `AllMiniLmL6V2EmbeddingModel`.
+#. **S-231+ (7 consommateurs)** — propagation par session courte (pattern
+   MEM-CAT-ROLLOUT) : slider, capsule, planner, plantuml, document, codex.
+   Chaque borough bump son pin catalog + `compileKotlin` + `check` baseline.
+
+== US découpées (~10 pts)
+
+[cols="1,4,2,2"]
+|===
+| US | Description | Pts | Statut
+| BUMP-KLG-0
+| Cadrage EPIC (audit versions + verdict risques + ordre DAG — ce document). Gouvernance pure pattern S-057/S-063.
+| 1
+| ✅ TERMINÉ (S-229)
+| BUMP-KLG-1
+| **N0 MEMPHIS** — bump toml (3 valeurs) + gardes réalignées (baby-step TDD RED → GREEN) + `publishToMavenLocal` VERT + (accord pilote) publication Central BOM/catalog.
+| 3
+| 🟡 À FAIRE
+| BUMP-KLG-2
+| **N1 codebase** — bump catalogue local → BOM bumpée + compile + `check` (unit/cucumber/kover). Verrouillage API langchain4j 1.20.0 (OllamaChatModel/AiServices/store pgvector).
+| 3
+| 🟡 À FAIRE
+| BUMP-KLG-3
+| **Propagation N2** — 7 consommateurs (slider, capsule, planner, plantuml, document, codex) bump pin catalog + compile + `check` baseline. Pattern MEM-CAT-ROLLOUT (1 borough = 1 session courte).
+| 3
+| 🟡 À FAIRE
+|===
+
+== Risques
+
+R-KLG-1 split stable/beta langchain4j (bumper les deux lignes ensemble,
+jamais l'une sans l'autre) · R-KLG-2 API langchain4j 1.20.0 incompatibles
+(introspection des call sites codebase `OllamaChatModel`/`AiServices`/
+`TextSegment` AVANT le bump — zéro surprise) · R-KLG-3 koog `forwardTo`
+top-level vs member (régression EPIC L S-130 — vérifier `AIAgentGraphStrategy`
+inchangé) · R-KLG-4 contexte LLM : aucun appel réseau en CI (fakes S-082,
+`assumeTrue(isOllamaReady)`) — le bump n'est pas un run LLM réel · R-KLG-5
+problèmes `org.jetbrains:annotations` 13.0 vs 26.0.2-1 (STRATEGIC_ROADMAP
+l.646-649 — résolutionStrategy si nouveau module).
+
+== Zéro
+
+Bump de contrat N0 (les contrats sont Tier 0, sans langchain4j/koog), run LLM
+réel, changement DSL. Publication Central = accord pilote explicite (Règle 2).
+
+== Horizon
+
+Session S-229 : BUMP-KLG-0 ✅ (ce cadrage) + rattrapage gouvernance MEMPHIS
+(0.0.51→0.0.56 tracées). BUMP-KLG-1→3 à la demande.
