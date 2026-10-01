@@ -33,7 +33,7 @@ class PlatformCatalogAlignmentTest {
     @Test
     fun `toml version workspace-bom matches platform version`() {
         assertEquals(
-            "0.0.61", tomlVersions["workspace-bom"],
+            "0.0.62", tomlVersions["workspace-bom"],
             "workspace-bom dans le toml (tri-split C2 supprimé)"
         )
         assertTrue(
@@ -68,8 +68,8 @@ class PlatformCatalogAlignmentTest {
     @Test
     fun `toml codebase plugin version is the published S-264 release`() {
         assertEquals(
-            "0.0.16", tomlVersions["codebase-plugin"],
-            "codebase-plugin 0.0.16 (S-264 dogfood A2 : PlannerPort câblé + generateAugmentedPlan)",
+            "0.0.17", tomlVersions["codebase-plugin"],
+            "codebase-plugin 0.0.17 (S-272 bloc B : republo post-US-1 pages — le 0.0.16 Central S-264 était stale)",
         )
     }
 

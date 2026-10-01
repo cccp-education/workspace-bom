@@ -74,6 +74,7 @@ les 2 (nmcp 1.5.0 agrège les publications du build racine).
 [cols="2,3,2"]
 |===
 | Release | Contenu | Bundle
+| 0.0.62 (S-278) | **codebase-plugin 0.0.17 + codex-plugin 0.0.12** (bloc B publication N1→N2, piloté Queens S-272). `codebase-plugin 0.0.16` Central était stale (précède l'US-1 `pages`) → CI codex rouge. Propagation repo1 HTTP 200 ×4. | `7baf6567`
 | 0.0.60 (S-276) | **document-plugin 0.0.19** (DOC-BOOK-TRANSLATE + DOC-BOOK-MULTILANG + DOC-BOOK-PUBLISH 5/5 US + DOC-CI-ISOLATION release gate). Release pilotée New Orleans. | `27fae84c`
 | 0.0.59 (S-023) | **conventions-plugin 0.0.7** (P2/P3 review S-019 : fallback workspace-bom anti-drift, `additionalTasksInCheck` opt-in, sondes BDD réelles). Release pilotée ABIDJAN. | `ad9d763e`
 | 0.0.58 (S-240) | bakery-plugin 0.0.20 (BKY-LANG-NAV : brique N2 `bakeVariants` + `materializeTemplates` + sélecteur same-page + null-safety cœur). Débloque la CI réelle cccp.education/magic-stick. | à publier

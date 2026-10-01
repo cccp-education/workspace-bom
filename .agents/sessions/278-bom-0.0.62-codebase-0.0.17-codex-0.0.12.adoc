@@ -1,0 +1,45 @@
+= Session 278 — BOM/catalog 0.0.62 (codebase-plugin 0.0.17 + codex-plugin 0.0.12) ✅
+
+:session: 278
+:date: 2026-10-02
+:type: pub/ops — release pilotée (bloc B, ordre DAG N0 → N1 → N2)
+:borough: MEMPHIS — workspace-bom (N0)
+
+== Contexte
+
+Release MEMPHIS portée par le **bloc B** (publication N1→N2) ouvert côté
+Queens (codebase S-272) : le `codebase-plugin:0.0.16` Central était stale
+(précède l'US-1 `pages`), la CI codex échouait. Le bloc B exige de propager
+`codebase-plugin 0.0.17` **et** `codex-plugin 0.0.12`, dont la version propre
+est dérivée du catalogue (`ws.versions.codex.plugin`).
+
+== Travail (protocole RELEASE_PROTOCOL 6 étapes)
+
+[cols="2,3"]
+|===
+| Étape | Détail
+
+| Bump toml | `workspace-bom` `0.0.61` → `0.0.62` ; `codebase-plugin` `0.0.16` → `0.0.17` ; `codex-plugin` `0.0.11` → `0.0.12`
+| Gardes | `PlatformCatalogAlignmentTest` réalignée (0.0.62 + codebase 0.0.17) ; `codex-plugin` semver-only (pas de garde dure) — cohérence portée par `CodexPluginPublicationTest` côté codex
+| Compile | `agent-contracts compileKotlin compileTestKotlin` VERT
+| Maven local | `publishToMavenLocal` VERT — toml publié porte codebase 0.0.17 + codex 0.0.12 ; POM BOM 0.0.62 constrain les deux
+| Anti-collision | repo1 0.0.62 BOM/catalog = 404 avant publication (Piège #5)
+| Central | bundle `7baf6567-e27d-40d0-8ad5-3ec1c66fcdae` (AUTOMATIC)
+|===
+
+== Valeur
+
+* `codebase-plugin:0.0.17` (avec `pages`) résolvable depuis Central → la CI
+  codex peut compiler (prérequis dur de l'US-2 S-230).
+* Version dérivée codex alignée : le catalogue 0.0.62 autorise la publication
+  `codex-plugin:0.0.12`.
+
+== Dette
+
+* INDEX/HISTORY en retard (releases 0.0.36→0.0.61 non toutes tracées —
+  récurrent S-227/S-265/S-277) — resync gouvernance recommandé.
+
+== Gouvernance
+
+* `INDEX.adoc` (S-278), `SESSIONS_HISTORY.adoc`, `RELEASE_PROTOCOL.adoc`
+  (historique releases), `PROMPT_REPRISE.adoc`.

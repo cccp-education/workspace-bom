@@ -1,24 +1,24 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-240 — TERMINÉE (release pilotée bakery) : **BOM/catalog 0.0.58 — bakery-plugin 0.0.20**.
-Bundle `1bef33da-929b-4115-afd9-bdb9e12c2829` (AUTOMATIC, propagation ~4m30).
-Motif : le Central `bakery-plugin:0.0.19` (S-233) était **périmé** (sans la feature
-BKY-LANG-NAV) → la CI cccp.education/magic-stick échouait `materializeTemplates`.
-Ordre DAG MEMPHIS-first respecté (bakery 0.0.20 publié ensuite, runner re-pinné).
+278 — TERMINÉE (release pilotée bloc B) : **BOM/catalog 0.0.62 — codebase-plugin 0.0.17 + codex-plugin 0.0.12**.
+Bundle `7baf6567-e27d-40d0-8ad5-3ec1c66fcdae` (AUTOMATIC, propagation repo1 HTTP 200 ×4).
+Motif : bloc B (publication N1→N2) — le `codebase-plugin:0.0.16` Central était
+stale (précède l'US-1 `pages`), la CI codex échouait. Ordre DAG N0→N1→N2.
 
-== État du code (S-240)
+== État du code (S-278)
 
-- Central : BOM + catalog **0.0.58** (dernier état), bakery-plugin **0.0.20**.
-- Garde `PlatformCatalogAlignmentTest` réalignée (workspace-bom 0.0.58 +
-  bakery-plugin 0.0.20) ; RED prouvé (2 failed) → GREEN.
-- `RELEASE_PROTOCOL.adoc` : entrée release 0.0.58.
+- Central : BOM + catalog **0.0.62** (dernier état) ; `codebase-plugin 0.0.17` +
+  `codex-plugin 0.0.12` publiés (pilotés Queens S-272 / Brooklyn S-231).
+- Garde `PlatformCatalogAlignmentTest` réalignée (workspace-bom 0.0.62 +
+  codebase-plugin 0.0.17) ; `codex-plugin` semver-only.
+- `RELEASE_PROTOCOL.adoc` : entrée release 0.0.62.
 
-== Mission session 241 — à la demande
+== Mission session 279 — à la demande
 
 . *Resync gouvernance MEMPHIS* (recommandé, récurrent) : `.agents/INDEX.adoc` /
-   `SESSIONS_HISTORY.adoc` en retard (drift préexistant non committé).
-. *Adoption catalog par les boroughs* : re-pinner ws 0.0.58 là où utile.
+   `SESSIONS_HISTORY.adoc` — releases 0.0.36→0.0.61 non toutes tracées.
+. *Suivi bloc C* (codex S-232/S-233) : C-3 dead code N1 + C-4 pollution TOC.
 . *US-CI-1.4* : Ollama qwen3:0.6b en CI (1 pt).
 
 == Pièges à retenir (cumul + S-240)

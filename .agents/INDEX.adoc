@@ -5,9 +5,9 @@
 
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
-_Derniere mise a jour_ : 2026-09-30 (session S-277 — **BOM/catalog 0.0.61 (bakery-plugin 0.0.21)** : fix drift cross-borough. `bakery-plugin 0.0.20` importait `workspace-bom:0.0.58` → constraint `document-plugin:0.0.18` alors que 0.0.19 était publié (S-276). Nouvelle release bakery 0.0.21 (BOM 0.0.61 → document 0.0.19). Gardes `PlatformCatalogAlignmentTest` (bom 0.0.61 + bakery 0.0.21) réalignées. Bundle MEMPHIS `1b2a170e`, bundle bakery `05e89298`. Propagation repo1 HTTP 200.)
-_session terminee_ : 277 — BOM/catalog 0.0.61 (bakery-plugin 0.0.21).
-_prochaine session_ : 278 — à la demande (resync gouvernance recommandée — releases 0.0.36→0.0.61 non toutes tracées).
+_Derniere mise a jour_ : 2026-10-02 (session S-278 — **BOM/catalog 0.0.62 (codebase-plugin 0.0.17 + codex-plugin 0.0.12)** : release pilotée par le **bloc B** (publication N1→N2, Queens S-272). Le `codebase-plugin:0.0.16` Central était stale (précède l'US-1 `pages`), la CI codex échouait. Toml : `workspace-bom 0.0.61→0.0.62` + `codebase-plugin 0.0.16→0.0.17` + `codex-plugin 0.0.11→0.0.12` (version dérivée codex). Gardes `PlatformCatalogAlignmentTest` réalignées (0.0.62 + codebase 0.0.17). `publishToMavenLocal` VERT (toml publié porte codebase 0.0.17 + codex 0.0.12). Central bundle `7baf6567-e27d-40d0-8ad5-3ec1c66fcdae` (AUTOMATIC), propagation repo1 HTTP 200 (BOM · catalog · codebase · codex). Débloque la preuve CI codex US-2.)
+_session terminee_ : 278 — BOM/catalog 0.0.62 (codebase-plugin 0.0.17 + codex-plugin 0.0.12).
+_prochaine session_ : 279 — à la demande (resync gouvernance recommandée — releases 0.0.36→0.0.61 non toutes tracées).
 _Session en cours_ : —
 
 '''
