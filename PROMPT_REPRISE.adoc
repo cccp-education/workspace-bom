@@ -1,20 +1,22 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-278 — TERMINÉE (release pilotée bloc B) : **BOM/catalog 0.0.62 — codebase-plugin 0.0.17 + codex-plugin 0.0.12**.
-Bundle `7baf6567-e27d-40d0-8ad5-3ec1c66fcdae` (AUTOMATIC, propagation repo1 HTTP 200 ×4).
-Motif : bloc B (publication N1→N2) — le `codebase-plugin:0.0.16` Central était
-stale (précède l'US-1 `pages`), la CI codex échouait. Ordre DAG N0→N1→N2.
+279 — TERMINÉE (release pilotée propagation S-063) : **BOM/catalog 0.0.65 — bakery-plugin 0.0.23 + document-plugin 0.0.20**.
+Bundle `f9faa2fc-e505-4d74-afb0-3e3d436f5e50` (AUTOMATIC, propagation repo1 HTTP 200).
+Motif : propager le fix cross-borough S-063 (`TemplateStructureGuard` +
+`PendingBlockRetry`) jusqu'à cheroliv.com. Découverte P0 : `kotlin-stdlib-jdk8`
+muet (shim vide depuis Kotlin 1.8) → contraint dans la platform ; retrait côté
+plugins. Ordre DAG N0→N1→N2.
 
-== État du code (S-278)
+== État du code (S-279)
 
-- Central : BOM + catalog **0.0.62** (dernier état) ; `codebase-plugin 0.0.17` +
-  `codex-plugin 0.0.12` publiés (pilotés Queens S-272 / Brooklyn S-231).
-- Garde `PlatformCatalogAlignmentTest` réalignée (workspace-bom 0.0.62 +
-  codebase-plugin 0.0.17) ; `codex-plugin` semver-only.
-- `RELEASE_PROTOCOL.adoc` : entrée release 0.0.62.
+- Central : BOM + catalog **0.0.65** (dernier état) ; `bakery-plugin 0.0.23` +
+  `document-plugin 0.0.20` publiés (pilotés cheroliv.com S-064).
+- Garde `PlatformCatalogAlignmentTest` réalignée (workspace-bom 0.0.65 +
+  bakery-plugin 0.0.23) ; `WorkspaceCatalogStructureTest` (document 0.0.20).
+- `RELEASE_PROTOCOL.adoc` : entrée release 0.0.65.
 
-== Mission session 279 — à la demande
+== Mission session 280 — à la demande
 
 . *Resync gouvernance MEMPHIS* (recommandé, récurrent) : `.agents/INDEX.adoc` /
    `SESSIONS_HISTORY.adoc` — releases 0.0.36→0.0.61 non toutes tracées.

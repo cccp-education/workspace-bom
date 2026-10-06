@@ -25,6 +25,13 @@ dependencies {
     constraints {
         // ── Kotlin ──────────────────────────────────────────────────────────
         api(libs.kotlin.stdlib)
+        // MEMPHIS-BOM-FIX — kotlin-stdlib-jdk8 is consumed WITHOUT a version by
+        // document-gradle (`implementation(kotlin("stdlib-jdk8"))` + transitive
+        // resolution). Central rejects a versionless runtime dependency
+        // ("Dependency version information is missing"), so the BOM must pin it
+        // exactly like kotlin-stdlib. Aliased and versioned by the toml (same
+        // `kotlin` version ref).
+        api(libs.kotlin.stdlib.jdk8)
         api(libs.kotlinx.serialization.json)
         api(libs.kotlinx.coroutines.core)
         api(libs.kotlinx.coroutines.reactive)

@@ -1,0 +1,47 @@
+= Session 279 — BOM/catalog 0.0.65 (bakery-plugin 0.0.23 + document-plugin 0.0.20) ✅
+
+:session: 279
+:date: 2026-10-06
+:type: pub/ops — release pilotée (propagation DAG du fix cross-borough S-063)
+:borough: MEMPHIS — workspace-bom (N0)
+
+== Contexte
+
+Release MEMPHIS demandée par le pilote pour **propager le fix cross-borough
+S-063** jusqu'à cheroliv.com : le batch delta-only ne converge qu'une fois
+`document-plugin 0.0.20` (DOC-TRANSLATE-RESILIENCE) **et** `bakery-plugin 0.0.23`
+(PendingBlockRetry + TemplateStructureGuard) résolvables depuis Central.
+
+== Travail (protocole RELEASE_PROTOCOL)
+
+[cols="2,3"]
+|===
+| Étape | Détail
+
+| Bump toml | `workspace-bom` `0.0.63` → `0.0.65` ; `bakery-plugin` `0.0.22` → `0.0.23` ; `document-plugin` `0.0.19` → `0.0.20`
+| Fix P0 | **`kotlin-stdlib-jdk8` muet** : Central rejetait document/bakery (`Dependency version information is missing`). L'artefact `-jdk8` est un **shim vide de 953 octets** (0 classe hors `module-info.class`) depuis Kotlin 1.8, inutile sous JDK 25 → **retrait** dans les deux boroughs. La platform épingle malgré tout l'alias toml (cohérence de famille `kotlin-stdlib`) : `api(libs.kotlin.stdlib.jdk8)`.
+| Gardes | `PlatformCatalogAlignmentTest` réalignée (0.0.65 + bakery 0.0.23) ; `WorkspaceCatalogStructureTest` (document 0.0.20)
+| Compile | `agent-contracts compileKotlin compileTestKotlin` VERT
+| Maven local | `publishToMavenLocal` VERT — toml publié porte bakery 0.0.23 + document 0.0.20 ; POM BOM 0.0.65 épingle `kotlin-stdlib` **et** `kotlin-stdlib-jdk8`
+| Anti-collision | repo1 0.0.65 BOM/catalog = 404 avant publication (piège #5)
+| Central | bundle `f9faa2fc-e505-4d74-afb0-3e3d436f5e50` (AUTOMATIC)
+|===
+
+== Découverte — le BOM fraîchement publié doit être propagé
+
+La 1re publication `document-plugin 0.0.20` sous BOM `0.0.64` a échoué : le BOM
+venait d'être publié, repo1 le renvoyait encore **404**, donc Central ne pouvait
+pas résoudre les contraintes et le `kotlin-stdlib-jdk8` restait sans version.
+D'où l'ordre correct : publier le BOM, **attendre la propagation repo1 (HTTP 200)**,
+puis publier les plugins dépendants. Le BOM final est 0.0.65 (portant le retrait).
+
+== Valeur
+
+* `document-plugin:0.0.20` + `bakery-plugin:0.0.23` résolvables depuis Central →
+  la chaîne N3 (runner) propage le fix jusqu'à cheroliv.com.
+* Preuve DAG (runner `buildEnvironment`) : `bakery-plugin 0.0.23 → workspace-bom
+  0.0.65 → document-plugin 0.0.20`.
+
+== Gouvernance
+
+* `INDEX.adoc`, `SESSIONS_HISTORY.adoc`, `RELEASE_PROTOCOL.adoc`, `PROMPT_REPRISE.adoc`.

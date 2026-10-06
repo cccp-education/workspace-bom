@@ -74,6 +74,7 @@ les 2 (nmcp 1.5.0 agrège les publications du build racine).
 [cols="2,3,2"]
 |===
 | Release | Contenu | Bundle
+| 0.0.65 (S-279) | **bakery-plugin 0.0.23 + document-plugin 0.0.20** (propagation DAG du fix cross-borough S-063 : `TemplateStructureGuard` + `PendingBlockRetry` atteignent cheroliv.com). Fix `kotlin-stdlib-jdk8` muet : constraint ajoutée à la platform (shim vide depuis Kotlin 1.8). Release pilotée cheroliv.com. | `f9faa2fc`
 | 0.0.62 (S-278) | **codebase-plugin 0.0.17 + codex-plugin 0.0.12** (bloc B publication N1→N2, piloté Queens S-272). `codebase-plugin 0.0.16` Central était stale (précède l'US-1 `pages`) → CI codex rouge. Propagation repo1 HTTP 200 ×4. | `7baf6567`
 | 0.0.60 (S-276) | **document-plugin 0.0.19** (DOC-BOOK-TRANSLATE + DOC-BOOK-MULTILANG + DOC-BOOK-PUBLISH 5/5 US + DOC-CI-ISOLATION release gate). Release pilotée New Orleans. | `27fae84c`
 | 0.0.59 (S-023) | **conventions-plugin 0.0.7** (P2/P3 review S-019 : fallback workspace-bom anti-drift, `additionalTasksInCheck` opt-in, sondes BDD réelles). Release pilotée ABIDJAN. | `ad9d763e`
