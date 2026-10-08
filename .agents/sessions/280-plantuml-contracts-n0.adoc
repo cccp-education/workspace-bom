@@ -1,0 +1,74 @@
+= Session 280 — US-1 PLT-DIAGRAM-OWNERSHIP : contrat N0 `plantuml-contracts`
+
+_Date_ : 2026-10-08
+_Borough_ : MEMPHIS (workspace-bom)
+_Type_ : feature N0 / baby-step DDD-TDD-BDD
+
+== Mission d'ouverture
+
+Suite au cadrage cross-borough **PLT-DIAGRAM-OWNERSHIP** (plantuml-gradle S-219,
+`.agents/CADRAGE_EPIC_PLT_DIAGRAM_OWNERSHIP.adoc`) : créer le **contrat N0
+`plantuml-contracts`** — le bloc PlantUML doit avoir un propriétaire unique, et
+document/bakery doivent consommer le **contrat**, jamais le plugin (fin du
+couplage N2→N2).
+
+== Livré — artefact N0 `plantuml-contracts:0.0.1`
+
+10e artefact N0 de MEMPHIS (après agent, codebase, llm-pool, opencode-session,
+i18n, pipeline, runtime, ocr, vibecoding). Build **standalone** (pattern 0124),
+mêmes conventions que `ocr-contracts`.
+
+=== Types purs (`contracts.plantuml`, zéro Gradle/PlantUML/LLM)
+
+* `PlantUmlBlock` — value object (raw + borrowedVocabulary) + `labels()`
+  (quoted labels hors identifiants techniques `Foo.Bar` + directives non quotées
+  `title`/`header`/`footer`/`caption`) + `hasBorrowedVocabulary()` +
+  `hasTranslatableLabels()`. Extrait de `document.translation.plantuml.PlantUmlBlock`.
+* `PlantUmlStrategy` — enum **unique** `TRANSLATE`/`BORROW`/`PRESERVE` (D4) :
+  remplace les deux vocabulaires divergents (`document.PlantUmlStrategy` vs
+  `plantuml.boundary.TranslationStrategy`).
+* `PlantUmlClassifier` — classe pure (ex-`document.…PlantUmlClassifier`) :
+  BORROW > TRANSLATE > PRESERVE.
+* `SyntaxValidationResult` — sealed (Valid/Invalid) extrait de
+  `plantuml.validation` (anticipé par le BACKLOG plantuml).
+* `PlantUmlSyntaxValidator` — fun interface (ex-`document.…PlantUmlSyntaxValidator`),
+  impl à venir côté plantuml (wrappe le parser natif).
+* `PlantUmlTranslationRequest` / `PlantUmlTranslationPort` /
+  `PlantUmlTranslationOutcome` — le **port unique** de traduction du bloc (D1/D3) ;
+  l'outcome `Preserved` empêche tout fallback FR silencieux marqué traduit.
+
+=== Tests
+
+**20 tests JUnit5** (5 classes) : `PlantUmlBlockTest` (7), `PlantUmlClassifierTest`
+(4), `PlantUmlSyntaxValidatorTest` (2), `PlantUmlTranslationPortTest` (4),
+`SyntaxValidationResultTest` (3). **0 FAIL**.
+
+=== Câblage MEMPHIS
+
+* `gradle/libs.versions.toml` : `plantuml-contracts = "0.0.1"` ([versions]) +
+  `education.cccp:plantuml-contracts` ([libraries]).
+* `build.gradle.kts` : `api(libs.plantuml.contracts)` dans les contraintes de la
+  platform.
+* Garde `PlatformCatalogAlignmentTest` : `assertEquals("0.0.1", plantuml-contracts)`.
+* `publishToMavenLocal` : artefact signé (jar/module/pom/sources/javadoc + .asc).
+
+== Gates (Local = Build, Tests = CI)
+
+* `plantuml-contracts` : `compileKotlin` + `compileTestKotlin` VERT ;
+  `test --rerun-tasks` **20/20 PASS 0 FAIL**.
+* `agent-contracts` : garde `PlatformCatalogAlignmentTest` **7/7 PASS** (dont la
+  nouvelle entrée plantuml-contracts).
+* BOM racine : `generatePomFileForMavenPublication` VERT (constraint
+  plantuml-contracts 0.0.1 dans le POM) ; `publishToMavenLocal` VERT.
+* Zéro secret, zéro Python, zéro publication Central (accord pilote requis).
+
+== Reste (PLT-DIAGRAM-OWNERSHIP US-2→US-7)
+
+* **US-2** : plantuml-gradle implémente `PlantUmlTranslationPort` +
+  `PlantUmlSyntaxValidator` (le domaine boundary riche devient vivant ;
+  `SyntaxValidationResult` migré vers le contrat).
+* **US-3** : round-trip syntaxe (`\n` préservé, bloc cassé jamais publié).
+* **US-4** : document délègue (suppression `PlantUmlClassifier`/`PlantUmlStrategy`/
+  `PlantUmlTranslationAdapter` privés).
+* **US-5** : version toolchain gouvernée.
+* **US-6/7** : chaîne E2E + dogfooding.

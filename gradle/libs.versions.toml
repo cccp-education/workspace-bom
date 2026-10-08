@@ -79,6 +79,7 @@ i18n-contracts = "0.0.4"
 pipeline-contracts = "0.0.2"
 runtime-contracts = "0.0.1"
 ocr-contracts = "0.0.1"
+plantuml-contracts = "0.0.1"
 document-plugin = "0.0.20"
 
 # ── Docker / Infrastructure ───────────────────────────────────────────────────
@@ -275,6 +276,7 @@ jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "j
 
 # ── Borough plugins (education.cccp) ──
 ocr-contracts = { module = "education.cccp:ocr-contracts", version.ref = "ocr-contracts" }
+plantuml-contracts = { module = "education.cccp:plantuml-contracts", version.ref = "plantuml-contracts" }
 agent-contracts = { module = "education.cccp:agent-contracts", version.ref = "agent-contracts" }
 codebase-contracts = { module = "education.cccp:codebase-contracts", version.ref = "codebase-contracts" }
 llm-pool-contracts = { module = "education.cccp:llm-pool-contracts", version.ref = "llm-pool-contracts" }

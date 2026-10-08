@@ -121,6 +121,7 @@ dependencies {
         api(libs.pipeline.contracts)
         api(libs.runtime.contracts)
         api(libs.ocr.contracts)
+        api(libs.plantuml.contracts)
 
         // ── Internal education.cccp plugins (N2) — pilotés par le BOM ───────
         api(libs.bakery.plugin)

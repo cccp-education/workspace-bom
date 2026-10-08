@@ -4,9 +4,23 @@
 :toc: left
 :sectnums:
 
-_Dernière mise à jour : 2026-09-17 (S-227 — release Central **0.0.50** : codebase-plugin 0.0.16 (dogfood Newark A2 S-264 : PlannerPort câblé + `generateAugmentedPlan` + fix rotation pool S-263). Ordre DAG MEMPHIS-first. Gardes `PlatformCatalogAlignmentTest` (0.0.50 + codebase 0.0.16) + `WorkspaceCatalogStructureTest` réalignées. Bundles : MEMPHIS `547e3e46`, codebase `db5e1158`.)_
+_Dernière mise à jour : 2026-10-08 (S-280 — contrat N0 **`plantuml-contracts:0.0.1`** : 10e artefact N0, US-1 de l'EPIC cross-borough PLT-DIAGRAM-OWNERSHIP (cadrage plantuml S-219). Types purs `contracts.plantuml`. Build standalone pattern 0124. Gates 20/20 PASS + garde 7/7 + mavenLocal VERT. Publication Central + bump BOM à venir (accord pilote).)_
 
 _Source : configuration/EPIC_PUB.adoc (Session 096)_
+
+'''
+== EPIC PLT-DIAGRAM-OWNERSHIP — contrat N0 plantuml-contracts (US-1 ✅ S-280)
+
+*Cadrage* : `plantuml-gradle/plantuml-plugin/.agents/CADRAGE_EPIC_PLT_DIAGRAM_OWNERSHIP.adoc`
+*Priorité* : 🟠 HAUTE — cause racine cross-borough de CHE-DIAGRAM (diagrammes blancs).
+
+* US-1 ✅ S-280 — `plantuml-contracts:0.0.1` créé (10e N0, `PlantUmlBlock`,
+  `PlantUmlStrategy` enum unique, `PlantUmlClassifier`, `SyntaxValidationResult`,
+  `PlantUmlSyntaxValidator`, `PlantUmlTranslationRequest`/`Port`/`Outcome`).
+  mavenLocal VERT, garde alignée.
+* 🟡 À FAIRE (accord pilote) — **Publication Central** `plantuml-contracts:0.0.1`
+  + bump BOM (`workspace-bom 0.0.65→0.0.66`, constraint plantuml-contracts 0.0.1),
+  garde réalignée. Prérequis dur pour que plantuml/document consomment le contrat.
 
 '''
 == EPIC PUB — Publication Maven Central

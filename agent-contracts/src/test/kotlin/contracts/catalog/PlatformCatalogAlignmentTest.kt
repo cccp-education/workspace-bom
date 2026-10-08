@@ -62,6 +62,7 @@ class PlatformCatalogAlignmentTest {
         assertEquals("0.0.2", tomlVersions["pipeline-contracts"], "pipeline-contracts")
         assertEquals("0.0.1", tomlVersions["runtime-contracts"], "runtime-contracts")
         assertEquals("0.0.1", tomlVersions["ocr-contracts"], "ocr-contracts")
+        assertEquals("0.0.1", tomlVersions["plantuml-contracts"], "plantuml-contracts (PLT-DIAGRAM-OWNERSHIP US-1, 10e contrat N0)")
         assertEquals("0.0.7", tomlVersions["conventions-plugin"], "conventions-plugin (Central 0.0.7, P2/P3 review S-019 : anti-drift BOM + opt-in cucumber + sondes BDD réelles)")
     }
 
