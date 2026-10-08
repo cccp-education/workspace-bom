@@ -72,3 +72,15 @@ mêmes conventions que `ocr-contracts`.
   `PlantUmlTranslationAdapter` privés).
 * **US-5** : version toolchain gouvernée.
 * **US-6/7** : chaîne E2E + dogfooding.
+
+== Publication Central (S-280, pilote autorisé)
+
+* `plantuml-contracts:0.0.1` — bundle `c9a687d3-1089-4ff9-a56e-20d27afed6c3`
+  (AUTOMATIC), propagation repo1 HTTP 200 (POM + jar).
+* `BOM/catalog 0.0.66` — bundle `c0201db7-7a17-4a0c-859c-fd8e7008dade`
+  (constraint plantuml-contracts 0.0.1), propagation repo1 HTTP 200.
+* `BOM/catalog 0.0.67` — bundle `c2ce2252-82ef-42a5-8f3c-f8317ea15fe2`
+  (`plantuml-plugin 0.0.6` ajouté au catalogue), propagation repo1 HTTP 200.
+* Garde `PlatformCatalogAlignmentTest` : workspace-bom 0.0.67 + plantuml-contracts
+  0.0.1 — 7/7 PASS.
+
