@@ -81,6 +81,9 @@ mêmes conventions que `ocr-contracts`.
   (constraint plantuml-contracts 0.0.1), propagation repo1 HTTP 200.
 * `BOM/catalog 0.0.67` — bundle `c2ce2252-82ef-42a5-8f3c-f8317ea15fe2`
   (`plantuml-plugin 0.0.6` ajouté au catalogue), propagation repo1 HTTP 200.
-* Garde `PlatformCatalogAlignmentTest` : workspace-bom 0.0.67 + plantuml-contracts
+* `BOM/catalog 0.0.68` — bundle `b9ea6d21-d81a-4869-9488-f053f288c5bb`
+  (`plantuml-plugin 0.0.7` — design corrigé provider-agnostique, cf. plantuml S-220),
+  propagation repo1 HTTP 200.
+* Garde `PlatformCatalogAlignmentTest` : workspace-bom 0.0.68 + plantuml-contracts
   0.0.1 — 7/7 PASS.
 
