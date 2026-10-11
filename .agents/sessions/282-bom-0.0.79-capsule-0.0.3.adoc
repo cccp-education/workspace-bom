@@ -1,0 +1,32 @@
+= Session 282 — BOM/catalog 0.0.79 (capsule-plugin 0.0.3)
+:session: 282
+:borough: MEMPHIS 🎸
+:date: 2026-10-11
+:type: pub/ops (release consommateur)
+:accord: pilote (publication capsule 0.0.3, S-164 capsule)
+
+== Mission
+
+Propager la nouvelle version du plugin `capsule-plugin 0.0.3` (publiée Central par
+capsule S-164) dans le BOM/catalog `workspace-bom` — bump consommateur standard
+(précédent S-151 qui avait porté capsule 0.0.2).
+
+== Livrable
+
+* Catalog `gradle/libs.versions.toml` : `capsule-plugin` `0.0.2` → **`0.0.3`** ;
+  version BOM/catalog `workspace-bom` `0.0.78` → **`0.0.79`**.
+* `publishToMavenLocal` VERT — POM BOM 0.0.79 contraint `capsule-plugin 0.0.3`.
+* **Publication Central** : `publishAggregationToCentralPortal` bundle
+  **`019cd3b5-0ad5-458b-9c31-e241c7e6cec0`** (AUTOMATIC).
+* **Propagation repo1** : `workspace-bom/0.0.79` + `workspace-catalog/0.0.79`
+  → HTTP **200** (×2).
+
+== Ordre DAG
+
+`capsule-plugin 0.0.3` (N2, Central, S-164) → `workspace-bom`/`workspace-catalog
+0.0.79` (N0, Central, cette session). Contrats N0 et autres plugins inchangés.
+
+== Gates
+
+* `publishToMavenLocal` VERT ; propagation repo1 vérifiée. Zéro secret.
+* Aucun autre artefact bumped (release consommateur minimal).
