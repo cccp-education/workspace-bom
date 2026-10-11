@@ -1,5 +1,14 @@
 = COMPLETED_TASKS_ARCHIVE — 2026-10
 
+== Session 282 (2026-10-11) — BOM/catalog 0.0.79 : capsule-plugin 0.0.3 ✅
+
+Bump consommateur (accord pilote ; capsule S-164 a publié `capsule-plugin 0.0.3`).
+
+* [x] Catalog `capsule-plugin 0.0.2 → 0.0.3` + `workspace-bom 0.0.78 → 0.0.79`
+* [x] `publishToMavenLocal` VERT (POM BOM 0.0.79 contraint `capsule-plugin 0.0.3`)
+* [x] Publication Central bundle `019cd3b5-0ad5-458b-9c31-e241c7e6cec0` (AUTOMATIC)
+* [x] Propagation repo1 `workspace-bom/0.0.79` + `workspace-catalog/0.0.79` HTTP 200 ×2
+
 == Session 281 (2026-10-11) — Release DAG 0.0.78 : bump catalog + dépendances ✅
 
 Décision pilote : bump + publication Central des 3 plugins livrés (GBL-010) et
