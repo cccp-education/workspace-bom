@@ -1,0 +1,83 @@
+= Session 281 — Release DAG 0.0.78 : bump catalog + dépendances (plantuml/document/bakery)
+
+_Date_ : 2026-10-11
+_Borough_ : MEMPHIS (workspace-bom, N0)
+_Type_ : release / bump cross-borough (décision pilote)
+
+== Mission
+
+Accord pilote : bump + publication Central des 3 plugins livrés (GBL-010 :
+plantuml `PlantumlLabelIntegrity`, document `ArticleTreeAudit`, bakery
+`TemplateTreeAudit`) et **mise à jour des dépendances** de la chaîne LLM/diagram/git.
+
+== Bump du catalog `0.0.77 → 0.0.78`
+
+[cols="2,2,2"]
+|===
+| Version | Avant | Après
+| `workspace-bom` | 0.0.77 | **0.0.78**
+| `plantuml-plugin` | 0.0.8 | **0.0.9**
+| `document-plugin` | 0.0.23 | **0.0.24**
+| `bakery-plugin` | 0.0.25 | **0.0.26**
+| `jgit` | 7.5.0.202512021534-r | **7.8.0.202609011348-r**
+| `asciidoctorj-diagram` | 3.2.0 | **3.2.1**
+| `asciidoctorj-diagram-plantuml` | 1.2025.3 | **1.2026.2**
+| `langchain4j` | 1.16.3 | **1.22.0**
+| `langchain4j-beta` | 1.16.3-beta26 | **1.22.0-beta32**
+| `koog` | 1.0.0 | **1.3.0**
+|===
+
+`plantuml` **standalone** (`plantuml-engine`) laissé à `1.2026.0` → reporté à
+l'US dédiée `CHE-DIAGRAM US-3` (version toolchain gouvernée + preuve bake/navigateur).
+
+== Publication Central (DAG)
+
+Ordre `MEMPHIS → plantuml → document → bakery` (document dépend de plantuml ;
+bakery de document + plantuml).
+
+[cols="2,4,2"]
+|===
+| Artefact | Bundle nmcp | Propagation repo1
+| `workspace-bom` + `workspace-catalog` 0.0.78 | `a83da865-0a05-41c9-a337-04b4750e9b80` | HTTP 200
+| `plantuml-plugin` 0.0.9 | `dcb6d30e-fcff-45b3-a9c1-d9ba435a3cf3` | HTTP 200
+| `document-plugin` 0.0.24 | `6ec72078-8921-4c3a-a1f2-3a2ddbc79cab` | HTTP 200
+| `bakery-plugin` 0.0.26 | `c96e3a5c-c6b1-41bd-abd6-445219874603` | HTTP 200
+|===
+
+Tous les POM importent `workspace-bom:0.0.78`.
+
+== Gates locaux (Local = Build)
+
+* MEMPHIS : `assemble` + `publishToMavenLocal` VERT (catalog 0.0.78 généré avec
+  toutes les nouvelles versions).
+* plantuml : `compileKotlin compileTestKotlin compileFunctionalTestKotlin` VERT
+  (contre BOM 0.0.78 : jgit 7.8, diagram 3.2.1, langchain4j 1.22, koog 1.3).
+* document : compile 3 source sets VERT (contre plantuml 0.0.9 + BOM 0.0.78).
+* bakery : compile 3 source sets VERT (**JGit 6.10 → 7.8** API-compatible,
+  diagram 3.0.1 → 3.2.1).
+
+== Fichiers
+
+[cols="1,3"]
+|===
+| Repo | Fichier
+
+| workspace-bom | `gradle/libs.versions.toml`
+| plantuml | `gradle/libs.versions.toml`, `settings.gradle.kts`, `build.gradle.kts`
+| document | `gradle/libs.versions.toml`, `settings.gradle.kts`, `build.gradle.kts`
+| bakery | `gradle/libs.versions.toml`, `settings.gradle.kts`, `build.gradle.kts`
+|===
+
+== Notes
+
+* Piège #6 respecté : polling repo1 (~2-8 min par artefact) avant de repin le
+  consommateur suivant.
+* Ordre DAG strict : chaque consommateur compile seulement après propagation du
+  producteur.
+* Zéro Python, zéro secret.
+
+== Reste
+
+* US-3 `CHE-DIAGRAM` : `plantuml` standalone `1.2026.0 → 1.2026.8` + preuve bake/navigateur.
+* Repin des autres consommateurs (slider, capsule, codebase, planner, readme) sur
+  catalog `0.0.78` (sessions dédiées).

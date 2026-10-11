@@ -1,5 +1,17 @@
 = COMPLETED_TASKS_ARCHIVE — 2026-10
 
+== Session 281 (2026-10-11) — Release DAG 0.0.78 : bump catalog + dépendances ✅
+
+Décision pilote : bump + publication Central des 3 plugins livrés (GBL-010) et
+mise à jour des dépendances LLM/diagram/git.
+
+* [x] Catalog `0.0.77 → 0.0.78` : plugins plantuml 0.0.9 / document 0.0.24 / bakery 0.0.26
+* [x] Dépendances : `jgit 7.8.0`, `asciidoctorj-diagram 3.2.1`, `asciidoctorj-diagram-plantuml 1.2026.2`, `langchain4j 1.22.0` / beta `1.22.0-beta32`, `koog 1.3.0`
+* [x] Publication Central DAG (`MEMPHIS → plantuml → document → bakery`) : bundles `a83da865` / `dcb6d30e` / `6ec72078` / `c96e3a5c`, propagation HTTP 200
+* [x] Compiles VERT (MEMPHIS + 3 plugins contre BOM 0.0.78) ; JGit 6.10→7.8 API-compatible
+* [x] `plantuml-engine` standalone laissé à 1.2026.0 (reporté US-3)
+* Zéro Python, zéro secret
+
 == Session 280 (2026-10-08) — Contrat N0 `plantuml-contracts:0.0.1` ✅
 
 US-1 de l'EPIC cross-borough **PLT-DIAGRAM-OWNERSHIP** (cadrage plantuml-gradle

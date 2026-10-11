@@ -1,56 +1,49 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-280 — TERMINÉE (US-1 PLT-DIAGRAM-OWNERSHIP) : **contrat N0 `plantuml-contracts:0.0.1`**.
+282 — À DÉFINIR (dernière terminée : **281 — release DAG 0.0.78**).
 
-Nouveau 10e artefact N0 (build standalone, pattern 0124). Types purs
-`contracts.plantuml` : `PlantUmlBlock`, `PlantUmlStrategy` (enum unique
-TRANSLATE/BORROW/PRESERVE), `PlantUmlClassifier`, `SyntaxValidationResult`,
-`PlantUmlSyntaxValidator` (fun interface), `PlantUmlTranslationRequest`,
-`PlantUmlTranslationPort`, `PlantUmlTranslationOutcome`. Motif : le bloc PlantUML
-doit avoir un propriétaire unique ; document/bakery consomment le contrat, jamais
-le plugin (fin du couplage N2→N2). Cadrage : plantuml-gradle S-219
-`.agents/CADRAGE_EPIC_PLT_DIAGRAM_OWNERSHIP.adoc`.
+**S-281** : release DAG cross-borough (accord pilote). Bump catalog `0.0.77 →
+0.0.78` (+ plugins `plantuml 0.0.9`, `document 0.0.24`, `bakery 0.0.26` ;
+dépendances `jgit 7.8.0`, `asciidoctorj-diagram 3.2.1`,
+`asciidoctorj-diagram-plantuml 1.2026.2`, `langchain4j 1.22.0` / beta
+`1.22.0-beta32`, `koog 1.3.0`). Publication Central DAG (`MEMPHIS → plantuml →
+document → bakery`) : bundles `a83da865` / `dcb6d30e` / `6ec72078` / `c96e3a5c`,
+propagation repo1 HTTP 200 ×5. Rapport
+`.agents/sessions/281-release-0.0.78-bump-plugins-deps.adoc`.
 
-Câblage : toml (`plantuml-contracts = "0.0.1"` + library), platform
-(`api(libs.plantuml.contracts)`), garde `PlatformCatalogAlignmentTest` (+1).
-Gates : artefact 20/20 PASS, garde 7/7 PASS, `publishToMavenLocal` VERT.
+== État du code (S-281)
 
-== État du code (S-280)
+- Central : BOM + catalog **0.0.78** ; `plantuml-plugin 0.0.9` +
+  `document-plugin 0.0.24` + `bakery-plugin 0.0.26`.
+- `plantuml-engine` (standalone) : **1.2026.0** (non bumpé — reporté US-3).
+- Contrats N0 inchangés (agent 0.0.3, codebase 0.0.2, i18n 0.0.4, plantuml 0.0.1…).
 
-- Central : BOM + catalog **0.0.65** (dernier état publié) ; `bakery-plugin 0.0.23`
-  + `document-plugin 0.0.20` publiés.
-- **Nouveau** : `plantuml-contracts:0.0.1` mavenLocal (PAS encore Central) ;
-  toml/garde alignés. Le BOM local porte la constraint plantuml-contracts 0.0.1.
-- Garde `PlatformCatalogAlignmentTest` étendue (plantuml-contracts 0.0.1).
+== Mission session 282 — au choix pilote
 
-== Mission session 281 — à la demande
-
-. **Suite PLT-DIAGRAM-OWNERSHIP** (piloté plantuml-gradle) : **US-2** implémente
-   `PlantUmlTranslationPort`/`PlantUmlSyntaxValidator` dans plantuml-gradle
-   (consomme le contrat N0). **Publication Central** `plantuml-contracts:0.0.1` +
-   bump BOM requis avant que plantuml/document le consomment (accord pilote).
-. *Resync gouvernance MEMPHIS* (recommandé) : INDEX/HISTORY — releases
-   0.0.36→0.0.61 non toutes tracées.
-. *Suivi bloc C* (codex S-232/S-233) ; *US-CI-1.4* (qwen3:0.6b, 1 pt).
+. **Repin consommateurs** sur catalog `0.0.78` (slider, capsule, codebase,
+   planner, readme) : sessions dédiées par borough (maintenance), avec compile
+   (langchain4j 1.22 / koog 1.3 peuvent casser l'API chez certains).
+2. **US-3 `CHE-DIAGRAM`** (piloté cheroliv) : `plantuml` standalone
+   `1.2026.0 → 1.2026.8` + version toolchain gouvernée + preuve bake/navigateur.
+3. *Resync gouvernance MEMPHIS* (recommandé) : releases 0.0.66→0.0.77 non toutes
+   tracées dans INDEX/HISTORY.
 
 == Pièges à retenir (cumul)
 
-1. *Version dérivée ≠ version publiée* : bumper le toml local d'un borough est
-   OBLIGATOIRE pour qu'une release porte les changements (HTOWN S-218).
-2. *Catch-22 D8 (anti-ghost)* : une entrée catalogue exige que l'artefact soit
-   DÉJÀ publié Central — pour un artefact jamais publié, publier d'abord.
-3. *Gardes épinglent les versions* — après CHAQUE bump toml, bump la garde dans le
-   même commit.
-4. *Contrats N0 = builds standalone* (pattern 0124) : pas de sous-projet, pas de
-   `include(...)` — `./gradlew` dans le répertoire du contrat.
-5. *nmcp collision* : ne jamais re-invoquer publishAggregationToCentralPortal sans
-   vérifier repo1 d'abord.
-6. *Polling repo1* : ~4-30 min après « deployment is publishing » (AUTOMATIC).
+1. *Version dérivée ≠ version publiée*.
+2. *Catch-22 D8 (anti-ghost)* : publier le producteur avant qu'un catalogue
+   l'exige.
+3. *Gardes épinglent les versions* — bump toml + garde dans le même commit.
+4. *Contrats N0 = builds standalone* (pattern 0124).
+5. *nmcp collision* : vérifier repo1 avant de re-publier.
+6. *Polling repo1* : ~2-8 min après « deployment is publishing » (AUTOMATIC).
+7. *(S-281) Le MEMPHIS-first exige d'attendre la propagation Central du BOM avant
+   de repin les consommateurs* — sinon `Could not find … workspace-catalog:0.0.78`
+   (les settings n'ont que `mavenCentral()`).
 
 == Règles
 
 - Voir `AGENT.adoc` — commit/push/publish sur permission explicite.
 - Publication Central : `./gradlew publishAggregationToCentralPortal` (agrégatif).
-  Protocole : `.agents/RELEASE_PROTOCOL.adoc`.
 - Zéro Python. Le pilote autorise commit/push en fin de session.
