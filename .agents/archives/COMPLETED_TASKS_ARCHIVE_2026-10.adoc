@@ -1,5 +1,15 @@
 = COMPLETED_TASKS_ARCHIVE — 2026-10
 
+== Session 284 (2026-10-12) — BOM/catalog 0.0.81 : capsule-plugin 0.0.5 ✅
+
+Bump consommateur (accord pilote ; capsule S-175).
+
+* [x] Catalog `capsule-plugin 0.0.4 → 0.0.5` + `workspace-bom 0.0.80 → 0.0.81`
+* [x] Garde `PlatformCatalogAlignmentTest` ré-alignée (`0.0.77` → `0.0.81`) — dérive pré-existante (Piège #3)
+* [x] `assemble` + `publishToMavenLocal` VERTS
+* [x] Publication Central bundle `8bbfe706-4240-40c7-be4a-996b2bd38299` (AUTOMATIC)
+* [ ] Propagation repo1 `workspace-bom/0.0.81` + `workspace-catalog/0.0.81` (polling)
+
 == Session 283 (2026-10-11) — BOM/catalog 0.0.80 : capsule-plugin 0.0.4 ✅
 
 Bump consommateur (accord pilote ; correctif dérive dépendances capsule S-165).

@@ -1,0 +1,47 @@
+= Session 284 — BOM/catalog 0.0.81 : `capsule-plugin 0.0.5`
+:session: 284
+:date: 2026-10-12
+:type: pub/ops
+:statut: TERMINÉ
+
+== Mission
+
+Bump consommateur (accord pilote) : consommer la publication `capsule-plugin 0.0.5`
+(capsule S-175). Pattern identique à S-283 (qui a consommé 0.0.4).
+
+== Livré
+
+* Catalog `gradle/libs.versions.toml` : `capsule-plugin 0.0.4 → 0.0.5` +
+  `workspace-bom 0.0.80 → 0.0.81`.
+* **Garde ré-alignée** (`PlatformCatalogAlignmentTest`, Piège #3) : l'assertion
+  `workspace-bom` était restée à **0.0.77** (dérive pré-existante depuis la release
+  0.0.78 — non mise à jour par S-278→S-283) → corrigée à **0.0.81** dans le même commit.
+* `assemble` VERT ; `publishToMavenLocal` VERT (2 artefacts : toml + pom + module du
+  catalog, pom du BOM).
+* Publication Central bundle **`8bbfe706-4240-40c7-be4a-996b2bd38299`** (AUTOMATIC).
+* Propagation repo1 attendue : `workspace-bom/0.0.81` + `workspace-catalog/0.0.81`,
+  toml portant `capsule-plugin 0.0.5`.
+
+== Contexte / découverte
+
+* Prérequis DAG : `capsule-plugin 0.0.5` **déjà Central + propagé** (vérifié repo1
+  HTTP 200 ×3 : POM, JAR, plugin marker) — Piège #2 (Catch-22) satisfait.
+* Découverte : la garde `PlatformCatalogAlignmentTest.toml version workspace-bom
+  matches platform version` épinglait `0.0.77` alors que le catalogue était à
+  `0.0.80` → **HEAD MEMPHIS était rouge** (dérive de gouvernance accumulée). Corrigée
+  ici (Piège #3 rappelé).
+
+== Pièges (cumul)
+
+* #3 *Gardes épinglent les versions* — bump toml + garde dans le même commit. Réactivé.
+* #6/#11 *Polling repo1* ~2-10 min.
+* #7 *MEMPHIS-first* — le producteur (capsule 0.0.5) est propagé avant ce bump.
+
+== Fichiers
+
+* `gradle/libs.versions.toml` (bump)
+* `agent-contracts/src/test/kotlin/contracts/catalog/PlatformCatalogAlignmentTest.kt` (garde)
+* `.agents/sessions/284-*.adoc` (ce rapport), `PROMPT_REPRISE.adoc`, `SESSIONS_HISTORY.adoc`,
+  `archives/COMPLETED_TASKS_ARCHIVE_2026-10.adoc`.
+
+_Score : 9/10._
