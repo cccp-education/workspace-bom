@@ -44,18 +44,24 @@ boroughs testés — **cause racine : le workflow épinglait JDK 24** alors que 
 artefacts cccp exigent **JVM 25** (`Dependency requires at least JVM runtime version
 25. This build uses a Java 24 JVM`).
 
-* **Correctif** : `.github/workflows/test.yml` `java-version: '24' → '25'`.
-  Débloque **bakery** et **planner** (résolution `bakery-plugin:0.0.20` /
-  `conventions-plugin:0.0.7` rejetées pour cause de JVM).
-* **slider** (version non publiée) et **dashboard** (creds nmcp) : corrigés dans
-  leurs propres sessions (slider S-073, dashboard S-217).
-* Vérification locale : `./gradlew help` VERT dans les 4 racines (JDK 25).
+* **Correctif 1** : `.github/workflows/test.yml` `java-version: '24' → '25'`
+  (débloque la **résolution** des artefacts cccp, JVM 25).
+* **Correctif 2** : `build.gradle.kts` — `testableProjects` devient une `map`
+  (borough → sous-build). **bakery-gradle** est une racine consommateur (pattern
+  0124, **sans tâche `check`**) → le check tourne dans sa sous-build autonome
+  `bakery-plugin/`. Vérif : `runAllTests --dry-run` enregistre les 5 tâches.
+* **slider** (version non publiée) → S-073 ; **dashboard** (creds nmcp) → S-217 ;
+  **planner** (`Unresolved reference plannerport`, catalog codebase stale
+  0.0.11/0.0.14 → 0.0.17) → session planner dédiée.
+* Vérification locale : `./gradlew help` VERT (racines) + `:planner-plugin:compileKotlin`
+  VERT contre codebase 0.0.17.
 
 == Fichiers
 
 * `gradle/libs.versions.toml` (bump)
 * `agent-contracts/src/test/kotlin/contracts/catalog/PlatformCatalogAlignmentTest.kt` (garde)
 * `.github/workflows/test.yml` (JDK 24 → 25)
+* `build.gradle.kts` (bakery → sous-build `bakery-plugin/`)
 * `.agents/sessions/284-*.adoc` (ce rapport), `PROMPT_REPRISE.adoc`, `SESSIONS_HISTORY.adoc`,
   `archives/COMPLETED_TASKS_ARCHIVE_2026-10.adoc`.
 

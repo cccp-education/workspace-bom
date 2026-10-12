@@ -153,12 +153,15 @@ dependencies {
 // (com.cheroliv.jhipster.persistence vs education.cccp.jhipster.persistence) — dette préexistante.
 // NB : plantuml-gradle exclu — racine applique le plugin sans version ni alias (résolution
 // impossible) — dette préexistante, le plugin lui-même a son propre check.
-val testableProjects = listOf(
-    "api-key-pool-gradle",
-    "bakery-gradle",
-    "dashboard-gradle",
-    "planner-gradle",
-    "slider-gradle"
+// Value = build directory relative to the borough root. bakery-gradle is a
+// pattern-0124 consumer root (no `check` task); its build is the standalone
+// `bakery-plugin/` sub-build, so the check runs there.
+val testableProjects = mapOf(
+    "api-key-pool-gradle" to ".",
+    "bakery-gradle" to "bakery-plugin",
+    "dashboard-gradle" to ".",
+    "planner-gradle" to ".",
+    "slider-gradle" to "."
 )
 
 val runAllTestsTask = tasks.register("runAllTests") {
@@ -166,8 +169,8 @@ val runAllTestsTask = tasks.register("runAllTests") {
     description = "Runs tests for all public boroughs (each as independent Gradle build)"
 }
 
-testableProjects.forEach { projectName ->
-    val projectDir = rootProject.projectDir.parentFile.resolve(projectName)
+testableProjects.forEach { (projectName, buildSubdir) ->
+    val projectDir = rootProject.projectDir.parentFile.resolve(projectName).resolve(buildSubdir)
     if (projectDir.resolve("build.gradle.kts").exists()) {
         val testTask = tasks.register<Exec>("runTestsFor${projectName.replace("-", "").replaceFirstChar { it.uppercase() }}") {
             group = "verification"
