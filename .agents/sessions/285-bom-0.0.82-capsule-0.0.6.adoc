@@ -1,0 +1,46 @@
+= Session 285 — BOM/catalog 0.0.82 : `capsule-plugin 0.0.6`
+:session: 285
+:date: 2026-10-12
+:type: pub/ops
+:statut: TERMINÉ
+
+== Mission
+
+Bump consommateur (accord pilote ; capsule S-177 = `capsule-plugin 0.0.6`).
+Pattern identique à S-284 (qui a consommé `0.0.5`).
+
+== Livré
+
+* Catalog `gradle/libs.versions.toml` : `capsule-plugin 0.0.5 → 0.0.6` +
+  `workspace-bom 0.0.81 → 0.0.82`.
+* **Garde ré-alignée** (`PlatformCatalogAlignmentTest`) : assertion `workspace-bom`
+  `0.0.81 → 0.0.82` (dans le même commit). **Dérive pré-existante corrigée** :
+  l'assertion `bakery-plugin` était restée à **`0.0.25`** alors que le catalogue est
+  à **`0.0.26`** depuis S-281 (release DAG 0.0.78) — la garde échouait mais n'était
+  **jamais exécutée** en CI (`runAllTests` ne lance que 5 boroughs frères, pas
+  `agent-contracts`), donc latente. Corrigée (`0.0.25 → 0.0.26`, Piège #3).
+* `assemble` VERT ; `publishToMavenLocal` VERT (BOM + catalog 0.0.82, signés).
+* Publication Central bundle **`524c2a15-9090-4457-bc03-8d565e7acb7a`** (AUTOMATIC).
+* Propagation repo1 attendue : `workspace-bom/0.0.82` + `workspace-catalog/0.0.82`,
+  toml portant `capsule-plugin 0.0.6`.
+
+== Contexte / découverte
+
+* Prérequis DAG : `capsule-plugin 0.0.6` **déjà Central** (uploadé S-177, en
+  propagation) — Piège #2 (Catch-22) satisfait (Capsule a publié avant ce bump).
+* Découverte : la garde `PlatformCatalogAlignmentTest.toml bakery plugin version`
+  épinglait `0.0.25`, catalogue à `0.0.26` — assertion fausse, masquée car la
+  garde n'est pas dans le workflow `runAllTests`. Corrigée ici.
+
+== Pièges (cumul)
+
+* #3 *Gardes épinglent les versions* — bump toml + garde dans le même commit. Réactivé
+  (2 assertions : `workspace-bom` + `bakery-plugin`).
+* #6/#11 *Polling repo1* ~2-10 min.
+* #7 *MEMPHIS-first* — le producteur (capsule 0.0.6) est publié avant ce bump.
+
+== Gates
+
+* `assemble` + `publishToMavenLocal` VERTS (build local ; tests = CI).
+* `agent-contracts:compileTestKotlin` VERT (garde modifiée compile).
+* Zéro secret, zéro Python.

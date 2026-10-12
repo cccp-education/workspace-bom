@@ -1,38 +1,36 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-280 — TERMINÉE (US-1 PLT-DIAGRAM-OWNERSHIP) : **contrat N0 `plantuml-contracts:0.0.1`**.
+286 — À DÉFINIR (dernière terminée : **285 — BOM/catalog 0.0.82, capsule-plugin 0.0.6**).
 
-Nouveau 10e artefact N0 (build standalone, pattern 0124). Types purs
-`contracts.plantuml` : `PlantUmlBlock`, `PlantUmlStrategy` (enum unique
-TRANSLATE/BORROW/PRESERVE), `PlantUmlClassifier`, `SyntaxValidationResult`,
-`PlantUmlSyntaxValidator` (fun interface), `PlantUmlTranslationRequest`,
-`PlantUmlTranslationPort`, `PlantUmlTranslationOutcome`. Motif : le bloc PlantUML
-doit avoir un propriétaire unique ; document/bakery consomment le contrat, jamais
-le plugin (fin du couplage N2→N2). Cadrage : plantuml-gradle S-219
-`.agents/CADRAGE_EPIC_PLT_DIAGRAM_OWNERSHIP.adoc`.
+**S-285** : release consommateur (accord pilote ; capsule S-177). Bump catalog
+`capsule-plugin 0.0.5 → 0.0.6` + BOM/catalog `0.0.81 → 0.0.82`. **Garde
+`PlatformCatalogAlignmentTest` ré-alignée** (`workspace-bom 0.0.81 → 0.0.82`) +
+**dérive pré-existante corrigée** (`bakery-plugin` assertion `0.0.25 → 0.0.26`,
+garde jamais exécutée en CI `runAllTests`). `assemble` + `publishToMavenLocal`
+VERTS. Publication Central bundle `524c2a15-9090-4457-bc03-8d565e7acb7a`
+(AUTOMATIC). Rapport `.agents/sessions/285-bom-0.0.82-capsule-0.0.6.adoc`.
 
-Câblage : toml (`plantuml-contracts = "0.0.1"` + library), platform
-(`api(libs.plantuml.contracts)`), garde `PlatformCatalogAlignmentTest` (+1).
-Gates : artefact 20/20 PASS, garde 7/7 PASS, `publishToMavenLocal` VERT.
+**S-284** : BOM/catalog 0.0.81 (capsule-plugin 0.0.5) + fix cross-borough `runAllTests`
+(JDK 25). **S-283** : 0.0.80 (capsule 0.0.4). **S-282** : 0.0.79 (capsule 0.0.3).
+**S-281** : release DAG 0.0.78 (plantuml 0.0.9, document 0.0.24, bakery 0.0.26).
 
-== État du code (S-280)
+== État du code (S-285)
 
-- Central : BOM + catalog **0.0.65** (dernier état publié) ; `bakery-plugin 0.0.23`
-  + `document-plugin 0.0.20` publiés.
-- **Nouveau** : `plantuml-contracts:0.0.1` mavenLocal (PAS encore Central) ;
-  toml/garde alignés. Le BOM local porte la constraint plantuml-contracts 0.0.1.
-- Garde `PlatformCatalogAlignmentTest` étendue (plantuml-contracts 0.0.1).
+- Central : BOM + catalog **0.0.82** (capsule-plugin 0.0.6, en propagation).
+- Catalogue interne : `workspace-bom = "0.0.82"`, `capsule-plugin = "0.0.6"`,
+  `bakery-plugin = "0.0.26"`, `codebase-plugin = "0.0.17"`.
+- Garde `PlatformCatalogAlignmentTest` : `workspace-bom 0.0.82`, `bakery-plugin 0.0.26`.
+- Contrats N0 : `agent-contracts 0.0.3`, `codebase-contracts 0.0.2`, `i18n-contracts 0.0.4`,
+  `llm-pool-contracts 0.0.2`, `opencode-session-contracts 0.0.2`, `pipeline-contracts 0.0.2`,
+  `runtime-contracts 0.0.1`, `ocr-contracts 0.0.1`, `plantuml-contracts 0.0.1`.
 
-== Mission session 281 — à la demande
+== Mission session 286 — au choix pilote
 
-. **Suite PLT-DIAGRAM-OWNERSHIP** (piloté plantuml-gradle) : **US-2** implémente
-   `PlantUmlTranslationPort`/`PlantUmlSyntaxValidator` dans plantuml-gradle
-   (consomme le contrat N0). **Publication Central** `plantuml-contracts:0.0.1` +
-   bump BOM requis avant que plantuml/document le consomment (accord pilote).
-. *Resync gouvernance MEMPHIS* (recommandé) : INDEX/HISTORY — releases
-   0.0.36→0.0.61 non toutes tracées.
-. *Suivi bloc C* (codex S-232/S-233) ; *US-CI-1.4* (qwen3:0.6b, 1 pt).
+. **Release consommateur** : au prochain artefact produit (repin d'un borough).
+. *Resync gouvernance MEMPHIS* : INDEX/HISTORY (releases 0.0.36→0.0.61 non toutes tracées).
+. *EPIC `MEM-CI-CONSISTENCY`* (standard JDK 25 + gardes version publiée / nmcp / catalogue,
+   ajouté S-284) — à exécuter si demandé.
 
 == Pièges à retenir (cumul)
 
@@ -41,7 +39,7 @@ Gates : artefact 20/20 PASS, garde 7/7 PASS, `publishToMavenLocal` VERT.
 2. *Catch-22 D8 (anti-ghost)* : une entrée catalogue exige que l'artefact soit
    DÉJÀ publié Central — pour un artefact jamais publié, publier d'abord.
 3. *Gardes épinglent les versions* — après CHAQUE bump toml, bump la garde dans le
-   même commit.
+   même commit (S-285 : 2 assertions ; la garde `bakery` était en dérive latente).
 4. *Contrats N0 = builds standalone* (pattern 0124) : pas de sous-projet, pas de
    `include(...)` — `./gradlew` dans le répertoire du contrat.
 5. *nmcp collision* : ne jamais re-invoquer publishAggregationToCentralPortal sans
