@@ -1,0 +1,33 @@
+= Session 290 — BOM/catalog 0.0.87 : `plantuml-plugin 0.0.10`
+:session: 290
+:date: 2026-10-13
+:type: pub/ops
+:statut: TERMINÉ
+
+== Mission
+
+Bump consommateur (accord pilote ; plantuml S-242 = `plantuml-plugin 0.0.10`,
+PLT-MAINTAIN : découplage test/prod + hygiène). Pattern identique à S-289.
+
+== Livré
+
+* Catalog `gradle/libs.versions.toml` : `plantuml-plugin 0.0.9 → 0.0.10` +
+  `workspace-bom 0.0.86 → 0.0.87`.
+* Garde `PlatformCatalogAlignmentTest` ré-alignée (`workspace-bom 0.0.86 → 0.0.87`).
+* `publishToMavenLocal` VERT (BOM + catalog 0.0.87, signés).
+* Publication Central bundle **`01b2eb65-e059-4b3a-8c20-99d5465d9e4b`** (AUTOMATIC).
+
+== Contexte / DAG
+
+* Prérequis : `plantuml-plugin 0.0.10` (S-242, HEAD `e635f79`, CI `Test` VERTE run
+  `38317225255`) — Piège #2.
+* `plantuml-plugin 0.0.10` doit ensuite être publié Central par le borough plantuml
+  (qui pinnera BOM/catalog `0.0.87`).
+* Contenu plantuml 0.0.10 : PLT-MAINTAIN (seam `plantuml.runtime.RuntimeEnvironment`,
+  purge de stubs, `ConfigMerger` helpers, docs/CI).
+
+== Pièges (cumul)
+
+* #2 *Ordre DAG* — le BOM/catalog doit être publié avant que plantuml ne pinne `0.0.87`
+  (la résolution du catalogue se fait sur `mavenCentral`, propagation repo1 requise).
+* #3 *Gardes épinglent les versions* — bump toml + garde dans le même commit.
