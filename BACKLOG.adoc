@@ -9,6 +9,40 @@ _Dernière mise à jour : 2026-10-08 (S-280 — contrat N0 **`plantuml-contracts
 _Source : configuration/EPIC_PUB.adoc (Session 096)_
 
 '''
+== 🟡 EPIC MEM-CI-CONSISTENCY — cohérence CI cross-borough (S-284)
+
+_Origine_ : le job **`runAllTests`** (Cross-borough check 13 boroughs) a été **rouge
+de S-282 à S-284** sans que la cause soit vue. Le run `38241612161` (S-284) est la
+première **CI verte** du job. Quatre causes racines cumulées :
+
+. workflow **JDK 24** alors que les artefacts cccp exigent **JVM 25** (toolchain 25) ;
+. racine **consommatrice** épinglant une version **non publiée** (slider `0.0.20`) ;
+. `nmcpSettings.centralPortal` en **`error(...)`** sans credentials (dashboard) ;
+. **catalogue stale** `codebase 0.0.11/0.0.14` vs API utilisée (`plannerport`, planner).
+
+_Priorité_ : 🟠 HAUTE — le job est la porte de cohérence cross-borough ; une CI morte
+masque toute la dette aval (cf. S-269 Queens, S-243 bakery).
+
+[cols="1,4,3,2", options="header"]
+|===
+| US | Description | Cible | Statut
+
+| US-1 | Workflow `runAllTests` **JDK 24 → 25** + bakery testé dans sa sous-build autonome `bakery-plugin/` (racine consommateur sans `check`) | `workspace-bom/.github/workflows/test.yml` + `build.gradle.kts` | ✅ S-284
+
+| US-2 | **Standard JDK 25** — aligner tous les workflows cccp qui buildent un plugin (toolchain 25). Audit S-284 : `plantuml` 17/23/24, `readme` 23, `graphify` 24, `runner` 24, `planner` 24/23, `slider` 24, `codebase/anonymize` 23, `jhipster` 24 — vs 25 requis | tous `.github/workflows/*.yml` | 🟡 À FAIRE
+
+| US-3 | **Garde « racine consommateur = version publiée »** — une racine (pattern 0124) ne doit pas épingler une version dev/non publiée (cas slider) | guard (conventions ou test par borough) | 🟡 À FAIRE
+
+| US-4 | **Tolérance nmcp standard** — `nmcpSettings.centralPortal` `?: ""` (jamais `error(...)` : bloque la configuration sans credentials) | tous `settings.gradle.kts` cccp | 🟡 À FAIRE
+
+| US-5 | **Garde « catalogue non stale »** — la version `codebase` (et N1) doit être publiée **ET** contenir les API utilisées (cas planner `plannerport`) | guard | 🟡 À FAIRE
+|===
+
+_Livré S-284 (US-1)_ : JDK 25 + retarget bakery → `runAllTests` **vert** (run `38241612161`,
+10m0s, 5 boroughs). Correctifs siblings de la même fenêtre : slider S-073 (US-3 partiel),
+dashboard S-217 (US-4 partiel), planner S-080 (US-5 partiel).
+
+'''
 == EPIC PLT-DIAGRAM-OWNERSHIP — contrat N0 plantuml-contracts (US-1 ✅ S-280)
 
 *Cadrage* : `plantuml-gradle/plantuml-plugin/.agents/CADRAGE_EPIC_PLT_DIAGRAM_OWNERSHIP.adoc`
