@@ -1,7 +1,14 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-289 — À DÉFINIR (dernière terminée : **288 — BOM/catalog 0.0.85, capsule-plugin 0.0.9**).
+290 — À DÉFINIR (dernière terminée : **289 — BOM/catalog 0.0.86, capsule-plugin 0.0.10**).
+
+**S-289** : release consommateur (accord pilote ; capsule S-182). Bump catalog
+`capsule-plugin 0.0.9 → 0.0.10` + BOM/catalog `0.0.85 → 0.0.86`. **Garde
+`PlatformCatalogAlignmentTest` ré-alignée** (`0.0.85` → `0.0.86`). `publishToMavenLocal`
+VERT. Publication Central bundle `fd0fdbf9-240e-4f17-8c60-5679b6de9a04` (AUTOMATIC).
+Contenu capsule 0.0.10 : CAP-FISH-AUDIO (moteur TTS cloud Fish Audio) + correctif
+`fishAudioConfigPath` absolu. Rapport `.agents/sessions/289-bom-0.0.86-capsule-0.0.10.adoc`.
 
 **S-288** : release consommateur (accord pilote ; capsule S-182). Bump catalog
 `capsule-plugin 0.0.8 → 0.0.9` + BOM/catalog `0.0.84 → 0.0.85`. **Garde

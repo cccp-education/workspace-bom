@@ -1,0 +1,36 @@
+= Session 289 — BOM/catalog 0.0.86 : `capsule-plugin 0.0.10`
+:session: 289
+:date: 2026-10-12
+:type: pub/ops
+:statut: TERMINÉ
+
+== Mission
+
+Bump consommateur (accord pilote ; capsule S-182 = `capsule-plugin 0.0.10`, correctif
+`fishAudioConfigPath` absolu révélé par le dogfooding Fish Audio).
+Pattern identique à S-288 (qui a consommé `0.0.9`).
+
+== Livré
+
+* Catalog `gradle/libs.versions.toml` : `capsule-plugin 0.0.9 → 0.0.10` +
+  `workspace-bom 0.0.85 → 0.0.86`.
+* Garde `PlatformCatalogAlignmentTest` ré-alignée (`workspace-bom 0.0.85 → 0.0.86`).
+* `publishToMavenLocal` VERT (BOM + catalog 0.0.86, signés).
+* Publication Central bundle **`fd0fdbf9-240e-4f17-8c60-5679b6de9a04`** (AUTOMATIC).
+
+== Contexte / DAG
+
+* Prérequis : `capsule-plugin 0.0.10` publié Central (S-182, bundle `cb26c4e9-…`) — Piège #2.
+* `capsule-plugin 0.0.10` importe `workspace-bom:0.0.83`.
+* Contenu capsule 0.0.10 : CAP-FISH-AUDIO US-1→US-5 (moteur TTS cloud Fish Audio) +
+  correctif chemin absolu `fishAudioConfigPath`.
+
+== Pièges (cumul)
+
+* #3 *Gardes épinglent les versions* — bump toml + garde dans le même commit.
+* #7 *MEMPHIS-first* — le producteur (capsule 0.0.10) est publié avant ce bump.
+
+== Gates
+
+* `publishToMavenLocal` + `publishAggregationToCentralPortal` VERTS (build local ; tests = CI).
+* Zéro secret, zéro Python.
