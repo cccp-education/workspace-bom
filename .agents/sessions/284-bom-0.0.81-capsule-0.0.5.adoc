@@ -55,6 +55,12 @@ artefacts cccp exigent **JVM 25** (`Dependency requires at least JVM runtime ver
   0.0.11/0.0.14 → 0.0.17) → session planner dédiée.
 * Vérification locale : `./gradlew help` VERT (racines) + `:planner-plugin:compileKotlin`
   VERT contre codebase 0.0.17.
+* **Preuve** : `runAllTests` **VERT** (run `38241612161`, 10m0s — 5 boroughs). Les 5
+  causes racines corrigées + planifiées.
+* **EPIC planifié** : `MEM-CI-CONSISTENCY` ajouté au `BACKLOG.adoc` (US-1 ✅ ; US-2
+  standard JDK 25 tous workflows ; US-3 garde version publiée racine ; US-4 tolérance
+  nmcp ; US-5 garde catalogue non stale). EPICs siblings : slider `SLD-PUB`,
+  planner `PLN-DEP-ALIGN`.
 
 == Fichiers
 
