@@ -37,10 +37,25 @@ Bump consommateur (accord pilote) : consommer la publication `capsule-plugin 0.0
 * #6/#11 *Polling repo1* ~2-10 min.
 * #7 *MEMPHIS-first* — le producteur (capsule 0.0.5) est propagé avant ce bump.
 
+== Fix cross-borough `runAllTests` (JDK 24 → 25)
+
+Le job `runAllTests` (`Cross-borough check (13 boroughs)`) échouait sur 4 des 5
+boroughs testés — **cause racine : le workflow épinglait JDK 24** alors que les
+artefacts cccp exigent **JVM 25** (`Dependency requires at least JVM runtime version
+25. This build uses a Java 24 JVM`).
+
+* **Correctif** : `.github/workflows/test.yml` `java-version: '24' → '25'`.
+  Débloque **bakery** et **planner** (résolution `bakery-plugin:0.0.20` /
+  `conventions-plugin:0.0.7` rejetées pour cause de JVM).
+* **slider** (version non publiée) et **dashboard** (creds nmcp) : corrigés dans
+  leurs propres sessions (slider S-073, dashboard S-217).
+* Vérification locale : `./gradlew help` VERT dans les 4 racines (JDK 25).
+
 == Fichiers
 
 * `gradle/libs.versions.toml` (bump)
 * `agent-contracts/src/test/kotlin/contracts/catalog/PlatformCatalogAlignmentTest.kt` (garde)
+* `.github/workflows/test.yml` (JDK 24 → 25)
 * `.agents/sessions/284-*.adoc` (ce rapport), `PROMPT_REPRISE.adoc`, `SESSIONS_HISTORY.adoc`,
   `archives/COMPLETED_TASKS_ARCHIVE_2026-10.adoc`.
 
