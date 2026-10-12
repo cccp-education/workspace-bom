@@ -21,8 +21,8 @@ Pattern identique à S-284 (qui a consommé `0.0.5`).
   `agent-contracts`), donc latente. Corrigée (`0.0.25 → 0.0.26`, Piège #3).
 * `assemble` VERT ; `publishToMavenLocal` VERT (BOM + catalog 0.0.82, signés).
 * Publication Central bundle **`524c2a15-9090-4457-bc03-8d565e7acb7a`** (AUTOMATIC).
-* Propagation repo1 attendue : `workspace-bom/0.0.82` + `workspace-catalog/0.0.82`,
-  toml portant `capsule-plugin 0.0.6`.
+* Propagation repo1 **confirmée** : `workspace-bom/0.0.82` HTTP 200 +
+  `workspace-catalog/0.0.82` HTTP 200, toml portant `capsule-plugin 0.0.6`.
 
 == Contexte / découverte
 
