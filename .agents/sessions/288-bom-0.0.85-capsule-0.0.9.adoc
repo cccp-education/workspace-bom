@@ -1,0 +1,35 @@
+= Session 288 — BOM/catalog 0.0.85 : `capsule-plugin 0.0.9`
+:session: 288
+:date: 2026-10-12
+:type: pub/ops
+:statut: TERMINÉ
+
+== Mission
+
+Bump consommateur (accord pilote ; capsule S-182 = `capsule-plugin 0.0.9`).
+Pattern identique à S-287 (qui a consommé `0.0.8`).
+
+== Livré
+
+* Catalog `gradle/libs.versions.toml` : `capsule-plugin 0.0.8 → 0.0.9` +
+  `workspace-bom 0.0.84 → 0.0.85`.
+* Garde `PlatformCatalogAlignmentTest` ré-alignée (`workspace-bom 0.0.84 → 0.0.85`).
+* `publishToMavenLocal` VERT (BOM + catalog 0.0.85, signés).
+* Publication Central bundle **`e64d3224-0eca-48a4-ab82-da12cca35815`** (AUTOMATIC).
+
+== Contexte / DAG
+
+* Prérequis : `capsule-plugin 0.0.9` publié Central (S-182, bundle `a2d32777-…`) — Piège #2.
+* `capsule-plugin 0.0.9` importe `workspace-bom:0.0.83`.
+* Contenu capsule 0.0.9 : CAP-FISH-AUDIO US-1→US-3 (moteur TTS cloud Fish Audio,
+  voix clonée, 4e `TtsEngine`).
+
+== Pièges (cumul)
+
+* #3 *Gardes épinglent les versions* — bump toml + garde dans le même commit.
+* #7 *MEMPHIS-first* — le producteur (capsule 0.0.9) est publié avant ce bump.
+
+== Gates
+
+* `publishToMavenLocal` + `publishAggregationToCentralPortal` VERTS (build local ; tests = CI).
+* Zéro secret, zéro Python.
