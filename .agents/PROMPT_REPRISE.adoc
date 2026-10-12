@@ -1,31 +1,30 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-287 — À DÉFINIR (dernière terminée : **286 — BOM/catalog 0.0.83, capsule-plugin 0.0.7**).
+288 — À DÉFINIR (dernière terminée : **287 — BOM/catalog 0.0.84, capsule-plugin 0.0.8**).
 
-**S-286** : release consommateur (accord pilote ; capsule S-178). Bump catalog
-`capsule-plugin 0.0.6 → 0.0.7` + BOM/catalog `0.0.82 → 0.0.83`. **Garde
-`PlatformCatalogAlignmentTest` ré-alignée** (`workspace-bom 0.0.82 → 0.0.83`).
+**S-287** : release consommateur (accord pilote ; capsule S-179). Bump catalog
+`capsule-plugin 0.0.7 → 0.0.8` + BOM/catalog `0.0.83 → 0.0.84`. **Garde
+`PlatformCatalogAlignmentTest` ré-alignée** (`workspace-bom 0.0.83 → 0.0.84`).
 `assemble` + `publishToMavenLocal` VERTS. Publication Central bundle
-`6727405a-6c6e-490c-a5dc-a3a82b42fd8a` (AUTOMATIC). Rapport
-`.agents/sessions/286-bom-0.0.83-capsule-0.0.7.adoc`.
+`8b3663cf-3d23-4480-ac88-3a53171f91d4` (AUTOMATIC). Rapport
+`.agents/sessions/287-bom-0.0.84-capsule-0.0.8.adoc`.
 
-**S-285** : BOM/catalog 0.0.82 (capsule-plugin 0.0.6) + dérive garde `bakery-plugin`
-`0.0.25 → 0.0.26`. **S-284** : 0.0.81 (capsule 0.0.5) + fix cross-borough `runAllTests`
-(JDK 25). **S-283** : 0.0.80 (capsule 0.0.4). **S-282** : 0.0.79 (capsule 0.0.3).
-**S-281** : release DAG 0.0.78 (plantuml 0.0.9, document 0.0.24, bakery 0.0.26).
+**S-286** : BOM/catalog 0.0.83 (capsule-plugin 0.0.7). **S-285** : 0.0.82 (capsule 0.0.6)
++ dérive garde `bakery-plugin`. **S-284** : 0.0.81 (capsule 0.0.5) + fix cross-borough
+`runAllTests` (JDK 25). **S-283** : 0.0.80 (capsule 0.0.4). **S-282** : 0.0.79 (capsule 0.0.3).
 
-== État du code (S-286)
+== État du code (S-287)
 
-- Central : BOM + catalog **0.0.83** (capsule-plugin 0.0.7, en propagation).
-- Catalogue interne : `workspace-bom = "0.0.83"`, `capsule-plugin = "0.0.7"`,
+- Central : BOM + catalog **0.0.84** (capsule-plugin 0.0.8, en propagation).
+- Catalogue interne : `workspace-bom = "0.0.84"`, `capsule-plugin = "0.0.8"`,
   `bakery-plugin = "0.0.26"`, `codebase-plugin = "0.0.17"`.
-- Garde `PlatformCatalogAlignmentTest` : `workspace-bom 0.0.83`, `bakery-plugin 0.0.26`.
+- Garde `PlatformCatalogAlignmentTest` : `workspace-bom 0.0.84`, `bakery-plugin 0.0.26`.
 - Contrats N0 : `agent-contracts 0.0.3`, `codebase-contracts 0.0.2`, `i18n-contracts 0.0.4`,
   `llm-pool-contracts 0.0.2`, `opencode-session-contracts 0.0.2`, `pipeline-contracts 0.0.2`,
   `runtime-contracts 0.0.1`, `ocr-contracts 0.0.1`, `plantuml-contracts 0.0.1`.
 
-== Mission session 287 — au choix pilote
+== Mission session 288 — au choix pilote
 
 . **Release consommateur** : au prochain artefact produit (repin d'un borough).
 . *Resync gouvernance MEMPHIS* : INDEX/HISTORY (releases 0.0.36→0.0.61 non toutes tracées).

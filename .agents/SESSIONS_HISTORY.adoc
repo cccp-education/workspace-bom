@@ -5,6 +5,8 @@ _Date creation : 2026-06-02_
 |=== 
 | # | Date | Type | Sujet | Score
 
+| S-287 | 2026-10-12 | pub/ops | **BOM/catalog 0.0.84 : `capsule-plugin 0.0.8`** (bump consommateur, accord pilote ; capsule S-179). Catalog `capsule-plugin 0.0.7 → 0.0.8` + `workspace-bom 0.0.83 → 0.0.84`. **Garde `PlatformCatalogAlignmentTest` ré-alignée** (`0.0.83 → 0.0.84`). `assemble` + `publishToMavenLocal` VERTS. Publication Central bundle `8b3663cf-3d23-4480-ac88-3a53171f91d4` (AUTOMATIC) ; propagation repo1 `workspace-bom/0.0.84` + `workspace-catalog/0.0.84` HTTP 200 ×2. Zéro secret. | 9/10 |
+
 | S-286 | 2026-10-12 | pub/ops | **BOM/catalog 0.0.83 : `capsule-plugin 0.0.7`** (bump consommateur, accord pilote ; capsule S-178). Catalog `capsule-plugin 0.0.6 → 0.0.7` + `workspace-bom 0.0.82 → 0.0.83`. **Garde `PlatformCatalogAlignmentTest` ré-alignée** (`0.0.82 → 0.0.83`). `assemble` + `publishToMavenLocal` VERTS. Publication Central bundle `6727405a-6c6e-490c-a5dc-a3a82b42fd8a` (AUTOMATIC) ; propagation repo1 `workspace-bom/0.0.83` + `workspace-catalog/0.0.83` HTTP 200 ×2. Zéro secret. | 9/10 |
 
 | S-285 | 2026-10-12 | pub/ops | **BOM/catalog 0.0.82 : `capsule-plugin 0.0.6`** (bump consommateur, accord pilote ; capsule S-177). Catalog `capsule-plugin 0.0.5 → 0.0.6` + `workspace-bom 0.0.81 → 0.0.82`. **Garde `PlatformCatalogAlignmentTest` ré-alignée** (`0.0.81 → 0.0.82`) + **dérive pré-existante corrigée** (`bakery-plugin` assertion `0.0.25 → 0.0.26` ; la garde n'est pas exécutée par `runAllTests`, donc latente depuis S-281). `assemble` + `publishToMavenLocal` VERTS. Publication Central bundle `524c2a15-9090-4457-bc03-8d565e7acb7a` (AUTOMATIC) ; propagation repo1 `workspace-bom/0.0.82` + `workspace-catalog/0.0.82` HTTP 200 ×2. Zéro secret. | 9/10 |
