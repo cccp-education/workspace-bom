@@ -1,0 +1,35 @@
+= Session 286 — BOM/catalog 0.0.83 : `capsule-plugin 0.0.7`
+:session: 286
+:date: 2026-10-12
+:type: pub/ops
+:statut: TERMINÉ
+
+== Mission
+
+Bump consommateur (accord pilote ; capsule S-178 = `capsule-plugin 0.0.7`).
+Pattern identique à S-285 (qui a consommé `0.0.6`).
+
+== Livré
+
+* Catalog `gradle/libs.versions.toml` : `capsule-plugin 0.0.6 → 0.0.7` +
+  `workspace-bom 0.0.82 → 0.0.83`.
+* Garde `PlatformCatalogAlignmentTest` ré-alignée (`workspace-bom 0.0.82 → 0.0.83`).
+* `assemble` VERT ; `publishToMavenLocal` VERT (BOM + catalog 0.0.83, signés).
+* Publication Central bundle **`6727405a-6c6e-490c-a5dc-a3a82b42fd8a`** (AUTOMATIC).
+* Propagation repo1 **confirmée** : `workspace-bom/0.0.83` HTTP 200 +
+  `workspace-catalog/0.0.83` HTTP 200, toml portant `capsule-plugin 0.0.7`.
+
+== Contexte / DAG
+
+* Prérequis : `capsule-plugin 0.0.7` publié Central (S-178) — Piège #2 satisfait.
+* `capsule-plugin 0.0.7` importe `workspace-bom:0.0.82` (re-pin interne capsule).
+
+== Pièges (cumul)
+
+* #3 *Gardes épinglent les versions* — bump toml + garde dans le même commit.
+* #7 *MEMPHIS-first* — le producteur (capsule 0.0.7) est publié avant ce bump.
+
+== Gates
+
+* `assemble` + `publishToMavenLocal` VERTS (build local ; tests = CI).
+* Zéro secret, zéro Python.
