@@ -19,7 +19,9 @@ BOM/catalogue MEMPHIS.
 * `publishToMavenLocal` VERT (BOM + catalog 0.0.89 signés ; toml publié porte
   `video-kernel = "0.2.0"`).
 * Publication Central bundle **`ebffebe4-8556-4e05-857c-53f1b156b137`**
-  (AUTOMATIC).
+  (AUTOMATIC) ; propagation repo1 confirmée (`workspace-bom/0.0.89` +
+  `workspace-catalog/0.0.89` HTTP 200 ; toml Central porte `video-kernel = "0.2.0"`).
+* CI `runAllTests` VERTE (run `38494308661`).
 
 == Contexte / DAG
 

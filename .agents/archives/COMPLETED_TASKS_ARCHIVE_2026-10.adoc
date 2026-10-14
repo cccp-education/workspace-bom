@@ -9,6 +9,7 @@ VK-2 — package neutre `video.kernel.*` (breaking coordonné, video-kernel S-19
 * [x] `agent-contracts compileKotlin compileTestKotlin` VERT
 * [x] `publishToMavenLocal` VERT (toml publié porte video-kernel 0.2.0)
 * [x] Publication Central bundle `ebffebe4-8556-4e05-857c-53f1b156b137` (AUTOMATIC)
+* [x] Propagation repo1 `workspace-bom/0.0.89` + `workspace-catalog/0.0.89` HTTP 200 ; CI `runAllTests` VERTE run `38494308661`
 * [x] Ordre DAG : video-kernel 0.2.0 → capsule/hyperframes → MEMPHIS
 
 == Session 291 (2026-10-14) — BOM/catalog 0.0.88 : entrée video-kernel 0.1.0 ✅
