@@ -1,7 +1,21 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-297 — À DÉFINIR (dernière terminée : **296 — BOM/catalog 0.0.93, `capsule-plugin 0.0.11` + `slider-plugin 0.0.20`**).
+298 — À DÉFINIR (dernière terminée : **297 — CI sharding : matrice parallèle par borough**).
+
+**S-297** (CI, zéro code de production) : le job monolithique `runAllTests`
+(5 boroughs séquentiels, un runner, ~18 min de check) est éclaté en **matrice
+parallèle 1 job/bourough** (`.github/workflows/test.yml`). Chaque job clone
+**uniquement** son borough (`actions/checkout` cross-repo) + `./gradlew check`.
+Nouvelle garde `verifyCiMatrixCoverage` (`build.gradle.kts`, wired à `check`) qui
+vérifie que la matrice couvre **exactement** `testableProjects` (anti test fantôme,
+S-269) ; RED prouvé. `runAllTests` conservé pour l'usage local. **Mesure** :
+wall-clock `19m26s → **11m48s**` (run `38640573849`, 6/6 jobs verts). Chemin critique
+= **bakery 11m44s** (seul borough > 5 min) — **SIGNAL** : sharding secondaire bakery
+bloqué par `kover` (agrège toutes les tâches `Test`, seuil 89 %), nécessite un EPIC
+côté bakery (voir BACKLOG `MEM-CI-SHARD`). Rapports :
+`.agents/sessions/297-ci-shard-cross-borough-matrix.adoc`. Commits `9da9290` +
+`f648470`.
 
 **S-296** (bump consommateur, accord pilote) : deux releases amont — `slider-plugin
 0.0.20` (S-076) + `capsule-plugin 0.0.11` (S-201). Catalog `capsule-plugin 0.0.10 →
@@ -66,9 +80,12 @@ clos (VK-2 ✅ + VK-3 ✅).**
   `runtime-contracts 0.0.1`, `ocr-contracts 0.0.1`, `plantuml-contracts 0.0.1`.
 - N1 partagé : `video-kernel 0.3.0` (entrée catalogue + contrainte BOM).
 
-== Mission session 297 — au choix pilote
+== Mission session 298 — au choix pilote
 
 . Release consommateur au prochain artefact produit.
+. *EPIC `MEM-CI-SHARD` bakery* (accord pilote) — sharding secondaire de bakery
+   (`functionalTest`/`cucumberTest`) + fusion kover inter-jobs ; prérequis CI
+   workspace-bom < 5 min.
 . *EPIC `MEM-CI-CONSISTENCY`* (standard JDK 25 + gardes version publiée / nmcp
    / catalogue) — à exécuter si demandé (CI-1.4 qwen3:0.6b reste, 1 pt).
 . *Resync gouvernance MEMPHIS* (INDEX/HISTORY).

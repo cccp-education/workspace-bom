@@ -1,0 +1,176 @@
+= Session 297 — CI sharding : matrice parallèle par borough (workspace-bom)
+
+:date: 2026-10-14
+:type: ci
+:score: 9/10
+
+== Objectif
+
+Éclater le job CI monolithique `runAllTests` (« Cross-borough check 13 boroughs »,
+un runner, 5 boroughs testables enchaînés séquentiellement, ~18 min de `check`) en
+une **matrice parallèle 1 job par borough**, pour que le wall-clock soit
+`max(borough check)` au lieu de la **somme**. Cible : < 5 min. Préserver la
+couverture + garde anti « test fantôme » (pattern S-269). Ne pas casser
+`runAllTests` (usage local).
+
+== État initial (mesuré)
+
+Baseline verte monolithique = run `38598953718` (commit `473c4e0` amont) :
+
+[cols="2,2,3,2"]
+|===
+| Mesure | Valeur | Détail | Source
+
+| Wall-clock du run | 19m26s | job 19m22s | `gh run view 38598953718`
+| Étape `runAllTests` | 18m08s | 16:33:06→16:51:14 | idem
+| Clone 13 boroughs | 8s | repos publics | idem
+| Setup Gradle | 19s | | idem
+|===
+
+Décomposition **par borough** (extraite du log du run monolithique, `./gradlew check`
+exécuté en séquence dans un **seul** runner froid) :
+
+[cols="3,2,4"]
+|===
+| Borough | Durée | Remarque
+
+| api-key-pool-gradle | 19s | |
+| bakery-gradle (`bakery-plugin/`) | **14m17s** | **domine tout** — `functionalTest` ≈ 5m30 + `cucumberTest` ≈ 4m35 + `test` ≈ 1m20 + ktlint/kover/e2e/node |
+| dashboard-gradle | 2m00s | |
+| planner-gradle | 1m01s | |
+| slider-gradle | 13s | |
+|===
+
+Somme ≈ 18m08s → c'était le chemin critique (un seul runner, tout séquentiel).
+
+== Livré
+
+=== US-1 — Matrice parallèle par borough
+
+`.github/workflows/test.yml` : le job `run-all-tests` est remplacé par deux entités.
+
+. Job **`matrix-coverage`** (garde) — léger, checkout `workspace-bom` seul, exécute
+  `./gradlew verifyCiMatrixCoverage`.
+. Job **`borough-check`** — matrice `fail-fast: false`, une entrée par borough
+  testable. Chaque job clone **uniquement son borough** (`actions/checkout` +
+  `repository: cccp-education/<borough>`) puis exécute `./gradlew check --no-daemon`
+  dans le répertoire de build déclaré. Node 22 (`actions/setup-node@v4`) uniquement
+  pour bakery (`nodeTest`). Rapports de tests uploadés en artefact.
+
+Mapping (source unique de vérité = `testableProjects` de `build.gradle.kts`) :
+
+[cols="3,2,2"]
+|===
+| Borough | `dir` | `node`
+
+| api-key-pool-gradle | `.` | non
+| bakery-gradle | `bakery-plugin` | oui
+| dashboard-gradle | `.` | non
+| planner-gradle | `.` | non
+| slider-gradle | `.` | non
+|===
+
+Chaque borough est un **build standalone** (pattern 0124) : il résout ses dépendances
+depuis Maven Central, jamais depuis un worktree voisin. Confirmé pour les 5 : aucun
+`includeBuild`, et `bakery`/`dashboard` épinglent leur `workspace-catalog` publié
+(0.0.87 / 0.0.78) via `mavenCentral()` — l'absence des 12 autres boroughs ne change
+rien.
+
+=== US-2 — Garde de couverture (anti « test fantôme », S-269)
+
+Nouvelle tâche Gradle `verifyCiMatrixCoverage` (`build.gradle.kts`, groupe
+`verification`, wired à `check`) : lit `.github/workflows/test.yml`, extrait les
+couples `borough:`/`dir:` de la matrice et vérifie **exactement** :
+
+. la matrice ne **manque** aucun borough de `testableProjects` (test fantôme) ;
+. la matrice ne référence aucun borough **inconnu** ;
+. le `dir` de chaque entrée == la valeur déclarée dans `testableProjects` ;
+. pas de doublon.
+
+Rouge prouvé (baby-step TDD) : `slider-gradle → slider-XXXX` ⇒
+`CI matrix is missing testable borough(s): [slider-gradle] (test fantôme)` (BUILD
+FAILED), puis restauré ⇒ BUILD SUCCESSFUL.
+
+=== US-3 — Corrigible `runAllTests` conservé
+
+`runAllTests` (Exec par borough) et `check → runAllTests` restent intacts pour
+l'usage **local**. La CI ne l'invoque plus.
+
+== Mesure après
+
+Run vert = `38640573849` (commit `f648470`).
+
+[cols="2,2,3,2"]
+|===
+| Mesure | Valeur | Détail | Source
+
+| Wall-clock du run | **11m48s** | 21:28:46→21:40:34 | `gh run view 38640573849`
+| Chemin critique | **11m44s** | job `Check · bakery` | idem
+| Garde matrice | 43s | | idem
+| planner | 1m48s | | idem
+| dashboard | 1m49s | | idem
+| api-key-pool | 1m07s | | idem
+| slider | 47s | | idem
+|===
+
+Run intermédiaire `38639069550` (commit `9da9290`) : tous les `check` **PASS**, seul
+l'étape `Upload test reports` échouait (`Invalid pattern '..././build/reports/'`) →
+corrigé (deux globs candidats, sans `./`) au commit `f648470`.
+
+== Verdict
+
+[cols="2,2,3"]
+|===
+| Axe | Avant | Après
+
+| Wall-clock | 19m26s | **11m48s** (**~1,65×**)
+| Étape de check | 18m08s | 11m44s (~1,54×)
+| Parallélisme | 1 job | 6 jobs
+| Dépendances téléchargées | 13 clones | 1 clone/job
+|===
+
+**4/5 boroughs sous 2 min.** Le wall-clock est désormais borné par **bakery seul**
+(11m44s) et non plus par la somme.
+
+=== Signal — bakery dépasse 5 min (bloquant pour la cible <5min)
+
+`bakery-gradle` (via `bakery-plugin/check`) reste **> 5 min** : son `check` agrège
+`test` + `functionalTest` (≈ 5m30) + `cucumberTest` (≈ 4m35) + ktlint + kover +
+`e2eTest` + `nodeTest`.
+
+*Sharding secondaire possible, mais bloqué par `kover`* : la convention
+`education.cccp.build.kover` 0.0.7 configure `kover.reports.total` ⇒
+`koverThresholdCheck` **agrège TOUTES les tâches `Test`** du projet (seuil 89 %).
+Spliter `test`/`functionalTest`/`cucumberTest` sur des jobs **séparés** priverait
+`koverVerify` de sa couverture agrégée (échec de seuil) — impossible sans modifier
+**bakery** (hors périmètre de cette session : on ne touche pas les autres boroughs).
+
+**Suivi recommandé (EPIC bakery)** :
+. sharder `cucumberTest` par tag/feature (runners, pattern S-082/S-269) ;
+. sharder `functionalTest` par classes (`--tests`) ;
+. doter `kover` d'une **fusion de rapports inter-jobs** (upload/download d'artefacts
+   `kover` puis `koverVerify` sur la fusion) — sinon scoper `koverVerify` au `test`.
+. Ensuite la matrice workspace-bom pourra exécuter les shards bakery en parallèle et
+   passer < 5 min.
+
+== Fichiers modifiés
+
+* `build.gradle.kts` — tâche `verifyCiMatrixCoverage` + `check.dependsOn`.
+* `.github/workflows/test.yml` — matrice `borough-check` + job `matrix-coverage`.
+
+== Commits / CI
+
+* `9da9290` — `ci(s297): shard cross-borough checks into a per-borough parallel matrix`
+* `f648470` — `ci(s297): fix artifact path for consumer-root boroughs (no /./ relative path)`
+* CI verte : run `38640573849` (11m48s, 6/6 jobs success).
+
+== Leçons
+
+. Un job monolithique cross-borough paie la **somme** des checks ; la matrice paie le
+  **max** (ici bakery).
+. La garde de couverture à la **source** (matrice ≡ `testableProjects`) tue le risque
+  de « test fantôme » : un borough retiré de la matrice **fait échouer** la CI.
+. `upload-artifact` rejette `.`/`..` relatifs dans `path:` — un `dir: .` de racine
+  consommatrice produit `...//./build/reports/`.
+. Le sharding d'un `check` couplé à `kover` (agrégation de toutes les tâches `Test`)
+  n'est pas neutre : la couverture résiste au partitionnement naïf.

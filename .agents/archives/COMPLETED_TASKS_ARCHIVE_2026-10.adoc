@@ -1,5 +1,19 @@
 = COMPLETED_TASKS_ARCHIVE — 2026-10
 
+== Session 297 (2026-10-14) — CI sharding : matrice parallèle par borough ✅
+
+CI (zéro code de production) — éclater le job monolithique `runAllTests` (5 boroughs
+séquentiels, step `check` 18m08s) en 1 job/bourough.
+
+* [x] U-1 — `.github/workflows/test.yml` : job `borough-check` en matrice (5 entrées), clone du **seul** borough + `./gradlew check --no-daemon` ; Node 22 pour bakery
+* [x] U-2 — garde `verifyCiMatrixCoverage` (`build.gradle.kts`, wired à `check`) : matrice ≡ `testableProjects` (anti test fantôme S-269), RED prouvé
+* [x] Job `matrix-coverage` dédié (garde légère, checkout workspace-bom seul)
+* [x] `runAllTests` conservé intact (usage local)
+* [x] Fix `Upload test reports` (`Invalid pattern '..././build/reports/'`) — deux globs sans `./`
+* [x] Mesure : wall-clock `19m26s → 11m48s` (run vert `38640573849`, 6/6 jobs) ; 4/5 boroughs < 2 min
+* [x] **Signal : bakery 11m44s > 5 min** — sharding secondaire bloqué par `kover` (agrégation toutes tâches `Test`, seuil 89 %) ⇒ EPIC `MEM-CI-SHARD`
+* [x] Commits `9da9290` + `f648470` ; rapport `.agents/sessions/297-ci-shard-cross-borough-matrix.adoc`
+
 == Session 296 (2026-10-14) — BOM/catalog 0.0.93 : `capsule-plugin 0.0.11` + `slider-plugin 0.0.20` ✅
 
 Bump consommateur (accord pilote ; releases amont slider S-076 + capsule S-201).
