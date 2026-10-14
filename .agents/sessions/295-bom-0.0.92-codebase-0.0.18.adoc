@@ -1,0 +1,43 @@
+= Session 295 — BOM/catalog 0.0.92 : `codebase-plugin 0.0.18`
+:session: 295
+:date: 2026-10-14
+:type: pub/ops + cross-borough
+:borough: MEMPHIS (workspace-bom)
+:statut: ✅ TERMINÉ — `workspace-bom`/`workspace-catalog 0.0.92` publiés Central
+
+== Mission
+
+Volet N0 du BS-2 de KOOG-PIPELINE-DEDUP (accord pilote) : le squelette N1
+`codebase.koog.pipeline` doit être publié en `codebase-plugin 0.0.18` ; or la
+version propre de codebase **dérive du catalogue workspace** (`ws`). Le catalogue
+doit donc déclarer `codebase-plugin = "0.0.18"` **avant** la publication N1.
+
+== Changement
+
+* `gradle/libs.versions.toml` :
+  * `workspace-bom 0.0.91 → 0.0.92` (version dérivée, jamais hardcodée).
+  * `codebase-plugin 0.0.17 → 0.0.18` (entrée catalogue + lib).
+* Garde `agent-contracts/src/test/kotlin/contracts/catalog/PlatformCatalogAlignmentTest.kt`
+  ré-alignée conjointement (`workspace-bom 0.0.91 → 0.0.92`, `codebase-plugin 0.0.17 → 0.0.18`).
+
+== Publication
+
+* `publishToMavenLocal` VERT (BOM + catalog signés) — catalog 0.0.92 déclare
+  `codebase-plugin = "0.0.18"` (vérifié).
+* Central bundle **`fbc592ed-fc0b-4032-981e-32a6bc618fdd`** (AUTOMATIC).
+* Propagation repo1 HTTP 200 : `workspace-bom/0.0.92` + `workspace-catalog/0.0.92`.
+
+== Note
+
+La garde `PlatformCatalogAlignmentTest` n'est pas exécutée par la CI `runAllTests`
+(agent-contracts = build standalone, piège #7) — l'alignement toml↔garde est
+vérifié par édition conjointe.
+
+== Commit
+
+* `07539e9` — `chore(memphis): BOM/catalog 0.0.92 — codebase-plugin 0.0.18 (KOOG-PIPELINE-DEDUP BS-2 prereq)`
+
+== Suite
+
+* N1 codebase re-pin `ws 0.0.78 → 0.0.92` (S-277) puis publication `0.0.18`.
+* N2 capsule + slider adoptent `codebase.koog.pipeline` (S-200).

@@ -121,3 +121,15 @@ S-219, `.agents/CADRAGE_EPIC_PLT_DIAGRAM_OWNERSHIP.adoc`).
 - [x] 0.0.65 : propagation fix DOC-TRANSLATE-RESILIENCE (`TemplateStructureGuard` + `PendingBlockRetry`)
 - [x] Découverte P0 : `kotlin-stdlib-jdk8` shim vide → contraint BOM, retiré plugins
 - [x] Central bundle `f9faa2fc` (AUTOMATIC), propagation repo1 HTTP 200
+
+== S-295 — BOM/catalog 0.0.92 : `codebase-plugin 0.0.18` ✅
+
+* Volet N0 du BS-2 KOOG-PIPELINE-DEDUP (accord pilote). Le squelette N1
+  `codebase.koog.pipeline` doit être publié en `codebase-plugin 0.0.18` ; la version
+  propre codebase dérivant du catalogue workspace, celui-ci doit déclarer
+  `codebase-plugin = "0.0.18"` avant la publication N1.
+* Bump `codebase-plugin 0.0.17 → 0.0.18` + `workspace-bom 0.0.91 → 0.0.92`.
+  Garde `PlatformCatalogAlignmentTest` ré-alignée conjointement.
+* `publishToMavenLocal` VERT. Central bundle `fbc592ed-fc0b-4032-981e-32a6bc618fdd`
+  (AUTOMATIC) ; propagation repo1 HTTP 200.
+* Rapport `.agents/sessions/295-bom-0.0.92-codebase-0.0.18.adoc`.

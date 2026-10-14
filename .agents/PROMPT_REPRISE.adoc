@@ -1,8 +1,16 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-295 — À DÉFINIR (dernière terminée : **294 — BOM/catalog 0.0.91, repin
-`video-kernel 0.3.0`**).
+296 — À DÉFINIR (dernière terminée : **295 — BOM/catalog 0.0.92, `codebase-plugin 0.0.18`**).
+
+**S-295** (transverse, volet N0 du BS-2 KOOG-PIPELINE-DEDUP) : le squelette N1
+`codebase.koog.pipeline` devait être publié en `codebase-plugin 0.0.18` ; la version
+propre codebase dérivant du catalogue workspace, le catalogue doit déclarer
+`codebase-plugin = "0.0.18"` **avant** la publication N1. Bump `codebase-plugin
+0.0.17 → 0.0.18` + `workspace-bom 0.0.91 → 0.0.92`. Garde
+`PlatformCatalogAlignmentTest` ré-alignée. `publishToMavenLocal` VERT. Publication
+Central bundle `fbc592ed-fc0b-4032-981e-32a6bc618fdd` (AUTOMATIC) ; propagation repo1
+HTTP 200. Rapport `.agents/sessions/295-bom-0.0.92-codebase-0.0.18.adoc`.
 
 **S-294** (transverse, piloté session vidéo) : désync consommé — le catalogue
 portait `video-kernel 0.2.0` alors que capsule + hyperframes consomment `0.3.0`
