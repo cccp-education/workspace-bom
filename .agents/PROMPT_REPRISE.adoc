@@ -1,8 +1,16 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-294 — À DÉFINIR (dernière terminée : **293 — BOM/catalog 0.0.90, repin
-`hyperframes-plugin 0.0.4`**).
+295 — À DÉFINIR (dernière terminée : **294 — BOM/catalog 0.0.91, repin
+`video-kernel 0.3.0`**).
+
+**S-294** (transverse, piloté session vidéo) : désync consommé — le catalogue
+portait `video-kernel 0.2.0` alors que capsule + hyperframes consomment `0.3.0`
+(VK-4 US-4a, port partagé `VideoDurationProbe`). Repin catalogue
+`video-kernel 0.2.0 → 0.3.0` + bump `workspace-bom 0.0.90 → 0.0.91`. Garde
+`PlatformCatalogAlignmentTest` ré-alignée (`0.0.91`). `publishToMavenLocal` VERT.
+Publication Central bundle `f6c9acbe-182f-46e4-88b5-37a1d42d8ae5` (AUTOMATIC).
+Rapport `.agents/sessions/294-bom-0.0.91-video-kernel-0.3.0.adoc`.
 
 **S-293** : repin catalogue `hyperframes-plugin 0.0.3 → 0.0.4` + bump
 `workspace-bom 0.0.89 → 0.0.90`. Garde `PlatformCatalogAlignmentTest` ré-alignée
@@ -28,20 +36,20 @@ clos (VK-2 ✅ + VK-3 ✅).**
 **S-290** : BOM/catalog 0.0.87 (plantuml-plugin 0.0.10). **S-289** : 0.0.86
 (capsule 0.0.10). **S-288** : 0.0.85 (capsule 0.0.9).
 
-== État du code (S-293)
+== État du code (S-294)
 
-- Central : BOM + catalog **0.0.90** (hyperframes-plugin 0.0.4, en propagation/publié).
-- Catalogue interne : `workspace-bom = "0.0.90"`, `hyperframes-plugin = "0.0.4"`,
-  `video-kernel = "0.2.0"`, `capsule-plugin = "0.0.10"`, `bakery-plugin = "0.0.26"`,
+- Central : BOM + catalog **0.0.91** (video-kernel 0.3.0, en propagation/publié).
+- Catalogue interne : `workspace-bom = "0.0.91"`, `hyperframes-plugin = "0.0.4"`,
+  `video-kernel = "0.3.0"`, `capsule-plugin = "0.0.10"`, `bakery-plugin = "0.0.26"`,
   `codebase-plugin = "0.0.17"`.
-- Garde `PlatformCatalogAlignmentTest` : `workspace-bom 0.0.90`.
+- Garde `PlatformCatalogAlignmentTest` : `workspace-bom 0.0.91`.
 - Contrats N0 : `agent-contracts 0.0.3`, `codebase-contracts 0.0.2`,
   `i18n-contracts 0.0.4`, `llm-pool-contracts 0.0.2`,
   `opencode-session-contracts 0.0.2`, `pipeline-contracts 0.0.2`,
   `runtime-contracts 0.0.1`, `ocr-contracts 0.0.1`, `plantuml-contracts 0.0.1`.
-- N1 partagé : `video-kernel 0.2.0` (entrée catalogue + contrainte BOM).
+- N1 partagé : `video-kernel 0.3.0` (entrée catalogue + contrainte BOM).
 
-== Mission session 294 — au choix pilote
+== Mission session 295 — au choix pilote
 
 . Release consommateur au prochain artefact produit.
 . *EPIC `MEM-CI-CONSISTENCY`* (standard JDK 25 + gardes version publiée / nmcp

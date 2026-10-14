@@ -4,7 +4,7 @@
 :toc: left
 :sectnums:
 
-_Dernière mise à jour : 2026-10-08 (S-280 — contrat N0 **`plantuml-contracts:0.0.1`** : 10e artefact N0, US-1 de l'EPIC cross-borough PLT-DIAGRAM-OWNERSHIP (cadrage plantuml S-219). Types purs `contracts.plantuml`. Build standalone pattern 0124. Gates 20/20 PASS + garde 7/7 + mavenLocal VERT. Publication Central + bump BOM à venir (accord pilote).)_
+_Dernière mise à jour : 2026-10-14 (S-294 — **BOM/catalog 0.0.91 : repin `video-kernel 0.3.0`** (désync cross-borough consommé ; VK-4 US-4a port partagé `VideoDurationProbe`). Catalog `video-kernel 0.2.0 → 0.3.0` + bump `0.0.90 → 0.0.91` + garde. Publication Central bundle `f6c9acbe`. Piloté session vidéo.)_
 
 _Source : configuration/EPIC_PUB.adoc (Session 096)_
 
@@ -24,9 +24,17 @@ vérité des versions.
 | VK-3 | Entrée `video-kernel 0.1.0` (aliases `[versions]`/`[libraries]` + contrainte platform) + bump BOM/catalog `0.0.88` + garde | `workspace-bom/gradle/libs.versions.toml` + `build.gradle.kts` | ✅ TERMINÉ (S-291)
 
 | VK-2 | Repin `video-kernel 0.2.0` (breaking package `video.kernel.*`) + bump BOM/catalog `0.0.89` + garde | idem | ✅ TERMINÉ (S-292)
+
+| VK-4a | Repin `video-kernel 0.3.0` (port partagé `VideoDurationProbe`, VK-4 US-4a) + bump BOM/catalog `0.0.91` + garde | idem | ✅ TERMINÉ (S-294)
 |===
 
-**EPIC VK CLOS (VK-1 ✅ S-018, VK-2 ✅ S-292, VK-3 ✅ S-291).**
+**EPIC VK CLOS (VK-1 ✅ S-018, VK-2 ✅ S-292, VK-3 ✅ S-291, VK-4a ✅ S-294).**
+
+_Livré S-294 (VK-4a)_ : désync consommé — le catalogue portait encore
+`video-kernel 0.2.0` alors que capsule + hyperframes consomment `0.3.0` (port
+partagé `VideoDurationProbe`). Catalog `video-kernel 0.2.0 → 0.3.0` + bump
+`workspace-bom 0.0.90 → 0.0.91` + garde `0.0.91`. Publication Central bundle
+`f6c9acbe` (AUTOMATIC).
 
 _Livré S-291 (VK-3)_ : catalog `video-kernel 0.1.0` + POM BOM contraint 0.1.0,
 `publishToMavenLocal` VERT, Central bundle `fc872ff1` (AUTOMATIC), propagation

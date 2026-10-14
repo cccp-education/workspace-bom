@@ -1,0 +1,39 @@
+= Session 294 — BOM/catalog 0.0.91 : repin `video-kernel 0.3.0`
+:session: 294
+:date: 2026-10-14
+:type: pub/ops + cross-borough
+:borough: MEMPHIS (workspace-bom)
+:statut: ✅ TERMINÉ — `workspace-bom`/`workspace-catalog 0.0.91` publiés Central
+:toc:
+
+== Mission
+
+Consommer le désync cross-borough : le catalogue MEMPHIS portait encore
+`video-kernel = "0.2.0"` alors que les deux moteurs (capsule + hyperframes)
+consomment **`0.3.0`** (VK-4 US-4a, port partagé `VideoDurationProbe`, publié
+video-kernel S-195). Session transverse pilotée depuis la session vidéo.
+
+== Changement
+
+- `gradle/libs.versions.toml` :
+  - `video-kernel 0.2.0 → 0.3.0` (entrée catalogue + contrainte platform).
+  - `workspace-bom 0.0.90 → 0.0.91` (version dérivée, jamais hardcodée).
+- Garde `contracts.catalog.PlatformCatalogAlignmentTest` ré-alignée (`0.0.90 → 0.0.91`).
+
+== Publication
+
+- `publishToMavenLocal` VERT (BOM + catalog signés).
+- Central bundle **`f6c9acbe-182f-46e4-88b5-37a1d42d8ae5`** (AUTOMATIC), en
+  propagation (repo1 `workspace-bom/0.0.91` + `workspace-catalog/0.0.91`).
+
+== Note
+
+La garde `PlatformCatalogAlignmentTest` n'est pas exécutée par la CI `runAllTests`
+(agent-contracts = build standalone, piège #7) — l'alignement toml↔garde est
+vérifié par édition conjointe (les deux à `0.0.91`).
+
+== Suite
+
+- Les consommateurs (capsule, hyperframes) peuvent re-pin le catalogue/BOM
+  `0.0.91` à leur prochaine release ; aujourd'hui ils résolvent `video-kernel 0.3.0`
+  via leur toml local (aucune urgence).
