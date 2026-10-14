@@ -23,6 +23,7 @@ dérive sa version du catalogue publié).
 - **Propagation repo1 confirmée** : `workspace-bom/0.0.90` (pom/module) +
   `workspace-catalog/0.0.90` (pom/module/**toml**) HTTP 200 ; le catalogue porte
   `hyperframes-plugin = "0.0.4"`.
+- **CI `runAllTests`** : **run `38500988298` ✅ success**.
 
 == Effet transverse
 
