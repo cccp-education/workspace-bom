@@ -112,5 +112,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: reports-${{ matrix.borough }}
-          path: foundry/public/${{ matrix.borough }}/${{ matrix.dir }}/build/reports/
+          # `dir` is "." for consumer roots, which upload-artifact rejects as a
+          # relative path ("/./") — list both candidate locations instead.
+          path: |
+            foundry/public/${{ matrix.borough }}/build/reports/
+            foundry/public/${{ matrix.borough }}/bakery-plugin/build/reports/
           if-no-files-found: ignore
