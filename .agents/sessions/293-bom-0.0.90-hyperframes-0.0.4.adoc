@@ -1,0 +1,35 @@
+= Session 293 — BOM/catalog 0.0.90 (hyperframes-plugin 0.0.4)
+:session: 293
+:date: 2026-10-14
+:type: release
+:borough: MEMPHIS (workspace-bom)
+:statut: ✅ TERMINÉ
+:toc:
+
+== Mission
+
+Publier un BOM/catalogue **0.0.90** portant `hyperframes-plugin 0.0.3 → 0.0.4`,
+prérequis dur à la publication `hyperframes-plugin 0.0.4` (DAG N0-first : le plugin
+dérive sa version du catalogue publié).
+
+== Livrable
+
+- `gradle/libs.versions.toml` : `hyperframes-plugin 0.0.3 → 0.0.4` ;
+  `workspace-bom 0.0.89 → 0.0.90`.
+- Garde `agent-contracts/.../PlatformCatalogAlignmentTest` ré-alignée (`0.0.90`).
+- `agent-contracts` : `compileTestKotlin` ✅ (Local = Build).
+- `publishToMavenLocal` ✅.
+- **Publication Central** : bundle **`bbaf36b3-df12-46f9-88ca-bafbc6586c1b`** (AUTOMATIC).
+- **Propagation repo1 confirmée** : `workspace-bom/0.0.90` (pom/module) +
+  `workspace-catalog/0.0.90` (pom/module/**toml**) HTTP 200 ; le catalogue porte
+  `hyperframes-plugin = "0.0.4"`.
+
+== Effet transverse
+
+- Débloque `hyperframes-plugin 0.0.4` (hyperframes S-023) : pin catalogue
+  `workspace-catalog:0.0.90` + plateforme `workspace-bom:0.0.90`.
+
+== Suite
+
+- `hyperframes-plugin 0.0.4` publié (S-023 hyperframes) — voir
+  `hyperframes-plugin/.agents/sessions/023-publication-0.0.4.adoc`.
