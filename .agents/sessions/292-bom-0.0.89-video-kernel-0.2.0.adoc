@@ -1,0 +1,39 @@
+= Session 292 — BOM/catalog 0.0.89 : repin `video-kernel 0.2.0`
+:session: 292
+:date: 2026-10-14
+:type: pub/ops + cross-borough
+:statut: TERMINÉ
+
+== Mission (VK-2, volet MEMPHIS)
+
+Repiner l'entrée catalogue `video-kernel` sur le package neutre **`0.2.0`**
+(video-kernel S-194, breaking `video.kernel.*`) et publier une nouvelle release
+BOM/catalogue MEMPHIS.
+
+== Livré
+
+* Catalog `gradle/libs.versions.toml` : `video-kernel 0.1.0 → 0.2.0` +
+  `workspace-bom 0.0.88 → 0.0.89`.
+* Garde `PlatformCatalogAlignmentTest` ré-alignée (`0.0.88 → 0.0.89`).
+* `agent-contracts compileKotlin compileTestKotlin` VERT.
+* `publishToMavenLocal` VERT (BOM + catalog 0.0.89 signés ; toml publié porte
+  `video-kernel = "0.2.0"`).
+* Publication Central bundle **`ebffebe4-8556-4e05-857c-53f1b156b137`**
+  (AUTOMATIC).
+
+== Contexte / DAG
+
+* Prérequis : `education.cccp:video-kernel:0.2.0` publié Central + propagé repo1
+  (video-kernel S-194, bundle `da095e64`) ; consommateurs `capsule` (S-193) et
+  `hyperframes` (S-020) alignés `0.2.0`.
+* Fait suite à **VK-3** (S-291 : entrée `video-kernel 0.1.0`, BOM/catalog
+  `0.0.88`) — l'EPIC cross-borough VK est désormais clos (VK-2 ✅ + VK-3 ✅).
+* Ordre DAG respecté : `video-kernel 0.2.0` → `capsule`/`hyperframes` → MEMPHIS
+  `0.0.89` (repin).
+
+== Pièges (cumul)
+
+* #2 *Ordre DAG* — publication consommateur conditionnée à la propagation repo1.
+* #3 *Gardes épinglent les versions* — bump toml + garde dans le même commit.
+* #7 *`PlatformCatalogAlignmentTest` hors CI `runAllTests`* (build standalone) —
+  maintenue manuellement.

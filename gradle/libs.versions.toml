@@ -1,6 +1,6 @@
 [versions]
 # ── Workspace BOM shared versions ─────────────────────────────────────────────
-workspace-bom = "0.0.88"
+workspace-bom = "0.0.89"
 
 # ── Kotlin ────────────────────────────────────────────────────────────────────
 kotlin = "2.4.10"
@@ -62,7 +62,7 @@ codebase-plugin = "0.0.17"
 conventions-plugin = "0.0.7"
 
 # ── Shared libraries (education.cccp, N1) ─────────────────────────────────────
-video-kernel = "0.1.0"
+video-kernel = "0.2.0"
 
 # ── PDF/Extraction ────────────────────────────────────────────────────────────
 asciidoctorj = "3.0.1"

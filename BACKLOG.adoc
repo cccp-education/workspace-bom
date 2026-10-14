@@ -23,11 +23,17 @@ vérité des versions.
 
 | VK-3 | Entrée `video-kernel 0.1.0` (aliases `[versions]`/`[libraries]` + contrainte platform) + bump BOM/catalog `0.0.88` + garde | `workspace-bom/gradle/libs.versions.toml` + `build.gradle.kts` | ✅ TERMINÉ (S-291)
 
-| VK-2 | Repin `video-kernel 0.2.0` (breaking package `video.kernel.*`) + bump BOM/catalog `0.0.89` + garde | idem | 🟡 À FAIRE (S-292)
+| VK-2 | Repin `video-kernel 0.2.0` (breaking package `video.kernel.*`) + bump BOM/catalog `0.0.89` + garde | idem | ✅ TERMINÉ (S-292)
 |===
 
+**EPIC VK CLOS (VK-1 ✅ S-018, VK-2 ✅ S-292, VK-3 ✅ S-291).**
+
 _Livré S-291 (VK-3)_ : catalog `video-kernel 0.1.0` + POM BOM contraint 0.1.0,
-`publishToMavenLocal` VERT, Central bundle `fc872ff1` (AUTOMATIC).
+`publishToMavenLocal` VERT, Central bundle `fc872ff1` (AUTOMATIC), propagation
+repo1 HTTP 200 ×2, CI `runAllTests` VERTE (`38492810728`).
+
+_Livré S-292 (VK-2)_ : catalog `video-kernel 0.2.0` + `workspace-bom 0.0.89`,
+`publishToMavenLocal` VERT, Central bundle `ebffebe4` (AUTOMATIC).
 
 '''
 
