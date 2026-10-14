@@ -1,0 +1,46 @@
+= Session 296 — BOM/catalog 0.0.93 : `capsule-plugin 0.0.11` + `slider-plugin 0.0.20`
+:session: 296
+:date: 2026-10-14
+:type: pub/ops + cross-borough
+:borough: MEMPHIS (workspace-bom)
+:statut: ✅ TERMINÉ — `workspace-bom`/`workspace-catalog 0.0.93` publiés Central
+
+== Mission
+
+Bump consommateur N0 (accord pilote) après deux releases N1/N2 :
+`slider-plugin 0.0.20` (S-076) et `capsule-plugin 0.0.11` (S-201).
+
+== Changement
+
+* `gradle/libs.versions.toml` :
+  * `workspace-bom 0.0.92 → 0.0.93` (version dérivée, jamais hardcodée).
+  * `capsule-plugin 0.0.10 → 0.0.11`.
+  * `slider-plugin 0.0.19 → 0.0.20`.
+* Garde `agent-contracts/src/test/kotlin/contracts/catalog/PlatformCatalogAlignmentTest.kt`
+  ré-alignée conjointement (`workspace-bom 0.0.92 → 0.0.93`).
+
+== Publication
+
+* `publishToMavenLocal` VERT (BOM + catalog 0.0.93 signés) — POM BOM 0.0.93 contraint
+  `capsule-plugin 0.0.11` + `slider-plugin 0.0.20` (vérifié) ; catalog 0.0.93 porte
+  les deux entrées.
+* Central bundle **`fa361f70-ed77-4325-9e7d-d562db429efa`** (AUTOMATIC).
+* `agent-contracts compileTestKotlin` VERT (garde alignée, édition conjointe — Piège #7 :
+  la garde n'est pas exécutée par la CI `runAllTests`).
+
+== DAG
+
+* Prérequis : `slider-plugin 0.0.20` (S-076, bundle `36c53dc9`) + `capsule-plugin 0.0.11`
+  (S-201, bundle `9aa2f725`) publiés Central (Piège #7 MEMPHIS-first).
+* Propagation repo1 : `slider-plugin 0.0.20` HTTP 200 confirmé ; `capsule-plugin 0.0.11`
+  + `workspace-bom/0.0.93` + `workspace-catalog/0.0.93` en propagation fin de session
+  (délai Central habituel 7-27 min).
+
+== Commit
+
+* `0ed3bfa` — `chore(memphis): BOM/catalog 0.0.93 — capsule-plugin 0.0.11 + slider-plugin 0.0.20`
+
+== Gates
+
+* Local = Build : `publishToMavenLocal` + `compileTestKotlin` VERTS ; tests = CI.
+* Zéro secret, zéro Python.

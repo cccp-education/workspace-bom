@@ -1,7 +1,15 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-296 — À DÉFINIR (dernière terminée : **295 — BOM/catalog 0.0.92, `codebase-plugin 0.0.18`**).
+297 — À DÉFINIR (dernière terminée : **296 — BOM/catalog 0.0.93, `capsule-plugin 0.0.11` + `slider-plugin 0.0.20`**).
+
+**S-296** (bump consommateur, accord pilote) : deux releases amont — `slider-plugin
+0.0.20` (S-076) + `capsule-plugin 0.0.11` (S-201). Catalog `capsule-plugin 0.0.10 →
+0.0.11` + `slider-plugin 0.0.19 → 0.0.20` + `workspace-bom 0.0.92 → 0.0.93`. Garde
+`PlatformCatalogAlignmentTest` ré-alignée (`0.0.93`). `publishToMavenLocal` VERT (POM
+BOM contraint capsule 0.0.11 + slider 0.0.20). Publication Central bundle
+`fa361f70-ed77-4325-9e7d-d562db429efa` (AUTOMATIC). `agent-contracts compileTestKotlin`
+VERT. Commit `0ed3bfa`. Rapport `.agents/sessions/296-bom-0.0.93-capsule-0.0.11-slider-0.0.20.adoc`.
 
 **S-295** (transverse, volet N0 du BS-2 KOOG-PIPELINE-DEDUP) : le squelette N1
 `codebase.koog.pipeline` devait être publié en `codebase-plugin 0.0.18` ; la version
@@ -44,24 +52,25 @@ clos (VK-2 ✅ + VK-3 ✅).**
 **S-290** : BOM/catalog 0.0.87 (plantuml-plugin 0.0.10). **S-289** : 0.0.86
 (capsule 0.0.10). **S-288** : 0.0.85 (capsule 0.0.9).
 
-== État du code (S-294)
+== État du code (S-296)
 
-- Central : BOM + catalog **0.0.91** (video-kernel 0.3.0, en propagation/publié).
-- Catalogue interne : `workspace-bom = "0.0.91"`, `hyperframes-plugin = "0.0.4"`,
-  `video-kernel = "0.3.0"`, `capsule-plugin = "0.0.10"`, `bakery-plugin = "0.0.26"`,
-  `codebase-plugin = "0.0.17"`.
-- Garde `PlatformCatalogAlignmentTest` : `workspace-bom 0.0.91`.
+- Central : BOM + catalog **0.0.93** (capsule-plugin 0.0.11 + slider-plugin 0.0.20,
+  bundle `fa361f70`, en propagation/publié).
+- Catalogue interne : `workspace-bom = "0.0.93"`, `capsule-plugin = "0.0.11"`,
+  `slider-plugin = "0.0.20"`, `codebase-plugin = "0.0.18"`, `hyperframes-plugin = "0.0.4"`,
+  `video-kernel = "0.3.0"`, `bakery-plugin = "0.0.26"`.
+- Garde `PlatformCatalogAlignmentTest` : `workspace-bom 0.0.93`.
 - Contrats N0 : `agent-contracts 0.0.3`, `codebase-contracts 0.0.2`,
   `i18n-contracts 0.0.4`, `llm-pool-contracts 0.0.2`,
   `opencode-session-contracts 0.0.2`, `pipeline-contracts 0.0.2`,
   `runtime-contracts 0.0.1`, `ocr-contracts 0.0.1`, `plantuml-contracts 0.0.1`.
 - N1 partagé : `video-kernel 0.3.0` (entrée catalogue + contrainte BOM).
 
-== Mission session 295 — au choix pilote
+== Mission session 297 — au choix pilote
 
 . Release consommateur au prochain artefact produit.
 . *EPIC `MEM-CI-CONSISTENCY`* (standard JDK 25 + gardes version publiée / nmcp
-   / catalogue) — à exécuter si demandé.
+   / catalogue) — à exécuter si demandé (CI-1.4 qwen3:0.6b reste, 1 pt).
 . *Resync gouvernance MEMPHIS* (INDEX/HISTORY).
 
 == Pièges à retenir (cumul)
