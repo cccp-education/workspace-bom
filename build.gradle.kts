@@ -187,8 +187,51 @@ testableProjects.forEach { (projectName, buildSubdir) ->
     }
 }
 
+// ── verifyCiMatrixCoverage — anti "test fantôme" guard (pattern S-269) ──
+// The cross-borough checks are sharded in `.github/workflows/test.yml` into one
+// matrix job per testable borough, each on its own CI machine. A borough that is
+// declared in `testableProjects` but missing from the workflow matrix would
+// silently stop being tested. This guard asserts, from the sources (no Gradle
+// model, pure file parsing), that the CI matrix covers EXACTLY `testableProjects`
+// and that every matrix entry points at the borough's declared build directory.
+val ciWorkflowFile = layout.projectDirectory.file(".github/workflows/test.yml")
+
+val verifyCiMatrixCoverage = tasks.register("verifyCiMatrixCoverage") {
+    group = "verification"
+    description = "Fails if the CI borough matrix does not exactly cover testableProjects."
+    val workflow = ciWorkflowFile.asFile
+    val expected = testableProjects.toMap()
+    inputs.file(ciWorkflowFile)
+    doLast {
+        val text = workflow.readText()
+        // Matrix entries look like:
+        //   - name: "Check · bakery"
+        //     borough: bakery-gradle
+        //     dir: bakery-plugin
+        val entries = Regex("""borough:[ \t]*([A-Za-z0-9._-]+)[ \t]*\r?\n[ \t]*dir:[ \t]*([^\s]+)""")
+            .findAll(text)
+            .map { it.groupValues[1] to it.groupValues[2] }
+            .toList()
+        check(entries.isNotEmpty()) { "No `borough:`/`dir:` matrix entries found in $workflow" }
+        val actual = entries.toMap()
+        check(entries.size == actual.size) { "Duplicate borough entries in CI matrix: ${entries.map { it.first }}" }
+
+        val missing = expected.keys - actual.keys
+        val orphan = actual.keys - expected.keys
+        check(missing.isEmpty()) { "CI matrix is missing testable borough(s): $missing (test fantôme)" }
+        check(orphan.isEmpty()) { "CI matrix references unknown borough(s): $orphan" }
+        expected.forEach { (borough, dir) ->
+            check(actual[borough] == dir) {
+                "CI matrix dir for $borough is '${actual[borough]}', expected '$dir'"
+            }
+        }
+        logger.lifecycle("verifyCiMatrixCoverage OK — ${actual.size} boroughs covered: ${actual.keys.sorted()}")
+    }
+}
+
 tasks.named("check") {
     dependsOn(runAllTestsTask)
+    dependsOn(verifyCiMatrixCoverage)
 }
 
 publishing {

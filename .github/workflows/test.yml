@@ -7,39 +7,27 @@ on:
     branches: [main, master]
   workflow_dispatch:
 
+# Cancel superseded runs on the same ref — saves runner-minutes on rapid pushes.
+concurrency:
+  group: run-all-tests-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   GRADLE_OPTS: -Dorg.gradle.daemon=false
 
 jobs:
-  run-all-tests:
-    name: Cross-borough check (13 boroughs)
+  # ── coverage guard (anti "test fantôme", S-269) ─────────────────────────────
+  # Asserts the `borough-check` matrix below covers EXACTLY the `testableProjects`
+  # declared in workspace-bom/build.gradle.kts. A borough missing from the matrix
+  # would silently stop being tested. Guarded by `verifyCiMatrixCoverage`.
+  matrix-coverage:
+    name: CI matrix coverage guard
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 10
 
     steps:
       - name: Checkout workspace-bom
         uses: actions/checkout@v4
-        with:
-          path: foundry/public/workspace-bom
-
-      - name: Checkout 13 sibling boroughs
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set -euo pipefail
-          BOROUGHS=(
-            api-key-pool-gradle bakery-gradle capsule-gradle codebase-gradle
-            codex-gradle dashboard-gradle graphify-gradle hyperframes-gradle
-            jhipster-gradle-plugins planner-gradle plantuml-gradle
-            readme-gradle slider-gradle
-          )
-          for name in "${BOROUGHS[@]}"; do
-            echo "::group::Cloning $name"
-            git clone --depth 1 \
-              "https://cccp-education:${GH_TOKEN}@github.com/cccp-education/${name}.git" \
-              "foundry/public/${name}"
-            echo "::endgroup::"
-          done
 
       - name: Set up JDK 25
         uses: actions/setup-java@v4
@@ -50,6 +38,79 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Run runAllTests (check across all 13 boroughs)
-        run: ./gradlew runAllTests --no-daemon --continue
-        working-directory: foundry/public/workspace-bom
+      - name: Verify the CI matrix covers every testable borough
+        run: ./gradlew verifyCiMatrixCoverage --no-daemon
+
+  # ── per-borough checks (parallel machines) ──────────────────────────────────
+  # Formerly one monolithic job that ran the 5 testable boroughs sequentially
+  # (~18 min wall-clock = the sum of each `check`). Each borough now runs on its
+  # own runner, so the wall-clock is max(borough check) instead of the sum. Each
+  # build is standalone (pattern 0124): it resolves its dependencies from Maven
+  # Central, never from a sibling worktree — a job therefore clones only its own
+  # borough. The mapping is the exact `testableProjects` of build.gradle.kts and
+  # is locked by `verifyCiMatrixCoverage` (matrix-coverage job).
+  borough-check:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: "Check · api-key-pool"
+            borough: api-key-pool-gradle
+            dir: .
+            node: false
+          - name: "Check · bakery"
+            borough: bakery-gradle
+            dir: bakery-plugin
+            node: true
+          - name: "Check · dashboard"
+            borough: dashboard-gradle
+            dir: .
+            node: false
+          - name: "Check · planner"
+            borough: planner-gradle
+            dir: .
+            node: false
+          - name: "Check · slider"
+            borough: slider-gradle
+            dir: .
+            node: false
+
+    steps:
+      - name: Checkout ${{ matrix.borough }}
+        uses: actions/checkout@v4
+        with:
+          repository: cccp-education/${{ matrix.borough }}
+          path: foundry/public/${{ matrix.borough }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+
+      # bakery's `check` includes the Node.js host tests (`nodeTest`) — install
+      # Node explicitly instead of relying on the runner's preinstalled runtime.
+      - name: Set up Node.js
+        if: ${{ matrix.node }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Run ${{ matrix.borough }} check
+        run: ./gradlew check --no-daemon
+        working-directory: foundry/public/${{ matrix.borough }}/${{ matrix.dir }}
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reports-${{ matrix.borough }}
+          path: foundry/public/${{ matrix.borough }}/${{ matrix.dir }}/build/reports/
+          if-no-files-found: ignore
