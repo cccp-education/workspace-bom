@@ -1,6 +1,6 @@
 [versions]
 # ── Workspace BOM shared versions ─────────────────────────────────────────────
-workspace-bom = "0.0.87"
+workspace-bom = "0.0.88"
 
 # ── Kotlin ────────────────────────────────────────────────────────────────────
 kotlin = "2.4.10"
@@ -60,6 +60,9 @@ dashboard-plugin = "0.0.2"
 api-key-pool-plugin = "0.0.2"
 codebase-plugin = "0.0.17"
 conventions-plugin = "0.0.7"
+
+# ── Shared libraries (education.cccp, N1) ─────────────────────────────────────
+video-kernel = "0.1.0"
 
 # ── PDF/Extraction ────────────────────────────────────────────────────────────
 asciidoctorj = "3.0.1"
@@ -284,6 +287,7 @@ opencode-session-contracts = { module = "education.cccp:opencode-session-contrac
 i18n-contracts = { module = "education.cccp:i18n-contracts", version.ref = "i18n-contracts" }
 pipeline-contracts = { module = "education.cccp:pipeline-contracts", version.ref = "pipeline-contracts" }
 runtime-contracts = { module = "education.cccp:runtime-contracts", version.ref = "runtime-contracts" }
+video-kernel = { module = "education.cccp:video-kernel", version.ref = "video-kernel" }
 mapstruct = { module = "org.mapstruct:mapstruct", version.ref = "mapstruct" }
 document-plugin = { module = "education.cccp:document-plugin", version.ref = "document-plugin" }
 bakery-plugin = { module = "education.cccp:bakery-plugin", version.ref = "bakery-plugin" }

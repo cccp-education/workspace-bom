@@ -1,35 +1,43 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-288 — À DÉFINIR (dernière terminée : **287 — BOM/catalog 0.0.84, capsule-plugin 0.0.8**).
+292 — À DÉFINIR (dernière terminée : **291 — BOM/catalog 0.0.88, entrée
+`video-kernel 0.1.0`**).
 
-**S-287** : release consommateur (accord pilote ; capsule S-179). Bump catalog
-`capsule-plugin 0.0.7 → 0.0.8` + BOM/catalog `0.0.83 → 0.0.84`. **Garde
-`PlatformCatalogAlignmentTest` ré-alignée** (`workspace-bom 0.0.83 → 0.0.84`).
-`assemble` + `publishToMavenLocal` VERTS. Publication Central bundle
-`8b3663cf-3d23-4480-ac88-3a53171f91d4` (AUTOMATIC). Rapport
-`.agents/sessions/287-bom-0.0.84-capsule-0.0.8.adoc`.
+**S-291** (VK-3) : intégration du noyau vidéo neutre `video-kernel` au
+BOM/catalogue (cross-borough). Catalog `[versions] video-kernel = "0.1.0"` +
+alias `[libraries]` + contrainte platform `api(libs.video.kernel)` + bump
+`workspace-bom 0.0.87 → 0.0.88`. Garde `PlatformCatalogAlignmentTest`
+ré-alignée (`0.0.88`). `agent-contracts compileKotlin compileTestKotlin` VERT.
+`publishToMavenLocal` VERT. Publication Central bundle
+`fc872ff1-8798-45e5-a8af-72e5fae4134f` (AUTOMATIC). Rapport
+`.agents/sessions/291-bom-0.0.88-video-kernel-0.1.0.adoc`.
 
-**S-286** : BOM/catalog 0.0.83 (capsule-plugin 0.0.7). **S-285** : 0.0.82 (capsule 0.0.6)
-+ dérive garde `bakery-plugin`. **S-284** : 0.0.81 (capsule 0.0.5) + fix cross-borough
-`runAllTests` (JDK 25). **S-283** : 0.0.80 (capsule 0.0.4). **S-282** : 0.0.79 (capsule 0.0.3).
+**S-290** : BOM/catalog 0.0.87 (plantuml-plugin 0.0.10). **S-289** : 0.0.86
+(capsule 0.0.10). **S-288** : 0.0.85 (capsule 0.0.9). **S-287** : 0.0.84
+(capsule 0.0.8). **S-286** : 0.0.83 (capsule 0.0.7).
 
-== État du code (S-287)
+== État du code (S-291)
 
-- Central : BOM + catalog **0.0.84** (capsule-plugin 0.0.8, en propagation).
-- Catalogue interne : `workspace-bom = "0.0.84"`, `capsule-plugin = "0.0.8"`,
-  `bakery-plugin = "0.0.26"`, `codebase-plugin = "0.0.17"`.
-- Garde `PlatformCatalogAlignmentTest` : `workspace-bom 0.0.84`, `bakery-plugin 0.0.26`.
-- Contrats N0 : `agent-contracts 0.0.3`, `codebase-contracts 0.0.2`, `i18n-contracts 0.0.4`,
-  `llm-pool-contracts 0.0.2`, `opencode-session-contracts 0.0.2`, `pipeline-contracts 0.0.2`,
+- Central : BOM + catalog **0.0.88** (video-kernel 0.1.0, en propagation).
+- Catalogue interne : `workspace-bom = "0.0.88"`, `video-kernel = "0.1.0"`,
+  `capsule-plugin = "0.0.10"`, `bakery-plugin = "0.0.26"`,
+  `codebase-plugin = "0.0.17"`.
+- Garde `PlatformCatalogAlignmentTest` : `workspace-bom 0.0.88`.
+- Contrats N0 : `agent-contracts 0.0.3`, `codebase-contracts 0.0.2`,
+  `i18n-contracts 0.0.4`, `llm-pool-contracts 0.0.2`,
+  `opencode-session-contracts 0.0.2`, `pipeline-contracts 0.0.2`,
   `runtime-contracts 0.0.1`, `ocr-contracts 0.0.1`, `plantuml-contracts 0.0.1`.
+- N1 partagé : `video-kernel 0.1.0` (entrée catalogue + contrainte BOM).
 
-== Mission session 288 — au choix pilote
+== Mission session 292 — au choix pilote
 
-. **Release consommateur** : au prochain artefact produit (repin d'un borough).
-. *Resync gouvernance MEMPHIS* : INDEX/HISTORY (releases 0.0.36→0.0.61 non toutes tracées).
-. *EPIC `MEM-CI-CONSISTENCY`* (standard JDK 25 + gardes version publiée / nmcp / catalogue,
-   ajouté S-284) — à exécuter si demandé.
+. **VK-2 (Phase B)** : `video-kernel 0.2.0` (package neutre `video.kernel.*`,
+   breaking coordonné). Repasser le catalogue `video-kernel 0.1.0 → 0.2.0` +
+   bump `workspace-bom 0.0.88 → 0.0.89` + garde, publier BOM/catalog 0.0.89.
+. Release consommateur au prochain artefact produit.
+. *EPIC `MEM-CI-CONSISTENCY`* (standard JDK 25 + gardes version publiée / nmcp
+   / catalogue) — à exécuter si demandé.
 
 == Pièges à retenir (cumul)
 
@@ -38,12 +46,15 @@
 2. *Catch-22 D8 (anti-ghost)* : une entrée catalogue exige que l'artefact soit
    DÉJÀ publié Central — pour un artefact jamais publié, publier d'abord.
 3. *Gardes épinglent les versions* — après CHAQUE bump toml, bump la garde dans le
-   même commit (S-285 : 2 assertions ; la garde `bakery` était en dérive latente).
+   même commit.
 4. *Contrats N0 = builds standalone* (pattern 0124) : pas de sous-projet, pas de
    `include(...)` — `./gradlew` dans le répertoire du contrat.
 5. *nmcp collision* : ne jamais re-invoquer publishAggregationToCentralPortal sans
    vérifier repo1 d'abord.
 6. *Polling repo1* : ~4-30 min après « deployment is publishing » (AUTOMATIC).
+7. *La garde `PlatformCatalogAlignmentTest` n'est pas exécutée par la CI
+   `runAllTests`* (agent-contracts = build standalone) — la maintenir quand même,
+   elle est exécutée en local.
 
 == Règles
 

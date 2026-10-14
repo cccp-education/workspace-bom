@@ -139,6 +139,9 @@ dependencies {
         // document-plugin : publié Central (S-241), consommé par bakery sans version (MEM-CAT-3)
         api(libs.document.plugin)
 
+        // ── Shared N1 libraries (education.cccp) — noyau vidéo neutre ────────
+        api(libs.video.kernel)
+
         // ── Force resolution (koog 26.0.2-1 vs testcontainers 17.0.0) ─────────
         api(libs.jetbrains.annotations)
     }

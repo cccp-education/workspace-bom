@@ -1,0 +1,49 @@
+= Session 291 — BOM/catalog 0.0.88 : entrée `video-kernel 0.1.0`
+:session: 291
+:date: 2026-10-14
+:type: pub/ops + cross-borough
+:statut: TERMINÉ
+
+== Mission (VK-3)
+
+Intégrer le noyau vidéo neutre `education.cccp:video-kernel` (N1) dans le
+BOM/catalogue MEMPHIS, afin que les consommateurs `capsule` (N2) et
+`hyperframes` (N2) puissent le résoudre via la source unique de vérité des
+versions. Première étape de l'EPIC transversal VK (noyau vidéo partagé).
+
+== Livré
+
+* Catalog `gradle/libs.versions.toml` :
+  * nouvelle entrée `[versions] video-kernel = "0.1.0"` (section « Shared
+    libraries N1 ») ;
+  * nouvel alias `[libraries] video-kernel = { module =
+    "education.cccp:video-kernel", version.ref = "video-kernel" }` ;
+  * `workspace-bom 0.0.87 → 0.0.88`.
+* Platform `build.gradle.kts` : contrainte `api(libs.video.kernel)` ajoutée
+  (bloc « Shared N1 libraries ») — le POM BOM contraint désormais
+  `video-kernel 0.1.0`.
+* Garde `PlatformCatalogAlignmentTest` ré-alignée (`workspace-bom 0.0.87 →
+  0.0.88`).
+* `agent-contracts` : `compileKotlin` + `compileTestKotlin` VERTS (garde
+  compile).
+* `publishToMavenLocal` VERT (BOM + catalog 0.0.88 signés ; toml publié porte
+  `video-kernel = "0.1.0"`, POM BOM contraint `video-kernel 0.1.0`).
+* Publication Central bundle **`fc872ff1-8798-45e5-a8af-72e5fae4134f`**
+  (AUTOMATIC).
+
+== Contexte / DAG
+
+* `education.cccp:video-kernel:0.1.0` déjà publié Central (video-kernel S-193,
+  bundle `ccbb1f82`) — Piège #2 (pas d'entrée fantôme, D8).
+* Ordre DAG N0→N1→N2 : ce bump n'a pas de prérequis amont ; il débloque
+  l'adoption du catalogue par d'éventuels consommateurs.
+* Fait suite direct à VK-2 (Phase B) : le catalogue sera repassé à
+  `video-kernel 0.2.0` lors de la release 0.0.89.
+
+== Pièges (cumul)
+
+* #2 *Ordre DAG* — l'artefact doit être publié avant l'entrée catalogue.
+* #3 *Gardes épinglent les versions* — bump toml + garde dans le même commit.
+* #13 *Drift de garde latent* — la garde n'est pas exécutée par le job CI
+  `runAllTests` (agent-contracts = build standalone hors périmètre du job) ;
+  elle reste néanmoins maintenue dans le même commit par discipline.

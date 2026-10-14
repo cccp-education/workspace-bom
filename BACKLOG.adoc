@@ -9,6 +9,28 @@ _Dernière mise à jour : 2026-10-08 (S-280 — contrat N0 **`plantuml-contracts
 _Source : configuration/EPIC_PUB.adoc (Session 096)_
 
 '''
+== ✅ EPIC MEM-VK — intégration `video-kernel` (N1) au BOM/catalogue (S-291 → S-292)
+
+_Origine_ : EPIC transverses **VK-3** (entrée BOM) puis **VK-2** (renommage package
+neutre `capsule.kernel.*` → `video.kernel.*`, breaking coordonné). Le noyau vidéo
+neutre `education.cccp:video-kernel` (N1) est extrait de capsule et éprouvé par
+2 moteurs (capsule + hyperframes). Le BOM/catalogue en est la source unique de
+vérité des versions.
+
+[cols="1,4,3,2", options="header"]
+|===
+| US | Description | Cible | Statut
+
+| VK-3 | Entrée `video-kernel 0.1.0` (aliases `[versions]`/`[libraries]` + contrainte platform) + bump BOM/catalog `0.0.88` + garde | `workspace-bom/gradle/libs.versions.toml` + `build.gradle.kts` | ✅ TERMINÉ (S-291)
+
+| VK-2 | Repin `video-kernel 0.2.0` (breaking package `video.kernel.*`) + bump BOM/catalog `0.0.89` + garde | idem | 🟡 À FAIRE (S-292)
+|===
+
+_Livré S-291 (VK-3)_ : catalog `video-kernel 0.1.0` + POM BOM contraint 0.1.0,
+`publishToMavenLocal` VERT, Central bundle `fc872ff1` (AUTOMATIC).
+
+'''
+
 == 🟡 EPIC MEM-CI-CONSISTENCY — cohérence CI cross-borough (S-284)
 
 _Origine_ : le job **`runAllTests`** (Cross-borough check 13 boroughs) a été **rouge

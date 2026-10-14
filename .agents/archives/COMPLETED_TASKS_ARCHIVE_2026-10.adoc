@@ -1,5 +1,16 @@
 = COMPLETED_TASKS_ARCHIVE — 2026-10
 
+== Session 291 (2026-10-14) — BOM/catalog 0.0.88 : entrée video-kernel 0.1.0 ✅
+
+VK-3 — intégration cross-borough du noyau vidéo neutre `education.cccp:video-kernel` (N1).
+
+* [x] Catalog `[versions] video-kernel = "0.1.0"` + alias `[libraries]` + contrainte platform `api(libs.video.kernel)`
+* [x] Bump `workspace-bom 0.0.87 → 0.0.88`
+* [x] Garde `PlatformCatalogAlignmentTest` ré-alignée (`0.0.87 → 0.0.88`)
+* [x] `agent-contracts compileKotlin compileTestKotlin` VERT
+* [x] `publishToMavenLocal` VERT (toml publié porte video-kernel 0.1.0 ; POM BOM contraint 0.1.0)
+* [x] Publication Central bundle `fc872ff1-8798-45e5-a8af-72e5fae4134f` (AUTOMATIC)
+
 == Session 287 (2026-10-12) — BOM/catalog 0.0.84 : capsule-plugin 0.0.8 ✅
 
 Bump consommateur (accord pilote ; capsule S-179).
