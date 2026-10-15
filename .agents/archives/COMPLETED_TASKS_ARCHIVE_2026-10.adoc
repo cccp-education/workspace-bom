@@ -1,5 +1,15 @@
 = COMPLETED_TASKS_ARCHIVE — 2026-10
 
+== Session 300 (2026-10-15) — BOM/catalog 0.0.94 : repin `video-kernel 0.4.0` ✅
+
+Bump consommateur cross-borough (piloté session vidéo) — aligner le BOM/catalogue
+sur le noyau vidéo `0.4.0` (VK-4 US-4b→d) adopté par capsule + hyperframes.
+
+* [x] Catalog `video-kernel 0.3.0 → 0.4.0`
+* [x] Bump `workspace-bom 0.0.93 → 0.0.94` + garde `PlatformCatalogAlignmentTest` ré-alignée
+* [x] `agent-contracts compileTestKotlin` VERT ; `publishToMavenLocal` VERT (POM BOM contraint 0.4.0)
+* [x] Publication Central bundle `6ff36fda-553a-493d-8128-5305a8621542` (AUTOMATIC)
+
 == Session 298 (2026-10-15) — CI cross-borough : sharding de bakery ✅
 
 CI (zéro code de production) — remplacer l'entrée monolithique `Check · bakery`

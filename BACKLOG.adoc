@@ -88,9 +88,16 @@ vérité des versions.
 | VK-2 | Repin `video-kernel 0.2.0` (breaking package `video.kernel.*`) + bump BOM/catalog `0.0.89` + garde | idem | ✅ TERMINÉ (S-292)
 
 | VK-4a | Repin `video-kernel 0.3.0` (port partagé `VideoDurationProbe`, VK-4 US-4a) + bump BOM/catalog `0.0.91` + garde | idem | ✅ TERMINÉ (S-294)
+| VK-4b→d | Repin `video-kernel 0.4.0` (ports partagés post-production `AudioPostProduction`+`SubtitleBurnIn` + narration `TextToSpeech`, VK-4 US-4b→d) + bump BOM/catalog `0.0.94` + garde | idem | ✅ TERMINÉ (S-300)
 |===
 
-**EPIC VK CLOS (VK-1 ✅ S-018, VK-2 ✅ S-292, VK-3 ✅ S-291, VK-4a ✅ S-294).**
+**EPIC VK CLOS (VK-1 ✅ S-018, VK-2 ✅ S-292, VK-3 ✅ S-291, VK-4a ✅ S-294, VK-4b→d ✅ S-300).**
+
+_Livré S-300 (VK-4b→d)_ : désync consommé — le catalogue portait `video-kernel 0.3.0`
+alors que capsule (S-202) + hyperframes (S-026) consomment **`0.4.0`** (ports partagés
+post-production + narration). Catalog `video-kernel 0.3.0 → 0.4.0` + bump
+`workspace-bom 0.0.93 → 0.0.94` + garde `0.0.94`. Publication Central bundle
+`6ff36fda` (AUTOMATIC).
 
 _Livré S-294 (VK-4a)_ : désync consommé — le catalogue portait encore
 `video-kernel 0.2.0` alors que capsule + hyperframes consomment `0.3.0` (port

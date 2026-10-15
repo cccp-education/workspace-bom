@@ -1,7 +1,20 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-300 — À DÉFINIR (dernière terminée : **299 — CI cross-borough sous 5 min**).
+301 — À DÉFINIR (dernière terminée : **300 — BOM/catalog 0.0.94 : repin `video-kernel 0.4.0`**).
+
+**S-300** (bump consommateur, cross-borough, piloté session vidéo) : alignement amont
+du noyau vidéo. `video-kernel 0.4.0` (VK-4 US-4b→d : ports partagés post-production
+`AudioPostProduction`+`SubtitleBurnIn` et narration `TextToSpeech`, video-kernel
+S-196) est publié Central (bundle `695c4ccd`) et adopté par capsule (S-202) +
+hyperframes (S-026). Catalog `video-kernel 0.3.0 → 0.4.0` + `workspace-bom 0.0.93 →
+0.0.94`. **Garde `PlatformCatalogAlignmentTest` ré-alignée** (`0.0.93 → 0.0.94`).
+`agent-contracts compileTestKotlin` VERT ; `publishToMavenLocal` VERT (POM BOM
+contraint `video-kernel 0.4.0`, catalogue publié porte `video-kernel = "0.4.0"`).
+Publication Central bundle `6ff36fda-553a-493d-8128-5305a8621542` (AUTOMATIC) —
+un second envoi a été rejeté par le portail (« currently being published in another
+deployment »), preuve du premier dépôt. Hygiène non bloquante (la version explicite
+du toml consommateur l'emporte). Rapport `.agents/sessions/300-bom-0.0.94-video-kernel-0.4.0.adoc`.
 
 **S-299** (CI, zéro code de production) : objectif pilote — ramener le wall-clock
 cross-borough **sous 5 min**. Deux correctifs mesurés : (1) le job `bakery-coverage`

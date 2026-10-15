@@ -1,0 +1,40 @@
+= Session 300 — BOM/catalog 0.0.94 : repin `video-kernel 0.4.0` (VK-4 US-4b→d)
+:toc:
+
+== Contexte
+
+Session transverse pilotée depuis la session vidéo (video-kernel + capsule +
+hyperframes). `video-kernel 0.4.0` (VK-4 US-4b→d : ports partagés post-production
++ narration) est publié Central (bundle `695c4ccd`) ; les deux moteurs l'adoptent.
+Il reste l'alignement amont MEMPHIS (constraint BOM + entrée catalogue).
+
+== Livrable
+
+* Catalogue `gradle/libs.versions.toml` : `video-kernel 0.3.0 → 0.4.0`
+  (entrée `[versions]` ; la contrainte platform passe par `api(libs.video.kernel)`).
+* Bump `workspace-bom 0.0.93 → 0.0.94`.
+* Garde `PlatformCatalogAlignmentTest` ré-alignée (`0.0.93 → 0.0.94`).
+* `agent-contracts` `compileTestKotlin` VERT.
+* `publishToMavenLocal` VERT (POM BOM contraint `video-kernel 0.4.0` ; catalogue
+  publié porte `video-kernel = "0.4.0"`).
+* **Publication Central** bundle `6ff36fda-553a-493d-8128-5305a8621542`
+  (AUTOMATIC). *(Un second `publishAggregationToCentralPortal` a été rejeté par le
+  portail — « currently being published in another deployment » — preuve que le
+  premier déploiement est bien en cours.)*
+
+== Portée / non bloquant
+
+Comme pour les bumps précédents (S-291/S-292/S-294), l'alignement BOM est une
+**hygiène** : la version **explicite** du toml local des consommateurs l'emporte
+par résolution de conflit. Capsule + hyperframes résolvaient déjà `video-kernel 0.4.0`.
+Aucun code de production modifié.
+
+== Ordre DAG respecté
+
+`video-kernel 0.4.0` (Central, `695c4ccd`) → capsule (S-202) / hyperframes (S-026) →
+**MEMPHIS** (S-300, ce BOM/catalog `0.0.94`).
+
+== Dette / suite
+
+* Propagation repo1 `workspace-bom/0.0.94` + `workspace-catalog/0.0.94` à confirmer.
+* Désormais alignés : catalogue ↔ consommateurs (zéro désync `video-kernel`).
