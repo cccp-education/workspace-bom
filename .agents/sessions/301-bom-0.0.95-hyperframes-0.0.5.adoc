@@ -1,0 +1,30 @@
+= Session 301 — BOM/catalog 0.0.95 : `hyperframes-plugin 0.0.5` (release hyperframes)
+:toc:
+
+== Contexte
+
+Release DAG N0→N1→N2 (accord pilote). `hyperframes-plugin 0.0.5` intègre la
+consommation des ports vidéo partagés (`video-kernel 0.4.0`, S-026) + le durcissement
+du rendu réel. La version du plugin hyperframes est **dérivée** du catalogue publié
+(`ws.versions.hyperframes.plugin`) : le bump du catalogue est un **prérequis dur**.
+
+== Livrable
+
+* Catalogue `gradle/libs.versions.toml` : `hyperframes-plugin 0.0.4 → 0.0.5`.
+* Bump `workspace-bom 0.0.94 → 0.0.95`.
+* Garde `PlatformCatalogAlignmentTest` ré-alignée (`0.0.94 → 0.0.95`).
+* `agent-contracts compileTestKotlin` VERT.
+* `publishToMavenLocal` VERT — catalogue publié porte `hyperframes-plugin = "0.0.5"`,
+  POM BOM contraint `hyperframes-plugin 0.0.5`.
+* **Publication Central** bundle `bf6e4b33-80fc-4ab2-8773-e654d3e98251` (AUTOMATIC).
+
+== Ordre DAG
+
+`video-kernel 0.4.0` (Central, `695c4ccd`) → **MEMPHIS `0.0.95`** (ce document,
+catalogue `hyperframes-plugin = "0.0.5"`) → **hyperframes `0.0.5`** (Central,
+bundle `dbdfa6fb`).
+
+== Suite
+
+* Propagation repo1 `workspace-bom/0.0.95` + `workspace-catalog/0.0.95` (à confirmer).
+* Aucune autre action : le catalogue est aligné sur le dernier consommateur publié.

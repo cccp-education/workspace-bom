@@ -1,7 +1,17 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-301 — À DÉFINIR (dernière terminée : **300 — BOM/catalog 0.0.94 : repin `video-kernel 0.4.0`**).
+302 — À DÉFINIR (dernière terminée : **301 — BOM/catalog 0.0.95 : `hyperframes-plugin 0.0.5`**).
+
+**S-301** (bump consommateur, release hyperframes, piloté session vidéo) : `hyperframes-plugin 0.0.5`
+est **dérivé du catalogue publié** (`ws.versions.hyperframes.plugin`) → bump catalogue
+obligatoire en prérequis. Catalog `hyperframes-plugin 0.0.4 → 0.0.5` + `workspace-bom
+0.0.94 → 0.0.95`. **Garde `PlatformCatalogAlignmentTest` ré-alignée** (`0.0.94 → 0.0.95`).
+`agent-contracts compileTestKotlin` VERT ; `publishToMavenLocal` VERT (catalogue publié
+porte `hyperframes-plugin = "0.0.5"`, POM BOM contraint 0.0.5). Publication Central bundle
+`bf6e4b33-80fc-4ab2-8773-e654d3e98251` (AUTOMATIC). Ordre DAG : `video-kernel 0.4.0` →
+MEMPHIS `0.0.95` → hyperframes `0.0.5` (Central `dbdfa6fb`). Rapport
+`.agents/sessions/301-bom-0.0.95-hyperframes-0.0.5.adoc`.
 
 **S-300** (bump consommateur, cross-borough, piloté session vidéo) : alignement amont
 du noyau vidéo. `video-kernel 0.4.0` (VK-4 US-4b→d : ports partagés post-production

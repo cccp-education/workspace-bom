@@ -1,5 +1,15 @@
 = COMPLETED_TASKS_ARCHIVE — 2026-10
 
+== Session 301 (2026-10-15) — BOM/catalog 0.0.95 : `hyperframes-plugin 0.0.5` ✅
+
+Release hyperframes (pilotée session vidéo) — la version du plugin hyperframes est
+**dérivée du catalogue publié** ⇒ bump catalogue prérequis.
+
+* [x] Catalog `hyperframes-plugin 0.0.4 → 0.0.5`
+* [x] Bump `workspace-bom 0.0.94 → 0.0.95` + garde `PlatformCatalogAlignmentTest` ré-alignée
+* [x] `agent-contracts compileTestKotlin` VERT ; `publishToMavenLocal` VERT
+* [x] Publication Central bundle `bf6e4b33-80fc-4ab2-8773-e654d3e98251` (AUTOMATIC)
+
 == Session 300 (2026-10-15) — BOM/catalog 0.0.94 : repin `video-kernel 0.4.0` ✅
 
 Bump consommateur cross-borough (piloté session vidéo) — aligner le BOM/catalogue
