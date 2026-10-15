@@ -55,14 +55,16 @@ jobs:
   # only its own borough.
   #
   # The 4 non-sharded boroughs keep `./gradlew check`. `bakery-gradle` is sharded
-  # (S-298): its monolithic `check` (11m44s) is replaced by the 16 shard tasks
+  # (S-298): its monolithic `check` (11m44s) is replaced by the 15 shard entries
   # defined in bakery-gradle/bakery-plugin/build.gradle.kts (S-259) —
   #   • unit          : `test`
   #   • 8 BDD shards  : cucumberTestShard{JbakeCoreFoundations,JbakeCoreComponents,
   #                     JbakeCorePipelines,LensTree,SiteTree,LangSwitchCore,
   #                     LangSwitchEcosystem,I18nMassPipeline}
   #   • 6 func shards : functionalTestShard{A,B,C,D,E,F}
-  #   • node host     : nodeTest
+  # `nodeTest` (Node.js host tests, ~5 s, no coverage) is folded into the `unit`
+  # entry (S-299) rather than a 16th entry: at 22 entries the 21-slot runner pool
+  # queued one job ~35 s and moved a long shard onto the critical path.
   # ASSUMED COUPLING (workspace-bom ↔ bakery): workspace-bom invokes these task
   # names by string. The list is mirrored once in build.gradle.kts
   # (`bakeryShardTasks`) and locked by `verifyCiMatrixCoverage` (matrix-coverage
@@ -208,14 +210,6 @@ jobs:
             task: cucumberTestShardI18nMassPipeline
             node: true
             coverage: true
-          - name: "Bakery · node"
-            kind: shard
-            borough: bakery-gradle
-            dir: bakery-plugin
-            task: nodeTest
-            node: true
-            coverage: false
-
     steps:
       - name: Checkout ${{ matrix.borough }}
         uses: actions/checkout@v4
@@ -247,6 +241,17 @@ jobs:
 
       - name: Run ${{ matrix.borough }} ${{ matrix.task }}
         run: ./gradlew ${{ matrix.task }} --no-daemon
+        working-directory: foundry/public/${{ matrix.borough }}/${{ matrix.dir }}
+
+      # S-299 — `nodeTest` (Node.js host tests, ~5 s) is folded into the bakery
+      # `unit` entry instead of its own matrix entry. The cross-borough run
+      # submits one job per matrix entry; at 22 entries the runner pool (21)
+      # queued one job ~35 s, which pushed a long shard onto the critical path.
+      # Folding the tiny node job (which yields no kover `.ic`) brings the matrix
+      # back to the pool size, so every shard starts at once.
+      - name: Run ${{ matrix.borough }} nodeTest (folded into unit)
+        if: ${{ matrix.task == 'test' }}
+        run: ./gradlew nodeTest --no-daemon
         working-directory: foundry/public/${{ matrix.borough }}/${{ matrix.dir }}
 
       - name: Upload test reports
@@ -319,10 +324,18 @@ jobs:
       - name: List merged binary reports
         run: ls -la build/kover/bin-reports
 
+      # S-299 — `e2eTest` MUST be excluded. Kover aggregates every `Test` task by
+      # default, and bakery's `e2eTest` (Playwright) was not in the `-x` list: the
+      # coverage job silently downloaded Chromium (`installPlaywright`) and ran
+      # the whole E2E suite (~35 s of the 75 s gradle step) just to merge reports.
+      # `e2eTest` was never part of bakery's `check` (see the note above), so its
+      # coverage is out of scope here — mirroring bakery's own coverage job which
+      # excludes it too.
       - name: Verify merged coverage threshold
         run: >
           ./gradlew koverXmlReport koverThresholdCheck --no-daemon
           -x test -x functionalTest -x cucumberTest -x nodeTest
+          -x e2eTest -x installPlaywright
           -x functionalTestShardA -x functionalTestShardB -x functionalTestShardC
           -x functionalTestShardD -x functionalTestShardE -x functionalTestShardF
           -x cucumberTestShardJbakeCoreFoundations -x cucumberTestShardJbakeCoreComponents

@@ -187,15 +187,19 @@ testableProjects.forEach { (projectName, buildSubdir) ->
     }
 }
 
-// ── Cross-borough CI shards (S-298) — workspace-bom ↔ bakery coupling ────────
+// ── Cross-borough CI shards (S-298, S-299) — workspace-bom ↔ bakery coupling ─
 // The cross-borough CI no longer runs bakery's monolithic `check`; it runs the
-// 16 shard tasks defined in bakery-gradle/bakery-plugin/build.gradle.kts and
-// mirrored in bakery-gradle/.github/workflows/test.yml (S-259). This list is the
-// *assumed* coupling (workspace-bom invokes bakery task names by string): it lets
-// the guard assert the workspace-bom matrix invokes EXACTLY these tasks,
-// exhaustively — a shard dropped from the matrix would silently stop testing that
-// slice (anti "test fantôme", pattern S-269). Keep in sync with
+// shard tasks defined in bakery-gradle/bakery-plugin/build.gradle.kts and mirrored
+// in bakery-gradle/.github/workflows/test.yml (S-259). This list is the *assumed*
+// coupling (workspace-bom invokes bakery task names by string): it lets the guard
+// assert the workspace-bom matrix invokes EXACTLY these tasks, exhaustively — a
+// shard dropped from the matrix would silently stop testing that slice (anti
+// "test fantôme", pattern S-269). Keep in sync with
 // bakery-gradle/bakery-plugin/build.gradle.kts.
+// S-299 — `nodeTest` is folded into the `test` (unit) matrix entry rather than a
+// 16th entry: at 22 entries the 21-slot runner pool queued a job ~35 s and pushed
+// a long shard onto the critical path. It produces no kover `.ic`, so it is not
+// listed here (the shard entries now equal the pool-bound task set).
 val bakeryShardTasks = listOf(
     "test",
     "functionalTestShardA",
@@ -211,8 +215,7 @@ val bakeryShardTasks = listOf(
     "cucumberTestShardSiteTree",
     "cucumberTestShardLangSwitchCore",
     "cucumberTestShardLangSwitchEcosystem",
-    "cucumberTestShardI18nMassPipeline",
-    "nodeTest"
+    "cucumberTestShardI18nMassPipeline"
 )
 
 // One entry of the `borough-check` CI matrix (`kind` discriminates a monolithic
