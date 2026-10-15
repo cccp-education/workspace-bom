@@ -1,0 +1,157 @@
+= Session 298 — CI cross-borough : sharding de bakery (16 shards + fusion kover)
+
+:date: 2026-10-15
+:type: ci
+:score: 9/10
+
+== Objectif
+
+Faire que le job cross-borough de `bakery` exploite les **shards** de bakery
+(S-259) au lieu de son `check` monolithique, pour ramener le wall-clock
+cross-borough sous ~5 min. Préserver la couverture (seuil kover 85 % **bloquant**)
+et la garde anti « test fantôme » (S-269). Ne pas casser `runAllTests` (usage local).
+
+== État initial (mesuré)
+
+Baseline S-297 (run vert `38640573849`, commit `f648470`) :
+
+[cols="2,2,3"]
+|===
+| Mesure | Valeur | Détail
+
+| Wall-clock du run | 11m48s | 21:28:46→21:40:34
+| Chemin critique | **11m44s** | job `Check · bakery` (21:28:49→21:40:33)
+| 4 autres boroughs | < 2 min | planner 1m48, dashboard 1m49, api-key-pool 1m07, slider 47s
+|===
+
+`bakery` était le **seul** borough > 5 min : son `check` agrège
+`test` + `functionalTest` (≈ 5m30) + `cucumberTest` (≈ 4m35) + `nodeTest` + ktlint/kover.
+
+Depuis S-259, bakery a **déjà** un CI shardé : 1 unit + 8 BDD + 6 functional + node,
+avec un job `coverage` qui fusionne les `build/kover/bin-reports/*.ic` et exécute
+`koverXmlReport koverThresholdCheck -x <toutes les tâches Test>` (seuil **85 %**,
+`koverConventions { threshold = 85.0 }`). Le blocage S-297 (« kover agrège toutes
+les tâches Test ») est levé **côté bakery** ; côté workspace-bom, il restait à
+adopter ces shards.
+
+== Livré
+
+=== US-1 — Matrice cross-borough : 4 checks + 16 shards bakery
+
+`.github/workflows/test.yml` — le job `borough-check` passe de 5 entrées à **20**.
+Chaque entrée porte désormais `kind` / `borough` / `dir` / `task` :
+
+* `kind: check` (4) — `api-key-pool`, `dashboard`, `planner`, `slider` : inchangés
+  (`./gradlew check --no-daemon`).
+* `kind: shard` (16) — `bakery-gradle` / `bakery-plugin` :
+** `test` (unit)
+** `functionalTestShard{A..F}` (6)
+** `cucumberTestShard{JbakeCoreFoundations,JbakeCoreComponents,JbakeCorePipelines,LensTree,SiteTree,LangSwitchCore,LangSwitchEcosystem,I18nMassPipeline}` (8)
+** `nodeTest`
+Chaque shard clone **uniquement** `bakery-gradle`, exécute sa tâche, puis téléverse
+son `bin-reports/*.ic` (`nodeTest` : pas de `.ic`, `coverage: false`).
+
+Le workflow définit `CI: "true"` au niveau global : les tâches shard sont
+`onlyIf { System.getenv("CI") != null }` — sans cela, un shard serait silencieusement
+sauté et laisserait un rapport vide.
+
+=== US-2 — Job `bakery-coverage` (fusion kover, seuil bloquant)
+
+Nouveau job `bakery-coverage` (`needs: borough-check`) : clone `bakery-gradle`,
+`download-artifact pattern: kover-ic-bakery-*` (`merge-multiple`) dans
+`bakery-plugin/build/kover/bin-reports`, puis
+`./gradlew koverXmlReport koverThresholdCheck -x <test/functional/cucumber/node + tous les shards>`.
+Le seuil **85 %** reste bloquant. Parité de couverture : le `check` monolithique
+n'agrégeait que `test + functionalTest + cucumberTest` (`e2eTest` n'est **pas**
+dans `tasks.check{}`, ligne 354 de `bakery-plugin/build.gradle.kts`), soit exactement
+l'union des shards — le seuil passe sur la même surface.
+
+=== US-3 — Garde `verifyCiMatrixCoverage` étendue
+
+`build.gradle.kts` : la garde parse maintenant les entrées `kind`/`borough`/`dir`/`task`
+et vérifie :
+
+. les entrées `check` couvrent **exactement** les boroughs testables non shardés ;
+. les entrées `shard` couvrent **exactement** `bakeryShardTasks` (liste explicite =
+   couplage assumé workspace-bom ↔ bakery), exhaustif et disjoint (anti « test fantôme ») ;
+. le job `bakery-coverage` existe et `needs: borough-check` ;
+. aucun borough inconnu ; aucun borough testable perdu (checks ∪ {bakery} == testableProjects).
+
+`runAllTests` (Exec par borough) reste **intact** pour l'usage local.
+
+== RED → GREEN (baby-step)
+
+* GREEN initial : `verifyCiMatrixCoverage OK — 4 borough check(s), 16 bakery-gradle shard(s), 1 coverage job`.
+* RED prouvé : `functionalTestShardF` renommé temporairement `functionalTestShardZGhost`
+  ⇒ `CI matrix is missing bakery shard(s): [functionalTestShardF] (test fantôme)` (BUILD FAILED),
+  puis restauré ⇒ GREEN.
+
+== Mesure après
+
+Run vert **push** = `38772146984` (commit `9d3aa57`) — 22/22 jobs **success** :
+
+[cols="2,2,3"]
+|===
+| Mesure | Valeur | Détail
+
+| Wall-clock du run | **5m34s** | 16:49:06→16:54:40
+| Phase shards | ~3m42s | 16:49:10→16:52:52 (plus long shard = `bdd-shard-i18n-mass-pipeline`)
+| Job `Bakery · coverage` | 1m46s | 16:52:54→16:54:40 (dont `kover … BUILD SUCCESSFUL in 1m14s`)
+| Checks des 4 autres boroughs | 36s–1m42s | api-key-pool 36s, dashboard 1m16, planner 1m16, slider 1m42
+| Garde matrice | 49s | |
+|===
+
+Second run (warm cache, `workflow_dispatch`) `38772940695` : wall-clock **5m45s**
+(variance de scheduling runner : `functional-shard-E` démarré 32 s en retard) —
+confirme que le plancher est `plus long shard + job coverage`.
+
+=== Chemin critique
+
+`max(shard bakery)` (~3m42s) → `bakery-coverage` (~1m46s) ≈ **5m30s + startup**.
+Les 4 autres boroughs (< 2 min) ne sont plus jamais le chemin critique.
+
+== Verdict
+
+[cols="3,2,2"]
+|===
+| Axe | Avant | Après
+
+| Wall-clock | 11m48s | **5m34s** (**~2,1×**)
+| Chemin critique | bakery `check` 11m44s | shard bakery + coverage ~5m30s
+| Parallélisme | 6 jobs | 22 jobs
+| Couverture bakery | `check` (kover 85 %) | fusion shards + kover 85 % (bloquant)
+|===
+
+**< 5 min : NON atteint de justesse** (5m34s). Le plancher de ce design est
+`plus long shard bakery` + `job coverage` ≈ 5m30s. Descendre sous 5 min exigerait
+soit de réduire le plus long shard (périmètre **bakery**), soit de fusionner la
+coverage autrement (impossible tant que les shards tournent en parallèle). Gain
+déjà acquis : **~2,1×**, et le chemin critique n'est plus bakery monolithique.
+
+== Fichiers modifiés
+
+* `.github/workflows/test.yml` — `env: CI: "true"` global ; matrice `borough-check`
+  (4 `check` + 16 `shard`) ; job `bakery-coverage` ; upload `kover-ic-bakery-*` ;
+  `cache-cleanup: never`.
+* `build.gradle.kts` — `bakeryShardTasks` (liste couplage assumé) + `CiMatrixEntry`
+  + garde `verifyCiMatrixCoverage` étendue.
+
+== Commits / CI
+
+* `9d3aa57` — `ci(s298): shard bakery cross-borough checks into 16 parallel entries + merged kover`
+* Run push vert : `38772146984` (5m34s, 22/22 jobs success).
+* Run warm `workflow_dispatch` : `38772940695` (5m45s, 22/22 success).
+
+== Leçons
+
+. Un job monolithique cross-borough paie la **somme** ; une matrice paie le **max**
+   (S-297) ; un **shard** fin paie `plus long shard + fusion` (S-298).
+. La **fusion kover inter-jobs** (upload/download des `.ic` + `-x` des tâches Test)
+   est la clé qui a débloqué le sharding : la mesure de couverture devient un
+   **job terminal** du pipeline, pas une propriété du job de test.
+. Le couplage workspace-bom ↔ bakery est **assumé et verrouillé** : workspace-bom
+   invoque des noms de tâches par chaîne ; la garde `verifyCiMatrixCoverage` les
+   compare à `bakeryShardTasks`, donc un shard retiré/renommé côté bakery **casse
+   la CI workspace-bom** au lieu de disparaître silencieusement.
+. Les tâches shard sont `onlyIf { CI != null }` : le workflow **doit** exporter
+   `CI: "true"` explicitement, sinon les shards se sautent et la coverage explose.

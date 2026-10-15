@@ -1,7 +1,23 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-298 — À DÉFINIR (dernière terminée : **297 — CI sharding : matrice parallèle par borough**).
+299 — À DÉFINIR (dernière terminée : **298 — CI cross-borough : sharding de bakery**).
+
+**S-298** (CI, zéro code de production) : le borough `bakery` payait son `check`
+monolithique (11m44s) dans la matrice cross-borough. L'entrée unique est remplacée
+par **16 entrées shard** (S-259 : `test`, 8 `cucumberTestShard*`, 6
+`functionalTestShard*`, `nodeTest`) + un job terminal **`bakery-coverage`** qui
+fusionne les `bin-reports/*.ic` et exécute `koverXmlReport koverThresholdCheck`
+(seuil **85 % bloquant**, `-x` toutes les tâches Test). Les 4 autres boroughs gardent
+`./gradlew check`. Garde `verifyCiMatrixCoverage` étendue : entrées `check` ≡ boroughs
+non shardés, entrées `shard` ≡ `bakeryShardTasks` (couplage assumé, anti test fantôme),
+job coverage + `needs: borough-check`. RED prouvé (`functionalTestShardF` →
+`…ZGhost` ⇒ « missing bakery shard(s): [functionalTestShardF] ») puis GREEN.
+`env: CI: "true"` global (les shards sont `onlyIf { CI != null }`). **Mesure :
+wall-clock `11m48s → 5m34s`** (run vert `38772146984`, 22/22 jobs ; run warm
+`38772940695` 5m45s). Plancher = plus long shard (~3m42) + coverage (~1m46) ≈ 5m30s
+→ **< 5 min NON atteint de justesse** (~2,1×). Commit `9d3aa57`. Rapport
+`.agents/sessions/298-ci-shard-bakery-cross-borough.adoc`.
 
 **S-297** (CI, zéro code de production) : le job monolithique `runAllTests`
 (5 boroughs séquentiels, un runner, ~18 min de check) est éclaté en **matrice
@@ -80,12 +96,13 @@ clos (VK-2 ✅ + VK-3 ✅).**
   `runtime-contracts 0.0.1`, `ocr-contracts 0.0.1`, `plantuml-contracts 0.0.1`.
 - N1 partagé : `video-kernel 0.3.0` (entrée catalogue + contrainte BOM).
 
-== Mission session 298 — au choix pilote
+== Mission session 299 — au choix pilote
 
 . Release consommateur au prochain artefact produit.
-. *EPIC `MEM-CI-SHARD` bakery* (accord pilote) — sharding secondaire de bakery
-   (`functionalTest`/`cucumberTest`) + fusion kover inter-jobs ; prérequis CI
-   workspace-bom < 5 min.
+. *EPIC `MEM-CI-SHARD` (US-4, optionnel)* — la CI cross-borough est à 5m34s, à
+   ~30 s de la cible < 5 min ; le plancher = plus long shard bakery (~3m42) +
+   coverage (~1m46). Réduire exigerait d'agir **côté bakery** (rééquilibrer les
+   shards ou accélérer la fusion kover). US-1/2/3 ✅ S-297/S-298.
 . *EPIC `MEM-CI-CONSISTENCY`* (standard JDK 25 + gardes version publiée / nmcp
    / catalogue) — à exécuter si demandé (CI-1.4 qwen3:0.6b reste, 1 pt).
 . *Resync gouvernance MEMPHIS* (INDEX/HISTORY).

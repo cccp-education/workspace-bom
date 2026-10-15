@@ -1,5 +1,19 @@
 = COMPLETED_TASKS_ARCHIVE — 2026-10
 
+== Session 298 (2026-10-15) — CI cross-borough : sharding de bakery ✅
+
+CI (zéro code de production) — remplacer l'entrée monolithique `Check · bakery`
+(`./gradlew check`, 11m44s) par les shards bakery (S-259) + fusion kover.
+
+* [x] U-1 — `.github/workflows/test.yml` : matrice `borough-check` = 4 `check` + **16 `shard`** (bakery) ; chaque entrée `kind`/`borough`/`dir`/`task`
+* [x] U-2 — 16 tasks shard : `test`, 8 `cucumberTestShard*`, 6 `functionalTestShard*`, `nodeTest` ; clone du seul `bakery-gradle`, upload `kover-ic-bakery-*` (`nodeTest` sans `.ic`)
+* [x] U-3 — job terminal `bakery-coverage` (`needs: borough-check`) : download tous les `.ic` → `koverXmlReport koverThresholdCheck` (seuil **85 % bloquant**, `-x` toutes les tâches Test)
+* [x] U-4 — garde `verifyCiMatrixCoverage` étendue : `check` ≡ boroughs non shardés, `shard` ≡ `bakeryShardTasks` (couplage assumé, anti test fantôme), `bakery-coverage` + `needs` ; RED → GREEN
+* [x] U-5 — `env: CI: "true"` global (shards `onlyIf { CI != null }`)
+* [x] `runAllTests` conservé intact (usage local)
+* [x] Mesure : wall-clock `11m48s → 5m34s` (run vert `38772146984`, 22/22) ; plancher = shard + coverage ⇒ < 5 min non atteint de justesse
+* [x] Commit `9d3aa57` ; rapport `.agents/sessions/298-ci-shard-bakery-cross-borough.adoc`
+
 == Session 297 (2026-10-14) — CI sharding : matrice parallèle par borough ✅
 
 CI (zéro code de production) — éclater le job monolithique `runAllTests` (5 boroughs
