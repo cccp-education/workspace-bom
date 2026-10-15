@@ -187,45 +187,149 @@ testableProjects.forEach { (projectName, buildSubdir) ->
     }
 }
 
-// ── verifyCiMatrixCoverage — anti "test fantôme" guard (pattern S-269) ──
-// The cross-borough checks are sharded in `.github/workflows/test.yml` into one
-// matrix job per testable borough, each on its own CI machine. A borough that is
-// declared in `testableProjects` but missing from the workflow matrix would
-// silently stop being tested. This guard asserts, from the sources (no Gradle
-// model, pure file parsing), that the CI matrix covers EXACTLY `testableProjects`
-// and that every matrix entry points at the borough's declared build directory.
+// ── Cross-borough CI shards (S-298) — workspace-bom ↔ bakery coupling ────────
+// The cross-borough CI no longer runs bakery's monolithic `check`; it runs the
+// 16 shard tasks defined in bakery-gradle/bakery-plugin/build.gradle.kts and
+// mirrored in bakery-gradle/.github/workflows/test.yml (S-259). This list is the
+// *assumed* coupling (workspace-bom invokes bakery task names by string): it lets
+// the guard assert the workspace-bom matrix invokes EXACTLY these tasks,
+// exhaustively — a shard dropped from the matrix would silently stop testing that
+// slice (anti "test fantôme", pattern S-269). Keep in sync with
+// bakery-gradle/bakery-plugin/build.gradle.kts.
+val bakeryShardTasks = listOf(
+    "test",
+    "functionalTestShardA",
+    "functionalTestShardB",
+    "functionalTestShardC",
+    "functionalTestShardD",
+    "functionalTestShardE",
+    "functionalTestShardF",
+    "cucumberTestShardJbakeCoreFoundations",
+    "cucumberTestShardJbakeCoreComponents",
+    "cucumberTestShardJbakeCorePipelines",
+    "cucumberTestShardLensTree",
+    "cucumberTestShardSiteTree",
+    "cucumberTestShardLangSwitchCore",
+    "cucumberTestShardLangSwitchEcosystem",
+    "cucumberTestShardI18nMassPipeline",
+    "nodeTest"
+)
+
+// One entry of the `borough-check` CI matrix (`kind` discriminates a monolithic
+// `check` entry from a bakery shard entry).
+data class CiMatrixEntry(
+    val kind: String,
+    val borough: String,
+    val dir: String,
+    val task: String
+)
+
+// ── verifyCiMatrixCoverage — anti "test fantôme" guard (pattern S-269, S-298) ──
+// The cross-borough checks are sharded in `.github/workflows/test.yml`, each entry
+// on its own CI machine. A borough (or a bakery shard) declared here but missing
+// from the workflow matrix would silently stop being tested. This guard asserts,
+// from the sources (no Gradle model, pure file parsing), that:
+//   • the `check` entries cover EXACTLY the non-sharded testable boroughs;
+//   • the `shard` entries cover EXACTLY `bakeryShardTasks` (bakery's surface);
+//   • a `bakery-coverage` job merges the shard reports (`needs: borough-check`);
+//   • no entry references an unknown borough, and no testable borough is lost.
 val ciWorkflowFile = layout.projectDirectory.file(".github/workflows/test.yml")
 
 val verifyCiMatrixCoverage = tasks.register("verifyCiMatrixCoverage") {
     group = "verification"
-    description = "Fails if the CI borough matrix does not exactly cover testableProjects."
+    description = "Fails if the CI borough/shard matrix does not exactly cover the testable surface."
     val workflow = ciWorkflowFile.asFile
-    val expected = testableProjects.toMap()
+    val expectedBoroughs = testableProjects.toMap()
+    val shardedBorough = "bakery-gradle"
+    val shardedDir = expectedBoroughs.getValue(shardedBorough)
     inputs.file(ciWorkflowFile)
     doLast {
         val text = workflow.readText()
-        // Matrix entries look like:
-        //   - name: "Check · bakery"
-        //     borough: bakery-gradle
-        //     dir: bakery-plugin
-        val entries = Regex("""borough:[ \t]*([A-Za-z0-9._-]+)[ \t]*\r?\n[ \t]*dir:[ \t]*([^\s]+)""")
-            .findAll(text)
-            .map { it.groupValues[1] to it.groupValues[2] }
-            .toList()
-        check(entries.isNotEmpty()) { "No `borough:`/`dir:` matrix entries found in $workflow" }
-        val actual = entries.toMap()
-        check(entries.size == actual.size) { "Duplicate borough entries in CI matrix: ${entries.map { it.first }}" }
+        // Each matrix entry begins with `- name:` and carries `kind:`/`borough:`/
+        // `dir:`/`task:`. Steps also begin with `- name:` but have no `borough:`
+        // field — filtering on that field isolates the matrix entries.
+        val entries = text
+            .split(Regex("""(?m)^[ \t]*-[ \t]+name:"""))
+            .filter { Regex("""(?m)^[ \t]*borough:""").containsMatchIn(it) }
+            .map { block ->
+                fun field(key: String): String =
+                    Regex("""(?m)^[ \t]*$key:[ \t]*"?([^\s"]+)""")
+                        .find(block)?.groupValues?.get(1)
+                        ?: error("matrix entry without `$key:` in $workflow")
+                CiMatrixEntry(
+                    kind = field("kind"),
+                    borough = field("borough"),
+                    dir = field("dir"),
+                    task = field("task")
+                )
+            }
+        check(entries.isNotEmpty()) {
+            "No `kind:`/`borough:`/`dir:`/`task:` matrix entries found in $workflow"
+        }
 
-        val missing = expected.keys - actual.keys
-        val orphan = actual.keys - expected.keys
-        check(missing.isEmpty()) { "CI matrix is missing testable borough(s): $missing (test fantôme)" }
-        check(orphan.isEmpty()) { "CI matrix references unknown borough(s): $orphan" }
-        expected.forEach { (borough, dir) ->
-            check(actual[borough] == dir) {
-                "CI matrix dir for $borough is '${actual[borough]}', expected '$dir'"
+        val checkEntries = entries.filter { it.kind == "check" }
+        val shardEntries = entries.filter { it.kind == "shard" }
+
+        // 1. `check` entries — exactly the non-sharded testable boroughs.
+        val expectedCheckBoroughs = expectedBoroughs.keys - shardedBorough
+        val checkBoroughs = checkEntries.map { it.borough }
+        check(checkBoroughs.size == checkBoroughs.toSet().size) {
+            "Duplicate `check` entries in CI matrix: $checkBoroughs"
+        }
+        check(checkBoroughs.toSet() == expectedCheckBoroughs) {
+            "CI matrix `check` entries cover $checkBoroughs, expected $expectedCheckBoroughs"
+        }
+        checkEntries.forEach { entry ->
+            check(entry.task == "check") {
+                "CI `check` entry for ${entry.borough} must use task 'check', got '${entry.task}'"
+            }
+            check(entry.dir == expectedBoroughs.getValue(entry.borough)) {
+                "CI matrix dir for ${entry.borough} is '${entry.dir}', " +
+                    "expected '${expectedBoroughs.getValue(entry.borough)}'"
             }
         }
-        logger.lifecycle("verifyCiMatrixCoverage OK — ${actual.size} boroughs covered: ${actual.keys.sorted()}")
+
+        // 2. bakery `shard` entries — exhaustive and disjoint over `bakeryShardTasks`.
+        check(shardEntries.isNotEmpty()) { "No CI `shard` entries found for $shardedBorough" }
+        shardEntries.forEach { entry ->
+            check(entry.borough == shardedBorough) {
+                "CI `shard` entry '${entry.task}' targets '${entry.borough}', expected '$shardedBorough'"
+            }
+            check(entry.dir == shardedDir) {
+                "CI `shard` entry '${entry.task}' dir is '${entry.dir}', expected '$shardedDir'"
+            }
+        }
+        val shardTaskNames = shardEntries.map { it.task }
+        check(shardTaskNames.size == shardTaskNames.toSet().size) {
+            "Duplicate CI `shard` tasks: $shardTaskNames"
+        }
+        val missingShards = bakeryShardTasks.toSet() - shardTaskNames.toSet()
+        val unknownShards = shardTaskNames.toSet() - bakeryShardTasks.toSet()
+        check(missingShards.isEmpty()) { "CI matrix is missing bakery shard(s): $missingShards (test fantôme)" }
+        check(unknownShards.isEmpty()) { "CI matrix references unknown bakery shard(s): $unknownShards" }
+
+        // 3. the merged-coverage job must exist and depend on the shard matrix.
+        check(Regex("""(?m)^\s{2}bakery-coverage:""").containsMatchIn(text)) {
+            "CI workflow is missing the `bakery-coverage` job that merges the bakery shard reports"
+        }
+        check(Regex("""(?m)^\s{4}needs:\s*borough-check""").containsMatchIn(text)) {
+            "`bakery-coverage` must depend on the `borough-check` matrix (`needs: borough-check`)"
+        }
+
+        // 4. no unknown borough anywhere, and every testable borough is covered.
+        val referencedBoroughs = entries.map { it.borough }.toSet()
+        val orphan = referencedBoroughs - expectedBoroughs.keys
+        check(orphan.isEmpty()) { "CI matrix references unknown borough(s): $orphan" }
+        val covered = checkBoroughs.toSet() +
+            if (shardEntries.isNotEmpty()) setOf(shardedBorough) else emptySet()
+        check(covered == expectedBoroughs.keys) {
+            "CI matrix coverage $covered != testable boroughs ${expectedBoroughs.keys}"
+        }
+
+        logger.lifecycle(
+            "verifyCiMatrixCoverage OK — ${checkEntries.size} borough check(s), " +
+                "${shardEntries.size} $shardedBorough shard(s), 1 coverage job"
+        )
     }
 }
 
