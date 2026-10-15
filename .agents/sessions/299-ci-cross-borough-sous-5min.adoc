@@ -80,13 +80,16 @@ preuve.
 | `38772146984` (baseline S-298) | 16:49:06→16:54:40 | **5m34s (334s)** | queue 38s + shard 184s + coverage 106s
 | `38772940695` (warm S-298) | 16:54:55→17:00:40 | 5m45s | variance infra
 | `38779104005` **après S-299** | 17:39:07→17:44:03 | **4m56s (296s)** | shard 206s (`bdd-lang-switch-core`) + coverage 82s
+| `38780147049` **après S-299 (2ᵉ)** | 17:46:40→17:51:18 | **4m38s (278s)** | shard 216s (`functional-D`) + coverage 55s
 |===
 
 Run `38779104005` : **22 jobs, 0 échec** ; tous les jobs `borough-check` démarrés à
 `17:39:11` (aucune file) ; `Bakery · coverage (merged)` = 82s
 (step `BUILD SUCCESSFUL in 50s`, couverture **88,93 % > 85 %** bloquant).
 
-Gain : **334s → 296s (−38s, −11 %)**. Cible **< 5 min : ATTEINTE** (4m56s).
+Gain : **334s → 296s / 278s (−38s à −56s, −11 % à −17 %)**. Cible **< 5 min :
+ATTEINTE** deux fois consécutivement (4m56s puis 4m38s, run `38780147049` —
+commit doc `1ac74f9`, coverage 55s à cache chaud).
 
 Runs intermédiaires (variance infra, non représentatifs) : `38776049435` = 5m57s
 (partition rééquilibrée, bin-A lent), `38777085226` = 5m18s (idem), `38778010303` =

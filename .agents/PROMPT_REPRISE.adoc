@@ -14,8 +14,8 @@ et **devenait** le chemin critique ; `nodeTest` est fusionné dans l'entrée `un
 (22 → 21 jobs, plus de file). Un rééquilibrage complet des shards functional a été
 poussé puis **REVERTÉ** : les durées par classe TestKit sont imprévisibles (×5 entre
 runs), le bin nouvellement constitué explosait (257s/226s) — la partition S-259 est
-conservée. **Mesure : `5m34s → 4m56s`** (run vert `38779104005`, 22/22 jobs, tous
-démarrés simultanément, coverage 88,93 % > 85 %). Commit workspace-bom `e6c9756` ;
+conservée. **Mesure : `5m34s → 4m56s` puis `4m38s`** (runs verts `38779104005` + `38780147049`,
+22/22 jobs, tous démarrés simultanément, coverage 88,93 % > 85 %). Commit workspace-bom `e6c9756` ;
 bakery `ced3d5a7` (rééquilibrage) + `b951b91e` (revert, net zéro). Rapports
 `.agents/sessions/299-ci-cross-borough-sous-5min.adoc` (workspace-bom) +
 `.agents/sessions/260-ci-functional-shard-revert.adoc` (bakery).
