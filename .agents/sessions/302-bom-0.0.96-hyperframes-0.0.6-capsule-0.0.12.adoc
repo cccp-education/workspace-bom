@@ -1,0 +1,29 @@
+= Session 302 — BOM/catalog 0.0.96 : `hyperframes-plugin 0.0.6` + `capsule-plugin 0.0.12`
+:toc:
+
+== Contexte
+
+Release corrective groupée (accord pilote), déclenchée par le dogfooding vidéo
+(S-028 / S-203) qui a révélé un bug réel audio-post (BGM/ducking) dans les deux
+plugins. Le catalogue MEMPHIS est la source unique de vérité des versions : les deux
+bumps sont des **prérequis durs**.
+
+== Livrable
+
+* Catalogue `gradle/libs.versions.toml` : `hyperframes-plugin 0.0.5 → 0.0.6` +
+  `capsule-plugin 0.0.11 → 0.0.12`.
+* Bump `workspace-bom 0.0.95 → 0.0.96`.
+* Garde `PlatformCatalogAlignmentTest` ré-alignée (`0.0.95 → 0.0.96`).
+* `agent-contracts compileTestKotlin` VERT.
+* `publishToMavenLocal` VERT — catalogue publié porte les deux nouvelles versions,
+  POM BOM contraint `hyperframes-plugin 0.0.6` + `capsule-plugin 0.0.12`.
+* **Publication Central** bundle `df0ac9c6-dd16-4eb5-acfb-36644e16bd6f` (AUTOMATIC).
+
+== Ordre DAG
+
+`video-kernel 0.4.0` (Central) → **MEMPHIS `0.0.96`** (ce document) →
+`hyperframes 0.0.6` (Central `71616cda`) + `capsule-plugin 0.0.12` (Central `fcab286c`).
+
+== Suite
+
+* Propagation repo1 `workspace-bom/0.0.96` + `workspace-catalog/0.0.96` (à confirmer).

@@ -1,5 +1,14 @@
 = COMPLETED_TASKS_ARCHIVE — 2026-10
 
+== Session 302 (2026-10-15) — BOM/catalog 0.0.96 : `hyperframes-plugin 0.0.6` + `capsule-plugin 0.0.12` ✅
+
+Releases correctives groupées (pilotées session vidéo) — bug réel audio-post BGM/ducking.
+
+* [x] Catalog `hyperframes-plugin 0.0.5 → 0.0.6` + `capsule-plugin 0.0.11 → 0.0.12`
+* [x] Bump `workspace-bom 0.0.95 → 0.0.96` + garde `PlatformCatalogAlignmentTest` ré-alignée
+* [x] `agent-contracts compileTestKotlin` VERT ; `publishToMavenLocal` VERT
+* [x] Publication Central bundle `df0ac9c6-dd16-4eb5-acfb-36644e16bd6f` (AUTOMATIC)
+
 == Session 301 (2026-10-15) — BOM/catalog 0.0.95 : `hyperframes-plugin 0.0.5` ✅
 
 Release hyperframes (pilotée session vidéo) — la version du plugin hyperframes est

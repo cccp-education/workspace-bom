@@ -1,7 +1,17 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-302 — À DÉFINIR (dernière terminée : **301 — BOM/catalog 0.0.95 : `hyperframes-plugin 0.0.5`**).
+303 — À DÉFINIR (dernière terminée : **302 — BOM/catalog 0.0.96 : `hyperframes-plugin 0.0.6` + `capsule-plugin 0.0.12`**).
+
+**S-302** (bump consommateur, releases correctives groupées, piloté session vidéo) : le
+dogfooding vidéo (S-028/S-203) a révélé un bug réel audio-post (BGM/ducking) dans les deux
+plugins → release corrective groupée. Catalog `hyperframes-plugin 0.0.5 → 0.0.6` +
+`capsule-plugin 0.0.11 → 0.0.12` + `workspace-bom 0.0.95 → 0.0.96`. **Garde
+`PlatformCatalogAlignmentTest` ré-alignée** (`0.0.95 → 0.0.96`). `agent-contracts
+compileTestKotlin` VERT ; `publishToMavenLocal` VERT. Publication Central bundle
+`df0ac9c6-dd16-4eb5-acfb-36644e16bd6f` (AUTOMATIC). Ordre DAG : MEMPHIS `0.0.96` →
+hyperframes `0.0.6` (Central `71616cda`) + capsule `0.0.12` (Central `fcab286c`).
+Rapport `.agents/sessions/302-bom-0.0.96-hyperframes-0.0.6-capsule-0.0.12.adoc`.
 
 **S-301** (bump consommateur, release hyperframes, piloté session vidéo) : `hyperframes-plugin 0.0.5`
 est **dérivé du catalogue publié** (`ws.versions.hyperframes.plugin`) → bump catalogue
