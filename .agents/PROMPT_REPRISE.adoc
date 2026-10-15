@@ -1,7 +1,24 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-299 — À DÉFINIR (dernière terminée : **298 — CI cross-borough : sharding de bakery**).
+300 — À DÉFINIR (dernière terminée : **299 — CI cross-borough sous 5 min**).
+
+**S-299** (CI, zéro code de production) : objectif pilote — ramener le wall-clock
+cross-borough **sous 5 min**. Deux correctifs mesurés : (1) le job `bakery-coverage`
+n'exclуait **pas** `e2eTest` → il téléchargeait Chromium (`installPlaywright`) et
+exécutait **toute la suite E2E Playwright** (~35s du step de 75s) juste pour
+fusionner des rapports ; ajout `-x e2eTest -x installPlaywright` (seuil 85 %
+inchangé, couverture **88,93 %** identique). (2) `nodeTest` (~5s, aucun `.ic`) était
+une 22ᵉ entrée de matrice pour un pool de **21** runners → un job était retardé ~35s
+et **devenait** le chemin critique ; `nodeTest` est fusionné dans l'entrée `unit`
+(22 → 21 jobs, plus de file). Un rééquilibrage complet des shards functional a été
+poussé puis **REVERTÉ** : les durées par classe TestKit sont imprévisibles (×5 entre
+runs), le bin nouvellement constitué explosait (257s/226s) — la partition S-259 est
+conservée. **Mesure : `5m34s → 4m56s`** (run vert `38779104005`, 22/22 jobs, tous
+démarrés simultanément, coverage 88,93 % > 85 %). Commit workspace-bom `e6c9756` ;
+bakery `ced3d5a7` (rééquilibrage) + `b951b91e` (revert, net zéro). Rapports
+`.agents/sessions/299-ci-cross-borough-sous-5min.adoc` (workspace-bom) +
+`.agents/sessions/260-ci-functional-shard-revert.adoc` (bakery).
 
 **S-298** (CI, zéro code de production) : le borough `bakery` payait son `check`
 monolithique (11m44s) dans la matrice cross-borough. L'entrée unique est remplacée

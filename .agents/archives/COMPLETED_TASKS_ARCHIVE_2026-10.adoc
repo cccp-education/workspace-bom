@@ -171,3 +171,24 @@ S-219, `.agents/CADRAGE_EPIC_PLT_DIAGRAM_OWNERSHIP.adoc`).
 * `publishToMavenLocal` VERT. Central bundle `fbc592ed-fc0b-4032-981e-32a6bc618fdd`
   (AUTOMATIC) ; propagation repo1 HTTP 200.
 * Rapport `.agents/sessions/295-bom-0.0.92-codebase-0.0.18.adoc`.
+
+== S-299 — CI cross-borough sous 5 min (US-5 EPIC MEM-CI-SHARD) ✅
+
+* Objectif pilote : ramener le wall-clock cross-borough **sous 5 min** (baseline
+  S-298 = 5m34s, run `38772146984`).
+* **Correctif 1 (P0)** : le job `bakery-coverage` n'excluait pas `e2eTest` → kover
+  lançait **toute la suite E2E Playwright** (`installPlaywright` + Chromium, ~35s
+  du run step de 75s) uniquement pour fusionner des rapports. Ajout
+  `-x e2eTest -x installPlaywright` : run step **75s → 50s**, tâches **17 → 6**.
+  Seuil **85 % bloquant** intact, couverture **88,93 %** identique ; la
+  contribution E2E à la métrique fusionnée est nulle.
+* **Correctif 2** : `nodeTest` (~5s, aucun `.ic`) fusionné dans l'entrée `unit`
+  (**22 → 21 jobs**) → plus de file sur le pool de 21 runners.
+* **Rééquilibrage functional tenté puis REVERTÉ** : durées par classe TestKit
+  imprévisibles (×5 entre runs), bin nouvellement constitué le plus lent
+  (257s/226s) → partition S-259 conservée.
+* **Mesure** : wall-clock **`5m34s → 4m56s`** (run vert `38779104005`, 22/22 jobs,
+  coverage 88,93 % > 85 %).
+* Commits `e6c9756` (workspace-bom) + `ced3d5a7`/`b951b91e` (bakery). Rapports
+  `.agents/sessions/299-ci-cross-borough-sous-5min.adoc` +
+  `bakery/.agents/sessions/260-ci-functional-shard-revert.adoc`.

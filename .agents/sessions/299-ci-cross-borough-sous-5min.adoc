@@ -1,0 +1,134 @@
+= Session 299 — CI cross-borough sous 5 min (exclusion e2eTest du coverage + fusion nodeTest)
+
+:date: 2026-10-15
+:type: ci
+:score: 8/10
+
+== Objectif
+
+Faire passer le **wall-clock cross-borough** de `workspace-bom` **sous 5 min**
+(baseline S-298 : **5m34s**, run `38772146984`). Deux leviers autorisés : rééquilibrer
+les shards `bakery` et accélérer le job `bakery-coverage` (fusion kover). Ne pas
+casser la fusion kover, le seuil **85 % bloquant**, ni les gardes
+`verifyCiMatrixCoverage` (workspace-bom) / `BakeryCucumberShardCoverageTest` (bakery).
+
+== Diagnostic (mesures du run baseline `38772146984`)
+
+[cols="3,2,4"]
+|===
+| Élément | Durée | Constat
+
+| Plus long shard | **201s** | `Bakery · functional-shard-C` (run step 179s)
+| `Bakery · coverage (merged)` | **106s** | run step 75s (`kover… BUILD SUCCESSFUL in 1m14s`)
+| File d'attente | ~38s | 22 entrées de matrice pour un pool de **21** runners → `i18n-mass-pipeline` démarre 38s en retard et devient le dernier finisseur
+|===
+
+Chemin critique : `queue (38s) + dernier shard (184s) + coverage (106s) ≈ 5m28s`.
+
+*Découverte P0* — le job `bakery-coverage` n'excluait **pas** `e2eTest`. Kover
+agrège par défaut **toutes** les tâches `Test` : le job téléchargeait Chromium
+(`installPlaywright`) et exécutait **toute la suite E2E Playwright** (~35s du run
+step de 75s) uniquement pour fusionner des rapports. Or `e2eTest` **ne fait pas
+partie de `check`** (commentaire d'origine du workflow, `tasks.check{}` de
+`bakery-plugin/build.gradle.kts`) — le job de coverage de bakery lui-même l'exclut.
+L'exclusion était tout simplement absente de la commande cross-borough.
+
+== Livré
+
+=== US-1 — `e2eTest` exclu du job coverage (S-299)
+
+`.github/workflows/test.yml`, étape *Verify merged coverage threshold* :
+`-x e2eTest -x installPlaywright` ajoutés à la liste `-x`. Effet mesuré (run
+`38779104005`) : la tâche passe de **17 à 6 tâches actionnables**, les tâches
+`compileTestKotlin` / `compileE2eTestKotlin` / `installPlaywright` / `e2eTest`
+**disparaissent** du graphe ; le run step tombe de **75s à 50s** (job 106s → 82s).
+**Seuil** : `Instruction coverage: 88.93% (missed=32880, covered=264095)` —
+**valeur identique** à celle du run où e2eTest tournait (la contribution E2E à la
+métrique fusionnée est nulle ; le `.ic` E2E n'était jamais téléversé par la
+matrice). Le seuil **85 %** reste bloquant et satisfait.
+
+=== US-2 — `nodeTest` fusionné dans l'entrée `unit` (22 → 21 jobs)
+
+Le pool de runners observé est de **21** (21 jobs démarrent simultanément, le 22ᵉ
+attend ~35s). `nodeTest` (tests Node.js côté hôte, ~5s, **aucun `.ic`**) occupait
+une entrée à lui seul. Il est désormais exécuté par une étape supplémentaire de
+l'entrée `unit` (`if: matrix.task == 'test'`), ramenant la matrice à **21 jobs**.
+`build.gradle.kts` : `nodeTest` retiré de `bakeryShardTasks` (la garde compare
+désormais les entrées `shard` à `test` + 6 functional + 8 cucumber). Le run
+`38779104005` confirme : **tous les jobs démarrent à la seconde** (plus de file).
+
+== Rééquilibrage functional — tenté puis REVERTÉ (mesuré non concluant)
+
+Un rééquilibrage complet des 6 shards functional (28 classes repackées en bins de
+somme ≈ 238-246, d'après la mesure par classe du run `38772146984`) a été poussé
+(commit `ced3d5a7`) puis **mesuré** : `functional-shard-A` (Arch + InjectLangSwitch
++ TranslateI18nClientOllama) **explose** (257s puis 226s) — le bin nouvellement
+constitué est systématiquement le plus long. Les durées par classe sont
+**extrêmement instables** d'un run à l'autre (ex. `TreeBakeFunctionalTest` 50s →
+3,6s ; `TranslateI18nClientOllamaConfigFunctionalTest` 11,8s → 66,7s) : la
+contention TestKit entre classes co-planifiées est **imprévisible** (pairwise,
+non modélisable par la somme). La partition S-259 (connue-bonne) est **restaurée**
+(commit `b951b91e`). La partition est donc un tirage : on ne la touche pas sans
+preuve.
+
+== Mesure
+
+[cols="3,2,2,2"]
+|===
+| Run | Date | Wall-clock | Chemin critique
+
+| `38772146984` (baseline S-298) | 16:49:06→16:54:40 | **5m34s (334s)** | queue 38s + shard 184s + coverage 106s
+| `38772940695` (warm S-298) | 16:54:55→17:00:40 | 5m45s | variance infra
+| `38779104005` **après S-299** | 17:39:07→17:44:03 | **4m56s (296s)** | shard 206s (`bdd-lang-switch-core`) + coverage 82s
+|===
+
+Run `38779104005` : **22 jobs, 0 échec** ; tous les jobs `borough-check` démarrés à
+`17:39:11` (aucune file) ; `Bakery · coverage (merged)` = 82s
+(step `BUILD SUCCESSFUL in 50s`, couverture **88,93 % > 85 %** bloquant).
+
+Gain : **334s → 296s (−38s, −11 %)**. Cible **< 5 min : ATTEINTE** (4m56s).
+
+Runs intermédiaires (variance infra, non représentatifs) : `38776049435` = 5m57s
+(partition rééquilibrée, bin-A lent), `38777085226` = 5m18s (idem), `38778010303` =
+7m20s (**pénurie de runners GitHub** : étalement des démarrages sur ~2,5 min).
+
+== Verdict
+
+[cols="2,2,2"]
+|===
+| Axe | Avant | Après
+
+| Wall-clock | 5m34s | **4m56s** (< 5 min ✅)
+| Job coverage | 106s | **82s** (step 75s → 50s)
+| File d'attente | +38s sur 1 job | **0** (21 jobs = pool 21)
+| Couverture / seuil | 88,93 % / 85 % | **88,93 % / 85 %** (inchangé, bloquant)
+|===
+
+== Leçons
+
+. **Un `-x` incomplet est invisible mais coûteux.** Le job de fusion kover
+   exécutait la suite E2E Playwright (35s) sans raison — un test « fantôme » dans
+   le sens inverse : une tâche non voulue qui **tourne**. Toujours exclure
+   **toutes** les tâches `Test` d'un job de fusion, en miroir du job natif du
+   borough.
+. **Le pool de runners est une ressource finie.** À 22 jobs pour 21 slots, un job
+   est retardé et **devient** le chemin critique. Fusionner le job le plus court
+   (nodeTest, sans `.ic`) dans un job voisin supprime la file à coût quasi nul.
+. **Le rééquilibrage de shards TestKit est un tirage.** Les durées par classe
+   varient d'un facteur ~5 entre runs ; la contention entre classes co-planifiées
+   est pairwise et non modélisable par la somme. La partition validée S-259 est
+   conservée ; toute modification doit être mesurée, pas déduite.
+. La variance infra (±50s/job, pénurie de runners) est le facteur dominant de la
+   marge ; la marge acquise (4m56s vs 5m00) absorbe une part de cette variance.
+
+== Fichiers modifiés
+
+* `.github/workflows/test.yml` — `-x e2eTest -x installPlaywright` (job coverage) ;
+  entrée `nodeTest` retirée de la matrice + étape `nodeTest` dans l'entrée `unit` ;
+  commentaires S-299.
+* `build.gradle.kts` — `nodeTest` retiré de `bakeryShardTasks` (garde alignée).
+
+== Commits / CI
+
+* `e6c9756` — `ci(s299): exclude e2eTest from cross-borough coverage + fold nodeTest into unit`
+* Run vert : `38779104005` (**4m56s**, 22/22 jobs success, coverage 88,93 %).

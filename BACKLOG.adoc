@@ -4,10 +4,10 @@
 :toc: left
 :sectnums:
 
-_Dernière mise à jour : 2026-10-15 (S-298 — **CI cross-borough : sharding de bakery** — l'entrée `Check · bakery` monolithique (11m44s) → **16 entrées shard** (S-259) + job terminal `bakery-coverage` (fusion kover 85 % bloquant), wall-clock `11m48s → 5m34s` (22/22 jobs ; < 5 min non atteint de justesse), garde `verifyCiMatrixCoverage` étendue (checks + shards + coverage, anti test fantôme). Précédent S-297 : matrice parallèle par borough, `19m26s → 11m48s`.)_
+_Dernière mise à jour : 2026-10-15 (S-299 — **CI cross-borough sous 5 min** — US-5 de l'EPIC MEM-CI-SHARD livrée : exclusion `e2eTest`/`installPlaywright` du job `bakery-coverage` (kover lançait la suite E2E Playwright ~35s sans raison, run step 75s → 50s) + `nodeTest` fusionné dans l'entrée `unit` (22 → 21 jobs, plus de file sur un pool de 21 runners), wall-clock **`5m34s → 4m56s`** (run vert `38779104005`, 22/22 jobs, coverage 88,93 % > 85 %). Rééquilibrage shards functional tenté puis REVERTÉ (mesure non concluante). Précédent S-298 : sharding bakery cross-borough, `11m48s → 5m34s` ; S-297 : matrice parallèle par borough, `19m26s → 11m48s`.)_
 
 '''
-== ✅ EPIC MEM-CI-SHARD — sharding CI cross-borough (S-297 → S-298)
+== ✅ EPIC MEM-CI-SHARD — sharding CI cross-borough (S-297 → S-299)
 
 _Origine_ : le job `runAllTests` (« Cross-borough check 13 boroughs ») était
 **monolithique** — un seul runner, 5 boroughs testables enchaînés séquentiellement,
@@ -24,7 +24,7 @@ step `check` ≈ 18 min = **somme** des checks. Objectif : wall-clock =
 
 | US-3 | **Sharding secondaire bakery** (`côté bakery`) — `cucumberTest` par feature (8 shards) + `functionalTest` par classes (`--tests`, 6 shards) + **fusion kover inter-jobs** (upload/download `.ic` + `koverThresholdCheck -x`) | `bakery-gradle/bakery-plugin` | ✅ TERMINÉ (bakery S-259 ; CI `4m23s`, seuil 85 %)
 | US-4 | **Adoption cross-borough des shards bakery** — matrice `borough-check` 4 `check` + 16 `shard` (bakery) + job terminal `bakery-coverage` (fusion `.ic`, seuil 85 % bloquant) ; garde `verifyCiMatrixCoverage` étendue (checks ≡ non shardés, shards ≡ `bakeryShardTasks`, coverage + `needs`) | `workspace-bom/.github/workflows/test.yml` + `build.gradle.kts` | ✅ TERMINÉ (S-298)
-| US-5 | **CI cross-borough < 5 min** (optionnel) — plancher = plus long shard bakery (~3m42) + coverage (~1m46) ≈ 5m30s ; réduire exige d'agir côté bakery (rééquilibrage shards / accélération fusion kover) | `bakery-gradle/bakery-plugin` | 🟡 À FAIRE (optionnel, périmètre bakery)
+| US-5 | **CI cross-borough < 5 min** — `e2eTest`/`installPlaywright` exclus du job coverage (kover lançait la suite E2E sans raison) + `nodeTest` fusionné dans `unit` (22 → 21 jobs, plus de file) | `workspace-bom/.github/workflows/test.yml` + `build.gradle.kts` | ✅ TERMINÉ (S-299)
 |===
 
 _Livré S-297 (US-1/US-2)_ : wall-clock **19m26s → 11m48s** (run vert `38640573849`,
@@ -49,6 +49,22 @@ _RÉSOLU S-298_ : le **SIGNAL S-297** (bakery 11m44s > 5 min, blocage `kover`
 « agrège toutes les tâches `Test` ») est levé — la fusion kover inter-jobs est
 désormais un **job terminal** du pipeline (upload/download des `.ic` + `-x` des
 tâches Test), pas une propriété du job de test.
+
+_Livré S-299 (US-5)_ : **deux** correctifs mesurés. (1) Le job `bakery-coverage`
+n'excluait pas `e2eTest` : kover agrège toutes les tâches `Test` par défaut, donc le
+job téléchargeait Chromium (`installPlaywright`) et exécutait **toute la suite E2E
+Playwright** (~35s du run step de 75s) pour ne fusionner que des rapports — or
+`e2eTest` n'est pas dans `check`. Ajout `-x e2eTest -x installPlaywright` : run step
+**75s → 50s**, tâches actionnables **17 → 6** ; seuil **85 %** intact, couverture
+**88,93 %** identique. (2) `nodeTest` (~5s, aucun `.ic`) était une 22ᵉ entrée de
+matrice pour un pool de **21** runners → un job retardé ~35s **devenait** le chemin
+critique ; fusionné dans l'entrée `unit` (**22 → 21 jobs**, plus de file). Le
+rééquilibrage des shards functional a été poussé puis **REVERTÉ** (mesure non
+concluante : durées par classe TestKit imprévisibles ×5 entre runs). **Mesure :
+wall-clock `5m34s → 4m56s`** (run vert `38779104005`, 22/22 jobs, tous démarrés
+simultanément) → **< 5 min ATTEINT**. Commits `e6c9756` (workspace-bom) +
+`ced3d5a7`/`b951b91e` (bakery, net zéro). Rapports `.agents/sessions/299-*.adoc`
++ `bakery/.agents/sessions/260-*.adoc`. **EPIC MEM-CI-SHARD CLOS (US-1→US-5).**
 
 '''
 
