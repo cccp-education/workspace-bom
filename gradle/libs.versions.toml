@@ -1,6 +1,6 @@
 [versions]
 # ── Workspace BOM shared versions ─────────────────────────────────────────────
-workspace-bom = "0.0.98"
+workspace-bom = "0.0.99"
 
 # ── Kotlin ────────────────────────────────────────────────────────────────────
 kotlin = "2.4.10"
@@ -54,7 +54,7 @@ planner-plugin = "0.0.2"
 slider-plugin = "0.0.20"
 plantuml-plugin = "0.0.10"
 readme-plugin = "0.0.2"
-hyperframes-plugin = "0.0.8"
+hyperframes-plugin = "0.0.9"
 graphify-plugin = "0.0.5"
 dashboard-plugin = "0.0.2"
 api-key-pool-plugin = "0.0.2"
@@ -62,7 +62,7 @@ codebase-plugin = "0.0.18"
 conventions-plugin = "0.0.7"
 
 # ── Shared libraries (education.cccp, N1) ─────────────────────────────────────
-video-kernel = "0.4.0"
+video-kernel = "0.5.0"
 
 # ── PDF/Extraction ────────────────────────────────────────────────────────────
 asciidoctorj = "3.0.1"

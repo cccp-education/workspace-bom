@@ -1,0 +1,47 @@
+= Session 305 — BOM/catalog 0.0.99 : `hyperframes-plugin 0.0.9` + `video-kernel 0.5.0`
+:toc:
+
+== Contexte
+
+Release consommateur (accord pilote « publish + git »), pilotée par la session
+hyperframes S-035 (EPIC `HF-YOUTUBE-PUBLISH`). Deux bumps groupés :
+
+* `hyperframes-plugin 0.0.8 → 0.0.9` — la version du plugin est **dérivée du
+  catalogue publié** (`ws.versions.hyperframes.plugin`) → MEMPHIS est un
+  **prérequis dur** de la publication `0.0.9` (déploiement YouTube OAuth 2.0,
+  US-2).
+* `video-kernel 0.4.0 → 0.5.0` — alignement amont du noyau (port partagé
+  `VideoPublisher` + modèle de publication, US-1) ; hygiène non bloquante.
+
+== Livrable
+
+* Catalogue `gradle/libs.versions.toml` : `hyperframes-plugin 0.0.8 → 0.0.9`,
+  `video-kernel 0.4.0 → 0.5.0`.
+* Bump `workspace-bom 0.0.98 → 0.0.99`.
+* Garde `PlatformCatalogAlignmentTest` ré-alignée (`0.0.98 → 0.0.99`).
+* `agent-contracts compileTestKotlin` VERT.
+* `publishToMavenLocal` VERT — catalogue publié porte
+  `hyperframes-plugin = "0.0.9"` + `video-kernel = "0.5.0"`.
+* **Publication Central** bundle `341922a4-6ded-441e-8e20-e8d02af5789d`
+  (AUTOMATIC) ; propagation repo1 `workspace-bom/0.0.99` **HTTP 200** confirmée
+  (nécessaire avant la publication hyperframes aval — voir ci-dessous).
+
+== Ordre DAG
+
+`video-kernel 0.5.0` (Central `85598927`) → **MEMPHIS `0.0.99`** (ce document) →
+`hyperframes-plugin 0.0.9` (Central, AUTOMATIC).
+
+== Enseignement — propagation amont = prérequis *de fait* de l'aval
+
+Le **premier** upload Central de `hyperframes-plugin 0.0.9` a été **rejeté** :
+`Dependency version information is missing for … kotlin-stdlib-jdk8 /
+jackson-databind / jackson-module-kotlin`. Cause : le POM 0.0.9 importe
+`workspace-bom:0.0.99`, **pas encore propagé** sur repo1 → Central ne peut pas
+résoudre les contraintes de version. Correctif : publier MEMPHIS, attendre
+`repo1 …/workspace-bom/0.0.99/workspace-bom-0.0.99.pom` **HTTP 200**, puis
+republier hyperframes → succès. Côté CI consommateur, ce délai est également la
+raison d'un échec transient possible si le build précède la propagation.
+
+== Suite
+
+* Propagation repo1 de `hyperframes-plugin 0.0.9` à confirmer.
