@@ -1,15 +1,15 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-304 — À DÉFINIR (dernière terminée : **303 — BOM/catalog 0.0.97, hyperframes-plugin 0.0.7**).
+305 — À DÉFINIR (dernière terminée : **304 — BOM/catalog 0.0.98, hyperframes-plugin 0.0.8**).
 
-**S-303** : release consommateur (accord pilote ; hyperframes S-032, correctif HF-CR4
-rendu de publication). Bump catalog `hyperframes-plugin 0.0.6 → 0.0.7` + BOM/catalog
-`0.0.96 → 0.0.97`. **Garde `PlatformCatalogAlignmentTest` ré-alignée** (`0.0.96 → 0.0.97`).
-`agent-contracts compileTestKotlin` VERT ; `publishToMavenLocal` VERT. Publication
-Central bundle `5bb28984-1701-43d7-b86a-da11e1e80e94` (AUTOMATIC, PUBLISHED), propagation
-repo1 HTTP 200. Ordre DAG : MEMPHIS `0.0.97` → hyperframes `0.0.7` (Central `1e5c734d`).
-Rapport `.agents/sessions/303-bom-0.0.97-hyperframes-0.0.7.adoc`.
+**S-304** : release consommateur (accord pilote ; hyperframes S-034, HF-CR4 suite —
+scènes en sous-compositions, `hyperframes lint` 0/0). Bump catalog
+`hyperframes-plugin 0.0.7 → 0.0.8` + BOM/catalog `0.0.97 → 0.0.98`. **Garde
+`PlatformCatalogAlignmentTest` ré-alignée**. `agent-contracts compileTestKotlin` VERT ;
+`publishToMavenLocal` VERT. Publication Central bundle `59a780ce-292e-4003-978d-edd5f74f4826`
+(AUTOMATIC), propagation repo1 HTTP 200. Ordre DAG : MEMPHIS `0.0.98` → hyperframes
+`0.0.8` (Central `a34abddf`). Rapport `.agents/sessions/304-bom-0.0.98-hyperframes-0.0.8.adoc`.
 
 **S-290** : release consommateur (accord pilote ; plantuml S-242). Bump catalog
 `plantuml-plugin 0.0.9 → 0.0.10` + BOM/catalog `0.0.86 → 0.0.87`. **Garde

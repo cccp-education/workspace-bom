@@ -139,4 +139,15 @@ compileTestKotlin` VERT ; `publishToMavenLocal` VERT. Publication Central bundle
 HTTP 200. Ordre DAG : MEMPHIS `0.0.97` → hyperframes `0.0.7` (Central `1e5c734d`).
 Rapport `.agents/sessions/303-bom-0.0.97-hyperframes-0.0.7.adoc`.
 
+== Session 304 (2026-10-16) — BOM/catalog 0.0.98 : `hyperframes-plugin 0.0.8`
+
+Release consommateur (accord pilote ; hyperframes S-034, HF-CR4 suite — scènes en
+sous-compositions, `hyperframes lint` 0/0). Bump catalog `hyperframes-plugin
+0.0.7 → 0.0.8` + BOM/catalog `0.0.97 → 0.0.98`. Garde `PlatformCatalogAlignmentTest`
+ré-alignée. `agent-contracts compileTestKotlin` VERT ; `publishToMavenLocal` VERT.
+Publication Central bundle `59a780ce-292e-4003-978d-edd5f74f4826` (AUTOMATIC),
+propagation repo1 HTTP 200. Ordre DAG : MEMPHIS `0.0.98` → hyperframes `0.0.8`
+(Central `a34abddf`). Rapport `.agents/sessions/304-bom-0.0.98-hyperframes-0.0.8.adoc`.
+
+
 

@@ -1,0 +1,29 @@
+= Session 304 — BOM/catalog 0.0.98 : `hyperframes-plugin 0.0.8`
+:toc:
+
+== Contexte
+
+Release consommateur (accord pilote), pilotée par la session hyperframes S-034.
+Le gain de qualité **HF-CR4 suite** (scènes en sous-compositions, `hyperframes lint`
+0/0) devait être rendu disponible : la version du plugin est **dérivée du catalogue
+publié**, donc MEMPHIS est un **prérequis dur** de la publication `0.0.8`.
+
+== Livrable
+
+* Catalogue `gradle/libs.versions.toml` : `hyperframes-plugin 0.0.7 → 0.0.8`.
+* Bump `workspace-bom 0.0.97 → 0.0.98`.
+* Garde `PlatformCatalogAlignmentTest` ré-alignée (`0.0.97 → 0.0.98`).
+* `agent-contracts compileTestKotlin` VERT.
+* `publishToMavenLocal` VERT — catalogue publié porte `hyperframes-plugin = "0.0.8"`,
+  POM BOM contraint `hyperframes-plugin 0.0.8`.
+* **Publication Central** bundle `59a780ce-292e-4003-978d-edd5f74f4826` (AUTOMATIC),
+  propagation repo1 `workspace-bom/0.0.98` + `workspace-catalog/0.0.98` HTTP 200.
+
+== Ordre DAG
+
+`video-kernel 0.4.0` (Central) → **MEMPHIS `0.0.98`** (ce document) →
+`hyperframes-plugin 0.0.8` (Central `a34abddf`).
+
+== Suite
+
+* Propagation repo1 de `hyperframes-plugin 0.0.8` à confirmer en clôture.
