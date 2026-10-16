@@ -1,0 +1,36 @@
+= Session 303 — BOM/catalog 0.0.97 : `hyperframes-plugin 0.0.7`
+:toc:
+
+== Contexte
+
+Release consommateur (accord pilote), pilotée par la session hyperframes S-032.
+Le correctif **HF-CR4** (rendu de publication) devait être rendu disponible : la
+version du plugin est **dérivée du catalogue publié**, donc MEMPHIS est un
+**prérequis dur** de la publication `hyperframes-plugin 0.0.7`.
+
+== Livrable
+
+* Catalogue `gradle/libs.versions.toml` : `hyperframes-plugin 0.0.6 → 0.0.7`.
+* Bump `workspace-bom 0.0.96 → 0.0.97`.
+* Garde `PlatformCatalogAlignmentTest` ré-alignée (`0.0.96 → 0.0.97`).
+* `agent-contracts compileTestKotlin` VERT.
+* `publishToMavenLocal` VERT — catalogue publié porte `hyperframes-plugin = "0.0.7"`,
+  POM BOM contraint `hyperframes-plugin 0.0.7`.
+* **Publication Central** bundle `5bb28984-1701-43d7-b86a-da11e1e80e94` (AUTOMATIC,
+  état `PUBLISHED`) ; propagation repo1 `workspace-bom/0.0.97` + `workspace-catalog/0.0.97`
+  HTTP 200.
+
+== Ordre DAG
+
+`video-kernel 0.4.0` (Central) → **MEMPHIS `0.0.97`** (ce document) →
+`hyperframes-plugin 0.0.7` (Central `1e5c734d`).
+
+== Contenu hyperframes 0.0.7
+
+**HF-CR4** (S-031) — rendu de publication : compositions HyperFrames conformes
+(racine `#stage`, scènes `clip`, timeline racine unique, design system, GSAP externe).
+`hyperframes check` **passed** ; vidéo **1920×1080 / 26 s**.
+
+== Suite
+
+* Propagation repo1 de `hyperframes-plugin 0.0.7` à confirmer en clôture.

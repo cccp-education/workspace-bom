@@ -129,3 +129,14 @@ _Date creation : 2026-06-02_
 | 003 | 2026-06-11 | ops/archi | EPIC PUB — publication 4 contrats N0 + leçon nmcp multi-module. Token regénéré, 4 builds indépendants (pattern 0124). | 9/10
 |===
 
+== Session 303 (2026-10-16) — BOM/catalog 0.0.97 : `hyperframes-plugin 0.0.7`
+
+Release consommateur (accord pilote ; hyperframes S-032, correctif **HF-CR4** rendu de
+publication). Bump catalog `hyperframes-plugin 0.0.6 → 0.0.7` + BOM/catalog
+`0.0.96 → 0.0.97`. Garde `PlatformCatalogAlignmentTest` ré-alignée. `agent-contracts
+compileTestKotlin` VERT ; `publishToMavenLocal` VERT. Publication Central bundle
+`5bb28984-1701-43d7-b86a-da11e1e80e94` (AUTOMATIC, `PUBLISHED`) ; propagation repo1
+HTTP 200. Ordre DAG : MEMPHIS `0.0.97` → hyperframes `0.0.7` (Central `1e5c734d`).
+Rapport `.agents/sessions/303-bom-0.0.97-hyperframes-0.0.7.adoc`.
+
+

@@ -33,7 +33,7 @@ class PlatformCatalogAlignmentTest {
     @Test
     fun `toml version workspace-bom matches platform version`() {
         assertEquals(
-            "0.0.96", tomlVersions["workspace-bom"],
+            "0.0.97", tomlVersions["workspace-bom"],
             "workspace-bom dans le toml (tri-split C2 supprimé)"
         )
         assertTrue(
