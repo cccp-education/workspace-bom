@@ -1,0 +1,87 @@
+= CADRAGE — Cache CI homogène cross-borough
+:date: 2026-10-15
+:statut: 🟡 EN COURS — patche appliqué sur 3 boroughs (hyperframes, bakery, slider) ; plan pour les autres
+:borough: workspace-bom (N0) — transverse
+
+== Objet
+
+Éviter de **re-télécharger** les mêmes ressources (dépendances Gradle, images
+Docker, navigateurs Playwright/Chromium, Puppeteer, modèles Ollama) à chaque run CI.
+Audit + plan homogène.
+
+== Contrainte structurelle (à rappeler)
+
+*Le cache GitHub Actions est **scopé par dépôt** (repo + ref + clé).* Un cache créé
+dans un borough est **invisible** depuis un autre. Il n'existe **aucun** mécanisme
+de cache partagé entre dépôts publics. Une action composite réutilisable depuis un
+repo commun partage la **définition**, mais pas les **octets** (le cache reste scopé
+au dépôt appelant). Conséquences :
+
+* Chaque borough re-télécharge ses ressources **sur cache froid** (première fois,
+  après éviction > 7 j, ou depôt de plus de 10 Go de caches).
+* Le run **cross-borough** (matrice de `workspace-bom`) checkout les autres dépôts :
+  ses caches Gradle vivent sous le scope `workspace-bom`, **pas** sous celui du borough.
+
+== Audit (état au 2026-10-15)
+
+[cols="1,2,3", options="header"]
+|===
+| Borough | Déjà caché | Manquant (avant ce cadrage)
+
+| **codebase** | Gradle (`cache: gradle` + `setup-gradle`) ; job `unit-ollama` : Ollama **natif** + `~/.ollama-ci-11466/11467` (modèles) | — (référence)
+| **capsule** | Gradle ; `setup-ollama` (image Docker `docker save/load` + `~/.ollama/models`) ; `setup-playwright` (Chromium, clé = version du catalogue) | —
+| **plantuml** | Gradle ; `setup-ollama` (idem capsule) | —
+| **hyperframes** | Gradle | **real-render** : npm tarballs + Puppeteer **Chromium** non cachés → ✅ **corrigé S-030**
+| **bakery** | Gradle | job **E2E** : Playwright **Chromium** (`installPlaywright` à chaque run) → ✅ **corrigé**
+| **slider** | Gradle | shard BDD `core` : image **pgvector** (`docker pull` à chaque run) → ✅ **corrigé**
+| **planner** | Gradle | `decompose.yml` (dispatch, cloud) : binaire Ollama + manifests non cachés — P2
+| **codex / document / graphify / runner / dashboard** | Gradle | — (pas de navigateur/LLM/Docker)
+|===
+
+== Patches appliqués (cache intra-dépôt)
+
+=== hyperframes — `real-render-hyperframes.yml`
+[source,yaml]
+----
+- name: Cache npm and Puppeteer (HyperFrames CLI)
+  uses: actions/cache@v4
+  with:
+    path: |
+      ~/.npm
+      ~/.cache/puppeteer
+    key: hyperframes-cli-${{ runner.os }}-0.8.157
+----
+(Pas de `cache: npm` sur `setup-node` : l'install est ad-hoc, sans lockfile.)
+
+=== bakery — `test.yml` (job E2E)
+[source,yaml]
+----
+- name: Cache Playwright Chromium
+  uses: actions/cache@v4
+  with:
+    path: ~/.cache/ms-playwright
+    key: playwright-chromium-${{ runner.os }}-${{ hashFiles('bakery-plugin/gradle/libs.versions.toml') }}
+----
+
+=== slider — `full-tests.yml` (shard BDD `pgvector: true`)
+Cache `docker save` (image `pgvector/pgvector:pg17`) → `docker load` sur hit ;
+`docker pull` + `docker save` sur miss. Pattern identique à `setup-ollama`.
+
+== Plan pour la suite
+
+. **P2 — planner `decompose.yml`** : cacher le binaire Ollama (install script) +
+   `~/.ollama/models` (cache de dispatch, non bloquant).
+. **Mutualisation de définition** : extraire `setup-ollama` (capsule + plantuml, quasi
+   identiques) et un `setup-playwright` générique vers un dépôt d'actions partagé
+   (`cccp-education/ci-actions`) — **réduit la duplication, pas les octets** de cache.
+. **Zéro re-téléchargement (réel)** — hors périmètre code, décision pilote :
+   **runner self-hosted** à disque persistant (images Docker pré-`pull`, `~/.gradle`,
+   `~/.cache/ms-playwright`, `~/.ollama/models`, `node_modules`) **ou** image
+   conteneur pré-bakée. C'est la seule voie pour partager *entre* dépôts.
+
+== Rappel — Gradle
+
+Gradle **est** caché par dépôt via `gradle/actions/setup-gradle@v4` (partagé entre
+les workflows d'un même dépôt). Le ressenti « tout Gradle est re-téléchargé » vient
+des caches **froids** (1er run, éviction > 7 j) et du run cross-borough (scope
+`workspace-bom`).
