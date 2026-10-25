@@ -1,0 +1,39 @@
+= Session 306 — BOM/catalog 0.0.100 : `bakery-plugin 0.0.27`
+:toc:
+
+== Contexte
+
+Revue de dépendances de cheroliv.com : le site délègue la traduction au runner
+N3, qui applique `bakery` via le catalogue publié. Le catalogue 0.0.78 (dernier
+consommé) résolvait encore `document 0.0.24` mais `plantuml 0.0.9` et
+`codebase 0.0.17` — deux versions de retard. La version de bakery elle-même
+dérive du catalogue : MEMPHIS est un prérequis dur.
+
+== Livrable
+
+* Catalog : `bakery-plugin 0.0.26 → 0.0.27`, `workspace-bom 0.0.99 → 0.0.100`
+  (`document 0.0.24`, `plantuml 0.0.10`, `codebase 0.0.18` inchangés/latest).
+* Garde `PlatformCatalogAlignmentTest` ré-alignée (`0.0.100`, bakery `0.0.27`).
+* `publishToMavenLocal` VERT ; catalogue publié porte `bakery-plugin = "0.0.27"`.
+* **Publication Central** bundle `936b54a1-4bd4-44ea-9a83-cf8c27bb25c9`
+  (AUTOMATIC) ; propagation repo1 `workspace-bom/0.0.100` +
+  `workspace-catalog/0.0.100` HTTP 200.
+
+== Ordre DAG
+
+**MEMPHIS `0.0.100`** (ce document) → `bakery-plugin 0.0.27` (bundle
+`bb9afb96`, POM importe BOM 0.0.100) → runner-gradle (catalog 0.0.100) →
+cheroliv.com.
+
+== Enseignement — propagation = prérequis de fait
+
+Le **premier** upload bakery 0.0.27 a été rejeté (« Dependency version
+information is missing ») car le POM 0.0.27 importe BOM 0.0.100, pas encore
+propagée. Relancer après `repo1 … workspace-bom/0.0.100 … 200` a suffi.
+Corollaire CI : un consommateur poussé avant la propagation échoue en
+configuration (cf. session document 0.0.25).
+
+== Rapport
+
+`.agents/sessions/306-bom-0.0.100-bakery-0.0.27.adoc` — CI `runAllTests` verte
+sur `c6dc0e1`.

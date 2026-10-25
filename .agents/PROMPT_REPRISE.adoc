@@ -1,7 +1,23 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-303 — À DÉFINIR (dernière terminée : **302 — BOM/catalog 0.0.96 : `hyperframes-plugin 0.0.6` + `capsule-plugin 0.0.12`**).
+308 — À DÉFINIR (dernière terminée : **307 — BOM/catalog 0.0.101 : `document-plugin 0.0.25` + `bakery-plugin 0.0.28`**).
+
+**S-307** (dette de traduction, revue cheroliv.com) : le classifieur
+`document-gradle` marquait une **phrase** contenant `120+ Go` non traduisible →
+0119 figé en français dans les 21 langues. Correctif amont (prose ≥ 4 mots avec
+mot-outil français) + release document `0.0.25` ; bakery republié (`0.0.28`)
+pour la consommer via la BOM. Catalog `document 0.0.24 → 0.0.25`, `bakery
+0.0.27 → 0.0.28`, `workspace-bom 0.0.100 → 0.0.101`. Publication Central
+`d6e5bf37-48bf-4450-b9e9-c5e00f164204`, propagation repo1 HTTP 200. CI verte
+`67b0d8c`. Rapport `.agents/sessions/307-bom-0.0.101-document-0.0.25.adoc`.
+
+**S-306** (revue de dépendances cheroliv.com) : le catalogue 0.0.78 résolvait
+`plantuml 0.0.9` / `codebase 0.0.17` (retard) ; bump `bakery 0.0.26 → 0.0.27`
++ `workspace-bom 0.0.99 → 0.0.100` (document 0.0.24, plantuml 0.0.10,
+codebase 0.0.18). Publication Central `936b54a1`, propagation repo1 HTTP 200.
+CI verte `c6dc0e1`. Rapport
+`.agents/sessions/306-bom-0.0.100-bakery-0.0.27.adoc`.
 
 **S-302** (bump consommateur, releases correctives groupées, piloté session vidéo) : le
 dogfooding vidéo (S-028/S-203) a révélé un bug réel audio-post (BGM/ducking) dans les deux

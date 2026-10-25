@@ -1,0 +1,42 @@
+= Session 307 — BOM/catalog 0.0.101 : `document-plugin 0.0.25` + `bakery-plugin 0.0.28`
+:toc:
+
+== Contexte
+
+Même revue : le classifieur de traduction de `document-gradle`
+(`TextTranslatableClassifier`) marquait `translatable=false` tout fragment
+contenant `\d+\s*Go`, y compris une **phrase** (« … 120+ Go de VRAM … »). Sur
+cheroliv.com, 0119 était donc figé en français dans les 21 langues. Correctif
+amont (document S-? — commit `4d002e4`) + release 0.0.25. bakery doit être
+republié pour consommer la nouvelle version via la BOM (document est versionless
+dans son POM).
+
+== Livrable
+
+* Catalog : `document-plugin 0.0.24 → 0.0.25`, `bakery-plugin 0.0.27 → 0.0.28`,
+  `workspace-bom 0.0.100 → 0.0.101`.
+* Garde `PlatformCatalogAlignmentTest` ré-alignée (`0.0.101`, bakery `0.0.28`).
+* `publishToMavenLocal` VERT ; catalogue publié porte document 0.0.25 + bakery 0.0.28.
+* **Publication Central** bundle `d6e5bf37-48bf-4450-b9e9-c5e00f164204`
+  (AUTOMATIC) ; propagation repo1 HTTP 200 (bom + catalog).
+* Consommateurs alignés : document `0.0.25` (catalog/BOM 0.0.101), bakery
+  `0.0.28` (BOM 0.0.101), runner `0.0.101`, cheroliv.com `document-plugin
+  0.0.25`.
+
+== Ordre DAG
+
+document `0.0.25` (publié après CI verte) → **MEMPHIS `0.0.101`** (ce document)
+→ `bakery-plugin 0.0.28` (CI verte, publication Central) → runner `0.0.101` →
+cheroliv.com.
+
+== Enseignement — CI des consommateurs = après propagation
+
+Les runs document `04ea837` et `4d002e4` ont échoué en ~70 s (configuration)
+parce qu'ils ont démarré avant la propagation de la BOM 0.0.101. Le run
+`0711858`, postérieur, est vert. Ne jamais pousser un consommateur qui épingle
+un BOM/catalog fraîchement publié avant `repo1` HTTP 200.
+
+== Rapport
+
+`.agents/sessions/307-bom-0.0.101-document-0.0.25.adoc` — CI `runAllTests`
+verte sur `67b0d8c`.
