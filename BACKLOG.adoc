@@ -4,7 +4,7 @@
 :toc: left
 :sectnums:
 
-_Dernière mise à jour : 2026-10-15 (S-299 — **CI cross-borough sous 5 min** — US-5 de l'EPIC MEM-CI-SHARD livrée : exclusion `e2eTest`/`installPlaywright` du job `bakery-coverage` (kover lançait la suite E2E Playwright ~35s sans raison, run step 75s → 50s) + `nodeTest` fusionné dans l'entrée `unit` (22 → 21 jobs, plus de file sur un pool de 21 runners), wall-clock **`5m34s → 4m56s`** (run vert `38779104005`, 22/22 jobs, coverage 88,93 % > 85 %). Rééquilibrage shards functional tenté puis REVERTÉ (mesure non concluante). Précédent S-298 : sharding bakery cross-borough, `11m48s → 5m34s` ; S-297 : matrice parallèle par borough, `19m26s → 11m48s`.)_
+_Dernière mise à jour : 2026-10-25 (S-307 — **BOM/catalog 0.0.101 : `document-plugin 0.0.25` + `bakery-plugin 0.0.28`**, revue cheroliv.com ; publication Central `d6e5bf37`, propagation repo1 200, CI verte `67b0d8c`. Précédent S-306 : BOM/catalog 0.0.100 bakery 0.0.27, bundle `936b54a1`, CI verte `c6dc0e1`. Précédent S-299 : CI cross-borough < 5 min.)_
 
 '''
 == ✅ EPIC MEM-CI-SHARD — sharding CI cross-borough (S-297 → S-299)
@@ -134,7 +134,7 @@ masque toute la dette aval (cf. S-269 Queens, S-243 bakery).
 
 | US-1 | Workflow `runAllTests` **JDK 24 → 25** + bakery testé dans sa sous-build autonome `bakery-plugin/` (racine consommateur sans `check`) | `workspace-bom/.github/workflows/test.yml` + `build.gradle.kts` | ✅ S-284
 
-| US-2 | **Standard JDK 25** — aligner tous les workflows cccp qui buildent un plugin (toolchain 25). Audit S-284 : `plantuml` 17/23/24, `readme` 23, `graphify` 24, `runner` 24, `planner` 24/23, `slider` 24, `codebase/anonymize` 23, `jhipster` 24 — vs 25 requis | tous `.github/workflows/*.yml` | 🟡 À FAIRE
+| US-2 | **Standard JDK 25** — aligner tous les workflows cccp qui buildent un plugin (toolchain 25). Audit S-284 : `plantuml` 17/23/24, `readme` 23, `graphify` 24, `runner` 24, `planner` 24/23, `slider` 24, `codebase/anonymize` 23, `jhipster` 24 — vs 25 requis | tous `.github/workflows/*.yml` | 🟡 PARTIEL — `runner-gradle` ✅ (S-035, JDK 25 + `-PsiteName=ci`, CI verte `0bdc5fc`) ; autres boroughs à aligner
 
 | US-3 | **Garde « racine consommateur = version publiée »** — une racine (pattern 0124) ne doit pas épingler une version dev/non publiée (cas slider) | guard (conventions ou test par borough) | 🟡 À FAIRE
 
@@ -170,10 +170,10 @@ BOM + 5 libraries de contrats partagés (N0). Premier artefact publié (VAGUE 1)
 **Priorite** : P0
 **Estimation** : 1 pt
 **Dependances** : PUB-0 et PUB-1 complets (DNS TXT + GPG)
-**Statut** : ✅ PUBLIÉ + VÉRIFIÉ (dernière version 0.0.50 — S-227, 2026-09-17, codebase-plugin 0.0.16 ; historique 0.0.34 S-215 ROLLOUT-6 dashboard)
+**Statut** : ✅ PUBLIÉ + VÉRIFIÉ (dernière version **0.0.101** — S-307, 2026-10-25, `document-plugin 0.0.25` + `bakery-plugin 0.0.28` ; précédent 0.0.100 S-306 bakery 0.0.27, 0.0.50 S-227)
 
-. Artefact : `education.cccp:workspace-bom:0.0.34` (dernière)
-. Versions publiées : 0.0.1 → 0.0.34 (historique complet INDEX.adoc § Publications Maven Central)
+. Artefact : `education.cccp:workspace-bom:0.0.101` (dernière)
+. Versions publiées : 0.0.1 → 0.0.101 (historique complet `.agents/SESSIONS_HISTORY.adoc`)
 . Verifiée sur https://central.sonatype.com/artifact/education.cccp/workspace-bom
 
 === PUB-3.02 — agent-contracts
