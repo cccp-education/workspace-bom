@@ -157,3 +157,13 @@ propagation repo1 HTTP 200. Ordre DAG : MEMPHIS `0.0.98` → hyperframes `0.0.8`
 
 
 
+
+== Session 309 (2026-10-26) — BOM/catalog 0.0.106 : `hyperframes-plugin 0.0.10`
+
+Release consommateur (hyperframes S-038, `HF-DEMO-QUALITY` US-4 chrome/typographie +
+US-5 entrées chorégraphiées). Bump catalog `hyperframes-plugin 0.0.9 → 0.0.10` +
+BOM/catalog `0.0.105 → 0.0.106`. Garde `PlatformCatalogAlignmentTest` ré-alignée
+(`0.0.105 → 0.0.106`). `publishToMavenLocal` VERT. Publication Central bundle
+`2a6cabd8-5b94-4882-abd5-512c5a7d65ea` (AUTOMATIC), propagation repo1 HTTP 200.
+Ordre DAG : MEMPHIS `0.0.106` → hyperframes `0.0.10` (Central `ca092903`).
+Rapport `.agents/sessions/309-bom-0.0.106-hyperframes-0.0.10.adoc`.

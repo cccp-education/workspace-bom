@@ -1,0 +1,53 @@
+= Session 309 — BOM/catalog 0.0.106 : `hyperframes-plugin 0.0.10`
+:session: 309
+:date: 2026-10-26
+:borough: MEMPHIS
+:statut: ✅ TERMINÉ
+
+== Mission
+
+Publier le volet N0 de la release `hyperframes-plugin 0.0.10` (hyperframes S-038 :
+`HF-DEMO-QUALITY` US-4 chrome/typographie + US-5 entrées chorégraphiées),
+conformément au DAG N0→N2 (MEMPHIS-first).
+
+== Modifications
+
+[cols="2,2,4"]
+|===
+| Fichier | Avant | Après
+
+| `gradle/libs.versions.toml` | `workspace-bom = "0.0.105"` | `0.0.106`
+| `gradle/libs.versions.toml` | `hyperframes-plugin = "0.0.9"` | `0.0.10`
+| `agent-contracts/.../PlatformCatalogAlignmentTest.kt` | garde `0.0.105` | garde `0.0.106`
+|===
+
+Contrats N0 inchangés. `video-kernel` reste `0.5.0`.
+
+== Publication
+
+[cols="2,3"]
+|===
+| Étape | Résultat
+
+| `./gradlew publishToMavenLocal` | ✅ VERT (BOM + catalog 0.0.106, signature GPG)
+| `./gradlew publishAggregationToCentralPortal` | ✅ bundle **`2a6cabd8-5b94-4882-abd5-512c5a7d65ea`** (AUTOMATIC)
+| Propagation repo1 | ✅ `workspace-catalog/0.0.106` + `workspace-bom/0.0.106` HTTP 200 (~6 min)
+|===
+
+== Ordre DAG
+
+----
+video-kernel 0.5.0 (Central, S-197)
+  → MEMPHIS 0.0.106 (bundle 2a6cabd8)
+  → hyperframes-plugin 0.0.10 (bundle ca092903)
+----
+
+Le POM hyperframes `0.0.10` importe `workspace-bom:0.0.106` ; le catalogue publié
+déclare `hyperframes-plugin = "0.0.10"`. Propagation hyperframes vérifiée repo1
+HTTP 200 (plugin + marker).
+
+== Gates
+
+Local = Build : `publishToMavenLocal` et `publishAggregationToCentralPortal`
+n'exécutent pas les tests. La garde `PlatformCatalogAlignmentTest` sera exécutée
+par la CI MEMPHIS du commit poussé.
