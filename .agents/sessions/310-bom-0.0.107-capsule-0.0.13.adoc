@@ -1,0 +1,33 @@
+= Session 310 — BOM/catalog 0.0.107 : `capsule-plugin 0.0.13`
+:session: 310
+:date: 2026-10-26
+:borough: MEMPHIS
+:statut: ✅ TERMINÉ
+
+== Mission
+
+Publier le volet N0 de la release `capsule-plugin 0.0.13` (capsule S-208 :
+US-3a/3b/4 `HF-YOUTUBE-PUBLISH` + correctif précédence 4 sources ; YouTube gelé).
+
+== Modifications
+
+[cols="2,2,4"]
+|===
+| Fichier | Avant | Après
+
+| `gradle/libs.versions.toml` | `workspace-bom = "0.0.106"` | `0.0.107`
+| `gradle/libs.versions.toml` | `capsule-plugin = "0.0.12"` | `0.0.13`
+| `PlatformCatalogAlignmentTest.kt` | garde `0.0.106` | garde `0.0.107`
+|===
+
+== Publication
+
+|===
+| Étape | Résultat
+
+| `publishToMavenLocal` | ✅ VERT
+| `publishAggregationToCentralPortal` | ✅ bundle **`c572e214-7e58-4e71-9306-06fd30fef90c`** (AUTOMATIC)
+| Propagation repo1 | ✅ `workspace-catalog/0.0.107` + `workspace-bom/0.0.107` HTTP 200
+|===
+
+Ordre DAG : MEMPHIS `0.0.107` → capsule `0.0.13` (Central `ab765133`).

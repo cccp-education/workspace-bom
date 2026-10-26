@@ -1,0 +1,35 @@
+= Session 311 — BOM/catalog 0.0.108 : `hyperframes-plugin 0.0.11`
+:session: 311
+:date: 2026-10-26
+:borough: MEMPHIS
+:statut: ✅ TERMINÉ
+
+== Mission
+
+Publier le volet N0 de la release corrective `hyperframes-plugin 0.0.11`
+(hyperframes S-040 : dogfooding chrome/entrées → `@font-face … src: local(...)`
++ plancher typographique). La `0.0.10` échouait `hyperframes lint` sur `Impact`
+sans `@font-face`.
+
+== Modifications
+
+[cols="2,2,4"]
+|===
+| Fichier | Avant | Après
+
+| `gradle/libs.versions.toml` | `workspace-bom = "0.0.107"` | `0.0.108`
+| `gradle/libs.versions.toml` | `hyperframes-plugin = "0.0.10"` | `0.0.11`
+| `PlatformCatalogAlignmentTest.kt` | garde `0.0.107` | garde `0.0.108`
+|===
+
+== Publication
+
+|===
+| Étape | Résultat
+
+| `publishToMavenLocal` | ✅ VERT
+| `publishAggregationToCentralPortal` | ✅ bundle **`566b2ba8-b4e6-4c3b-934f-bb9c9f150385`** (AUTOMATIC)
+| Propagation repo1 | ✅ `workspace-catalog/0.0.108` + `workspace-bom/0.0.108` HTTP 200
+|===
+
+Ordre DAG : MEMPHIS `0.0.108` → hyperframes `0.0.11` (Central `5e1db54d`).

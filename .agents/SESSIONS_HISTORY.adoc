@@ -167,3 +167,21 @@ BOM/catalog `0.0.105 → 0.0.106`. Garde `PlatformCatalogAlignmentTest` ré-alig
 `2a6cabd8-5b94-4882-abd5-512c5a7d65ea` (AUTOMATIC), propagation repo1 HTTP 200.
 Ordre DAG : MEMPHIS `0.0.106` → hyperframes `0.0.10` (Central `ca092903`).
 Rapport `.agents/sessions/309-bom-0.0.106-hyperframes-0.0.10.adoc`.
+
+== Session 310 (2026-10-26) — BOM/catalog 0.0.107 : `capsule-plugin 0.0.13`
+
+Release consommateur capsule S-208 (US-3a/3b/4 + fix précédence 4 sources ;
+YouTube gelé). Bump `capsule-plugin 0.0.12 → 0.0.13` + BOM/catalog
+`0.0.106 → 0.0.107`. Garde `PlatformCatalogAlignmentTest` ré-alignée.
+Central bundle `c572e214-7e58-4e71-9306-06fd30fef90c` (AUTOMATIC), propagation
+repo1 200. DAG : MEMPHIS `0.0.107` → capsule `0.0.13` (`ab765133`).
+Rapport `.agents/sessions/310-bom-0.0.107-capsule-0.0.13.adoc`.
+
+== Session 311 (2026-10-26) — BOM/catalog 0.0.108 : `hyperframes-plugin 0.0.11`
+
+Release corrective hyperframes S-040 (`@font-face … src: local(...)` + plancher
+typographique, bug révélé par `hyperframes lint`). Bump `hyperframes-plugin
+0.0.10 → 0.0.11` + BOM/catalog `0.0.107 → 0.0.108`. Garde ré-alignée.
+Central bundle `566b2ba8-b4e6-4c3b-934f-bb9c9f150385` (AUTOMATIC), propagation
+repo1 200. DAG : MEMPHIS `0.0.108` → hyperframes `0.0.11` (`5e1db54d`).
+Rapport `.agents/sessions/311-bom-0.0.108-hyperframes-0.0.11.adoc`.

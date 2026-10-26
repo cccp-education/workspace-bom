@@ -1,6 +1,6 @@
 [versions]
 # ── Workspace BOM shared versions ─────────────────────────────────────────────
-workspace-bom = "0.0.106"
+workspace-bom = "0.0.108"
 
 # ── Kotlin ────────────────────────────────────────────────────────────────────
 kotlin = "2.4.10"
@@ -48,13 +48,13 @@ jetbrains-annotations = "26.0.2-1"
 
 # ── Plugin versions (published by education.cccp) ────────────────────────────
 bakery-plugin = "0.0.29"
-capsule-plugin = "0.0.12"
+capsule-plugin = "0.0.13"
 codex-plugin = "0.0.12"
 planner-plugin = "0.0.2"
 slider-plugin = "0.0.20"
 plantuml-plugin = "0.0.13"
 readme-plugin = "0.0.2"
-hyperframes-plugin = "0.0.10"
+hyperframes-plugin = "0.0.11"
 graphify-plugin = "0.0.5"
 dashboard-plugin = "0.0.2"
 api-key-pool-plugin = "0.0.2"
