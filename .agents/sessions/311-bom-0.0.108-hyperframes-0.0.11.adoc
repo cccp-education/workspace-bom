@@ -33,3 +33,8 @@ sans `@font-face`.
 |===
 
 Ordre DAG : MEMPHIS `0.0.108` → hyperframes `0.0.11` (Central `5e1db54d`).
+
+**CI `runAllTests` run `40377130489` (commit `d0a5311`) : ✅ VERTE** — garde
+`PlatformCatalogAlignmentTest` (`0.0.108`) + jobs cross-borough (capsule,
+hyperframes, planner, bakery) passés.
+

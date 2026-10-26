@@ -31,3 +31,7 @@ US-3a/3b/4 `HF-YOUTUBE-PUBLISH` + correctif précédence 4 sources ; YouTube gel
 |===
 
 Ordre DAG : MEMPHIS `0.0.107` → capsule `0.0.13` (Central `ab765133`).
+
+**CI** : couverte par le run `runAllTests` `40377130489` du HEAD final `0.0.108`
+(commit `d0a5311`), garde ré-alignée sur `0.0.108` incluse.
+
