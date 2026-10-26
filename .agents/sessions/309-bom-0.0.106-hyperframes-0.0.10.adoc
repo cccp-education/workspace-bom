@@ -49,5 +49,6 @@ HTTP 200 (plugin + marker).
 == Gates
 
 Local = Build : `publishToMavenLocal` et `publishAggregationToCentralPortal`
-n'exécutent pas les tests. La garde `PlatformCatalogAlignmentTest` sera exécutée
-par la CI MEMPHIS du commit poussé.
+n'exécutent pas les tests. **CI `runAllTests` run `40324837648` (commit `e902a9e`)
+: ✅ VERTE** — garde `PlatformCatalogAlignmentTest` (`0.0.106`) et jobs
+cross-borough passés (hyperframes inclus).
