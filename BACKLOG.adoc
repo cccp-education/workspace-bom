@@ -430,6 +430,60 @@ Le contrat garantit l'interopérabilité : un `I18nConfig` produit par bakery
 peut être consommé par runner-gradle pour orchestrer un site multilingue.
 
 '''
+== 🟡 EPIC MEM-I18N-PRESERVE — Contrat N0 « ce qui ne se traduit jamais » (CADRÉ S-077, revue i18n S-263)
+
+*Source* : revue externe `foundry/public/bakery-gradle/bakery-plugin/.agents/i18n_review.adoc`
+(S-263) + mesure de l'artefact cheroliv.com (S-077 : 1 397 défauts documentés,
+`toc-macro-lost` 378, `table-options-lost` 315).
+
+*Constat* : le contrat N0 `i18n-contracts` porte les langues et le service de
+traduction, mais **pas la règle la plus utile** : ce qui ne se traduit jamais
+(macros `toc::[]`/`include::`/`image::`, attributs de bloc `options="header"`,
+specs de tableau, fences de code, identifiants, placeholders). Résultat : bakery,
+document et plantuml **réimplémentent chacun** leur politique, et le LLM traduit
+les macros (`tik::[]`, `тик::[]`). C'est le cas « seuil à 2 » de la règle de
+factorisation.
+
+*Boundary* : MEMPHIS possède le **contrat pur** ; chaque N2 l'implémente sur son
+format (Thymeleaf, AsciiDoc, PlantUML). Aucune dépendance Gradle/LLM en N0.
+
+*DAG* : `MEMPHIS → codebase (safety) → document/bakery/plantuml` ; prolonge
+`GBL-010` (G-5), ne le remplace pas.
+
+[cols="1,4,1,2", options="header"]
+|===
+| US | Description | Pts | Statut
+
+| PRESERVE-0
+| Cadrage (audit des 3 politiques locales, 6 constats, décisions, doc
+`CADRAGE_EPIC_MEM_I18N_PRESERVE.adoc`)
+| 1
+| 🟡 À FAIRE
+
+| PRESERVE-1
+| Contrat N0 : `PreserveKind` (macro, block-attribute, table-spec, fence, identifier,
+placeholder), `PreserveRule` (match + reason), `TranslatableRegion` (bornes dans un
+texte), `PreserveRuleCatalog` (règles AsciiDoc/Thymeleaf/PlantUML) — data classes et
+objets purs, zéro dépendance
+| 3
+| 🟡 À FAIRE
+
+| PRESERVE-2
+| Garde de contrat : BDD `@preserve` (macro/attribut/fence jamais traduits, prose
+traduite) + tests de non-régression des 3 implémentations existantes
+| 1
+| 🟡 À FAIRE
+
+| PRESERVE-3
+| Publication `i18n-contracts` (version suivante) + BOM/catalog MEMPHIS (DAG) +
+guide d'adoption pour document/bakery/plantuml
+| 2
+| 🟡 À FAIRE
+|===
+
+*Total* : 4 US ~7 pts. *Dépend de* : `MEM-3` (i18n-contracts ✅). *Doc* :
+`.agents/i18n_review.adoc` (S-263), `CADRAGE_EPIC_GBL_010_ARBRE_TRADUCTION_SITE.adoc`.
+
 == EPIC MEM-4 : opencode-session-contracts — Protocole Thin Client opencode↔Gradle
 
 *Découverte* : Session 103 codebase brainstorming (2026-06-14) — Architecture thin-client
