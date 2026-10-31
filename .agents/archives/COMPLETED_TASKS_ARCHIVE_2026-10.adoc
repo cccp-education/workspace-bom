@@ -9,6 +9,7 @@ Release consommateur (hyperframes S-045, `HF-DEMO-QUALITY US-6` fond média).
 * [x] `publishToMavenLocal` VERT ; Central bundle `55aa4fba-76a8-481b-85b9-cad7a4d3dd63`
 * [x] propagation repo1 `workspace-bom/0.0.114` + `workspace-catalog/0.0.114` HTTP 200
 * [x] DAG : hyperframes `0.0.13` (`70d29242`)
+* [x] CI `runAllTests` verte run `41239605851`
 * [x] Règle 2 révisée « accord toujours granted » (décision pilote 2026-10-31)
 * [x] Rapport `.agents/sessions/315-bom-0.0.114-hyperframes-0.0.13.adoc`
 

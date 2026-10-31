@@ -30,6 +30,11 @@ signature, propagation vérifiée).
 MEMPHIS `0.0.114` → hyperframes `0.0.13` (Central bundle
 `70d29242-5f54-410f-994e-40977ff93b40`, propagation plugin + marker 200).
 
+== Gates
+
+* `publishToMavenLocal` VERT ; propagation repo1 200 ×2.
+* **CI `runAllTests` verte** : run **`41239605851`** (commit `06fea96`).
+
 == Fichiers
 
 * `gradle/libs.versions.toml` (2 bumps)
