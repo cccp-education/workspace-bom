@@ -1,0 +1,50 @@
+= Session 314 — BOM/catalog 0.0.113 : `capsule-plugin 0.0.14` + `hyperframes-plugin 0.0.12`
+:session: 314
+:date: 2026-10-31
+:borough: MEMPHIS
+:status: ✅ TERMINÉE
+:pattern: DAG N0 → N1 → N2, release groupée + propagation
+
+== Mission
+
+Publier les versions consommatrices qui portent l'adoption du noyau audio
+`video-kernel 0.6.0` :
+
+* `capsule-plugin 0.0.13 → 0.0.14` (imports `video.kernel.audio.*`) ;
+* `hyperframes-plugin 0.0.11 → 0.0.12` (2ᵉ consommateur, `NarrationSilenceCheck`).
+
+Ordre DAG : MEMPHIS catalogue d'abord (hyperframes dérive sa version du
+catalogue publié), puis capsule, puis hyperframes.
+
+== Modifications
+
+* `gradle/libs.versions.toml` :
+  ** `workspace-bom 0.0.112 → 0.0.113`
+  ** `capsule-plugin 0.0.13 → 0.0.14`
+  ** `hyperframes-plugin 0.0.11 → 0.0.12`
+  ** `video-kernel 0.6.0` (inchangé)
+* garde `PlatformCatalogAlignmentTest` ré-alignée `0.0.113`.
+
+== Publication
+
+[cols="2,2,3", options="header"]
+|===
+| Artefact | Version | Bundle
+| MEMPHIS `workspace-bom/catalog` | `0.0.113` | `455f513d-6bd2-40fa-95ed-a1e679c95b83`
+| capsule-plugin | `0.0.14` | `ba697bda-5405-4add-9df5-66e4fab686fb`
+| hyperframes-plugin | `0.0.12` | `097dea25-0d8f-4990-8705-3ccaf3b594ab`
+|===
+
+Propagation repo1 : BOM/catalog `0.0.113` 200, capsule `0.0.14` 200,
+hyperframes `0.0.12` 200.
+
+== Gates
+
+`publishToMavenLocal` VERTS pour les 3 artefacts ; compiles ×3 capsule +
+hyperframes VERTS (Local = Build). CI à prouver après push.
+
+== Effet
+
+Les consommateurs peuvent résoudre `capsule-plugin 0.0.14` et
+`hyperframes-plugin 0.0.12` depuis Central, avec `video-kernel 0.6.0` et BOM
+`0.0.113`. YouTube reste gelé.
