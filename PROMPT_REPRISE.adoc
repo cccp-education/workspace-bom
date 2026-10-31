@@ -1,9 +1,22 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-317 — À DÉFINIR (dernières terminées : **315 — BOM 0.0.114 hyperframes 0.0.13**
-et **316 — BOM 0.0.115 video-kernel 0.7.0 + youtube-auth 0.0.2 + capsule 0.0.15
-+ hyperframes 0.0.14**).
+317 — **Backlog transverse restant** (dernières terminées : **315 — BOM 0.0.114
+hyperframes 0.0.13** et **316 — BOM 0.0.115 video-kernel 0.7.0 + youtube-auth
+0.0.2 + capsule 0.0.15 + hyperframes 0.0.14**).
+
+=== Mission Session 317 — ordre proposé (Règle 2 « toujours granted »)
+
+. **PLT-DIAGRAM-OWNERSHIP** — publier `plantuml-contracts:0.0.1` Central +
+   bumpe BOM/catalog (constraint `plantuml-contracts 0.0.1`, garde ré-alignée).
+   Débloque plantuml/document (dernier reste de l'EPIC).
+. **MEM-CI-CONSISTENCY US-3/4/5** — garde « racine = version publiée », tolérance
+   nmcp `?: ""` standard, garde « catalogue non stale » (codebase/N1 publiés **et**
+   API utilisée). Puis **US-2** (JDK 25 sur les workflows des boroughs restants).
+. **CI-1.4** — step Ollama `qwen3:0.6b` dans `.github/workflows/test.yml`.
+. **MEM-3.5** — feature Cucumber `i18n_contracts.feature` (P2, 4-6 scénarios).
+
+_Hors scope_ : upload YouTube réel (US-4b capsule/hyperframes) — **gelé S-037**.
 
 **S-316** : release de vague (PUBLISH-ADAPTER-N1 + parallaxe + auth).
 Catalog `video-kernel 0.6.0 → 0.7.0`, `youtube-auth-plugin = "0.0.2"` (nouveau),
