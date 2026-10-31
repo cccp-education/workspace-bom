@@ -33,7 +33,7 @@ class PlatformCatalogAlignmentTest {
     @Test
     fun `toml version workspace-bom matches platform version`() {
         assertEquals(
-            "0.0.115", tomlVersions["workspace-bom"],
+            "0.0.116", tomlVersions["workspace-bom"],
             "workspace-bom dans le toml (tri-split C2 supprimé)"
         )
         assertTrue(
@@ -56,8 +56,9 @@ class PlatformCatalogAlignmentTest {
     fun `toml agent contracts versions aligned with published central`() {
         assertEquals("0.0.3", tomlVersions["agent-contracts"], "agent-contracts (Central S-020)")
         assertEquals("0.0.2", tomlVersions["codebase-contracts"], "codebase-contracts")
-        assertEquals("0.0.4", tomlVersions["i18n-contracts"], "i18n-contracts")
+        assertEquals("0.0.5", tomlVersions["i18n-contracts"], "i18n-contracts")
         assertEquals("0.0.2", tomlVersions["llm-pool-contracts"], "llm-pool-contracts")
+        assertEquals("0.0.1", tomlVersions["vibecoding-contracts"], "vibecoding-contracts (N0 publié 0.0.1)")
         assertEquals("0.0.2", tomlVersions["opencode-session-contracts"], "opencode-session-contracts")
         assertEquals("0.0.2", tomlVersions["pipeline-contracts"], "pipeline-contracts")
         assertEquals("0.0.1", tomlVersions["runtime-contracts"], "runtime-contracts")
@@ -77,7 +78,7 @@ class PlatformCatalogAlignmentTest {
     @Test
     fun `toml bakery plugin version is aligned on the latest N2 release`() {
         assertEquals(
-            "0.0.29", tomlVersions["bakery-plugin"],
+            "0.0.30", tomlVersions["bakery-plugin"],
             "bakery-plugin 0.0.29 (BOM 0.0.103 : document 0.0.25, plantuml 0.0.13, codebase 0.0.18)",
         )
     }

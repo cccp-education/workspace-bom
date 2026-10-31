@@ -19,6 +19,11 @@ env:
   # (like bakery-gradle/.github/workflows/test.yml) so a shard can never be
   # silently skipped and leave an empty kover binary report.
   CI: "true"
+  # CI-1.4 — governance CI integration endpoints (AGENTS.adoc, exception CI/CD):
+  # dedicated ports 11466-11467, light local model `qwen3:0.6b` (no secret, no
+  # cloud subscription). Integration tests gate on `assumeTrue(isOllamaReady(port))`.
+  OLLAMA_TEST_PORT: "11466"
+  OLLAMA_TEST_MODEL: "qwen3:0.6b"
 
 jobs:
   # ── coverage guard (anti "test fantôme", S-269 / S-298) ─────────────────────
@@ -35,6 +40,16 @@ jobs:
       - name: Checkout workspace-bom
         uses: actions/checkout@v4
 
+      # ── repository-wide common cache (shared by every job of this workflow) ──
+      # One rolling snapshot for dependencies (Gradle modules/wrappers + Maven
+      # local), restored here and published back at the end of the job. Cache
+      # bytes are visible to every job of *this* repository only — which is
+      # exactly the point: the 4 check entries, 15 bakery shards, coverage job,
+      # N0 contracts job and the Ollama job all read the same entry instead of
+      # each downloading its own copy of the same jars.
+      - name: Restore the repository-wide common cache
+        uses: ./.github/actions/setup-common-cache
+
       - name: Set up JDK 25
         uses: actions/setup-java@v4
         with:
@@ -43,9 +58,18 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
+        with:
+          # The shared cache above owns the dependency bytes. setup-gradle's own
+          # cache is per-build-file keyed (so per working directory), which is
+          # precisely the duplication the shared cache removes.
+          cache-disabled: true
 
       - name: Verify the CI matrix covers every testable borough
         run: ./gradlew verifyCiMatrixCoverage --no-daemon
+
+      - name: Save the repository-wide common cache
+        if: always()
+        uses: ./.github/actions/save-common-cache
 
   # ── per-borough checks + per-shard bakery checks (parallel machines) ────────
   # Formerly one monolithic job (~19 min = the sum of each `check`). Each entry
@@ -211,12 +235,25 @@ jobs:
             node: true
             coverage: true
     steps:
+      - name: Checkout the CI actions (workspace-bom)
+        uses: actions/checkout@v4
+        with:
+          repository: cccp-education/workspace-bom
+          path: ci
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Checkout ${{ matrix.borough }}
         uses: actions/checkout@v4
         with:
           repository: cccp-education/${{ matrix.borough }}
           path: foundry/public/${{ matrix.borough }}
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Shared with every other job of this workflow (see `setup-common-cache`):
+      # the same jars are downloaded at most once per rolling snapshot, whatever
+      # the borough or working directory of the entry.
+      - name: Restore the repository-wide common cache
+        uses: ./ci/.github/actions/setup-common-cache
 
       - name: Set up JDK 25
         uses: actions/setup-java@v4
@@ -235,9 +272,9 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          # Keep the local build cache warm across runs of the same matrix entry
-          # (skips the post-job cleanup Gradle build, ~3-40 s/entry).
-          cache-cleanup: never
+          # Dependency bytes come from the shared cache above (see
+          # `setup-common-cache`), not from setup-gradle's per-build cache.
+          cache-disabled: true
 
       - name: Run ${{ matrix.borough }} ${{ matrix.task }}
         run: ./gradlew ${{ matrix.task }} --no-daemon
@@ -277,6 +314,10 @@ jobs:
           path: foundry/public/${{ matrix.borough }}/bakery-plugin/build/kover/bin-reports/*.ic
           if-no-files-found: error
 
+      - name: Save the repository-wide common cache
+        if: always()
+        uses: ./ci/.github/actions/save-common-cache
+
   # ── bakery merged coverage (S-298) ───────────────────────────────────────────
   # Downloads every bakery shard's `.ic`, merges them into the same
   # `build/kover/bin-reports` and runs the report + threshold check WITHOUT
@@ -296,12 +337,22 @@ jobs:
         working-directory: foundry/public/bakery-gradle/bakery-plugin
 
     steps:
+      - name: Checkout the CI actions (workspace-bom)
+        uses: actions/checkout@v4
+        with:
+          repository: cccp-education/workspace-bom
+          path: ci
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Checkout bakery-gradle
         uses: actions/checkout@v4
         with:
           repository: cccp-education/bakery-gradle
           path: foundry/public/bakery-gradle
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Restore the repository-wide common cache
+        uses: ./ci/.github/actions/setup-common-cache
 
       - name: Set up JDK 25
         uses: actions/setup-java@v4
@@ -312,7 +363,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          cache-cleanup: never
+          cache-disabled: true
 
       - name: Download every bakery coverage binary report
         uses: actions/download-artifact@v4
@@ -351,3 +402,106 @@ jobs:
           name: kover-merged-report
           path: foundry/public/bakery-gradle/bakery-plugin/build/reports/kover/
           if-no-files-found: warn
+
+      - name: Save the repository-wide common cache
+        if: always()
+        uses: ./ci/.github/actions/save-common-cache
+
+  # ── N0 contracts (own sub-builds) ──────────────────────────────────────────
+  # Every `education.cccp:*-contracts` artefact is a standalone build (pattern
+  # 0124): none of them is exercised by the borough matrix above, so their tests
+  # (and the MEM-3.5 `i18n_contracts.feature` BDD suite) would never run. This
+  # matrix runs `check` in each sub-build, in parallel.
+  # It is also the proof of MEM-CI-CONSISTENCY US-4: a bare CI runner has no
+  # `ossrhUsername`/`ossrhPassword`, so a settings script that still calls
+  # `error(...)` in `nmcpSettings.centralPortal` fails at *configuration* here.
+  n0-contracts:
+    name: "N0 · ${{ matrix.name }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: agent-contracts
+            dir: agent-contracts
+          - name: codebase-contracts
+            dir: codebase-contracts
+          - name: i18n-contracts
+            dir: i18n-contracts
+          - name: llm-pool-contracts
+            dir: llm-pool-contracts
+          - name: ocr-contracts
+            dir: ocr-contracts
+          - name: opencode-session-contracts
+            dir: opencode-session-contracts
+          - name: pipeline-contracts
+            dir: pipeline-contracts
+          - name: plantuml-contracts
+            dir: plantuml-contracts
+          - name: runtime-contracts
+            dir: runtime-contracts
+          - name: vibecoding-contracts
+            dir: vibecoding-contracts
+    steps:
+      - name: Checkout workspace-bom
+        uses: actions/checkout@v4
+
+      - name: Restore the repository-wide common cache
+        uses: ./.github/actions/setup-common-cache
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-disabled: true
+
+      - name: Run ${{ matrix.name }} check
+        run: ./gradlew check --no-daemon
+        working-directory: ${{ matrix.dir }}
+
+      - name: Save the repository-wide common cache
+        if: always()
+        uses: ./.github/actions/save-common-cache
+
+  # ── CI-1.4 — Ollama (cached image + model) ────────────────────────────────
+  # Governance (AGENTS.adoc, « Exception CI/CD ») : ports dédiés 11466-11467,
+  # modèle CI léger `qwen3:0.6b`, aucun secret. The composite action reused from
+  # plantuml-gradle/capsule-gradle caches the Docker image (~1.6 GB) and the
+  # model weights in this repository's cache scope, so the model is never
+  # re-downloaded on a warm cache. Integration tests elsewhere gate on
+  # `assumeTrue(isOllamaReady(port))` and pick the port/model up from
+  # `OLLAMA_TEST_PORT` / `OLLAMA_TEST_MODEL` (workflow env above).
+  llm-ollama:
+    name: "LLM · Ollama qwen3:0.6b (cached)"
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout workspace-bom
+        uses: actions/checkout@v4
+
+      - name: Restore the repository-wide common cache
+        uses: ./.github/actions/setup-common-cache
+
+      - name: Setup Ollama (cached image + model)
+        uses: ./.github/actions/setup-ollama
+        with:
+          model: ${{ env.OLLAMA_TEST_MODEL }}
+          port: ${{ env.OLLAMA_TEST_PORT }}
+
+      - name: Smoke-test the model endpoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -sf "http://localhost:${OLLAMA_TEST_PORT}/api/tags" >/dev/null
+          docker exec ollama ollama run "${OLLAMA_TEST_MODEL}" "Reply with the word OK only." | head -5
+
+      - name: Save the repository-wide common cache
+        if: always()
+        uses: ./.github/actions/save-common-cache

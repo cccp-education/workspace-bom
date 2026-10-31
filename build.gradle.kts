@@ -117,6 +117,7 @@ dependencies {
         api(libs.codebase.contracts)
         api(libs.llm.pool.contracts)
         api(libs.opencode.session.contracts)
+        api(libs.vibecoding.contracts)
         api(libs.i18n.contracts)
         api(libs.pipeline.contracts)
         api(libs.runtime.contracts)
@@ -337,9 +338,203 @@ val verifyCiMatrixCoverage = tasks.register("verifyCiMatrixCoverage") {
     }
 }
 
+// ── MEM-CI-CONSISTENCY US-3 / US-5 — cross-borough pin consistency guard ──────
+// Both US are the same static relation, and both were root causes of the
+// S-282→S-284 red CI:
+//   • US-3 — a consumer root must never pin a version that is not published yet
+//     (slider root pinned 0.0.20 while the published catalogue carried 0.0.19);
+//   • US-5 — the catalogue must never be *stale* relative to what consumers pin
+//     (catalogue carried codebase 0.0.11/0.0.14 while consumers used an API only
+//     present in 0.0.17).
+// This BOM *is* the single source of truth of the published versions, so the
+// invariant is: every cross-borough pin found in a sibling build is <= the
+// version published here. Pure text parsing (no network, no Gradle model), and
+// siblings that are not checked out are skipped (each CI matrix job clones a
+// single borough). The `-SNAPSHOT`/dev pins are rejected outright (US-3).
+val crossBoroughPinFamilies = mapOf(
+    // consumer toml key -> catalogue key (same artifact)
+    "codebase" to "codebase-plugin",
+    "codebase-plugin" to "codebase-plugin",
+    "codebase-gradle-plugin" to "codebase-plugin",
+    "slider" to "slider-plugin",
+    "slider-plugin" to "slider-plugin",
+    "capsule" to "capsule-plugin",
+    "capsule-plugin" to "capsule-plugin",
+    "codex" to "codex-plugin",
+    "codex-plugin" to "codex-plugin",
+    "planner" to "planner-plugin",
+    "planner-plugin" to "planner-plugin",
+    "document" to "document-plugin",
+    "document-plugin" to "document-plugin",
+    "bakery" to "bakery-plugin",
+    "bakery-plugin" to "bakery-plugin",
+    "plantuml-plugin" to "plantuml-plugin",
+    "hyperframes" to "hyperframes-plugin",
+    "hyperframes-plugin" to "hyperframes-plugin",
+    "graphify" to "graphify-plugin",
+    "graphify-plugin" to "graphify-plugin",
+    "dashboard" to "dashboard-plugin",
+    "dashboard-plugin" to "dashboard-plugin",
+    "readme" to "readme-plugin",
+    "readme-plugin" to "readme-plugin",
+    "conventions" to "conventions-plugin",
+    "conventions-plugin" to "conventions-plugin",
+    "api-key-pool" to "api-key-pool-plugin",
+    "api-key-pool-plugin" to "api-key-pool-plugin",
+    "video-kernel" to "video-kernel",
+    "youtube-auth" to "youtube-auth-plugin",
+    "youtube-auth-plugin" to "youtube-auth-plugin",
+    "runtime-contracts" to "runtime-contracts",
+    "ocr-contracts" to "ocr-contracts",
+    "plantuml-contracts" to "plantuml-contracts",
+    "i18n-contracts" to "i18n-contracts",
+    "agent-contracts" to "agent-contracts",
+    "codebase-contracts" to "codebase-contracts",
+    "llm-pool-contracts" to "llm-pool-contracts",
+    "opencode-session-contracts" to "opencode-session-contracts",
+    "pipeline-contracts" to "pipeline-contracts",
+    "vibecoding-contracts" to "vibecoding-contracts",
+)
+
+fun parseVersionTable(file: java.io.File): Map<String, String> {
+    if (!file.isFile) return emptyMap()
+    var inVersions = false
+    val table = mutableMapOf<String, String>()
+    file.readLines().forEach { raw ->
+        val line = raw.substringBefore('#').trim()
+        when {
+            line.startsWith("[") -> inVersions = line == "[versions]"
+            inVersions && line.contains('=') -> {
+                val key = line.substringBefore('=').trim()
+                val value = line.substringAfter('=').trim().trim('"')
+                if (key.isNotEmpty()) table[key] = value
+            }
+        }
+    }
+    return table
+}
+
+/** Numeric rank of a dotted version, `null` when it is not a plain release. */
+fun versionRank(version: String): List<Int>? {
+    if (version.contains("SNAPSHOT", ignoreCase = true)) return null
+    val core = version.substringBefore('-').substringBefore('+')
+    return core.split('.').map { part -> part.toIntOrNull() ?: return null }
+}
+
+fun isNewer(candidate: String, reference: String): Boolean {
+    val left = versionRank(candidate) ?: return true
+    val right = versionRank(reference) ?: return false
+    val size = maxOf(left.size, right.size)
+    for (index in 0 until size) {
+        val a = left.getOrElse(index) { 0 }
+        val b = right.getOrElse(index) { 0 }
+        if (a != b) return a > b
+    }
+    return false
+}
+
+// The artefact a sibling build *produces* may legitimately run ahead of the
+// published version (that is what a release session publishes). Only the
+// *consumed* pins are constrained, so the own family of a build is skipped.
+// The build identity is the directory owning `gradle/`, not the first path
+// segment: consumer roots carry a `*-plugin/` sub-build (pattern 0124).
+fun ownArtefactFamily(buildDirName: String): String? =
+    when {
+        buildDirName == "video-kernel-gradle" -> "video-kernel"
+        buildDirName.endsWith("-gradle") -> buildDirName.removeSuffix("-gradle") + "-plugin"
+        buildDirName in crossBoroughPinFamilies.values -> buildDirName
+        else -> null
+    }
+
+val verifyCrossBoroughPins = tasks.register("verifyCrossBoroughPins") {
+    group = "verification"
+    description = "Fails if a sibling build pins a cross-borough version newer than the published catalogue (US-3/US-5)."
+    val workspaceRoot = rootProject.projectDir.parentFile
+    val catalogFile = layout.projectDirectory.file("gradle/libs.versions.toml").asFile
+    val workspacePin = Regex("""workspace-(?:bom|catalog):([0-9][0-9A-Za-z.\-]*)""")
+    doLast {
+        val catalog = parseVersionTable(catalogFile)
+        val publishedBom = catalog["workspace-bom"]
+            ?: error("gradle/libs.versions.toml has no `workspace-bom` version")
+        if (!workspaceRoot.isDirectory) {
+            logger.lifecycle("verifyCrossBoroughPins — no sibling workspace, skipped")
+            return@doLast
+        }
+
+        val violations = mutableListOf<String>()
+        val skippedOwn = mutableSetOf<String>()
+        var scannedTomls = 0
+
+        val tomls = workspaceRoot.walkTopDown()
+            .onEnter { dir ->
+                dir.name != "build" && dir.name != ".gradle" && dir.name != "node_modules" &&
+                    dir.name != "out" && dir.name != ".git"
+            }
+            .filter { it.name == "libs.versions.toml" && it.parentFile?.name == "gradle" }
+            .toList()
+
+        tomls.forEach { toml ->
+            val relative = toml.relativeTo(workspaceRoot).invariantSeparatorsPath
+            val buildDir = relative.substringBeforeLast("/gradle/").substringAfterLast('/')
+            val ownFamily = ownArtefactFamily(buildDir)
+            val versions = parseVersionTable(toml)
+
+            versions.forEach { (key, value) ->
+                val family = crossBoroughPinFamilies[key] ?: return@forEach
+                if (family == ownFamily) {
+                    skippedOwn += "$buildDir:$key"
+                    return@forEach
+                }
+                val published = catalog[family]
+                if (published == null) {
+                    violations += "$relative: `$key = \"$value\"` has no published catalogue entry ('$family')"
+                    return@forEach
+                }
+                if (isNewer(value, published)) {
+                    violations += "$relative: `$key = \"$value\"` is newer than the published " +
+                        "catalogue `$family = \"$published\"` (catalogue stale or unpublished pin)"
+                }
+            }
+            scannedTomls += 1
+        }
+
+        // Platform pins: a build may not consume a BOM/catalog snapshot newer than
+        // the one published here.
+        val gradleFiles = workspaceRoot.walkTopDown()
+            .onEnter { dir ->
+                dir.name != "build" && dir.name != ".gradle" && dir.name != "node_modules" &&
+                    dir.name != "out" && dir.name != ".git"
+            }
+            .filter { it.name == "settings.gradle.kts" || it.name == "build.gradle.kts" }
+            .toList()
+        gradleFiles.forEach { file ->
+            val relative = file.relativeTo(workspaceRoot).invariantSeparatorsPath
+            if (relative.startsWith("workspace-bom/")) return@forEach
+            workspacePin.findAll(file.readText()).forEach { match ->
+                val pinned = match.groupValues[1]
+                if (isNewer(pinned, publishedBom)) {
+                    violations += "$relative: pins `${match.value}` newer than the published " +
+                        "`workspace-bom = \"$publishedBom\"`"
+                }
+            }
+        }
+
+        check(violations.isEmpty()) {
+            "Cross-borough pin consistency failed (MEM-CI-CONSISTENCY US-3/US-5):\n" +
+                violations.joinToString("\n") { "  • $it" }
+        }
+        logger.lifecycle(
+            "verifyCrossBoroughPins OK — $scannedTomls sibling version catalog(s) and " +
+                "${gradleFiles.size} build script(s) within catalogue $publishedBom " +
+                "(${skippedOwn.size} self-produced pin(s) skipped)"
+        )
+    }
+}
+
 tasks.named("check") {
     dependsOn(runAllTestsTask)
     dependsOn(verifyCiMatrixCoverage)
+    dependsOn(verifyCrossBoroughPins)
 }
 
 publishing {

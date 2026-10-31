@@ -1,6 +1,6 @@
 [versions]
 # ── Workspace BOM shared versions ─────────────────────────────────────────────
-workspace-bom = "0.0.115"
+workspace-bom = "0.0.116"
 
 # ── Kotlin ────────────────────────────────────────────────────────────────────
 kotlin = "2.4.10"
@@ -79,6 +79,7 @@ agent-contracts = "0.0.3"
 codebase-contracts = "0.0.2"
 llm-pool-contracts = "0.0.2"
 opencode-session-contracts = "0.0.2"
+vibecoding-contracts = "0.0.1"
 i18n-contracts = "0.0.5"
 pipeline-contracts = "0.0.2"
 runtime-contracts = "0.0.1"
@@ -286,6 +287,7 @@ agent-contracts = { module = "education.cccp:agent-contracts", version.ref = "ag
 codebase-contracts = { module = "education.cccp:codebase-contracts", version.ref = "codebase-contracts" }
 llm-pool-contracts = { module = "education.cccp:llm-pool-contracts", version.ref = "llm-pool-contracts" }
 opencode-session-contracts = { module = "education.cccp:opencode-session-contracts", version.ref = "opencode-session-contracts" }
+vibecoding-contracts = { module = "education.cccp:vibecoding-contracts", version.ref = "vibecoding-contracts" }
 i18n-contracts = { module = "education.cccp:i18n-contracts", version.ref = "i18n-contracts" }
 pipeline-contracts = { module = "education.cccp:pipeline-contracts", version.ref = "pipeline-contracts" }
 runtime-contracts = { module = "education.cccp:runtime-contracts", version.ref = "runtime-contracts" }

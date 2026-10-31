@@ -1,0 +1,48 @@
+name: Restore the repository-wide common cache (Gradle + Maven local)
+description: >-
+  Restores one shared dependency cache for EVERY job of EVERY workflow in this
+  repository — the 4 `check` entries, the 15 bakery shards, the merged-coverage
+  job, the matrix guard, the N0 contracts job and the Ollama job all read the
+  same entry. Dependencies (Gradle modules, wrapper distributions, Maven local)
+  are therefore never re-downloaded by a sibling job: they are restored from the
+  freshest snapshot of the rolling key, whatever the job's working directory.
+
+  GitHub Actions caches are scoped to a repository, so this is the only
+  mechanism that actually shares bytes between jobs (a cache written by
+  `bakery-plugin` is invisible to `slider-gradle`, but visible to every job of
+  THIS repository). The rolling key (`restore-keys` prefix) is what makes the
+  cache converge: each job restores the latest snapshot, then `save-common-cache`
+  publishes its own snapshot for the next runs.
+
+inputs:
+  epoch:
+    description: >-
+      Manual invalidation epoch. Bump it to abandon a corrupted snapshot; the
+      previous epoch's entries then fall out of the restore-keys prefix.
+    required: false
+    default: "v1"
+
+runs:
+  using: composite
+  steps:
+    - name: Restore shared Gradle / Maven dependency cache
+      id: common-cache
+      uses: actions/cache/restore@v4
+      with:
+        # Dependency *bytes* only — build outputs stay per-job (and per-borough).
+        path: |
+          ~/.gradle/caches/modules-2
+          ~/.gradle/caches/jars-9
+          ~/.gradle/wrapper/dists
+          ~/.m2/repository
+        # Never matches (per-run key) → the restore always falls back on the
+        # `restore-keys` prefix, i.e. the most recently saved snapshot.
+        key: cccp-common-${{ runner.os }}-${{ inputs.epoch }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ strategy.job-index }}
+        restore-keys: |
+          cccp-common-${{ runner.os }}-${{ inputs.epoch }}-
+
+    - name: Report the shared cache hit
+      shell: bash
+      run: |
+        echo "shared dependency cache hit: ${{ steps.common-cache.outputs.cache-hit }}" >> "$GITHUB_STEP_SUMMARY"
+        echo "shared dependency cache matched key: ${{ steps.common-cache.outputs.cache-matched-key }}" >> "$GITHUB_STEP_SUMMARY"

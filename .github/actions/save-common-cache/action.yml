@@ -1,0 +1,32 @@
+name: Save the repository-wide common cache (Gradle + Maven local)
+description: >-
+  Publishes this job's version of the shared dependency cache under a per-run
+  key sharing the `cccp-common-<os>-<epoch>-` prefix, so every later job of this
+  repository restores it instead of re-downloading. Call it as the LAST step of
+  a job with `if: always()` (convention: `setup-common-cache` in, this out) —
+  even a failed job keeps the wrappers/modules it downloaded.
+
+  Bounded footprint: all entries share one prefix and GitHub keeps them under
+  the repository's 10 GB cache budget (LRU eviction). The prefix lookup means an
+  evicted snapshot is simply replaced by the next newest one — never a cold
+  start unless every entry is evicted (> 7 days unused).
+
+inputs:
+  epoch:
+    description: Must match the `epoch` passed to `setup-common-cache`.
+    required: false
+    default: "v1"
+
+runs:
+  using: composite
+  steps:
+    - name: Save shared Gradle / Maven dependency cache
+      uses: actions/cache/save@v4
+      continue-on-error: true
+      with:
+        path: |
+          ~/.gradle/caches/modules-2
+          ~/.gradle/caches/jars-9
+          ~/.gradle/wrapper/dists
+          ~/.m2/repository
+        key: cccp-common-${{ runner.os }}-${{ inputs.epoch }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ strategy.job-index }}
