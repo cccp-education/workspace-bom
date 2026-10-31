@@ -34,3 +34,7 @@ Règle 2 « accord toujours granted » (décision pilote 2026-10-31).
 MEMPHIS `0.0.115` → `video-kernel 0.7.0` (`583079e5`) +
 `youtube-auth-plugin 0.0.2` (`283d5451`) → `capsule-plugin 0.0.15`
 (`309d98c6`) + `hyperframes-plugin 0.0.14` (`11eb9906`), propagation 200.
+
+== CI
+
+**CI `runAllTests` verte** : run **`41243890146`** (commit `3318bd8`).

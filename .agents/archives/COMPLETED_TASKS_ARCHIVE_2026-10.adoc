@@ -10,6 +10,7 @@ Vague PUBLISH-ADAPTER-N1 + parallaxe + première publication auth.
 * [x] `publishToMavenLocal` VERT ; Central bundle `0e74a6a8-4106-48bf-8057-22233298b64d`
 * [x] propagation repo1 `workspace-bom/0.0.115` + `workspace-catalog/0.0.115` HTTP 200
 * [x] DAG : video-kernel `0.7.0` + youtube-auth `0.0.2` → capsule `0.0.15` + hyperframes `0.0.14`
+* [x] CI `runAllTests` verte run `41243890146`
 * [x] Rapport `.agents/sessions/316-bom-0.0.115-video-kernel-0.7.0-youtube-auth-consumers.adoc`
 
 == Session 315 (2026-10-31) — BOM/catalog 0.0.114 : `hyperframes-plugin 0.0.13` ✅
