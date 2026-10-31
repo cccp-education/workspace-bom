@@ -4,7 +4,8 @@
 :toc: left
 :sectnums:
 
-_Dernière mise à jour : 2026-10-25 (S-307 — **BOM/catalog 0.0.101 : `document-plugin 0.0.25` + `bakery-plugin 0.0.28`**, revue cheroliv.com ; publication Central `d6e5bf37`, propagation repo1 200, CI verte `67b0d8c`. Précédent S-306 : BOM/catalog 0.0.100 bakery 0.0.27, bundle `936b54a1`, CI verte `c6dc0e1`. Précédent S-299 : CI cross-borough < 5 min.)_
+_Dernière mise à jour (antérieure) : 2026-10-25 (S-307 — **BOM/catalog 0.0.101 : `document-plugin 0.0.25` + `bakery-plugin 0.0.28`**, revue cheroliv.com ; publication Central `d6e5bf37`, propagation repo1 200, CI verte `67b0d8c`. Précédent S-306 : BOM/catalog 0.0.100 bakery 0.0.27, bundle `936b54a1`, CI verte `c6dc0e1`. Précédent S-299 : CI cross-borough < 5 min.)_
+_Dernière mise à jour : 2026-10-31 (S-317 — **cache CI commun au dépôt** (`setup-common-cache`/`save-common-cache` + `setup-ollama` repris, `setup-gradle cache-disabled`) + **builds N0 testés en CI** (`n0-contracts` : foojay 0.9.0→0.10.0, `jvmToolchain(25)`, tests dérivés corrigés) + **EPIC MEM-CI-CONSISTENCY clos** (garde `verifyCrossBoroughPins` US-3/US-5, US-4 `?: ""` ×12, US-2 JDK 25 ×8 workflows) + **CI-1.4 ✅** (`llm-ollama`, `qwen3:0.6b`, 11466) + **MEM-3.5 ✅** (`i18n_contracts.feature` 9/9) + **PLT-DIAGRAM-OWNERSHIP clos** (déjà publié S-280) + **BOM/catalog 0.0.116** (bundle `f4ca1a51`, `vibecoding-contracts 0.0.1` ajouté). CI verte `41248941480` 24/24. Précédent S-307 : BOM/catalog 0.0.101 document 0.0.25 + bakery 0.0.28.)
 
 '''
 == ✅ EPIC MEM-CI-SHARD — sharding CI cross-borough (S-297 → S-299)
@@ -176,15 +177,13 @@ exécutés en CI** — corrigé par le job `n0-contracts`.
   `PlantUmlStrategy` enum unique, `PlantUmlClassifier`, `SyntaxValidationResult`,
   `PlantUmlSyntaxValidator`, `PlantUmlTranslationRequest`/`Port`/`Outcome`).
   mavenLocal VERT, garde alignée.
-* 🟡 À FAIRE (accord pilote) — **Publication Central** `plantuml-contracts:0.0.1`
-  + bump BOM (`workspace-bom 0.0.65→0.0.66`, constraint plantuml-contracts 0.0.1),
-  garde réalignée. Prérequis dur pour que plantuml/document consomment le contrat.
-* ✅ **TERMINÉ (S-280)** — `plantuml-contracts:0.0.1` publié Central (bundle
-  `c9a687d3`) + BOM/catalog `0.0.66` (bundle `c0201db7`, constraint
-  `plantuml-contracts`). Re-vérifié S-317 : `repo1` POM **HTTP 200** et l'entrée
-  est présente dans le catalogue `0.0.116` (`plantuml-contracts = "0.0.1"` +
-  `api(libs.plantuml.contracts)`) — **EPIC clos**. Le marqueur `🟡` ci-dessus
-  était périmé (désync backlog).
+* ✅ **TERMINÉ (S-280)** — **Publication Central** `plantuml-contracts:0.0.1`
+  (bundle `c9a687d3`) + bump BOM (`workspace-bom 0.0.65→0.0.66`, constraint
+  plantuml-contracts 0.0.1, bundle `c0201db7`), garde réalignée. Re-vérifié
+  S-317 : `repo1` POM **HTTP 200** et l'entrée est présente dans le catalogue
+  `0.0.116` (`plantuml-contracts = "0.0.1"` + `api(libs.plantuml.contracts)`)
+  — **EPIC clos**. (Le marqueur `🟡 À FAIRE` qui figurait ici était périmé :
+  désync backlog.)
 
 '''
 == EPIC PUB — Publication Maven Central

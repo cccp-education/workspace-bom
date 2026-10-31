@@ -1,0 +1,170 @@
+= Session 317 — cache CI commun, N0 en CI, garde de pins cross-borough
+:date: 2026-10-31
+:borough: MEMPHIS (workspace-bom)
+:type: ci + gouvernance + publication
+
+== Mission
+
+Demande pilote : « enchaine les points à la suite » (reprise S-317) puis
+« crée un cache commun au repo pour toutes les actions GH du repo afin de ne
+jamais re-télécharger dépendance et modèle LLM » et « si il existe tu utilises
+l'existant ».
+
+Ordre exécuté : `PLT-DIAGRAM-OWNERSHIP` (vérification) → cache commun + `CI-1.4`
+(Ollama) → `MEM-CI-CONSISTENCY` US-4 / US-3 / US-5 / US-2 → `MEM-3.5`
+(Cucumber i18n).
+
+== 1. PLT-DIAGRAM-OWNERSHIP — déjà terminé (backlog périmé)
+
+`plantuml-contracts:0.0.1` est **publié Central** (POM `repo1` HTTP 200) et présent
+dans le catalogue/BOM (`plantuml-contracts = "0.0.1"` + `api(libs.plantuml.contracts)`).
+L'EPIC avait été livré en S-280 (bundle `c9a687d3`), mais la section détaillée du
+`BACKLOG.adoc` portait encore `🟡 À FAIRE`. Marqueur corrigé → **EPIC clos**.
+
+== 2. Cache CI commun au dépôt + CI-1.4 (Ollama)
+
+=== 2.1 Dépendances — un seul cache partagé par tous les jobs
+
+Deux actions composites nouvelles, utilisées par **tous** les jobs du workflow
+(garde de matrice, 4 `check`, 15 shards bakery, job de couverture fusionnée,
+2 entrées N0, job Ollama) :
+
+* `.github/actions/setup-common-cache` — `actions/cache/restore` sur
+  `~/.gradle/caches/modules-2`, `~/.gradle/caches/jars-9`,
+  `~/.gradle/wrapper/dists`, `~/.m2/repository`, avec une **clé glissante**
+  (`cccp-common-<os>-<epoch>-<run_id>-<attempt>-<job-index>`) et un
+  `restore-keys: cccp-common-<os>-<epoch>-` : chaque job restaure le snapshot le
+  plus récent, quel que soit son répertoire de travail ou son borough.
+* `.github/actions/save-common-cache` — `actions/cache/save` en **dernière étape**
+  (`if: always()`) sous une clé unique par job : le pool se renouvelle à chaque run,
+  et un cache évincé (> 7 j) est simplement remplacé par le plus récent.
+
+`gradle/actions/setup-gradle@v4` passe en `cache-disabled: true` : son cache est
+indexé par fichiers de build (donc par répertoire de travail), ce qui **duplique**
+exactement ce que le cache commun supprime. Il reste utilisé pour l'instrumentation
+et la validation de wrapper.
+
+Preuve dans le run `41248220277` : étape `Restore the repository-wide common cache`
+OK dans chaque job et log `Cache saved with key: cccp-common-Linux-v1-…`.
+
+=== 2.2 Modèle LLM — réutilisation de l'existant
+
+Aucune action de cache n'existait dans ce dépôt, mais le patron existe déjà dans
+l'écosystème : `capsule-gradle` et `plantuml-gradle` embarquent la même action
+composite `setup-ollama` (image Docker `docker save`/`load` + `~/.ollama/models`
+archivés). **Reprise verbatim** de la version la plus récente (plantuml), adaptée
+aux valeurs de gouvernance : modèle `qwen3:0.6b`, port `11466`.
+
+* `.github/actions/setup-ollama/action.yml` — cache image (`ollama-image-<os>-<image>`)
+  + cache modèles (`ollama-models-<os>-<model>`), démarrage, `pull` seulement si
+  absent, restitution du store au runner (`chown`).
+* Job `llm-ollama` (`CI-1.4`) — setup + smoke `ollama run "Reply with the word OK only."`.
+* `env` global : `OLLAMA_TEST_PORT=11466`, `OLLAMA_TEST_MODEL=qwen3:0.6b`
+  (exception CI/CD AGENTS.adoc : ports 11466-11467, modèle léger, zéro secret).
+
+Le cache GitHub est **scopé au dépôt** : tous les jobs de `workspace-bom` partagent
+donc les mêmes octets (image + poids), ce qui est exactement la demande. Entre
+dépôts, seul un runner self-hosted partagerait réellement (cf.
+`.agents/CADRAGE_CI_CACHE.adoc`).
+
+== 3. MEM-CI-CONSISTENCY — EPIC clos (US-2 → US-5)
+
+=== 3.1 US-4 — tolérance nmcp (`?: ""`)
+
+12 `settings.gradle.kts` corrigés (`?: error("ossrh… not found")` → `?: ""`) :
+les 8 sous-builds N0 de ce dépôt + `api-key-pool-plugin`, `jhipster-gradle-plugins`,
+`readme-plugin`, `graphify-plugin` (4 commits cross-borough poussés). Le job CI
+`n0-contracts` exécute ces builds sur un runner **sans credentials** : preuve que
+la configuration passe (elle échouait auparavant en configuration).
+
+=== 3.2 US-3 + US-5 — une seule garde statique
+
+`verifyCrossBoroughPins` (`build.gradle.kts`, groupe `verification`, câblée à
+`check`) : tout pin **consommé** par un build frère (catalogues de versions +
+pins `workspace-bom:<v>` / `workspace-catalog:<v>` dans les scripts de build) doit
+être **≤ la version publiée par ce BOM**. Un pin `-SNAPSHOT` est rejeté (US-3), un
+catalogue en retard sur un consommateur est rejeté (US-5). Zéro réseau, zéro modèle
+Gradle ; les builds frères absents sont ignorés (la CI clone un borough par job),
+et le pin de l'artefact **produit** par un build est exclu (une version de dev peut
+légitimement précéder sa publication).
+
+*RED prouvé deux fois* : `codebase = "9.9.9"` dans slider ⇒ « newer than the
+published catalogue `codebase-plugin = 0.0.18` » ; `workspace-catalog:0.0.999`
+dans readme ⇒ « newer than the published `workspace-bom = 0.0.116` ». GREEN :
+`51` catalogues frères + `130` scripts de build, `29` pins auto-produits ignorés.
+
+Découverte : `plantuml` dans un toml consommateur est le **moteur** PlantUML
+(`1.2026.0`), pas le plugin — alias retiré de la table (faux positif évité).
+
+=== 3.3 Gaps réels révélés par la garde (et corrigés)
+
+* `vibecoding-contracts:0.0.1` était **publié Central** mais absent du catalogue et
+  des contraintes du BOM → ajouté (`[versions]`, `[libraries]`, `api(libs.vibecoding.contracts)`).
+  (Le sous-build `vibecoding-contracts/` n'a plus de `build.gradle.kts` : supprimé par
+  le refactor S-084, seuls `src/` + `settings.gradle.kts` subsistent. Restaurer son
+  build = item de backlog distinct.)
+* `PlatformCatalogAlignmentTest` était **dérivé** (i18n `0.0.4` vs `0.0.5`, bakery
+  `0.0.29` vs `0.0.30`) : la garde n'était **jamais exécutée** parce qu'aucun job CI
+  ne lançait les builds N0.
+* `WorkspaceCatalogStructureTest` attendait `document-plugin 0.0.21` (catalogue
+  `0.0.26` depuis S-307) — même cause, corrigé.
+
+=== 3.4 US-2 — JDK 25 partout
+
+8 workflows alignés (6 dépôts) : `slider/readme_truth` 24→25, `jhipster/readme_truth`
+24→25, `graphify/test` 24→25, `readme/{ci,integration_test,readme_action}` 23→25,
+`planner/decompose` 23→25, `codebase/anonymize` 23→25 (`runner-gradle` l'était déjà).
+
+== 4. MEM-3.5 — Cucumber `i18n_contracts.feature`
+
+Domaine `i18n-contracts` doté du patron de `runtime-contracts` :
+`src/test/resources/features/i18n_contracts.feature` (9 scénarios : catalogue
+22 langues, lookup ISO 639-1, RTL `ar`/`ur`/`fa`, config valide, actif hors
+`supported`, fallback hors `supported`, cascade `LocaleResolver`, repli, lookup
+`MessageBundle` + clé absente), `CucumberTestRunner` (suite JUnit Platform) et
+`I18nContractsStepDefs` (fakes `ContractLocaleResolver` / `InMemoryMessageBundle`).
+`check` dépend de `cucumberTest` ; exécuté en CI (`N0 · core`, 9/9 PASSED).
+
+== 5. Job CI `n0-contracts` — les builds N0 testés pour la première fois
+
+Deux entrées de matrice (5 builds séquentiels chacune) plutôt que dix jobs : le
+pool de runners (~20-21) est déjà saturé par les shards, dix entrées
+supplémentaires décaleraient une seconde vague (objectif < 5 min, S-299).
+
+La mise en CI a révélé **deux bugs latents** :
+
+. `foojay-resolver-convention 0.9.0` est incompatible avec Gradle 9.8.1
+  (`JvmVendorSpec.IBM_SEMERU` supprimé) → bump `0.10.0` (11 scripts de settings).
+. **Bug réel** : les 9 builds N0 demandaient `kotlin.jvmToolchain(JavaVersion.VERSION_25.ordinal)`
+  — l'ordinal vaut **24**, donc un toolchain JDK 24. Les postes locaux ont JDK 24
+  installé (résolution silencieuse), la CI n'a que 25 → provisionnement foojay →
+  crash. Corrigé en `jvmToolchain(25)` (aligné sur la gouvernance).
+
+== 6. Publication BOM/catalog 0.0.116 (Règle 2 « toujours granted »)
+
+CI verte **24/24** (run `41248941480`, 22:36:18 → 22:44:25) avant publication.
+`publishToMavenLocal` VERT (toml local porte `vibecoding-contracts = "0.0.1"`,
+POM contraint `vibecoding-contracts 0.0.1`), puis
+`publishAggregationToCentralPortal` → bundle **`f4ca1a51-3f1f-49de-ae64-021c1a3afe8a`**
+(AUTOMATIC). Propagation repo1 **confirmée** : `workspace-bom/0.0.116` POM **HTTP 200**
+et `workspace-catalog/0.0.116` TOML **HTTP 200** (le toml publié porte
+`vibecoding-contracts = "0.0.1"`).
+
+== 7. Résultat mesuré
+
+* CI verte `41248941480` : 24/24 jobs, wall-clock **8 min 07 s**. La baseline
+  S-299 (21 jobs) était 4 min 56 s : les 3 jobs ajoutés (2 groupes N0 + Ollama)
+  dépassent le pool de runners et le premier téléchargement de l'image Ollama
+  (~1,6 Go) + du modèle est payé une fois. Prochain run (cache chaud) doit
+  revenir vers la cible ; à surveiller.
+* Gates locaux (Local = Build) : `assemble`, `verifyCiMatrixCoverage`,
+  `verifyCrossBoroughPins`, `compileKotlin`/`compileTestKotlin` des N0, `publishToMavenLocal` VERTS.
+* Zéro secret, zéro Python.
+
+== 8. Suites proposées
+
+. Réduire le wall-clock : fusionner `llm-ollama` dans un job existant ou passer les
+  groupes N0 en `--parallel` ; vérifier le run chaud.
+. Restaurer le `build.gradle.kts` de `vibecoding-contracts` (ou acter sa suppression
+  et retirer sources/settings résiduels).
+. Repin des consommateurs sur catalogue `0.0.116` (session par borough).

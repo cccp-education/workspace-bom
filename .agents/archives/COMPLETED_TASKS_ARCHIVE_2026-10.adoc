@@ -268,3 +268,29 @@ S-219, `.agents/CADRAGE_EPIC_PLT_DIAGRAM_OWNERSHIP.adoc`).
 * Commits `e6c9756` (workspace-bom) + `ced3d5a7`/`b951b91e` (bakery). Rapports
   `.agents/sessions/299-ci-cross-borough-sous-5min.adoc` +
   `bakery/.agents/sessions/260-ci-functional-shard-revert.adoc`.
+
+== S-317 — Cache CI commun + N0 en CI + garde de pins + release 0.0.116 ✅
+
+* **Cache commun au dépôt** (demande pilote) : `.github/actions/setup-common-cache`
+  (restore, clé glissante `cccp-common-<os>-<epoch>-…` + `restore-keys`) et
+  `save-common-cache` (save final, `if: always()`), chemins
+  `~/.gradle/caches/modules-2`, `~/.gradle/caches/jars-9`, `~/.gradle/wrapper/dists`,
+  `~/.m2/repository` ; `setup-gradle` en `cache-disabled: true`. Partagé par tous
+  les jobs du workflow (garde, 4 checks, 15 shards, coverage, N0, Ollama). Cache
+  GitHub = scopé au dépôt (seul partage réel possible).
+* **Modèle LLM** : action composite `setup-ollama` **reprise verbatim** de
+  plantuml (image Docker + `~/.ollama/models` cachés) → job `llm-ollama`
+  (`qwen3:0.6b`, port 11466) = **CI-1.4 ✅**.
+* **`n0-contracts`** (2 groupes × 5 builds) : première exécution CI des contrats,
+  révélant `foojay 0.9.0` incompatible Gradle 9.8 → **0.10.0**, le toolchain
+  `jvmToolchain(VERSION_25.ordinal)` = **24** → `jvmToolchain(25)`, et deux tests
+  dérivés (`PlatformCatalogAlignmentTest`, `WorkspaceCatalogStructureTest`).
+* **Garde `verifyCrossBoroughPins`** (EPIC `MEM-CI-CONSISTENCY` US-3+US-5 clos) :
+  tout pin consommé ≤ version publiée, `-SNAPSHOT` rejeté, RED prouvé ×2.
+  Gap réel corrigé : `vibecoding-contracts 0.0.1` publié mais absent du catalogue/BOM.
+* **US-4** : `?: ""` sur 12 `settings.gradle.kts` (4 commits cross-borough).
+  **US-2** : 8 workflows JDK 25 (6 dépôts).
+* **`PLT-DIAGRAM-OWNERSHIP`** vérifié livré (plantuml-contracts 0.0.1 repo1 200) → clos.
+* **`MEM-3.5`** : `i18n_contracts.feature` 9 scénarios, 9/9 en CI.
+* **Publication** BOM/catalog `0.0.116` (bundle `f4ca1a51-3f1f-49de-ae64-021c1a3afe8a`).
+* CI verte `41248941480` (24/24, 8m07s à cache froid).

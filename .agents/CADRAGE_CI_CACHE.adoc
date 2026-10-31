@@ -1,6 +1,6 @@
 = CADRAGE — Cache CI homogène cross-borough
 :date: 2026-10-15
-:statut: 🟡 EN COURS — patche appliqué sur 3 boroughs (hyperframes, bakery, slider) ; plan pour les autres
+:statut: 🟢 workspace-bom = référence (cache commun intra-dépôt + setup-ollama repris, S-317) ; patches boroughs appliqués (hyperframes, bakery, slider) ; mutualisation `ci-actions` non faite
 :borough: workspace-bom (N0) — transverse
 
 == Objet
@@ -8,6 +8,30 @@
 Éviter de **re-télécharger** les mêmes ressources (dépendances Gradle, images
 Docker, navigateurs Playwright/Chromium, Puppeteer, modèles Ollama) à chaque run CI.
 Audit + plan homogène.
+
+== ✅ Cache commun intra-dépôt (S-317) — implémentation de référence
+
+Le cache GitHub Actions est **scopé au dépôt** : la seule façon de ne pas
+re-télécharger les mêmes octets entre les jobs d'un dépôt est un cache **partagé
+intra-dépôt**. `workspace-bom` l'implémente et sert de référence :
+
+* `.github/actions/setup-common-cache` — `actions/cache/restore` avec une clé
+  **glissante** (`cccp-common-<os>-<epoch>-<run_id>-<attempt>-<job-index>`,
+  `restore-keys: cccp-common-<os>-<epoch>-`) sur `~/.gradle/caches/modules-2`,
+  `~/.gradle/caches/jars-9`, `~/.gradle/wrapper/dists`, `~/.m2/repository`.
+* `.github/actions/save-common-cache` — `actions/cache/save` en **dernière étape**
+  (`if: always()`) sous une clé unique par job ⇒ pool renouvelé à chaque run,
+  éviction (> 7 j) remplacée par le snapshot le plus récent.
+* `gradle/actions/setup-gradle@v4` passe en `cache-disabled: true` : son cache est
+  indexé par fichiers de build (donc par répertoire de travail) et duplique
+  exactement ce que le cache commun supprime.
+* **Modèle LLM** : l'action `setup-ollama` (capsule / plantuml) est reprise
+  **verbatim** ; image Docker (`docker save/load`) + `~/.ollama/models` cachés,
+  `pull` seulement si absent. `workspace-bom` l'utilise pour `qwen3:0.6b` (11466).
+
+*Portée* : les autres boroughs doivent adopter le même couple d'actions dans leur
+propre scope de dépôt (les octets ne traversent pas les dépôts) ; la mutualisation
+de **définition** (`cccp-education/ci-actions`) reste ouverte (cf. plan ci-dessous).
 
 == Contrainte structurelle (à rappeler)
 
