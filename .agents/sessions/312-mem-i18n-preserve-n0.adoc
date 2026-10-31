@@ -1,0 +1,41 @@
+= Session 312 — MEM-I18N-PRESERVE : contrat N0 + BOM/catalog 0.0.110
+:session: 312
+:date: 2026-10-31
+:statut: ✅ PRESERVE-1/3 livrés (PRESERVE-2 partiel : UT, BDD à faire)
+
+== Livré
+
+* `contracts.i18n.PreserveRule` (enum, 7 règles mesurées) : `asciidoc-macro`,
+  `block-attribute`, `fence`, `inline-code`, `anchor`, `attribute-reference`,
+  `url` ; `findAll`, `findRanges`, `matches`, `of(id)`, `ids()`.
+* `contracts.i18n.PreserveCatalog` : `mask(text, prefix)` (placeholders
+  `@@PRESERVE_n@@`, match le plus long gagnant, déterministe), `restore`,
+  `isFullyPreserved` — la primitive commune que bakery/document/plantuml
+  réimplémentaient.
+* **11 UT** `PreserveRuleTest` (règles mesurées, masquage/restauration
+  byte-identique, déterminisme, chevauchement, prose non « entièrement préservée »).
+* **Publication** : `i18n-contracts 0.0.5` (bundle `dce49cfe`) + BOM/catalog
+  **0.0.110** (bundle `c630dc4b`, déclare i18n-contracts 0.0.5 et document 0.0.26),
+  propagation repo1 HTTP 200.
+
+== Déviation assumée
+
+Le cadrage prévoyait `PreserveKind` + `TranslatableRegion`. La primitive
+`mask`/`restore` **est** la région (les bornes sont les ranges masqués) et le
+`kind` est porté par l'id de règle : deux types de plus auraient été de la
+cérémonie sans consommateur. Documenté ici ; à revoir si un consommateur a besoin
+des bornes explicites.
+
+== Consommateurs (première adoption dans la fenêtre de publication)
+
+* `document` : `TextTranslatableClassifier` — un fragment dont chaque lettre
+  appartient à un marqueur préservé n'est jamais traduit (+4 UT).
+* `plantuml` : `PlantumlTermShield` — les marqueurs N0 deviennent des candidats de
+  bouclier (+2 UT), placeholders `__PLTn__` conservés (contrat de rendu).
+
+== Reste
+
+* **PRESERVE-2** : BDD `@preserve` + rejeu des vecteurs partagés entre les deux
+  consommateurs (garde anti-split-brain).
+* Release `plantuml 0.0.14` (adoption livrée ici, non publiée) ; `document 0.0.26`
+  publié.

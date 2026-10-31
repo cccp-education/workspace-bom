@@ -458,7 +458,7 @@ format (Thymeleaf, AsciiDoc, PlantUML). Aucune dépendance Gradle/LLM en N0.
 | Cadrage (audit des 3 politiques locales, 6 constats, décisions, doc
 `CADRAGE_EPIC_MEM_I18N_PRESERVE.adoc`)
 | 1
-| 🟡 À FAIRE
+| ✅ S-312 (cadrage côté bakery : `.agents/CADRAGE_EPIC_MEM_I18N_PRESERVE.adoc`)
 
 | PRESERVE-1
 | Contrat N0 : `PreserveKind` (macro, block-attribute, table-spec, fence, identifier,
@@ -466,19 +466,19 @@ placeholder), `PreserveRule` (match + reason), `TranslatableRegion` (bornes dans
 texte), `PreserveRuleCatalog` (règles AsciiDoc/Thymeleaf/PlantUML) — data classes et
 objets purs, zéro dépendance
 | 3
-| 🟡 À FAIRE
+| ✅ S-312 (`PreserveRule` + `PreserveCatalog`, 11 UT)
 
 | PRESERVE-2
 | Garde de contrat : BDD `@preserve` (macro/attribut/fence jamais traduits, prose
 traduite) + tests de non-régression des 3 implémentations existantes
 | 1
-| 🟡 À FAIRE
+| 🟡 PARTIEL S-312 (UT dans les 2 consommateurs ; BDD `@preserve` + vecteurs partagés à faire)
 
 | PRESERVE-3
 | Publication `i18n-contracts` (version suivante) + BOM/catalog MEMPHIS (DAG) +
 guide d'adoption pour document/bakery/plantuml
 | 2
-| 🟡 À FAIRE
+| ✅ S-312 (i18n-contracts 0.0.5 + BOM/catalog 0.0.110)
 |===
 
 *Total* : 4 US ~7 pts. *Dépend de* : `MEM-3` (i18n-contracts ✅). *Doc* :
