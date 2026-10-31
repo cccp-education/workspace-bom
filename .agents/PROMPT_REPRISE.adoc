@@ -1,7 +1,18 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-308 — À DÉFINIR (dernière terminée : **307 — BOM/catalog 0.0.101 : `document-plugin 0.0.25` + `bakery-plugin 0.0.28`**).
+314 — À DÉFINIR (dernière terminée : **313 — BOM/catalog 0.0.112 : `video-kernel 0.6.0`**).
+
+**S-313** (VK-4 US-4e, cross-borough video-kernel → MEMPHIS → capsule/hyperframes) :
+`video-kernel 0.6.0` publie les primitives audio pures `RmsEnvelope` +
+`AudioSilenceDetector` + `SilenceAnalysis` (2 consommateurs réels : capsule
+`verifyCapsuleVoice`, hyperframes `generateHyperframesNarration`). Catalog
+`video-kernel 0.5.0 → 0.6.0` + `workspace-bom 0.0.111 → 0.0.112`. Garde
+`PlatformCatalogAlignmentTest` ré-alignée. `publishToMavenLocal` VERT ;
+Central bundle `e8f32286-5a11-43d2-b5b1-98a619f04f04` (AUTOMATIC), propagation
+repo1 `workspace-bom/0.0.112` + `workspace-catalog/0.0.112` HTTP 200. Ordre
+DAG : `video-kernel 0.6.0` (Central `9911e841`) → MEMPHIS `0.0.112` → capsule +
+hyperframes. Rapport `.agents/sessions/313-bom-0.0.112-video-kernel-0.6.0.adoc`.
 
 **S-307** (dette de traduction, revue cheroliv.com) : le classifieur
 `document-gradle` marquait une **phrase** contenant `120+ Go` non traduisible →

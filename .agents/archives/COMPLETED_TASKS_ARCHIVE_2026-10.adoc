@@ -1,5 +1,15 @@
 = COMPLETED_TASKS_ARCHIVE — 2026-10
 
+== Session 313 (2026-10-31) — BOM/catalog 0.0.112 : `video-kernel 0.6.0` ✅
+
+VK-4 US-4e — primitives audio pures au noyau (2 consommateurs : capsule + hyperframes).
+
+* [x] Catalog `video-kernel 0.5.0 → 0.6.0` + `workspace-bom 0.0.111 → 0.0.112`
+* [x] Garde `PlatformCatalogAlignmentTest` ré-alignée (`0.0.112`)
+* [x] `publishToMavenLocal` VERT ; Central bundle `e8f32286-5a11-43d2-b5b1-98a619f04f04` (AUTOMATIC)
+* [x] Propagation repo1 `workspace-bom/0.0.112` + `workspace-catalog/0.0.112` HTTP 200
+* [x] Rapport `.agents/sessions/313-bom-0.0.112-video-kernel-0.6.0.adoc`
+
 == Session 302 (2026-10-15) — BOM/catalog 0.0.96 : `hyperframes-plugin 0.0.6` + `capsule-plugin 0.0.12` ✅
 
 Releases correctives groupées (pilotées session vidéo) — bug réel audio-post BGM/ducking.
