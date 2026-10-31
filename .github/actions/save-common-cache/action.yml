@@ -29,4 +29,4 @@ runs:
           ~/.gradle/caches/jars-9
           ~/.gradle/wrapper/dists
           ~/.m2/repository
-        key: cccp-common-${{ runner.os }}-${{ inputs.epoch }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ strategy.job-index }}
+        key: cccp-common-${{ runner.os }}-${{ inputs.epoch }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.job }}-${{ strategy.job-index }}

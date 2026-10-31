@@ -37,7 +37,7 @@ runs:
           ~/.m2/repository
         # Never matches (per-run key) → the restore always falls back on the
         # `restore-keys` prefix, i.e. the most recently saved snapshot.
-        key: cccp-common-${{ runner.os }}-${{ inputs.epoch }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ strategy.job-index }}
+        key: cccp-common-${{ runner.os }}-${{ inputs.epoch }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.job }}-${{ strategy.job-index }}
         restore-keys: |
           cccp-common-${{ runner.os }}-${{ inputs.epoch }}-
 

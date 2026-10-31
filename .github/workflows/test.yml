@@ -92,7 +92,18 @@ jobs:
         run: |
           set -euo pipefail
           curl -sf "http://localhost:${OLLAMA_TEST_PORT}/api/tags" >/dev/null
-          docker exec ollama ollama run "${OLLAMA_TEST_MODEL}" "Reply with the word OK only." | head -5
+          timeout 180 docker exec ollama ollama run "${OLLAMA_TEST_MODEL}" "Reply with the word OK only."
+
+      # The container writes into the bind-mounted store as root, including
+      # metadata created lazily after the pull. Stop it and hand the store back
+      # BEFORE the cache post-step archives ~/.ollama/models — otherwise tar
+      # fails with "Permission denied" and the model is re-downloaded next run.
+      - name: Stop Ollama and hand the model store back
+        if: always()
+        shell: bash
+        run: |
+          docker rm -f ollama >/dev/null 2>&1 || true
+          sudo chown -R "$(id -u):$(id -g)" "$HOME/.ollama" || true
 
       - name: Save the repository-wide common cache
         if: always()
