@@ -438,7 +438,7 @@ jobs:
   # Every `education.cccp:*-contracts` artefact is a standalone build (pattern
   # 0124): none of them is exercised by the borough matrix above, so their tests
   # (and the MEM-3.5 `i18n_contracts.feature` BDD suite) would never run.
-  # ONE job with bounded parallelism (3 concurrent Gradle builds) rather than ten
+  # ONE job with bounded parallelism (5 concurrent Gradle builds) rather than ten
   # matrix entries: the runner pool is ~20 slots and the 15 bakery shards already
   # fill it — extra entries queue a second wave and push the wall-clock past the
   # 5-minute target (S-299, re-measured S-317 at 7m06s with 24 jobs).
@@ -451,7 +451,7 @@ jobs:
   # `ossrhUsername`/`ossrhPassword`, so a settings script that still calls
   # `error(...)` in `nmcpSettings.centralPortal` fails at *configuration* here.
   n0-contracts:
-    name: "N0 · contracts (10 builds, 3 concurrent)"
+    name: "N0 · contracts (10 builds, 5 concurrent)"
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -480,7 +480,7 @@ jobs:
             agent-contracts codebase-contracts i18n-contracts llm-pool-contracts \
             ocr-contracts opencode-session-contracts pipeline-contracts \
             plantuml-contracts runtime-contracts \
-          | xargs -I{} -P 3 bash -c '
+          | xargs -I{} -P 5 bash -c '
               echo "::group::{} check"
               ( cd "{}" && ./gradlew check --no-daemon --console=plain )
               echo "::endgroup::"
