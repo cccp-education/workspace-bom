@@ -194,10 +194,10 @@ BOM + 5 libraries de contrats partagés (N0). Premier artefact publié (VAGUE 1)
 **Priorite** : P0
 **Estimation** : 1 pt
 **Dependances** : PUB-0 et PUB-1 complets (DNS TXT + GPG)
-**Statut** : ✅ PUBLIÉ + VÉRIFIÉ (dernière version **0.0.115** — S-316, 2026-10-31, `video-kernel 0.7.0` + `youtube-auth-plugin 0.0.2` + `capsule 0.0.15` + `hyperframes 0.0.14` ; précédent 0.0.114 S-315 hyperframes 0.0.13, 0.0.101 S-307)
+**Statut** : ✅ PUBLIÉ + VÉRIFIÉ (dernière version **0.0.116** — S-317, 2026-10-31, `vibecoding-contracts 0.0.1` ajouté au catalogue/contraintes ; précédent 0.0.115 S-316 `video-kernel 0.7.0` + `youtube-auth 0.0.2` + capsule 0.0.15 + hyperframes 0.0.14)
 
-. Artefact : `education.cccp:workspace-bom:0.0.101` (dernière)
-. Versions publiées : 0.0.1 → 0.0.101 (historique complet `.agents/SESSIONS_HISTORY.adoc`)
+. Artefact : `education.cccp:workspace-bom:0.0.116` (dernière)
+. Versions publiées : 0.0.1 → 0.0.116 (historique complet `.agents/SESSIONS_HISTORY.adoc`)
 . Verifiée sur https://central.sonatype.com/artifact/education.cccp/workspace-bom
 
 === PUB-3.02 — agent-contracts
@@ -206,7 +206,7 @@ BOM + 5 libraries de contrats partagés (N0). Premier artefact publié (VAGUE 1)
 **Dependances** : PUB-0 et PUB-1 complets
 **Statut** : ✅ PUBLIÉ + VÉRIFIÉ
 
-. Artefact : `education.cccp:agent-contracts:0.0.1`
+. Artefact : `education.cccp:agent-contracts:0.0.3` (dernière)
 
 === PUB-3.03 — codebase-contracts
 **Priorite** : P0
@@ -214,7 +214,7 @@ BOM + 5 libraries de contrats partagés (N0). Premier artefact publié (VAGUE 1)
 **Dependances** : PUB-0 et PUB-1 complets
 **Statut** : ✅ PUBLIÉ + VÉRIFIÉ
 
-. Artefact : `education.cccp:codebase-contracts:0.0.1`
+. Artefact : `education.cccp:codebase-contracts:0.0.2` (dernière)
 
 === PUB-3.04 — vibecoding-contracts
 **Priorite** : P0
@@ -230,7 +230,7 @@ BOM + 5 libraries de contrats partagés (N0). Premier artefact publié (VAGUE 1)
 **Dependances** : PUB-0 et PUB-1 complets
 **Statut** : ✅ PUBLIÉ + VÉRIFIÉ
 
-. Artefact : `education.cccp:llm-pool-contracts:0.0.1`
+. Artefact : `education.cccp:llm-pool-contracts:0.0.2` (dernière)
 
 === PUB-3.06 — pipeline-contracts
 **Priorite** : P1

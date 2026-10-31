@@ -67,6 +67,33 @@ jobs:
       - name: Verify the CI matrix covers every testable borough
         run: ./gradlew verifyCiMatrixCoverage --no-daemon
 
+      # ── CI-1.4 — Ollama (cached image + model) ────────────────────────────
+      # Governance (AGENTS.adoc, « Exception CI/CD ») : ports dédiés 11466-11467,
+      # modèle CI léger `qwen3:0.6b`, aucun secret. The composite action reused
+      # from plantuml-gradle/capsule-gradle caches the Docker image (~1.6 GB) and
+      # the model weights in this repository's cache scope, so the model is never
+      # re-downloaded on a warm cache. Integration tests elsewhere gate on
+      # `assumeTrue(isOllamaReady(port))` and read `OLLAMA_TEST_PORT` /
+      # `OLLAMA_TEST_MODEL` (workflow env above).
+      #
+      # Folded into this (short) guard job instead of a 24th matrix job: the
+      # runner pool is ~20 slots, so every job above the pool delays a bakery
+      # shard by one queue turn. S-317 measured 7m06s at 24 jobs vs 4m56s at 21
+      # (S-299) — the guard + LLM work stays far below the longest shard
+      # (~3m30), so it costs no wall-clock here.
+      - name: Setup Ollama (cached image + model)
+        uses: ./.github/actions/setup-ollama
+        with:
+          model: ${{ env.OLLAMA_TEST_MODEL }}
+          port: ${{ env.OLLAMA_TEST_PORT }}
+
+      - name: Smoke-test the model endpoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -sf "http://localhost:${OLLAMA_TEST_PORT}/api/tags" >/dev/null
+          docker exec ollama ollama run "${OLLAMA_TEST_MODEL}" "Reply with the word OK only." | head -5
+
       - name: Save the repository-wide common cache
         if: always()
         uses: ./.github/actions/save-common-cache
@@ -411,31 +438,22 @@ jobs:
   # Every `education.cccp:*-contracts` artefact is a standalone build (pattern
   # 0124): none of them is exercised by the borough matrix above, so their tests
   # (and the MEM-3.5 `i18n_contracts.feature` BDD suite) would never run.
-  # Two entries × five builds (sequential inside an entry) rather than ten
-  # entries: the runner pool is ~20 slots and the shards already use them — ten
-  # extra entries would queue a second wave and push the wall-clock past 5 min
-  # (S-299). N0 builds are ~30-45 s each with the shared dependency cache, so an
-  # entry stays well under the longest bakery shard.
-  # `vibecoding-contracts` is deliberately absent: its `build.gradle.kts` was
-  # deleted by the S-084 refactor while the sources and settings remained, so the
-  # directory is not a build (`Task 'check' not found`). The artifact 0.0.1 is
-  # published and constrained by the BOM; restoring its build is a separate
-  # backlog item.
+  # ONE job with bounded parallelism (3 concurrent Gradle builds) rather than ten
+  # matrix entries: the runner pool is ~20 slots and the 15 bakery shards already
+  # fill it — extra entries queue a second wave and push the wall-clock past the
+  # 5-minute target (S-299, re-measured S-317 at 7m06s with 24 jobs).
+  # `vibecoding-contracts` has no entry: the S-084 refactor moved that contract
+  # into the codebase source tree (`cccp.vibecoding.contracts`) and deleted the
+  # build script, leaving a vestigial directory (sources + settings, no build) —
+  # `Task 'check' not found`. S-318 removed the residue; the published artifact
+  # 0.0.1 stays on Central and remains constrained by the BOM.
   # It is also the proof of MEM-CI-CONSISTENCY US-4: a bare CI runner has no
   # `ossrhUsername`/`ossrhPassword`, so a settings script that still calls
   # `error(...)` in `nmcpSettings.centralPortal` fails at *configuration* here.
   n0-contracts:
-    name: "N0 · ${{ matrix.name }}"
+    name: "N0 · contracts (10 builds, 3 concurrent)"
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - name: core
-            dirs: agent-contracts codebase-contracts i18n-contracts llm-pool-contracts ocr-contracts
-          - name: runtime
-            dirs: opencode-session-contracts pipeline-contracts plantuml-contracts runtime-contracts
     steps:
       - name: Checkout workspace-bom
         uses: actions/checkout@v4
@@ -458,48 +476,15 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for dir in ${{ matrix.dirs }}; do
-            echo "::group::$dir check"
-            ( cd "$dir" && ./gradlew check --no-daemon --console=plain )
-            echo "::endgroup::"
-          done
-
-      - name: Save the repository-wide common cache
-        if: always()
-        uses: ./.github/actions/save-common-cache
-
-  # ── CI-1.4 — Ollama (cached image + model) ────────────────────────────────
-  # Governance (AGENTS.adoc, « Exception CI/CD ») : ports dédiés 11466-11467,
-  # modèle CI léger `qwen3:0.6b`, aucun secret. The composite action reused from
-  # plantuml-gradle/capsule-gradle caches the Docker image (~1.6 GB) and the
-  # model weights in this repository's cache scope, so the model is never
-  # re-downloaded on a warm cache. Integration tests elsewhere gate on
-  # `assumeTrue(isOllamaReady(port))` and pick the port/model up from
-  # `OLLAMA_TEST_PORT` / `OLLAMA_TEST_MODEL` (workflow env above).
-  llm-ollama:
-    name: "LLM · Ollama qwen3:0.6b (cached)"
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-
-    steps:
-      - name: Checkout workspace-bom
-        uses: actions/checkout@v4
-
-      - name: Restore the repository-wide common cache
-        uses: ./.github/actions/setup-common-cache
-
-      - name: Setup Ollama (cached image + model)
-        uses: ./.github/actions/setup-ollama
-        with:
-          model: ${{ env.OLLAMA_TEST_MODEL }}
-          port: ${{ env.OLLAMA_TEST_PORT }}
-
-      - name: Smoke-test the model endpoint
-        shell: bash
-        run: |
-          set -euo pipefail
-          curl -sf "http://localhost:${OLLAMA_TEST_PORT}/api/tags" >/dev/null
-          docker exec ollama ollama run "${OLLAMA_TEST_MODEL}" "Reply with the word OK only." | head -5
+          printf '%s\n' \
+            agent-contracts codebase-contracts i18n-contracts llm-pool-contracts \
+            ocr-contracts opencode-session-contracts pipeline-contracts \
+            plantuml-contracts runtime-contracts \
+          | xargs -I{} -P 3 bash -c '
+              echo "::group::{} check"
+              ( cd "{}" && ./gradlew check --no-daemon --console=plain )
+              echo "::endgroup::"
+            '
 
       - name: Save the repository-wide common cache
         if: always()
