@@ -41,7 +41,11 @@ hyperframes `0.0.12` 200.
 == Gates
 
 `publishToMavenLocal` VERTS pour les 3 artefacts ; compiles ×3 capsule +
-hyperframes VERTS (Local = Build). CI à prouver après push.
+hyperframes VERTS (Local = Build).
+
+**CI verte** : `runAllTests` `41216979601` ✅ **21/21 jobs** ; capsule `Test`
+`41216985076` + `Full Tests` `41216985090` ✅ **25/25** ; hyperframes `Test`
+`41216989798` ✅.
 
 == Effet
 
