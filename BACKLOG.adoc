@@ -472,7 +472,7 @@ objets purs, zéro dépendance
 | Garde de contrat : BDD `@preserve` (macro/attribut/fence jamais traduits, prose
 traduite) + tests de non-régression des 3 implémentations existantes
 | 1
-| 🟡 PARTIEL S-312 (UT dans les 2 consommateurs ; BDD `@preserve` + vecteurs partagés à faire)
+| ✅ S-312 (UT + vecteurs partagés byte-identiques dans les 2 consommateurs + BDD `@preserve` document 5 scénarios / plantuml 5 scénarios)
 
 | PRESERVE-3
 | Publication `i18n-contracts` (version suivante) + BOM/catalog MEMPHIS (DAG) +
