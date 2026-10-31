@@ -1,0 +1,36 @@
+= Session 316 — BOM/catalog 0.0.115
+:session: 316
+:date: 2026-10-31
+:borough: MEMPHIS
+:statut: ✅ TERMINÉE
+
+== Mission
+
+Publier le catalogue/BOM `0.0.115` déclarant la vague :
+`video-kernel 0.7.0` (PUBLISH-ADAPTER-N1), `youtube-auth-plugin 0.0.2`
+(première publication), `capsule-plugin 0.0.15`, `hyperframes-plugin 0.0.14`.
+Règle 2 « accord toujours granted » (décision pilote 2026-10-31).
+
+== Bump
+
+* `workspace-bom 0.0.114 → 0.0.115`
+* `video-kernel 0.6.0 → 0.7.0`
+* `capsule-plugin 0.0.14 → 0.0.15`
+* `hyperframes-plugin 0.0.13 → 0.0.14`
+* `youtube-auth-plugin = "0.0.2"` (nouveau) + `[plugins] youtube-auth` +
+  `[libraries] youtube-auth-plugin` + contrainte `api(libs.youtube.auth.plugin)`.
+* Garde `PlatformCatalogAlignmentTest` (`0.0.115`) et
+  `WorkspaceCatalogStructureTest` (entrée youtube-auth-plugin).
+
+== Publication
+
+* `publishToMavenLocal` VERT.
+* Central **bundle `0e74a6a8-4106-48bf-8057-22233298b64d`** (AUTOMATIC).
+* Propagation repo1 : `workspace-bom/0.0.115` **200**,
+  `workspace-catalog/0.0.115` **200**.
+
+== DAG
+
+MEMPHIS `0.0.115` → `video-kernel 0.7.0` (`583079e5`) +
+`youtube-auth-plugin 0.0.2` (`283d5451`) → `capsule-plugin 0.0.15`
+(`309d98c6`) + `hyperframes-plugin 0.0.14` (`11eb9906`), propagation 200.

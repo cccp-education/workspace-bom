@@ -44,6 +44,7 @@ class WorkspaceCatalogStructureTest {
             "plantuml-plugin" to "education.cccp:plantuml-plugin",
             "readme-plugin" to "education.cccp:readme-plugin",
             "hyperframes-plugin" to "education.cccp:hyperframes-plugin",
+            "youtube-auth-plugin" to "education.cccp:youtube-auth-plugin",
             "graphify-plugin" to "education.cccp:graphify-plugin",
             "codebase-plugin" to "education.cccp:codebase-plugin",
             "conventions-plugin" to "education.cccp.build:conventions-plugin"

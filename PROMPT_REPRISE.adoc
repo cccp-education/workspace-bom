@@ -1,8 +1,18 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-316 — À DÉFINIR (dernières terminées : **314 — BOM 0.0.113 capsule 0.0.14 +
-hyperframes 0.0.12** et **315 — BOM 0.0.114 hyperframes 0.0.13**).
+317 — À DÉFINIR (dernières terminées : **315 — BOM 0.0.114 hyperframes 0.0.13**
+et **316 — BOM 0.0.115 video-kernel 0.7.0 + youtube-auth 0.0.2 + capsule 0.0.15
++ hyperframes 0.0.14**).
+
+**S-316** : release de vague (PUBLISH-ADAPTER-N1 + parallaxe + auth).
+Catalog `video-kernel 0.6.0 → 0.7.0`, `youtube-auth-plugin = "0.0.2"` (nouveau),
+`capsule-plugin 0.0.14 → 0.0.15`, `hyperframes-plugin 0.0.13 → 0.0.14` ;
+BOM/catalog `0.0.114 → 0.0.115`. Gardes ré-alignées. Central bundle
+`0e74a6a8-4106-48bf-8057-22233298b64d` (AUTOMATIC), propagation repo1 200 ×2.
+DAG : video-kernel `0.7.0` (`583079e5`) + youtube-auth `0.0.2` (`283d5451`) →
+capsule `0.0.15` (`309d98c6`) + hyperframes `0.0.14` (`11eb9906`).
+Rapport `.agents/sessions/316-bom-0.0.115-video-kernel-0.7.0-youtube-auth-consumers.adoc`.
 
 **S-315** : release consommateur hyperframes S-045 (`HF-DEMO-QUALITY US-6` —
 fond média par scène). Catalog `hyperframes-plugin 0.0.12 → 0.0.13` +

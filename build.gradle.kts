@@ -141,6 +141,7 @@ dependencies {
 
         // ── Shared N1 libraries (education.cccp) — noyau vidéo neutre ────────
         api(libs.video.kernel)
+        api(libs.youtube.auth.plugin)
 
         // ── Force resolution (koog 26.0.2-1 vs testcontainers 17.0.0) ─────────
         api(libs.jetbrains.annotations)
