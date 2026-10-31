@@ -294,3 +294,23 @@ S-219, `.agents/CADRAGE_EPIC_PLT_DIAGRAM_OWNERSHIP.adoc`).
 * **`MEM-3.5`** : `i18n_contracts.feature` 9 scénarios, 9/9 en CI.
 * **Publication** BOM/catalog `0.0.116` (bundle `f4ca1a51-3f1f-49de-ae64-021c1a3afe8a`).
 * CI verte `41248941480` (24/24, 8m07s à cache froid).
+
+== S-318 — Mesure cache chaud, repins consommateurs, résidus ✅
+
+* **Wall-clock** : 8m07s (froid, 24 jobs) → 7m06s → 6m05s (21 jobs, LLM fondu
+  dans la garde, N0 1 job `-P 3`) → 6m52s (`-P 5`, variance shards). Plancher =
+  shard bakery (~3m30-4m) + coverage (~1m45) + file (pool ~20).
+* **3 bugs de cache** : clé hors matrice collisionnée (`strategy.job-index` = 0
+  partout) → `github.job` ; SIGPIPE du smoke Ollama (`head` + `pipefail`) ;
+  store de modèles root après le `pull` → arrêt du conteneur + `chown` avant le
+  post-step de cache (sinon `tar` échoue, modèle re-téléchargé).
+* **Repins** sur catalogue `0.0.116` : dashboard, readme, graphify. Correctifs
+  révélés : garde readme lisant le toml frère (absent en CI) → version publiée
+  injectée par Gradle (D5-RACE) ; gardes littérales erronées (0.0.31 / 0.0.46) ;
+  self-version readme `0.0.1 → 0.0.2`. CI vertes readme `41253844657`,
+  graphify `41252923287`.
+* **Résidus `vibecoding-contracts` supprimés** (contrat migré dans codebase S-084 ;
+  artefact 0.0.1 toujours publié/contraint).
+* **Backlog** : `PUB-3.01` → 0.0.116, artefacts agent 0.0.3 / codebase 0.0.2 /
+  llm-pool 0.0.2.
+* CI workspace-bom verte `41253257460` (21 jobs, 6m52s).

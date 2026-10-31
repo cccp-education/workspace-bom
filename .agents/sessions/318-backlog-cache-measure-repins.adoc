@@ -1,0 +1,105 @@
+= Session 318 — backlog transverse : cache CI mesuré, repins consommateurs, résidus
+:date: 2026-10-31
+:borough: MEMPHIS (workspace-bom) — transverse
+:type: ci + cross-borough + gouvernance
+
+== Mission
+
+Consigne pilote : « ok d'accord continue a consommer le backlog » (reprise
+S-318). Ordre : (1) mesurer le run CI à cache chaud, (2) borner le wall-clock,
+(3) repin des consommateurs sur le catalogue `0.0.116`, (4) résidus
+`vibecoding-contracts`, (5) rattrapage backlog.
+
+== 1. Mesure du cache chaud et wall-clock
+
+|===
+| Run | Jobs | Wall-clock | Contexte
+
+| `41248941480` (S-317) | 24 | **8m07s** | cache froid (image Ollama ~1,6 Go + modèle + deps)
+| `41251639158` (S-318) | 24 | **7m06s** | cache chaud
+| `41252294928` (S-318) | 21 | **6m05s** | LLM fondu dans la garde + N0 1 job `-P 3` (tâche N0 = 4m17, devenue chemin critique)
+| `41253257460` (S-318) | 21 | **6m52s** | N0 1 job `-P 5` ; chemin critique = shard bakery C (3m53) + file ~1m10 + coverage 1m45
+|===
+
+*Constat* : le plancher n'est plus le nombre de jobs mais la **durée des shards
+bakery** (~3m30-4m, variance TestKit documentée bakery S-260) + la **couverture
+fusionnée** (~1m45) + un tour de file si le pool (~20) est saturé. Le 4m56 de
+S-299 était un run favorable ; 5-7 min est la plage réaliste à 21 jobs. Le gain
+S-317→S-318 vient de la réduction du nombre de jobs (24 → 21), pas du cache
+(déjà chaud).
+
+== 2. Trois défauts du cache corrigés (révélés par la mesure)
+
+. **Clé de cache collisionnée** : la clé glissante n'utilisait que
+  `strategy.job-index`, toujours `0` pour les jobs **hors matrice** (garde,
+  coverage, N0) → trois jobs se disputaient la même clé et les sauvegardes
+  étaient refusées (« another job may be creating this cache »). `github.job`
+  ajouté à la clé ; le préfixe `restore-keys` assure toujours le partage.
+. **SIGPIPE** : le smoke Ollama faisait `ollama run … | head -5` sous
+  `pipefail` → sortie tronquée = exit 141 = job rouge. Le flux n'est plus tronqué.
+. **Propriété du store de modèles** : le conteneur écrit dans le store monté
+  **en root**, y compris des métadonnées *après* le `pull` ; `actions/cache`
+  échouait au `tar` (« Permission denied ») et le modèle était **re-téléchargé**
+  à chaque run. Correctif : arrêter le conteneur + `chown` du store **avant** le
+  post-step de cache.
+
+== 3. Repin des consommateurs sur le catalogue 0.0.116
+
+Trois boroughs repinnés (pin unique `workspace-catalog`), compilés localement
+(Local = Build) puis poussés :
+
+[cols="2,2,6", options="header"]
+|===
+| Borough | Avant → Après | Correctifs annexes
+
+| `dashboard-gradle` | `0.0.78 → 0.0.116` | aucun (pas de workflow CI ; compiles VERT)
+| `readme-gradle` | `0.0.78 → 0.0.116` | garde `settings pins` réalignée (littéral `0.0.31` erroné), **version publiée injectée par Gradle** (patron graphify D5-RACE : le test lisait le toml frère, absent en CI → rouge structurel), self-version locale `0.0.1 → 0.0.2` (drift réel masqué). **CI verte `41253844657`**
+| `graphify-gradle` | `0.0.78 → 0.0.116` | garde `settings pins` réalignée (`0.0.46` erroné). **CI verte `41252923287`**
+|===
+
+*Non repinnés volontairement* : `codex` (0.0.62), `codebase` (0.0.92),
+`document` (0.0.110), `plantuml`/`runner` (0.0.111), `hyperframes` (0.0.115) —
+un repin change les versions de plugins dérivées et peut modifier l'API ; une
+session par borough avec sa CI est requise (la garde `verifyCrossBoroughPins`
+tolère les pins ≤ version publiée et détectera tout dépassement).
+
+== 4. Résidus `vibecoding-contracts` supprimés
+
+Le répertoire ne contenait plus de `build.gradle.kts` (supprimé par le refactor
+S-084 : le contrat a migré dans l'arbre source de `codebase` sous
+`cccp.vibecoding.contracts`), seulement `src/` + `settings.gradle.kts` + toml :
+ce n'était **pas un build** (`Task 'check' not found`). Résidus retirés
+(`git rm -r`). L'artefact publié `0.0.1` reste sur Central et reste contraint par
+le BOM `0.0.116`. Commentaire du job `n0-contracts` actualisé.
+
+== 5. Rattrapage backlog
+
+* `PUB-3.01` : statut/artefact/plage de versions mis à jour (`0.0.116`) ;
+  `agent-contracts 0.0.3`, `codebase-contracts 0.0.2`, `llm-pool-contracts 0.0.2`
+  réalignés (lignes périmées).
+* `MEM-CI-CONSISTENCY`, `PLT-DIAGRAM-OWNERSHIP`, `CI-1`, `MEM-3.5` déjà clos S-317
+  (vérifié : plus aucun marqueur périmé hors notes historiques).
+
+== 6. Incident transitoire (non imputable)
+
+Run `41252813802` : le shard `bakery · bdd-shard-jbake-core-pipelines` a échoué
+sur `Could not find org.jbake:jbake-core:2.7.0` / `commons-configuration:1.10` /
+`asciidoctorj-diagram:3.0.1` — **toutes** les résolutions TestKit vers
+`repo.maven.apache.org` ont échoué dans le même job (CDN/Central hiccup). Run
+suivant vert sans changement de code.
+
+== 7. Gates et état
+
+* CI workspace-bom **verte** `41253257460` (21 jobs, 6m52s).
+* CI `readme-gradle` verte `41253844657`, `graphify-gradle` verte `41252923287`.
+* Compiles locaux VERT (dashboard, readme, graphify ; N0 inchangés).
+* Zéro secret, zéro Python, zéro publication (aucun changement d'artefact publié).
+
+== 8. Suites proposées (S-319)
+
+. Repin d'un consommateur par session (ci-dessus), en commençant par
+   `hyperframes` (0.0.115) puis `plantuml`/`runner` (0.0.111).
+. Option wall-clock : déplacer `n0-contracts` dans un workflow séparé (les octets
+   de cache restent au dépôt) ou réduire encore la durée des shards bakery.
+. `codebase` : retirer l'entrée morte `vibecoding-contracts` de son toml
+   (contrat désormais local) — session Queens.

@@ -1,59 +1,56 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-318 — dernière terminée : **317** (cache CI commun au dépôt + builds N0 testés en
-CI + garde de pins cross-borough + `MEM-3.5` + BOM/catalog **0.0.116**).
+319 — dernières terminées : **317** (cache CI commun + builds N0 en CI + garde de
+pins + BOM/catalog **0.0.116**) et **318** (mesure du cache chaud, bornage du
+wall-clock, repins dashboard/readme/graphify, résidus `vibecoding-contracts`).
 
-=== Mission Session 318 — ordre proposé
+=== Mission Session 319 — ordre proposé
 
-. **Vérifier le run CI à cache chaud** post-S-317 : le run froid `41248941480`
-   est vert (24/24) mais à **8 min 07 s** (baseline 21 jobs S-299 = 4 min 56 s).
-   Mesurer le run suivant ; si le plafond tient, réduire : fusionner `llm-ollama`
-   dans un job existant, ou exécuter les deux groupes N0 en parallèle.
-. **Repin des consommateurs** sur catalogue **0.0.116** (session par borough :
-   slider, codebase, capsule, planner, readme…). La garde `verifyCrossBoroughPins`
-   est le filet : un pin > version publiée échoue `check`.
-. **`vibecoding-contracts`** — restaurer son `build.gradle.kts` (supprimé par le
-   refactor S-084 ; `src/` + `settings.gradle.kts` subsistent, artefact 0.0.1
-   publié et contraint par le BOM), ou acter la suppression et retirer les résidus.
-. **Rattrapage backlog** éventuel : `MEM-CI-SHARD`, `MEM-CI-CONSISTENCY`,
-   `PLT-DIAGRAM-OWNERSHIP`, `CI-1`, `MEM-3.5` sont **clos** — vérifier qu'aucune
-   section détaillée ne garde un marqueur périmé.
+. **Repin d'un consommateur par session** (maintenance cross-borough), en
+   commençant par `hyperframes` (catalogue `0.0.115`) puis `plantuml`/`runner`
+   (`0.0.111`). Repins déjà faits S-318 : dashboard, readme, graphify
+   (`0.0.116`). Pour chacun : bump du pin `workspace-catalog` (+ garde littérale
+   si présente), `compileKotlin`/`compileTestKotlin` local, push, **attendre la
+   CI du borough**. La garde `verifyCrossBoroughPins` est le filet.
+. **`codebase` (Queens)** : retirer l'entrée morte `vibecoding-contracts` de son
+   toml (le contrat vit désormais dans son arbre source).
+. **Wall-clock CI** : arbitrer un workflow séparé pour `n0-contracts` ou réduire
+   la durée des shards bakery (plancher mesuré ≈ shard 3m30-4m + coverage 1m45).
+. **Backlog** : vérifier l'absence de marqueur périmé (tous les EPICs du BACKLOG
+   sont clos) et n'ajouter que des items issus d'un constat réel.
 
 _Hors scope_ : upload YouTube réel (capsule/hyperframes) — **gelé S-037**.
 
-== S-317 — ce qui a été livré
+== S-318 — ce qui a été livré
 
-* **Cache CI commun** : `.github/actions/setup-common-cache` + `save-common-cache`
-  (clé glissante `cccp-common-<os>-<epoch>-…`, `restore-keys`), `setup-gradle`
-  en `cache-disabled: true`. Tous les jobs du workflow partagent les octets de
-  dépendances (Gradle modules/wrappers + Maven local) ; le cache GitHub étant
-  scopé au dépôt, c'est le seul partage réel possible.
-* **Modèle LLM** : action composite `setup-ollama` **reprise de plantuml**
-  (image Docker + `~/.ollama/models` cachés), job `llm-ollama`, `qwen3:0.6b`
-  sur le port `11466` (CI-1.4 ✅).
-* **`n0-contracts`** : 2 entrées de matrice × 5 builds N0 séquentiels ; première
-  exécution CI des contrats. A révélé et corrigé : foojay 0.9.0 incompatible
-  Gradle 9.8 → **0.10.0** ; `jvmToolchain(JavaVersion.VERSION_25.ordinal)` = **24**
-  → `jvmToolchain(25)` ; `PlatformCatalogAlignmentTest` et
-  `WorkspaceCatalogStructureTest` dérivés (jamais exécutés).
-* **`verifyCrossBoroughPins`** (US-3 + US-5) : tout pin consommé ≤ version publiée
-  par le BOM ; `-SNAPSHOT` rejeté. RED prouvé (`9.9.9`, `workspace-catalog:0.0.999`).
-* **US-4** : `?: ""` sur 12 `settings.gradle.kts` (8 N0 + 4 dépôts cross-borough).
-* **US-2** : 8 workflows alignés JDK 25 (6 dépôts).
-* **MEM-3.5** : `i18n_contracts.feature` 9 scénarios + runner + steps, 9/9 en CI.
-* **Publication** : BOM/catalog `0.0.116` (bundle `f4ca1a51-3f1f-49de-ae64-021c1a3afe8a`),
-  `vibecoding-contracts 0.0.1` ajouté au catalogue + contraintes.
+* **Mesure** : cache froid 8m07s (24 jobs) → chaud 7m06s → **6m05s** (21 jobs,
+  LLM fondu dans la garde + N0 `-P 3`) → **6m52s** (`-P 5`, variance shards).
+  Plancher = shard bakery + coverage + un tour de file (pool ~20).
+* **3 bugs de cache corrigés** : clé collisionnée hors matrice (`strategy.job-index`
+  toujours 0 → `github.job` ajouté), SIGPIPE du smoke Ollama (`head` + `pipefail`),
+  store de modèles écrit en root après le `pull` (`chown` avant le post-step).
+* **Repins** : dashboard / readme / graphify sur `0.0.116`. `readme` : garde
+  réalignée + **version publiée injectée par Gradle** (patron D5-RACE) +
+  self-version locale `0.0.1 → 0.0.2`. `graphify` : garde réalignée (`0.0.46`).
+  CI vertes : readme `41253844657`, graphify `41252923287`.
+* **Résidus `vibecoding-contracts`** supprimés (contrat migré dans codebase S-084 ;
+  artefact `0.0.1` toujours publié et contraint par le BOM).
+* **Backlog** : `PUB-3.01` et lignes d'artefacts réalignés sur `0.0.116` / 0.0.3 /
+  0.0.2.
+* Incident transitoire (non imputable) : un shard bakery rouge sur des résolutions
+  TestKit vers `repo.maven.apache.org` (CDN), vert au run suivant.
 
-Rapport `.agents/sessions/317-shared-cache-n0-ci-pin-guard.adoc`.
+Rapport `.agents/sessions/318-backlog-cache-measure-repins.adoc`.
 
 == État du code
 
-- Central : BOM + catalog **0.0.116** — propagation repo1 **confirmée** (POM + toml HTTP 200).
+- Central : BOM + catalog **0.0.116** (propagation repo1 vérifiée).
 - Contrats N0 : agent 0.0.3, codebase 0.0.2, i18n 0.0.5, llm-pool 0.0.2,
   opencode-session 0.0.2, pipeline 0.0.2, runtime 0.0.1, ocr 0.0.1,
-  plantuml 0.0.1, vibecoding 0.0.1.
-- Guards locales : `verifyCiMatrixCoverage`, `verifyCrossBoroughPins` (wired `check`).
+  plantuml 0.0.1, vibecoding 0.0.1 (artefact seul, plus de sources ici).
+- CI : 21 jobs, ~6-7 min ; guards `verifyCiMatrixCoverage` + `verifyCrossBoroughPins`.
+- `n0-contracts` : 1 job, 9 builds (10 artefacts moins `vibecoding`), `xargs -P 5`.
 
 == Pièges à retenir (cumul)
 
@@ -64,10 +61,12 @@ Rapport `.agents/sessions/317-shared-cache-n0-ci-pin-guard.adoc`.
 . *nmcp collision* : vérifier repo1 avant de re-publier.
 . *Polling repo1* : ~2-10 min après « deployment is publishing » (AUTOMATIC).
 . *(S-281) MEMPHIS-first* : attendre la propagation Central du BOM avant de repin.
-. *(S-317) Cache GitHub = scopé au dépôt* : partage entre jobs d'un dépôt seulement.
-. *(S-317) `setup-gradle` `cache-disabled`* dès qu'un cache commun gère les octets.
+. *(S-317) Cache GitHub = scopé au dépôt* ; `setup-gradle cache-disabled`.
 . *(S-317) Toolchain* : `jvmToolchain(25)`, jamais `VERSION_25.ordinal` (= 24) ;
-   foojay-resolver-convention **0.10.0** pour Gradle 9.8.
+   foojay-resolver-convention **0.10.0**.
+. *(S-318) Clé de cache* : inclure `github.job` (hors matrice, `job-index` = 0).
+. *(S-318) Store Ollama* : arrêter le conteneur + `chown` **avant** le post-step de
+   cache, sinon `tar` échoue et le modèle est re-téléchargé.
 
 == Règles
 

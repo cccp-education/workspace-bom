@@ -109,3 +109,20 @@ Gradle **est** caché par dépôt via `gradle/actions/setup-gradle@v4` (partagé
 les workflows d'un même dépôt). Le ressenti « tout Gradle est re-téléchargé » vient
 des caches **froids** (1er run, éviction > 7 j) et du run cross-borough (scope
 `workspace-bom`).
+
+== Corrections S-318 (mesurées)
+
+* **Clé de cache** : `strategy.job-index` vaut `0` pour tout job **hors matrice**
+  (garde, coverage, N0) → trois jobs se disputaient la même clé et les sauvegardes
+  étaient refusées. La clé inclut désormais `github.job` ; le préfixe
+  `restore-keys` continue de porter le partage.
+* **Store Ollama** : le conteneur écrit **en root** dans le bind mount, y compris
+  des métadonnées *après* le `pull`. `actions/cache` échouait alors au `tar`
+  (« Permission denied ») et le modèle était **re-téléchargé** à chaque run.
+  Correctif côté workflow : arrêter le conteneur + `sudo chown -R` du store
+  **avant** le post-step de cache.
+* **Smoke Ollama** : `ollama run … | head -5` sous `pipefail` = SIGPIPE
+  (exit 141) = job rouge ; ne jamais tronquer le flux.
+* **Mesure** : 24 jobs = 8m07s (froid) / 7m06s (chaud) ; 21 jobs = 6m05s puis
+  6m52s (variance shards). Le plancher est la durée des shards bakery + la
+  couverture fusionnée, pas le cache.
