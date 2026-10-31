@@ -74,6 +74,7 @@ les 2 (nmcp 1.5.0 agrège les publications du build racine).
 [cols="2,3,2"]
 |===
 | Release | Contenu | Bundle
+| 0.0.114 (S-315) | **hyperframes-plugin 0.0.13** (`HF-DEMO-QUALITY US-6` — fond média par scène). Règle 2 « accord toujours granted » (décision pilote 2026-10-31). | `55aa4fba`
 | 0.0.96 (S-302) | **hyperframes-plugin 0.0.6 + capsule-plugin 0.0.12** (releases correctives : fix audio-post BGM/ducking). | `df0ac9c6`
 | 0.0.95 (S-301) | **hyperframes-plugin 0.0.5** (ports vidéo partagés + rendu réel durci). | `bf6e4b33`
 | 0.0.94 (S-300) | **video-kernel 0.4.0** repin (VK-4 US-4b→d : ports partagés post-production + narration). | `6ff36fda`

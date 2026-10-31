@@ -1,8 +1,16 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-312 — À DÉFINIR (dernières terminées : **310 — BOM 0.0.107 capsule 0.0.13** et
-**311 — BOM 0.0.108 hyperframes 0.0.11**).
+316 — À DÉFINIR (dernières terminées : **314 — BOM 0.0.113 capsule 0.0.14 +
+hyperframes 0.0.12** et **315 — BOM 0.0.114 hyperframes 0.0.13**).
+
+**S-315** : release consommateur hyperframes S-045 (`HF-DEMO-QUALITY US-6` —
+fond média par scène). Catalog `hyperframes-plugin 0.0.12 → 0.0.13` +
+BOM/catalog `0.0.113 → 0.0.114`. Garde `PlatformCatalogAlignmentTest`
+ré-alignée. Central bundle `55aa4fba-76a8-481b-85b9-cad7a4d3dd63` (AUTOMATIC),
+propagation repo1 200 ×2. DAG : MEMPHIS `0.0.114` → hyperframes `0.0.13`
+(`70d29242`). **Règle 2 révisée « accord toujours granted »** (décision pilote
+2026-10-31). Rapport `.agents/sessions/315-bom-0.0.114-hyperframes-0.0.13.adoc`.
 
 **S-310** : release consommateur capsule S-208 (`capsule-plugin 0.0.13` —
 US-3a/3b/4 + fix précédence 4 sources ; YouTube gelé). Bump catalog

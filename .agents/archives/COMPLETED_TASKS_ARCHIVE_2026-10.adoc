@@ -1,5 +1,17 @@
 = COMPLETED_TASKS_ARCHIVE — 2026-10
 
+== Session 315 (2026-10-31) — BOM/catalog 0.0.114 : `hyperframes-plugin 0.0.13` ✅
+
+Release consommateur (hyperframes S-045, `HF-DEMO-QUALITY US-6` fond média).
+
+* [x] Catalog `hyperframes 0.0.12 → 0.0.13` ; `workspace-bom 0.0.113 → 0.0.114`
+* [x] Garde `PlatformCatalogAlignmentTest` ré-alignée (`0.0.114`)
+* [x] `publishToMavenLocal` VERT ; Central bundle `55aa4fba-76a8-481b-85b9-cad7a4d3dd63`
+* [x] propagation repo1 `workspace-bom/0.0.114` + `workspace-catalog/0.0.114` HTTP 200
+* [x] DAG : hyperframes `0.0.13` (`70d29242`)
+* [x] Règle 2 révisée « accord toujours granted » (décision pilote 2026-10-31)
+* [x] Rapport `.agents/sessions/315-bom-0.0.114-hyperframes-0.0.13.adoc`
+
 == Session 314 (2026-10-31) — BOM/catalog 0.0.113 : `capsule-plugin 0.0.14` + `hyperframes-plugin 0.0.12` ✅
 
 Releases consommatrices de `video-kernel 0.6.0` (YouTube gelé).

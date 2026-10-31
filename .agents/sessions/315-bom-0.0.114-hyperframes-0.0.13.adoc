@@ -1,0 +1,38 @@
+= Session 315 — BOM/catalog 0.0.114 : `hyperframes-plugin 0.0.13`
+:session: 315
+:date: 2026-10-31
+:borough: MEMPHIS
+:statut: ✅ TERMINÉE
+
+== Mission
+
+Release consommateur de `hyperframes-plugin 0.0.13` (session 045, contenu
+`HF-DEMO-QUALITY US-6` — fond média par scène). Décision pilote 2026-10-31 :
+**Règle 2 révisée en « accord toujours granted »** — publication autorisée sans
+demande préalable, sous invariants (DAG, CI verte, version bumpée, zéro secret,
+signature, propagation vérifiée).
+
+== Bump
+
+* `gradle/libs.versions.toml` : `workspace-bom 0.0.113 → 0.0.114`,
+  `hyperframes-plugin 0.0.12 → 0.0.13`.
+* Garde `PlatformCatalogAlignmentTest` ré-alignée (`0.0.114`).
+
+== Publication
+
+* `publishToMavenLocal` VERT (BOM + catalog signés, GPG `CBE2926CD46D8E8B`).
+* Central **bundle `55aa4fba-76a8-481b-85b9-cad7a4d3dd63`** (AUTOMATIC).
+* Propagation repo1 vérifiée : `workspace-bom/0.0.114` **200**,
+  `workspace-catalog/0.0.114` **200** (attente ~11 min, Piège #11).
+
+== DAG
+
+MEMPHIS `0.0.114` → hyperframes `0.0.13` (Central bundle
+`70d29242-5f54-410f-994e-40977ff93b40`, propagation plugin + marker 200).
+
+== Fichiers
+
+* `gradle/libs.versions.toml` (2 bumps)
+* `agent-contracts/src/test/kotlin/contracts/catalog/PlatformCatalogAlignmentTest.kt`
+* `.agents/RELEASE_PROTOCOL.adoc` (historique + note Règle 2)
+* gouvernance `.agents/` (INDEX, PROMPT_REPRISE, SESSIONS_HISTORY, archive)
