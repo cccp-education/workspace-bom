@@ -1,6 +1,6 @@
 [versions]
 # ── Workspace BOM shared versions ─────────────────────────────────────────────
-workspace-bom = "0.0.110"
+workspace-bom = "0.0.111"
 
 # ── Kotlin ────────────────────────────────────────────────────────────────────
 kotlin = "2.4.10"
@@ -52,7 +52,7 @@ capsule-plugin = "0.0.13"
 codex-plugin = "0.0.12"
 planner-plugin = "0.0.2"
 slider-plugin = "0.0.20"
-plantuml-plugin = "0.0.13"
+plantuml-plugin = "0.0.14"
 readme-plugin = "0.0.2"
 hyperframes-plugin = "0.0.11"
 graphify-plugin = "0.0.5"
