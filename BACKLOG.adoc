@@ -430,7 +430,7 @@ Le contrat garantit l'interopérabilité : un `I18nConfig` produit par bakery
 peut être consommé par runner-gradle pour orchestrer un site multilingue.
 
 '''
-== 🟡 EPIC MEM-I18N-PRESERVE — Contrat N0 « ce qui ne se traduit jamais » (CADRÉ S-077, revue i18n S-263)
+== ✅ EPIC MEM-I18N-PRESERVE — Contrat N0 « ce qui ne se traduit jamais » (TERMINÉ 4/4 — S-312)
 
 *Source* : revue externe `foundry/public/bakery-gradle/bakery-plugin/.agents/i18n_review.adoc`
 (S-263) + mesure de l'artefact cheroliv.com (S-077 : 1 397 défauts documentés,
