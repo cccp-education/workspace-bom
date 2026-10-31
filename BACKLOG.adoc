@@ -114,7 +114,7 @@ _Livré S-292 (VK-2)_ : catalog `video-kernel 0.2.0` + `workspace-bom 0.0.89`,
 
 '''
 
-== 🟡 EPIC MEM-CI-CONSISTENCY — cohérence CI cross-borough (S-284)
+== ✅ EPIC MEM-CI-CONSISTENCY — cohérence CI cross-borough (S-284 → S-317)
 
 _Origine_ : le job **`runAllTests`** (Cross-borough check 13 boroughs) a été **rouge
 de S-282 à S-284** sans que la cause soit vue. Le run `38241612161` (S-284) est la
@@ -134,21 +134,40 @@ masque toute la dette aval (cf. S-269 Queens, S-243 bakery).
 
 | US-1 | Workflow `runAllTests` **JDK 24 → 25** + bakery testé dans sa sous-build autonome `bakery-plugin/` (racine consommateur sans `check`) | `workspace-bom/.github/workflows/test.yml` + `build.gradle.kts` | ✅ S-284
 
-| US-2 | **Standard JDK 25** — aligner tous les workflows cccp qui buildent un plugin (toolchain 25). Audit S-284 : `plantuml` 17/23/24, `readme` 23, `graphify` 24, `runner` 24, `planner` 24/23, `slider` 24, `codebase/anonymize` 23, `jhipster` 24 — vs 25 requis | tous `.github/workflows/*.yml` | 🟡 PARTIEL — `runner-gradle` ✅ (S-035, JDK 25 + `-PsiteName=ci`, CI verte `0bdc5fc`) ; autres boroughs à aligner
+| US-2 | **Standard JDK 25** — aligner tous les workflows cccp qui buildent un plugin (toolchain 25). Audit S-284 : `plantuml` 17/23/24, `readme` 23, `graphify` 24, `runner` 24, `planner` 24/23, `slider` 24, `codebase/anonymize` 23, `jhipster` 24 — vs 25 requis | tous `.github/workflows/*.yml` | ✅ TERMINÉ (S-317) — 8 workflows alignés JDK 25 : `slider/readme_truth` 24→25, `jhipster/readme_truth` 24→25, `graphify/test` 24→25, `readme/{ci,integration_test,readme_action}` 23→25, `planner/decompose` 23→25, `codebase/anonymize` 23→25 (`runner-gradle` déjà ✅ S-035)
 
-| US-3 | **Garde « racine consommateur = version publiée »** — une racine (pattern 0124) ne doit pas épingler une version dev/non publiée (cas slider) | guard (conventions ou test par borough) | 🟡 À FAIRE
+| US-3 | **Garde « racine consommateur = version publiée »** — une racine (pattern 0124) ne doit pas épingler une version dev/non publiée (cas slider) | guard (conventions ou test par borough) | ✅ TERMINÉ (S-317) — garde `verifyCrossBoroughPins` (workspace-bom `build.gradle.kts`) : tout pin consommé (toml + `workspace-bom/catalog:<v>`) doit être ≤ la version publiée par le BOM ; `-SNAPSHOT` rejeté. RED prouvé (`codebase = 9.9.9`, `workspace-catalog:0.0.999`)
 
-| US-4 | **Tolérance nmcp standard** — `nmcpSettings.centralPortal` `?: ""` (jamais `error(...)` : bloque la configuration sans credentials) | tous `settings.gradle.kts` cccp | 🟡 À FAIRE
+| US-4 | **Tolérance nmcp standard** — `nmcpSettings.centralPortal` `?: ""` (jamais `error(...)` : bloque la configuration sans credentials) | tous `settings.gradle.kts` cccp | ✅ TERMINÉ (S-317) — 12 `settings.gradle.kts` : 8 sous-builds N0 + `api-key-pool-plugin` + `jhipster` + `readme-plugin` + `graphify-plugin` (`?: ""`) ; job CI `n0-contracts` prouve la configuration sans credentials
 
-| US-5 | **Garde « catalogue non stale »** — la version `codebase` (et N1) doit être publiée **ET** contenir les API utilisées (cas planner `plannerport`) | guard | 🟡 À FAIRE
+| US-5 | **Garde « catalogue non stale »** — la version `codebase` (et N1) doit être publiée **ET** contenir les API utilisées (cas planner `plannerport`) | guard | ✅ TERMINÉ (S-317) — même garde `verifyCrossBoroughPins` (relation inverse : le catalogue ne peut pas être en retard sur un pin consommé) ; gaps corrigés : `vibecoding-contracts 0.0.1` publiée mais absente du catalogue/BOM (ajoutée), `PlatformCatalogAlignmentTest` dérivé (i18n 0.0.4, bakery 0.0.29) car les N0 n'étaient jamais testés en CI → job `n0-contracts`
 |===
 
 _Livré S-284 (US-1)_ : JDK 25 + retarget bakery → `runAllTests` **vert** (run `38241612161`,
 10m0s, 5 boroughs). Correctifs siblings de la même fenêtre : slider S-073 (US-3 partiel),
 dashboard S-217 (US-4 partiel), planner S-080 (US-5 partiel).
 
+_Livré S-317 (US-2→US-5)_ : **EPIC clos**. La garde `verifyCrossBoroughPins`
+(`build.gradle.kts`, wired à `check`) matérialise US-3 **et** US-5 comme une seule
+relation statique : tout pin consommé par un build frère (catalogues de versions +
+pins `workspace-bom:<v>`/`workspace-catalog:<v>`) doit être **≤ la version publiée
+par ce BOM** — un pin `-SNAPSHOT` est rejeté (US-3), un catalogue en retard sur un
+consommateur est rejeté (US-5). Zéro réseau, zéro modèle Gradle ; les frères absents
+sont ignorés (la CI clone un borough par job). RED prouvé deux fois (`codebase =
+"9.9.9"` ⇒ « newer than the published catalogue `codebase-plugin = 0.0.18` » ;
+`workspace-catalog:0.0.999` ⇒ « newer than the published `workspace-bom =
+0.0.116` »), puis GREEN (`51` catalogues frères + `130` scripts de build).
+US-4 : `?: ""` sur les **12** `settings.gradle.kts` fautifs (8 sous-builds N0 +
+`api-key-pool-plugin`, `jhipster`, `readme-plugin`, `graphify-plugin`), avec commits
+cross-borough ; le nouveau job CI `n0-contracts` (matrice des 10 sous-builds N0)
+prouve qu'une configuration sans credentials passe. US-2 : 8 workflows alignés
+JDK 25 (6 dépôts). La garde a aussi révélé **deux gaps réels** : `vibecoding-contracts
+0.0.1` publiée mais absente du catalogue/BOM (ajoutée) et `PlatformCatalogAlignmentTest`
+dérivé (i18n `0.0.4`, bakery `0.0.29`) **parce que les builds N0 n'étaient jamais
+exécutés en CI** — corrigé par le job `n0-contracts`.
+
 '''
-== EPIC PLT-DIAGRAM-OWNERSHIP — contrat N0 plantuml-contracts (US-1 ✅ S-280)
+== ✅ EPIC PLT-DIAGRAM-OWNERSHIP — contrat N0 plantuml-contracts (US-1 ✅ S-280)
 
 *Cadrage* : `plantuml-gradle/plantuml-plugin/.agents/CADRAGE_EPIC_PLT_DIAGRAM_OWNERSHIP.adoc`
 *Priorité* : 🟠 HAUTE — cause racine cross-borough de CHE-DIAGRAM (diagrammes blancs).
@@ -160,6 +179,12 @@ dashboard S-217 (US-4 partiel), planner S-080 (US-5 partiel).
 * 🟡 À FAIRE (accord pilote) — **Publication Central** `plantuml-contracts:0.0.1`
   + bump BOM (`workspace-bom 0.0.65→0.0.66`, constraint plantuml-contracts 0.0.1),
   garde réalignée. Prérequis dur pour que plantuml/document consomment le contrat.
+* ✅ **TERMINÉ (S-280)** — `plantuml-contracts:0.0.1` publié Central (bundle
+  `c9a687d3`) + BOM/catalog `0.0.66` (bundle `c0201db7`, constraint
+  `plantuml-contracts`). Re-vérifié S-317 : `repo1` POM **HTTP 200** et l'entrée
+  est présente dans le catalogue `0.0.116` (`plantuml-contracts = "0.0.1"` +
+  `api(libs.plantuml.contracts)`) — **EPIC clos**. Le marqueur `🟡` ci-dessus
+  était périmé (désync backlog).
 
 '''
 == EPIC PUB — Publication Maven Central
@@ -395,7 +420,7 @@ exacte) + `publishToMavenLocal` si release.
   lookup message par clé, catalogue 10 langues complet.
   4-6 scénarios.
 | 1.5
-| 🟡 P2
+| ✅ TERMINÉ (S-317) — `i18n_contracts.feature` 9 scénarios + `CucumberTestRunner` + `I18nContractsStepDefs`, câblé à `check` et exécuté par le job CI `n0-contracts`
 
 | US-MEM-3.6
 | **Publication Maven Central** — nmcp publish,
@@ -702,7 +727,7 @@ besoin LLM des tests d'intégration avec `qwen3:0.6b` (exception CI AGENTS.adoc)
 
 *Charge* : ~4 pts (~1 session)
 *Priorité* : 🔴 P0
-*Statut EPIC* : 🔄 EN COURS — CI-1.1/1.2/1.3/1.5 ✅ (S-014→S-031), reste uniquement CI-1.4 qwen3:0.6b (🟡 À FAIRE, 1 pt, re-confirmé S-028)
+*Statut EPIC* : ✅ TERMINÉ — CI-1.1/1.2/1.3/1.5 ✅ (S-014→S-031) + CI-1.4 ✅ (S-317)
 
 === US-CI-1.1 — Workflow test.yml créé
 **Pts** : 1
@@ -726,7 +751,7 @@ reste pertinente si on veut tester les SOUS-RÉPERTOIRES plugin.
 
 === US-CI-1.4 — Ollama qwen3:0.6b en CI
 **Pts** : 1
-**Statut** : 🟡 À FAIRE (re-confirmé S-028 — pas de step Ollama dans test.yml)
+**Statut** : ✅ TERMINÉ (S-317) — job `llm-ollama` (`test.yml`) : action composite existante `setup-ollama` (reprise de plantuml/capsule) → image Docker + poids du modèle cachés dans le scope du dépôt (jamais re-téléchargés sur cache chaud) ; smoke `ollama run "Reply with the word OK only."`
 - Step CI : `docker run -d -p 11466:11467 ollama/ollama` + `ollama pull qwen3:0.6b`.
 - Env vars : `OLLAMA_TEST_PORT=11466`, `OLLAMA_TEST_MODEL=qwen3:0.6b`.
 - Tests `assumeTrue(isOllamaReady(port))` se débloquent. Pas de secret requis.

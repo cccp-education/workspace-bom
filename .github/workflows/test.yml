@@ -410,8 +410,17 @@ jobs:
   # ── N0 contracts (own sub-builds) ──────────────────────────────────────────
   # Every `education.cccp:*-contracts` artefact is a standalone build (pattern
   # 0124): none of them is exercised by the borough matrix above, so their tests
-  # (and the MEM-3.5 `i18n_contracts.feature` BDD suite) would never run. This
-  # matrix runs `check` in each sub-build, in parallel.
+  # (and the MEM-3.5 `i18n_contracts.feature` BDD suite) would never run.
+  # Two entries × five builds (sequential inside an entry) rather than ten
+  # entries: the runner pool is ~20 slots and the shards already use them — ten
+  # extra entries would queue a second wave and push the wall-clock past 5 min
+  # (S-299). N0 builds are ~30-45 s each with the shared dependency cache, so an
+  # entry stays well under the longest bakery shard.
+  # `vibecoding-contracts` is deliberately absent: its `build.gradle.kts` was
+  # deleted by the S-084 refactor while the sources and settings remained, so the
+  # directory is not a build (`Task 'check' not found`). The artifact 0.0.1 is
+  # published and constrained by the BOM; restoring its build is a separate
+  # backlog item.
   # It is also the proof of MEM-CI-CONSISTENCY US-4: a bare CI runner has no
   # `ossrhUsername`/`ossrhPassword`, so a settings script that still calls
   # `error(...)` in `nmcpSettings.centralPortal` fails at *configuration* here.
@@ -423,26 +432,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: agent-contracts
-            dir: agent-contracts
-          - name: codebase-contracts
-            dir: codebase-contracts
-          - name: i18n-contracts
-            dir: i18n-contracts
-          - name: llm-pool-contracts
-            dir: llm-pool-contracts
-          - name: ocr-contracts
-            dir: ocr-contracts
-          - name: opencode-session-contracts
-            dir: opencode-session-contracts
-          - name: pipeline-contracts
-            dir: pipeline-contracts
-          - name: plantuml-contracts
-            dir: plantuml-contracts
-          - name: runtime-contracts
-            dir: runtime-contracts
-          - name: vibecoding-contracts
-            dir: vibecoding-contracts
+          - name: core
+            dirs: agent-contracts codebase-contracts i18n-contracts llm-pool-contracts ocr-contracts
+          - name: runtime
+            dirs: opencode-session-contracts pipeline-contracts plantuml-contracts runtime-contracts
     steps:
       - name: Checkout workspace-bom
         uses: actions/checkout@v4
@@ -461,9 +454,15 @@ jobs:
         with:
           cache-disabled: true
 
-      - name: Run ${{ matrix.name }} check
-        run: ./gradlew check --no-daemon
-        working-directory: ${{ matrix.dir }}
+      - name: Run the N0 contract checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          for dir in ${{ matrix.dirs }}; do
+            echo "::group::$dir check"
+            ( cd "$dir" && ./gradlew check --no-daemon --console=plain )
+            echo "::endgroup::"
+          done
 
       - name: Save the repository-wide common cache
         if: always()
