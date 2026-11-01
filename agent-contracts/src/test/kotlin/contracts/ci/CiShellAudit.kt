@@ -55,6 +55,9 @@ object CiShellAudit {
      * of the item line: YAML requires the block content to be indented deeper.
      */
     private val RUN_LITERAL = Regex("""^([ \t]*)(?:-[ \t]+)?run:[ \t]*\|.*$""")
+
+    /** A single-line step (`- run: ./gradlew … || true`): keep only the shell part. */
+    private val RUN_INLINE = Regex("""^(?:-[ \t]+)?run:[ \t]*(.+)$""")
     private val STEP_ITEM = Regex("""^([ \t]*)- \S.*$""")
     private val CONTINUE_ON_ERROR = Regex("""continue-on-error:[ \t]*true""")
 
@@ -132,11 +135,15 @@ object CiShellAudit {
         val intentional = intentionalLines(text)
         val swallowed =
             fold(text.lines().mapIndexed { offset, raw -> (offset + 1) to raw.trim() })
-                .filter { (number, line) -> number !in intentional && GATE.containsMatchIn(line) }
-                .filter { (_, line) -> SWALLOW.containsMatchIn(line) }
-                .map { (number, line) -> ShellFinding.SwallowedGate(source, number, line) }
+                .map { (number, line) -> number to shellOf(line) }
+                .filter { (number, command) -> number !in intentional && GATE.containsMatchIn(command) }
+                .filter { (_, command) -> SWALLOW.containsMatchIn(command) }
+                .map { (number, command) -> ShellFinding.SwallowedGate(source, number, command) }
         return missingErrexit + swallowed
     }
+
+    /** The shell command of a line, stripping the YAML step prefix (`- run: …`). */
+    private fun shellOf(line: String): String = RUN_INLINE.find(line)?.groupValues?.get(1) ?: line
 
     /** Folds `\` line continuations, keeping the line number of the first physical line. */
     private fun fold(lines: List<Pair<Int, String>>): List<Pair<Int, String>> {
