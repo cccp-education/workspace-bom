@@ -1,6 +1,6 @@
 = CADRAGE — EPIC transverse XB-FP : temps de tests & paradigme fonctionnel (arrow-kt)
 :date: 2026-10-31
-:statut: 🟢 EN COURS (US-0 ✅, US-1 ✅, US-2 ✅ — S-319 ; US-3→US-7 à faire)
+:statut: 🟢 EN COURS (US-0 ✅, US-1 ✅, US-2 ✅, US-3 ✅, US-4 ✅ — S-319/S-320 ; US-5 partiel, US-6/7 à faire)
 :porteur: MEMPHIS (workspace-bom) — EPIC transverse cross-borough
 :type: cadrage + revue de code (lecture seule) + plan de refactor
 
@@ -79,6 +79,26 @@ Doctrine : **Arrow pour la composition** (accumulation d'erreurs, capture
 d'exception, bracketing, retry) ; **types scellés maison pour le vocabulaire
 métier** ; conversion à la frontière.
 
+== 2 bis. Arrow — version et BOM (documentation officielle)
+
+* **Dernière version** : `2.3.0` (`arrow-core`, `arrow-fx-coroutines`, `arrow-stack`
+  — marqueur `release` de Maven Central, confirmé par
+  https://arrow-kt.io/learn/quickstart/setup/).
+* **Arrow publie son propre BOM** : `io.arrow-kt:arrow-stack:2.3.0` (docs officielles,
+  section « Using a Bill-of-Materials (BOM) »). Il versionne toute la pile
+  (`arrow-core`, `arrow-fx-coroutines`, `arrow-optics`, `arrow-atomic`,
+  `arrow-resilience`, `arrow-collectors`, …).
+* **Intégration retenue** : le BOM `workspace-bom` **importe** `arrow-stack`
+  (`api(platform(...))` hors `constraints`, ce qui produit
+  `<type>pom</type><scope>import</scope>` dans le POM publié) et conserve les pins
+  explicites des composants réellement utilisés. Le catalogue expose l'alias
+  `arrow-stack`.
+* `arrow-integrations-jackson-module` **n'est pas dans le stack** (versionnage
+  séparé) : reste épinglé à `0.15.1` (dernière version) pour `slider`.
+* Bumps appliqués : BOM `0.0.116 → 0.0.117`, `slider` 2.2.2 → 2.3.0, `planner`
+  (adoption, 2.3.0), `bakery` via le BOM, `codebase`/`readme`/`plantuml` conservent
+  les dépendances restaurées (l'objectif est l'**adoption**, pas la suppression).
+
 == 3. Décisions (D1 → D12)
 
 . **D1** — L'EPIC est **transverse**, portée par MEMPHIS, exécutée US par US dans
@@ -105,9 +125,7 @@ métier** ; conversion à la frontière.
   (source set partagé) : US dédiée, côté bakery.
 . **D11** — TestKit : répertoire **hors `build/`**, caché, par fork si la
   contention est confirmée : US dédiée, côté bakery.
-. **D12** — **Hygiène des dépendances** : `codebase` et `readme` doivent soit
-  adopter Arrow à un vrai seam fonctionnel, soit **retirer** la dépendance ;
-  `arrow-fx-coroutines` retiré des bundles s'il reste inutilisé.
+. **D12** — **Adoption d’Arrow aux seams réels** (et non suppression) : chaque dépôt qui déclare Arrow doit l’**utiliser** à un seam identifié (accumulation, capture d’exception, retry borné, bracketing). Une dépendance déclarée sans usage est une **dette d’adoption** à traiter par une US, pas une raison de retirer l’outil. `codebase` (QualityRetryCircuit), `readme` (JGitRemoteValidator) et `bakery`/`planner`/`slider` sont les seams retenus ; `plantuml` reste un seam différé (API `KnowledgeGraphParser` à faire évoluer).
 
 == 4. User Stories (7 US, ~26 pts)
 
@@ -116,11 +134,11 @@ métier** ; conversion à la frontière.
 | US | Description | Cible | Statut
 
 | XB-FP-0 | **Cadrage** — revue de code (temps de tests + paradigme), constats, décisions, garde-fous N0, KPIs. Ce document. | `workspace-bom/.agents/` | ✅ S-319
-| XB-FP-1 | **Cache CI : artefacts Gradle + écrivains restreints** — ajouter `~/.gradle/caches/*/generated-gradle-jars`, `kotlin-dsl`, `dependencies-accessors` ; retirer `~/.m2/repository` ; `save-common-cache` seulement sur 1 job par famille (4 `check` + `unit` + garde + N0). | `workspace-bom/.github/actions` + `test.yml` | ✅ S-319 (mesure isolée à refaire)
+| XB-FP-1 | **Cache CI : artefacts Gradle + écrivains restreints** — ajouter `~/.gradle/caches/*/generated-gradle-jars`, `kotlin-dsl`, `dependencies-accessors` ; retirer `~/.m2/repository` ; `save-common-cache` seulement sur 1 job par famille (4 `check` + `unit` + garde + N0). | `workspace-bom/.github/actions` + `test.yml` | ✅ S-319/S-320 — **mesure isolée `5m12s`** (run `41257127568`, 21 jobs ; coverage 63 s, artefacts Gradle restaurés)
 | XB-FP-2 | **Pilote arrow** — `DeckContextValidator` : `Either<NonEmptyList<String>, String>` interne, accumulation, `fold` à la frontière, `ValidationResult` public inchangé. | `slider-gradle` | ✅ S-319 (commit `a4daf82`, CI verte `41256091035`)
-| XB-FP-3 | **Bakery — accumulation de configuration** — `ConfigResolver` + `DomainResolver` : `Either<NonEmptyList<ConfigResolutionError>, ResolvedConfigs>`, `zipOrAccumulate`, suppression de l'accumulateur mutable et des casts positionnels. | `bakery-gradle` | 🟡 À FAIRE
-| XB-FP-4 | **Planner — erreurs + retry** — `IntentionPlanner`/`LifecycleAdapter` : `Either<PlanningError, Plan>`, capture d'exception, retry sans `var lastError` ; `Option`/null seulement au bord. | `planner-gradle` | 🟡 À FAIRE
-| XB-FP-5 | **Hygiène dépendances Arrow** — `codebase`/`readme` : adopter à un seam réel ou retirer ; `arrow-fx` retiré des bundles inutilisés. | `codebase-gradle`, `readme-gradle` | 🟡 À FAIRE
+| XB-FP-3 | **Bakery — accumulation de configuration** — `ConfigResolver` + `DomainResolver` : `Either<NonEmptyList<ConfigResolutionError>, ResolvedConfigs>`, `zipOrAccumulate`, suppression de l'accumulateur mutable et des casts positionnels. | `bakery-gradle` | ✅ S-320 (commit `8ed6d84d`, `resolveOutcome()` pur + `listOfNotNull`, plus de `MutableList` ni de casts)
+| XB-FP-4 | **Planner — erreurs + retry** — `IntentionPlanner`/`LifecycleAdapter` : `Either<PlanningError, Plan>`, capture d'exception, retry sans `var lastError` ; `Option`/null seulement au bord. | `planner-gradle` | ✅ S-320 (commit `4d8db65`, `Either<PlanningError, Plan>` + retry `fold`, `Either.catch` dans `LifecycleAdapter`)
+| XB-FP-5 | **Hygiène dépendances Arrow** — `codebase`/`readme` : adopter à un seam réel ou retirer ; `arrow-fx` retiré des bundles inutilisés. | `codebase-gradle`, `readme-gradle` | 🟡 PARTIEL S-320 — `codebase` (`b30c232` : `QualityRetryCircuit` immuable) et `readme` (`67fceac` : `JGitRemoteValidator` en `Either`) adoptés ; `plantuml` seam différé (`KnowledgeGraphParser`)
 | XB-FP-6 | **Tests lents → domaine pur** — `LocalizeSeoHead` (44 s), `IncrementalFunctional` (30 s), `TaskDescriptionsI18n` (27 s), `AsciidoctorJPin` (16 s), `GenerateDeckPipeline` (14 s) : tester les fonctions pures, garder **un** smoke TestKit par concern. | `bakery`, `graphify`, `slider`, `codebase` | 🟡 À FAIRE
 | XB-FP-7 | **Découplage source set + TestKit caché** — extraire les fixtures partagées, retirer `dependsOn(functionalTest)` des shards BDD ; `org.gradle.testkit.dir` hors `build/`, caché, par fork. | `bakery-gradle` | 🟡 À FAIRE
 |===

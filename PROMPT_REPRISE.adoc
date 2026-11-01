@@ -1,61 +1,67 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-320 — dernières terminées : **317** (cache CI commun + N0 en CI + garde de pins +
-BOM `0.0.116`), **318** (mesure, repins, résidus), **319** (EPIC transverse **XB-FP** :
-cadrage temps de tests + arrow-kt, cache CI, pilote slider).
+321 — dernières terminées : **317** (cache CI commun, N0 en CI, garde de pins,
+BOM 0.0.116), **318** (mesure, repins, résidus), **319** (EPIC transverse **XB-FP**
+cadrée + cache + pilote arrow), **320** (Arrow 2.3.0 + BOM officiel `arrow-stack`,
+adoption aux seams bakery/planner/codebase/readme).
 
-=== Mission Session 320 — ordre proposé
+=== Mission Session 321 — ordre proposé
 
-. **`XB-FP-1` — mesure isolée** (le run S-319 partageait le pool avec la CI slider) :
-   relancer `test.yml` seul, comparer wall-clock, durée du job `n0-contracts`
-   (`xargs -P 5` vs 4 vCPU) et confirmer que les artefacts Gradle
-   (`generated-gradle-jars`/`kotlin-dsl`) sont restaurés (log + `ls`).
-. **`XB-FP-5` — hygiène Arrow** : `codebase` (225 fichiers) et `readme` (9) déclarent
-   Arrow sans l'utiliser → adopter à un seam réel **ou** retirer ; retirer
-   `arrow-fx-coroutines` des bundles bakery/slider s'il reste inutilisé.
-   (1 session par borough, commit + CI du borough.)
-. **`XB-FP-3` — bakery** : `ConfigResolver` + `DomainResolver` →
-   `Either<NonEmptyList<ConfigResolutionError>, ResolvedConfigs>` + `zipOrAccumulate`.
-. **`XB-FP-4` — planner** : `IntentionPlanner`/`LifecycleAdapter` →
-   `Either<PlanningError, Plan>`, retry sans `var`, `Option`/null seulement au bord.
-. **`XB-FP-6`/`-7`** : tests lents → domaine pur ; source set partagé + TestKit caché.
+. **`XB-FP-6` — tests lents → domaine pur** : `LocalizeSeoHeadFunctionalTest`
+   (44 s), `IncrementalFunctionalTest` (30 s), `TaskDescriptionsI18nFunctionalTest`
+   (27 s), `AsciidoctorJPinFunctionalTest` (16 s), `GenerateDeckPipelineFunctionalTest`
+   (14 s) → tester la fonction pure, garder **un** smoke TestKit par concern.
+. **`XB-FP-7` — source set partagé + TestKit caché** (bakery) : extraire
+   `FuncTestsConstants`/`createConfigFile` de `functionalTest`, retirer
+   `dependsOn(functionalTest)` des shards BDD ; `org.gradle.testkit.dir` hors
+   `build/`, ajouté au cache commun, par fork si contention.
+. **Seam `plantuml`** (XB-FP-5 reste) : `KnowledgeGraphParser.parse` →
+   `Either<KnowledgeGraphParseError, KnowledgeGraph>` (API + appelants + tests).
+. **Backlog** : vérifier l'absence de marqueur périmé ; ne créer que des items
+   issus d'un constat réel.
 
-_Document maître_ : `workspace-bom/.agents/CADRAGE_EPIC_XB_FP.adoc` (12 décisions,
-7 US, KPIs). Suivi : `BACKLOG.adoc` § `EPIC XB-FP` + table Roadmap de l'INDEX.
+_Document maître_ : `.agents/CADRAGE_EPIC_XB_FP.adoc` (D1→D12, 7 US, KPIs).
+Suivi : `BACKLOG.adoc` § `EPIC XB-FP` + table Roadmap de l'INDEX.
 
 _Hors scope_ : upload YouTube réel — **gelé S-037**.
 
 == État du code
 
-- Central : BOM + catalog **0.0.116** (propagation vérifiée).
-- CI workspace-bom : 21 jobs, cache commun (modules, wrapper, **artefacts Gradle**),
-  7 écrivains ; `n0-contracts` = 1 job `xargs -P 5` ; guards
-  `verifyCiMatrixCoverage` + `verifyCrossBoroughPins`.
-- `slider` : `DeckContextValidator` en `Either<NonEmptyList<String>, String>` interne
-  avec accumulation (commit `a4daf82`, CI verte).
+- Central : BOM + catalog **0.0.117** (import officiel `io.arrow-kt:arrow-stack:2.3.0`).
+- Arrow **2.3.0** partout (dernière release) ; `arrow-integrations-jackson-module`
+  0.15.1 (hors stack). Alias catalogue `arrow-stack`.
+- CI workspace-bom : 21 jobs, **5m12s** en run isolé (cache artefacts Gradle,
+  coverage 63 s). Guards `verifyCiMatrixCoverage` + `verifyCrossBoroughPins`.
+- Adoptions Arrow : `slider` (`DeckContextValidator`), `bakery`
+  (`resolveOutcome`/`listOfNotNull`), `planner` (`PlanningError` + retry `fold`),
+  `codebase` (`QualityRetryCircuit`, `MetadataValidator`), `readme`
+  (`JGitRemoteValidator`). `plantuml` : dépendance conservée, seam différé.
 - Contrats N0 : **sans Arrow** (invariant XB-FP D2) — sealed maison conservés.
 
-== Décisions XB-FP à ne pas perdre
+== Doctrine XB-FP à ne pas perdre
 
-* **D2** — N0 sans Arrow ; **D3** — Arrow N1/N2 en `implementation` ;
-  **D4** — sealed maison = frontière, Arrow interne.
-* **D7** — mesurer avant/après (Local = Build, Tests = CI).
-* **D9** — pas de nouveau job (pool ~20), pas de rééquilibrage des shards
-  functional, pas de cache `setup-gradle`.
+* **D2** N0 sans Arrow ; **D3** Arrow N1/N2 en `implementation` ; **D4** sealed
+  maison = frontière publique, Arrow interne.
+* **D12** une dépendance Arrow déclarée sans usage est une **dette d'adoption** :
+  on l'utilise à un seam, on ne la supprime pas.
+* **D7** mesurer avant/après ; **D9** pas de nouveau job (pool ~20), pas de
+  rééquilibrage des shards functional, pas de cache `setup-gradle`.
 
 == Pièges (cumul)
 
 . *Version dérivée ≠ version publiée* ; *Catch-22 D8* ; gardes dans le même commit.
 . *Contrats N0 = builds standalone* (pattern 0124).
-. *nmcp* : vérifier repo1 avant re-publication ; propagation 2-10 min.
-. *Local = Build, Tests = CI* — jamais de suite locale.
+. *Catalogue Gradle* : un plugin inclus depuis la **racine** utilise le catalogue
+   **racine** (`<repo>/gradle/libs.versions.toml`), pas celui du sous-build — vérifier
+   `./gradlew :<plugin>:compileKotlin` **depuis la racine** (piège S-320 planner).
+. *Local = Build, Tests = CI* — jamais de suite locale ; preuve = CI du commit.
 . *Cache GitHub scopé au dépôt* ; `setup-gradle cache-disabled` ; clé avec
-   `github.job` (hors matrice `job-index` = 0).
+   `github.job` (hors matrice `job-index` = 0) ; artefacts Gradle cachés.
 . *Ollama* : arrêter le conteneur + `chown` avant le post-step de cache.
 . *Toolchain* : `jvmToolchain(25)` (jamais `VERSION_25.ordinal` = 24) ; foojay **0.10.0**.
-. *Mesure CI* : ne pas conclure sur un run ; une CI concurrente (autre dépôt) fausse
-   le wall-clock (pool partagé) — vérifier les `startedAt` avant d'incriminer un job.
+. *Mesure CI* : un run partagé avec une autre CI (pool) fausse le wall-clock —
+   vérifier les `startedAt` avant d'incriminer un job.
 
 == Règles
 

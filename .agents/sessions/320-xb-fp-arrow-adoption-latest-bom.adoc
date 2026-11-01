@@ -1,0 +1,109 @@
+= Session 320 — XB-FP : adoption Arrow aux seams, dernière version + BOM officiel
+:date: 2026-11-01
+:borough: MEMPHIS (workspace-bom) — EPIC transverse
+:type: refactor cross-borough + dépendances + publication
+
+== Mission
+
+Consigne pilote : « enchaine » (XB-FP), corrigée en cours de route : « je t'ai
+demandé d'auditer le besoin en terme de code pour le solidifier en utilisant des
+patterns fonctionnels appuyés sur la lib arrow » et « veille à utiliser la dernière
+version d'arrow et de ses libs en regardant la documentation officielle et voir
+s'ils ont un BOM ».
+
+**Correction de cap assumée** : la session 319 avait interprété « dépendance
+déclarée sans usage » comme « à retirer » (codebase, readme, plantuml). C'était
+l'inverse : Arrow est l'**outil d'adoption**, pas la dette. Les suppressions ont été
+annulées (`git revert` : codebase `a941593`, readme `a8e719a`, plantuml `6a29244`)
+et `arrow-fx-coroutines` restauré dans le bundle slider (`13d405b`). La doctrine
+est désormais écrite : **D12 — adopter aux seams réels, jamais retirer**.
+
+== 1. Arrow : dernière version et BOM officiel
+
+* Dernière version **2.3.0** (`arrow-core`, `arrow-fx-coroutines`, `arrow-stack`) —
+  confirmée par le marqueur `release` Maven Central **et** la documentation
+  officielle https://arrow-kt.io/learn/quickstart/setup/.
+* Arrow **publie un BOM** : `io.arrow-kt:arrow-stack:2.3.0` (section officielle
+  « Using a Bill-of-Materials (BOM) »). Il versionne toute la pile (core, fx,
+  optics, atomic, resilience, collectors…).
+* `workspace-bom` **importe le stack** : `api(platform(libs.arrow.stack))` **hors**
+  `constraints` → le POM publié contient bien
+  `<type>pom</type><scope>import</scope>` (vérifié sur repo1). Alias catalogue
+  `arrow-stack` ajouté. Les pins explicites (`arrow-core`, `arrow-fx-coroutines`,
+  `arrow-integrations-jackson-module 0.15.1` — **hors stack**) restent la source de
+  vérité des composants utilisés.
+* BOM/catalog **0.0.117** publié (bundle `ea8bc702-421d-431b-a27a-df449e1ad2c9`,
+  AUTOMATIC), propagation repo1 200 ×2, import vérifié dans le POM publié.
+* Alignements : `slider` 2.2.2 → 2.3.0 (`13d405b`), `planner` 2.3.0 (adoption),
+  `codebase` 2.3.0 (`0b8b9b0`), `readme` 2.3.0 (`b23e154`), `plantuml` 2.3.0
+  (`63580e3`), `bakery` via `workspaceVersion 0.0.117` (`2953f951`).
+
+== 2. XB-FP-1 — cache CI : mesure isolée ✅
+
+Run **`41257127568`** (workflow_dispatch, aucun run concurrent) : **5m12s**,
+21 jobs, tous verts.
+
+* Plus long job : `functional-shard-B` **3m48s** (pas le cache).
+* Job N0 (`xargs -P 5`) : **3m36s** — n'est plus le chemin critique.
+* Job de couverture fusionnée : **63 s** (contre 94 s au run contaminé) — les
+  artefacts Gradle (`generated-gradle-jars`, `kotlin-dsl`,
+  `dependencies-accessors`) sont désormais restaurés, la configuration ne les
+  régénère plus.
+* KPI **≤ 5m30s atteint** (baseline 6m05-6m52 à 21 jobs).
+
+== 3. XB-FP-3 — bakery : accumulation sans état partagé ✅
+
+Commits `8ed6d84d` (refactor) + `2953f951` (catalogue 0.0.117 → Arrow 2.3.0).
+CI verte `41259485451`.
+
+* `DomainResolver.resolveOutcome()` rend un `Outcome(value, error?)` **immuable**
+  construit par `Either.catch(...).fold(...)` ; `resolve(MutableList)` reste en
+  **déprécié** (compatibilité des appelants/tests).
+* `resolveAllDataDriven` : **un binding typé nommé par domaine** (plus de
+  `List<DomainResolver<*>>`), erreurs assemblées en une fois par `listOfNotNull` ;
+  **plus de `MutableList`**, plus de `@Suppress("UNCHECKED_CAST")` ni de
+  `resolved[0] as FirebaseProjectInfo`. Comportement identique (fallback par
+  domaine, tous les échecs remontés).
+
+== 4. XB-FP-4 — planner : erreurs typées + retry fonctionnel ✅
+
+Commit `4d8db65` + correctif `5013280` (catalogue ROOT). CI verte `41259762865`.
+
+* `PlanningError` (sealed) : `LlmFailure` / `ParseFailure` (tentative, détail, cause).
+* `callLlm` : **`fold` pur** sur `1..MAX_ATTEMPTS` portant
+  `Either<PlanningError, Plan>` — plus de `var lastError`, plus de `for`/`try`,
+  arrêt dès le premier `Right`. L'`IllegalStateException` (marqueur `[FATAL]`,
+  attendu par `DecomposeIntentionPluginTest`) reste **une seule fois** à la frontière.
+* `LifecycleAdapter.toContextReady`/`toPlanned` : `try/catch` → `Either.catch`,
+  frontière nullable inchangée (`LifecycleAdapterTest`).
+* **Piège corrigé** : CI construit `:planner-plugin` **depuis la racine** → les
+  accesseurs `libs` viennent du catalogue **racine**, pas du catalogue standalone
+  `planner-plugin/`. Le premier push était vert en local (build standalone) et rouge
+  en CI (`Unresolved reference 'arrow'`). Ajout au catalogue racine, vérifié par
+  `./gradlew :planner-plugin:compileKotlin` depuis la racine.
+
+== 5. XB-FP-5 — adoption aux seams (partiel assumé)
+
+[cols="2,3,3", options="header"]
+|===
+| Dépôt | Seam adopté | Preuve
+
+| `slider` | (déjà) `Either`/`NonEmptyList` dans `DeckContextValidator`, `arrow-jackson` | `a4daf82`, CI verte `41256091035`
+| `codebase` | `QualityRetryCircuit` → `fold` + `CircuitState` immuable (plus de `var`/`MutableList`/retour précoce) | `b30c232`
+| `codebase` | `MetadataValidator` → `Either<NonEmptyList<String>, Metadata>`, **accumulation** version/type/dépendances, `fold` vers le `ValidationResult` public | `0b8b9b0`, CI verte `41259635715`/`41259635712`
+| `readme` | `JGitRemoteValidator` → `Either.catch` + `fold` (plus de `try/catch` imbriqué), mapping unique vers le sealed public | `67fceac`, CI verte `41258451065`
+| `plantuml` | **seam différé** : `KnowledgeGraphParser.parse` lève `IllegalArgumentException` — API à faire évoluer vers `Either<ParseError, KnowledgeGraph>` (US suivante) ; dépendance **conservée** | `6a29244` (revert suppressions)
+|===
+
+== 6. État et suites
+
+* CI vertes : workspace-bom `1bfd6a0` (BOM Arrow), bakery `2953f95`, planner
+  `5013280`, codebase `0b8b9b0`, readme `67fceac`, slider `13d405b`, plantuml
+  `6a29244` ; dernières retouches de version en cours (readme `b23e154`,
+  plantuml `63580e3`).
+* Gates locales (Local = Build) : compiles VERT pour chaque dépôt modifié,
+  `assemble` + `verifyCiMatrixCoverage` + `verifyCrossBoroughPins` VERT,
+  POM 0.0.117 inspecté (import `arrow-stack`).
+* Zéro test local, zéro secret, zéro Python.
+* **S-321** : `XB-FP-6` (tests lents → domaine pur) puis `XB-FP-7` (source set
+  partagé + TestKit caché), et le seam `plantuml` (`KnowledgeGraphParser`).
