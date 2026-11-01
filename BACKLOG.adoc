@@ -404,6 +404,43 @@ codebase `RagVectorStore` avec connexions scopées (`resourceScope { install }`)
 `.agents/sessions/329-xf-fp2-suite-warnings.adoc`.
 
 '''
+== 🟢 EPIC XF-FP-3 — paradigme fonctionnel, troisième vague (S-334 →)
+
+*Porteur* : MEMPHIS (transverse) ; exécution dans le borough concerné.
+*Doctrine* : celle de `XB-FP`/`XF-FP-2` — **D12** (Arrow adopté aux seams réels,
+jamais retiré faute d'usage), **D4** (sealed maison = frontière publique),
+iso-comportement strict, aucune assertion affaiblie.
+
+*Candidats issus des audits S-328/S-333* : `document` `DocumentTranslator`
+(état mutable qui s'échappe, `clear()` de l'appelant) ; `document`
+`BookTranslator` (trace jetée — rapport de validation livre) ; `bakery`
+`BatchDocumentTranslator`-style downcast (`is` sur un type concret) ;
+`slider`/`bakery`/`readme`/`plantuml` — `arrow-fx-coroutines` déclaré sans seam
+(D12 : trouver le seam, ne pas retirer) ; `zipOrAccumulate` sur les validateurs
+restants.
+
+[cols="1,4,3,2", options="header"]
+|===
+| US | Description | Cible | Statut
+
+| XF-FP3-1 | `DocumentTranslator` **sans état** : `TranslationTrace` immuable **retournée** (`ArticleTranslation`/`BlocksTranslation`/`DocumentTranslation`), index de bloc passé en paramètre (plus de champ ambient), `ContentTranslationService` propriétaire de son accumulateur de run (`ConcurrentLinkedQueue`, `drain…` conservé pour bakery), `BatchDocumentTranslator` lit la trace ; **+4 tests** (2 passes sans fuite, échec imbriqué attribué, parallélisme sans perte) ; RED prouvé par compilation | `document-gradle` | ✅ S-334 (`8f55131` + `08a4915`)
+| XF-FP3-2 | `BookTranslator` — exposer la trace de validation du livre (rapport `book-validation-report.json`) au lieu de la jeter | `document-gradle` | 🟡 À FAIRE
+| XF-FP3-3 | `BatchDocumentTranslator` — capacité explicite `TracedArticleTranslator` (supprimer le downcast `is DocumentTranslator`) | `document-gradle` | 🟡 À FAIRE
+|===
+
+_Livré S-334 (XF-FP3-1)_ : le traducteur de `document` était le seul endroit du
+workspace où des **diagnostics de production** étaient publiés comme collections
+mutables (`tableValidationResults`, `plantUmlValidationResults`,
+`translationFailures` + `clearTranslationFailures()`) avec un champ ambient
+`currentTopLevelIndex`. Le fold retourne désormais une `TranslationTrace`
+immuable ; les appelants (2 en production, 5 fichiers de test/BDD) lisent le
+résultat de la passe, et le chemin parallèle accumule dans une
+`ConcurrentLinkedQueue` (la course de données sur le `LinkedHashSet` partagé
+disparaît). API retirée sans consommateur hors `document` (grep workspace) ;
+**publication en attente** en `0.0.27` (0.0.26 déjà sur Central) — voir PUB-3.13.
+Rapport `.agents/sessions/334-xf-fp3-stateless-translator.adoc`.
+
+'''
 == ✅ EPIC MEM-WARN-FREE — zéro warning de compilation (TERMINÉ S-329 → S-330)
 
 *Cadrage* : `.agents/CADRAGE_EPIC_MEM_WARN_FREE.adoc`. *Porteur* : MEMPHIS.
@@ -506,6 +543,21 @@ BOM + 5 libraries de contrats partagés (N0). Premier artefact publié (VAGUE 1)
 
 . Artefact : `education.cccp:pipeline-contracts:0.0.2`
 . Vérifié sur https://repo1.maven.org/maven2/education/cccp/pipeline-contracts/0.0.2/
+
+=== PUB-3.13 — document-plugin
+**Priorite** : P2
+**Estimation** : 1 pt
+**Dependances** : DAG MEMPHIS-first (catalogue `document-plugin`), puis consumers
+**Statut** : 🟡 À FAIRE — `0.0.26` **déjà sur Central**, mais le contenu de S-334
+(XF-FP3-1 : `DocumentTranslator` sans état) n'y est pas.
+
+. Version publiée : `education.cccp:document-plugin:0.0.26` (repo1 HTTP 200)
+. **Prochaine** : `0.0.27` (retrait d'API publique : `tableValidationResults`,
+  `plantUmlValidationResults`, `translationFailures`, `clearTranslationFailures()` —
+  aucun consommateur hors `document`, `ContentTranslationService.drain…` conservé)
+. Ordre : MEMPHIS catalogue/BOM `document-plugin = 0.0.27` → publication `document-plugin 0.0.27`
+  → vérification `repo1` → le consommateur `bakery` suit **via la contrainte BOM**
+  (pas de version locale hardcodée depuis MEM-CAT-3) + bump de son platform.
 . *Note* : pipeline-contracts avait été supprimé du BOM en session 084
   (refactor shared kernel → 3 artefacts, rationale "zéro usage"). Restauré
   session 016 car document-gradle DOC-8.1 en avait besoin.Publié session 017.

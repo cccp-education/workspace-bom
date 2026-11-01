@@ -165,3 +165,20 @@
 * CI document `41332495591` ✅ ; capsule `Test` `41333347488` ✅ +
   `Full Tests` `41333347414` ✅ 25/25.
 * Zéro `@Suppress`, zéro test affaibli, zéro publication.
+
+== S-334 — XF-FP-3 : `DocumentTranslator` sans état ✅
+
+* Audit : 3 collections publiques mutables + `clearTranslationFailures()` + champ
+  ambient `currentTopLevelIndex` ; fuite entre documents ; **course de données** en
+  parallèle (`LinkedHashSet` depuis N coroutines).
+* Design : `TranslationTrace` immuable **retournée** (`DocumentTranslation`,
+  `ArticleTranslation`, `BlocksTranslation`) ; index de bloc théé ; validateurs qui
+  retournent leur constat (throw `STRICT` au même point) ; entrées publiques en
+  coquilles ; `ContentTranslationService` accumule dans `ConcurrentLinkedQueue`
+  (`drain…` conservé pour bakery) ; `BatchDocumentTranslator` lit la trace.
+* RED par compilation (2 prod + 5 test/BDD), +4 tests, 0 warning, ktlint VERT.
+* Commits `8f55131` + `08a4915`, CI document `41337263152`.
+* API retirée sans consommateur hors `document` → publication différée `0.0.27`
+  (`PUB-3.13`).
+* **Bug latent corrigé** : dans le delta, le repli d'un bloc préservé n'était pas
+  attribué (index ambient nul) → un échec LLM y restait figé `TRANSLATED`.

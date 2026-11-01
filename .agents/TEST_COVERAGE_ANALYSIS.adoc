@@ -1,6 +1,25 @@
 = TEST_COVERAGE_ANALYSIS — workspace-bom (MEMPHIS)
 :date: 2026-11-01
-:session: 333
+:session: 334
+
+== Session 334 (2026-11-01) — XF-FP3-1 : traducteur sans état (assertions ajoutées)
+
+* **`DocumentTranslatorStatelessnessTest`** (3 tests) : deux passes successives ne
+  partagent ni résultats de validation ni échecs (régression de l'état qui
+  s'échappait) ; un échec LLM dans une **admonition imbriquée** est attribué à son
+  bloc de premier niveau (le canal ambient `currentTopLevelIndex` est remplacé par
+  un paramètre threadé) ; le fallback silencieux reste rendu.
+* **`ContentTranslationServiceParallelValidationTest`** (1 test) : `parallelism = 4`,
+  8 fichiers corrompus → **8** constats (un par fichier). Régression de la course de
+  données sur le `LinkedHashSet` partagé.
+* **5 fichiers de test/BDD migrés** (sources de lecture : trace retournée au lieu des
+  propriétés mutables) — scénarios **identiques**, aucune assertion retirée :
+  `PlantUmlValidationSteps`, `TableValidationSteps`,
+  `DocumentTranslatorPlantUmlValidationTest`, `TableValidationConfigTest`,
+  `TranslationResilienceTest`.
+* RED prouvé par compilation (`Unresolved reference 'tableValidationResults'` etc.).
+* Preuve = CI document `41337263152`.
+
 
 == Session 333 (2026-11-01) — US d'upgrade des 34 P2 (aucune assertion affaiblie)
 

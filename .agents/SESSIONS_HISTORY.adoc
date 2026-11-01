@@ -455,3 +455,41 @@ Gates : compiles VERTES **0 warning**, `ktlintCheck` VERTS ; CI document
 d'exécution du nouveau moteur). Zéro `@Suppress`, zéro `-nowarn`, zéro test
 affaibli, aucune API publique changée, zéro bump, zéro publication. Rapport
 `.agents/sessions/333-warn-p2-upgrade.adoc`.
+
+== Session 334 (2026-11-01) — XF-FP-3 : l'état mutable du traducteur devient une trace retournée
+
+Décision pilote (fin S-333) : « suis ta recommandation et enchaîne ». Recommandation
+retenue : poursuivre l'adoption fonctionnelle (**D12**) sur le candidat identifié S-328 —
+`document` `DocumentTranslator` (« état mutable qui s'échappe, `clear()` de l'appelant »).
+`LINT-ADOPT-13` écarté : sans CI, aucune preuve.
+**Audit** : 3 collections `public` mutables (`tableValidationResults`,
+`plantUmlValidationResults`, `translationFailures`) + `clearTranslationFailures()` +
+un champ **ambient** `currentTopLevelIndex` servant de canal implicite d'attribution
+des échecs LLM ; une instance réutilisée sans `clear()` héritait des diagnostics du
+document précédent ; et `translateParallel` (`parallelism > 1`) ajoutait depuis N
+coroutines `Dispatchers.IO` à un `LinkedHashSet` **non synchronisé** (course de données).
+**Design** : `TranslationTrace` immuable (`failures`, `tableResults`, `plantUmlResults`)
++ valeurs retournées `DocumentTranslation` / `ArticleTranslation` / `BlocksTranslation`.
+La récursion (`translateBlock`→`BlockTranslation`, `translateInlines`→`InlinesTranslation`,
+`doTranslate`→`FieldTranslation(text, failed)`) **retourne** sa trace ; l'index de bloc de
+premier niveau est **passé en paramètre** ; les validateurs retournent leur constat (et
+lèvent en `STRICT` **au même point** — comportement observable inchangé). Les entrées
+publiques restent des coquilles ; nouvelles entrées `internal …Outcome`. `ContentTranslationService`
+possède son accumulateur de run (`ConcurrentLinkedQueue`, `drain…` conservé pour bakery),
+`BatchDocumentTranslator` lit la trace.
+**Baby-steps** : RED prouvé par compilation (2 fichiers prod + 5 test/BDD cassés — preuve
+que l'état était lu de l'extérieur), migration mécanique, puis **+4 tests** :
+`DocumentTranslatorStatelessnessTest` (2 passes sans partage de résultats ni d'échecs ;
+échec dans une admonition imbriquée attribué au bloc de premier niveau) et
+`ContentTranslationServiceParallelValidationTest` (8 fichiers, `parallelism = 4` → 8 constats).
+Gates : compiles `--rerun-tasks --no-build-cache` VERTS **0 warning**, `ktlintCheck` VERT ;
+CI document `41337263152` ✅ 30m03s. **Bug latent corrigé** : dans le delta, le repli
+d'un bloc préservé appelait `translateBlock` sans index ambient → un échec LLM sur ce
+repli n'était jamais enregistré et le bloc restait figé `TRANSLATED` (le défaut même que
+combat `DOC-TRANSLATE-RESILIENCE`). Commits `8f55131` + `08a4915`.
+**Compatibilité** : API retirée (`tableValidationResults`, `plantUmlValidationResults`,
+`translationFailures`, `clearTranslationFailures()`) — **aucun** consommateur hors `document`
+(grep workspace) ; `bakery` consomme `ContentTranslationService.drain…`, conservé.
+`document-plugin 0.0.26` étant **déjà sur Central**, la publication du delta se fera en
+**0.0.27** (`PUB-3.13`, non exécutée). Rapport
+`.agents/sessions/334-xf-fp3-stateless-translator.adoc`.

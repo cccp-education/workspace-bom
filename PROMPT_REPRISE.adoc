@@ -1,37 +1,38 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-334 — dernière terminée : **333** (US d'upgrade des 34 P2 : warnings tiers
-**34 → 0**). Avant : **332** (release consommateur `agent-contracts 0.0.4`),
-**331** (XF-FP-2 clos), **330** (MEM-WARN-FREE clos).
+335 — dernière terminée : **334** (EPIC `XF-FP-3` ouvert + `XF-FP3-1` ✅ :
+`DocumentTranslator` sans état). Avant : **333** (warnings tiers **34 → 0**),
+**332** (`agent-contracts 0.0.4`), **331** (XF-FP-2 clos).
 
-=== Mission Session 334 — ordre proposé
+=== Mission Session 335 — ordre proposé
 
-. **`LINT-ADOPT-13`** (academy, dashboard, api-key-pool, jhipster, magic-stick) :
-   **sans CI**, donc gate local seulement — **décision pilote requise**.
-. **Sinon** : proposer un cadrage au pilote (Règle 1 — pas d'initiative hors
-   backlog). Candidats (lectures S-328) : `document` `DocumentTranslator` (état
-   mutable qui s'échappe, `clear()` de l'appelant) ; `slider`/`bakery`/`document`
-   adoption d'`arrow-resilience` (D12) ; `zipOrAccumulate` sur les validateurs restants.
-. Release consommateur si un artefact est publié (Règle 2 « toujours granted »).
+. **`PUB-3.13`** — `document-plugin 0.0.27` (le delta S-334 retire des méthodes publiques ;
+   `0.0.26` est déjà sur Central). DAG : catalogue/BOM `0.0.27` → publication → `repo1` →
+   bump platform `bakery`. Règle 2 « toujours granted », CI verte préalable.
+. **`XF-FP3-2`** — `BookTranslator` expose la trace (rapport de validation livre)
+   au lieu de la jeter.
+. **`XF-FP3-3`** — capacité explicite `TracedArticleTranslator` (supprimer le
+   downcast `is DocumentTranslator` de `BatchDocumentTranslator`).
+. `LINT-ADOPT-13` (5 boroughs sans CI) — **décision pilote** (aucune preuve possible).
 
 _Documents maîtres_ : `.agents/CADRAGE_EPIC_MEM_WARN_FREE.adoc` (clos) ;
 `.agents/CADRAGE_EPIC_MEM_LINT_ADOPTION.adoc` (US-13 différée) ;
-`.agents/CADRAGE_EPIC_XF_FP_2.adoc` (clos).
+`.agents/CADRAGE_EPIC_XF_FP_2.adoc` (clos) ; `BACKLOG.adoc` § `XF-FP-3`.
 
 == État du code
 
-- Central : `agent-contracts **0.0.4**` + BOM/catalog **0.0.118** (bundle
-  `bceecd3f`) ; import `io.arrow-kt:arrow-stack:2.3.0`.
-- Contrats N0 : **sans Arrow** (D2) ; Arrow en N1/N2 en `implementation`.
-- **Warning-free : les 13 dépôts actifs sont à 0 warning.** Les 34 P2 tiers sont
-  soldés (S-333) : `document` `Options.map()` → valeur pure
-  `AsciidoctorConversionRequest` ; `capsule` 16 runners Cucumber → moteur suite
-  JUnit Platform (garde `capsule.ci.CucumberRunnerEngineTest`).
+- Central : `agent-contracts **0.0.4**` + BOM/catalog **0.0.118** (bundle `bceecd3f`) ;
+  import `io.arrow-kt:arrow-stack:2.3.0`. Contrats N0 **sans Arrow** (D2), Arrow N1/N2 en `implementation`.
+- **Warning-free : les 13 dépôts actifs sont à 0 warning** (les 34 P2 tiers soldés
+  S-333 : `document` `AsciidoctorConversionRequest` ; `capsule` 16 runners Cucumber
+  → moteur suite JUnit Platform, garde `CucumberRunnerEngineTest`).
 - Gate lint : **12 dépôts**. Sans analyse statique : academy, dashboard, api-key-pool, jhipster, magic-stick (+ vestiges) = `LINT-ADOPT-13`.
 - CI workspace-bom : 21 jobs + gardes ; wall-clock **`5m12s…5m52s`** (KPI ≤ 5m30s à la frontière).
-- Dernières CI : document `41332495591` ✅ 29m56s ; capsule `41333347488` ✅ +
-  `41333347414` ✅ 25/25 ; plantuml `41317002477` ✅ ; codex `41315948060` ✅.
+- Dernières CI : document `41337263152` (S-334) ; `41332495591` ✅ 29m56s (S-333) ;
+  capsule `41333347488` ✅ + `41333347414` ✅ 25/25 ; plantuml `41317002477` ✅.
+- `document-plugin` : version locale **0.0.26 déjà publiée** → tout delta doit être
+  livré en **0.0.27** (voir `PUB-3.13`).
 
 == Doctrine XB-FP (clos — conservée pour mémoire)
 
@@ -60,8 +61,7 @@ _Documents maîtres_ : `.agents/CADRAGE_EPIC_MEM_WARN_FREE.adoc` (clos) ;
 . *Gardes qui nomment un motif interdit* : elles se **détectent elles-mêmes** →
    exclure le fichier de garde de son propre scan.
 . *Cucumber 7.34* : `RunWith`/`CucumberOptions` **et** le marqueur
-   `io.cucumber.junit.platform.engine.Cucumber` sont dépréciés → `@Suite` +
-   `@IncludeEngines("cucumber")` + `@SelectClasspathResource`.
+   `io.cucumber.junit.platform.engine.Cucumber` sont dépréciés → `@Suite` + `@IncludeEngines("cucumber")`.
 
 == Règles
 

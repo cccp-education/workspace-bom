@@ -1,0 +1,121 @@
+= Session 334 — XF-FP-3 : l'état mutable du traducteur devient une trace retournée
+:date: 2026-11-01
+:borough: MEMPHIS (workspace-bom) — EPIC transverse XF-FP-3, exécuté dans `document`
+:type: refactor DDD/FP — état mutable qui s'échappe → valeur retournée
+:ci: document `41337263152` ✅ 30m03s (HEAD `08a4915`)
+
+== 1. Mission
+
+Décision pilote (fin S-333) : « suis ta recommandation et enchaîne ». Recommandation
+retenue : poursuivre l'adoption fonctionnelle (doctrine **D12**) sur le candidat
+identifié S-328 — `document` `DocumentTranslator`, « état mutable qui s'échappe,
+`clear()` de l'appelant ». `LINT-ADOPT-13` est écarté : sans CI, aucune preuve
+possible (règle Local = Build, Tests = CI).
+
+== 2. Constat (audit)
+
+[source,kotlin]
+----
+val tableValidationResults: MutableList<TableValidationResult.Invalid> = mutableListOf()
+val plantUmlValidationResults: MutableList<PlantUmlValidationResult.Invalid> = mutableListOf()
+val translationFailures: MutableSet<String> = linkedSetOf()
+private var currentTopLevelIndex: String? = null
+fun clearTranslationFailures() { translationFailures.clear() }
+----
+
+Quatre défauts, du plus bénin au plus grave :
+
+. **État qui s'échappe** : les trois collections sont `public` et mutables ; le
+  contrat « lis puis vide » est une convention non vérifiée par le compilateur
+  (`ContentTranslationService` appelait `clear()` avant chaque lot, `BatchDocumentTranslator`
+  vidait après chaque fichier).
+. **Champ ambient** : `currentTopLevelIndex` sert de canal implicite pour attribuer
+  un échec LLM au bloc de premier niveau ; la récursion est impure par effet de bord.
+. **Fuite entre documents** : une instance réutilisée sans `clear()` hérite des
+  diagnostics du document précédent (le `translate()` ne vidait que les *failures*,
+  pas les résultats de validation).
+. **Course de données** : `translateParallel` (jusqu'à N coroutines `Dispatchers.IO`)
+  ajoutait à un `LinkedHashSet` non synchronisé — des résultats pouvaient être perdus.
+
+== 3. Design (DDD/FP)
+
+Nouvelle valeur immuable, **retournée** avec le résultat :
+
+[source,kotlin]
+----
+internal data class TranslationTrace(
+    val translationFailures: Set<String> = emptySet(),
+    val tableValidationResults: List<TableValidationResult.Invalid> = emptyList(),
+    val plantUmlValidationResults: List<PlantUmlValidationResult.Invalid> = emptyList(),
+) { fun merge(other: TranslationTrace): TranslationTrace }
+
+internal data class DocumentTranslation(val content: String, val trace: TranslationTrace)
+internal data class ArticleTranslation(val article: PivotArticle, val trace: TranslationTrace)
+internal data class BlocksTranslation(val blocks: List<PivotBlock>, val trace: TranslationTrace)
+----
+
+* La récursion (`translateBlock` → `BlockTranslation`, `translateInlines` →
+  `InlinesTranslation`, `doTranslate` → `FieldTranslation(text, failed)`) devient un
+  **fold qui retourne** sa trace ; l'index de bloc de premier niveau est **passé en
+  paramètre** (plus de champ ambient).
+* `validateTranslatedTable` / `validateTranslatedPlantUml` **retournent** le constat
+  (et lèvent en `STRICT` **au même point** qu'avant : comportement observable
+  inchangé — même exception, même premier constat, arrêt de la traduction).
+* Les entrées publiques `translate` / `translateBlocks` restent des **coquilles**
+  (`…Outcome(...).content|.blocks`) ; nouvelles entrées `internal …Outcome(…)`
+  pour les appelants qui ont besoin des diagnostics.
+* `ContentTranslationService` possède désormais **son** accumulateur de run
+  (`ConcurrentLinkedQueue`), alimenté par les traces retournées : `drain…` —
+  consommé par **bakery** (`MigrateContentI18nTask`) — est inchangé, mais
+  l'accumulation n'est plus partagée avec le traducteur (et devient thread-safe).
+* `BatchDocumentTranslator` lit la trace retournée au lieu de vider les propriétés.
+
+== 4. Baby-steps (DDD/TDD/BDD)
+
+. **RED prouvé par compilation** : la suppression des champs casse 2 fichiers de
+   production (`BatchDocumentTranslator`, `ContentTranslationService`) et 5 fichiers
+   de test/BDD (`PlantUmlValidationSteps`, `TableValidationSteps`,
+   `DocumentTranslatorPlantUmlValidationTest`, `TableValidationConfigTest`,
+   `TranslationResilienceTest`) — preuve que l'état était bien lu de l'extérieur.
+. **Migration mécanique** des appelants et des steps BDD vers les traces retournées
+   (les scénarios sont identiques ; seules les sources de lecture changent).
+. **Tests neufs** `DocumentTranslatorStatelessnessTest` (3) :
+   deux passes successives ne partagent ni résultats de validation ni échecs ;
+   un échec dans une admonition imbriquée est attribué à son bloc de premier niveau.
+. **Test neuf** `ContentTranslationServiceParallelValidationTest` (1) : traduction
+   parallèle (`parallelism = 4`, 8 fichiers) → **8** constats, un par fichier.
+. **Gates locaux** : `compileKotlin` + `compileTestKotlin` `--rerun-tasks
+   --no-build-cache` VERTS **0 warning**, `ktlintCheck` VERT.
+. **CI** : document `41337263152` ✅ **30m03s** (HEAD `08a4915`, run du commit final).
+
+=== 4 bis. Découverte — bug latent corrigé (fallback d'un bloc préservé)
+
+Dans `translateArticleWithDelta`, le repli d'un bloc **préservé** (delta sans
+version précédente disponible) appelait `translateBlock(...)` **sans** positionner
+`currentTopLevelIndex` : un échec LLM sur ce repli n'était donc **jamais** enregistré,
+le bloc était figé `TRANSLATED` — exactement le défaut que `DOC-TRANSLATE-RESILIENCE`
+combat. Le paramètre `topLevelIndex` étant désormais explicite, ce repli est attribué
+comme les autres. Aucun test existant n'était sensible (le scénario n'était pas couvert) ;
+comportement corrigé, pas de régression.
+
+== 5. Compatibilité
+
+* API publique **retirée** : `DocumentTranslator.tableValidationResults`,
+  `plantUmlValidationResults`, `translationFailures`, `clearTranslationFailures()`.
+  Grep exhaustif du workspace : **aucun** consommateur hors de `document`
+  (bakery consomme `ContentTranslationService.drain*`, **conservé**).
+* `translate`, `translateBlocks`, `translateField`, `translateArticleWithDelta` :
+  signatures inchangées ; `ArticleTranslator` inchangé.
+* **Conséquence de version** : `document-plugin 0.0.26` est **déjà sur Central**
+  (`repo1` HTTP 200) ; le code livré ici doit donc être publié en **0.0.27**
+  (PUB-3.13 ajouté au backlog — non exécuté cette session, aucun besoin consommateur
+  immédiat : bakery compile contre 0.0.26 et n'utilise pas l'API retirée).
+
+== 6. Reste
+
+* `BookTranslator` crée son propre `DocumentTranslator` et **jette** la trace : un
+  rapport de validation « livre » n'existe pas (déjà vrai avant, aucune régression) —
+  candidat d'EPIC.
+* `BatchDocumentTranslator` teste encore `documentTranslator is DocumentTranslator` :
+  une capacité explicite (`TracedArticleTranslator`) supprimerait le downcast.
+* `LINT-ADOPT-13` reste ouvert (sans CI → décision pilote non prise).
