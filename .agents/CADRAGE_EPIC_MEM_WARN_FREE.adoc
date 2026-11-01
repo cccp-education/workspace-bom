@@ -1,6 +1,6 @@
 = CADRAGE — EPIC transverse MEM-WARN-FREE : zéro warning de compilation
 :date: 2026-11-01
-:statut: 🟢 EN COURS (6 dépôts traités S-329 ; reste 6)
+:statut: 🟢 EN COURS (7 dépôts traités ; reste 5)
 :porteur: MEMPHIS (workspace-bom) — EPIC transverse cross-borough
 :type: hygiène de build (iso-comportement)
 
@@ -28,7 +28,8 @@ est `--rerun-tasks --no-build-cache` (codebase : 4 warnings visibles au lieu de 
 | codebase | 39 | **0** | — (`--no-build-cache` requis pour les voir)
 | slider | 16 | **0** | — (déprécation réduite aux 2 entrées legacy)
 | document | 31 | 3 | AsciidoctorJ `Options.map()` (`For internal use only`) — P2
-| **Total** | **400** | **34** | 34 P2 tiers identifiés
+| codex | 31 | **0** | — (`prettyPrintIndent` opt-in ponctuel, format 2-espaces préservé)
+| **Total** | **431** | **34** | 34 P2 tiers identifiés
 |===
 
 == 2. Politique (à appliquer à chaque dépôt)
@@ -64,7 +65,7 @@ est `--rerun-tasks --no-build-cache` (codebase : 4 warnings visibles au lieu de 
 | WARN-7 | `planner` | `planner-gradle` | ⏳ À FAIRE
 | WARN-8 | `readme` | `readme-gradle` | ⏳ À FAIRE
 | WARN-9 | `hyperframes` | `hyperframes-gradle` | ⏳ À FAIRE
-| WARN-10 | `codex` | `codex-gradle` | ⏳ À FAIRE
+| WARN-10 | `codex` 31 → 0 | `codex-gradle` | ✅ S-330 (`f89524f`, CI `41315948060`)
 | WARN-11 | `plantuml` | `plantuml-gradle` | ⏳ À FAIRE
 | WARN-12 | `video-kernel` + `youtube-auth` | `video-kernel-gradle` | ⏳ À FAIRE
 | WARN-13 | N0 `workspace-bom` (10 builds) | `workspace-bom` | ⏳ À FAIRE
