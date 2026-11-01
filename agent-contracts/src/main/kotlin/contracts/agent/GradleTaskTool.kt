@@ -35,7 +35,10 @@ object GradleTaskTool : AgentTool<GradleTaskTool.Args, String> {
 
     override suspend fun execute(input: Args): String {
         val validation = validate(input)
-        if (validation.isFailure) return "BLOCKED: ${validation.exceptionOrNull()?.message}"
+        if (validation is ValidationOutcome.Invalid) {
+            // XF-FP2-6 — the problems are values; the boundary formats them.
+            return "BLOCKED: " + validation.problems.joinToString("; ") { it.message }
+        }
 
         val workspaceRoot = System.getenv("WORKSPACE_ROOT") ?: System.getProperty("user.dir")
 
@@ -74,21 +77,37 @@ object GradleTaskTool : AgentTool<GradleTaskTool.Args, String> {
         }
     }
 
-    override fun validate(input: Args): Result<Unit> {
-        for (pattern in BLACKLIST_PATTERNS) {
-            if (pattern.containsMatchIn(input.task)) {
-                return Result.failure(SecurityException("Task '${input.task}' is blacklisted (destructive operation)"))
+    /**
+     * XF-FP2-6 — the four checks are **independent**, so they accumulate: an
+     * invalid input reports every problem at once (no `Result`, no `Throwable`,
+     * no first-failure short-circuit).
+     */
+    override fun validate(input: Args): ValidationOutcome {
+        val problems =
+            buildList {
+                if (BLACKLIST_PATTERNS.any { it.containsMatchIn(input.task) }) {
+                    add(
+                        ValidationProblem(
+                            code = "BLACKLISTED_TASK",
+                            message = "Task '${input.task}' is blacklisted (destructive operation)",
+                        ),
+                    )
+                }
+                if (input.project.isBlank()) {
+                    add(ValidationProblem(code = "BLANK_PROJECT", message = "Project must not be blank"))
+                }
+                if (input.task.isBlank()) {
+                    add(ValidationProblem(code = "BLANK_TASK", message = "Task must not be blank"))
+                }
+                if (input.timeoutSeconds < 1 || input.timeoutSeconds > 600) {
+                    add(
+                        ValidationProblem(
+                            code = "TIMEOUT_OUT_OF_RANGE",
+                            message = "Timeout must be between 1 and 600 seconds",
+                        ),
+                    )
+                }
             }
-        }
-        if (input.project.isBlank()) {
-            return Result.failure(IllegalArgumentException("Project must not be blank"))
-        }
-        if (input.task.isBlank()) {
-            return Result.failure(IllegalArgumentException("Task must not be blank"))
-        }
-        if (input.timeoutSeconds < 1 || input.timeoutSeconds > 600) {
-            return Result.failure(IllegalArgumentException("Timeout must be between 1 and 600 seconds"))
-        }
-        return Result.success(Unit)
+        return if (problems.isEmpty()) ValidationOutcome.Valid else ValidationOutcome.Invalid(problems)
     }
 }

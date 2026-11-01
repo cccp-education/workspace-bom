@@ -1,6 +1,6 @@
 [versions]
 # ── Workspace BOM shared versions ─────────────────────────────────────────────
-workspace-bom = "0.0.117"
+workspace-bom = "0.0.118"
 
 # ── Kotlin ────────────────────────────────────────────────────────────────────
 kotlin = "2.4.10"
@@ -75,7 +75,7 @@ asciidoctorj-diagram = "3.2.1"
 asciidoctorj-diagram-plantuml = "1.2026.2"
 
 # ── Agent Contracts ───────────────────────────────────────────────────────────
-agent-contracts = "0.0.3"
+agent-contracts = "0.0.4"
 codebase-contracts = "0.0.2"
 llm-pool-contracts = "0.0.2"
 opencode-session-contracts = "0.0.2"

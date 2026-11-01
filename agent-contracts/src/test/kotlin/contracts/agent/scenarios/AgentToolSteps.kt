@@ -2,13 +2,14 @@ package contracts.agent.scenarios
 
 import contracts.agent.AgentTool
 import contracts.agent.GradleTaskTool
+import contracts.agent.ValidationOutcome
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
 import org.assertj.core.api.Assertions.assertThat
 
 class AgentToolSteps {
-    private var validationResult: Result<Unit>? = null
+    private var validationResult: ValidationOutcome? = null
     private var lastArgs: GradleTaskTool.Args? = null
 
     @Given("the GradleTaskTool")
@@ -53,17 +54,21 @@ class AgentToolSteps {
 
     @Then("validation succeeds")
     fun thenValidationSuccess() {
-        assertThat(validationResult?.isSuccess).isTrue()
+        assertThat(validationResult).isEqualTo(ValidationOutcome.Valid)
     }
 
     @Then("validation fails")
     fun thenValidationFailure() {
-        assertThat(validationResult?.isFailure).isTrue()
+        assertThat(validationResult).isInstanceOf(ValidationOutcome.Invalid::class.java)
     }
 
     @Then("the error message contains {string}")
     fun thenErrorMessageContains(texte: String) {
-        val message = validationResult?.exceptionOrNull()?.message ?: ""
+        val message =
+            (validationResult as? ValidationOutcome.Invalid)
+                ?.problems
+                ?.joinToString(" ") { it.message }
+                ?: ""
         assertThat(message.lowercase()).contains(texte.lowercase())
     }
 

@@ -6,5 +6,5 @@ interface AgentTool<TInput, TOutput> {
 
     suspend fun execute(input: TInput): TOutput
 
-    fun validate(input: TInput): Result<Unit>
+    fun validate(input: TInput): ValidationOutcome
 }
