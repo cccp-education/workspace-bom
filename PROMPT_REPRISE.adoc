@@ -1,20 +1,20 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-335 — dernière terminée : **334** (EPIC `XF-FP-3` ouvert + `XF-FP3-1` ✅ :
-`DocumentTranslator` sans état). Avant : **333** (warnings tiers **34 → 0**),
-**332** (`agent-contracts 0.0.4`), **331** (XF-FP-2 clos).
+336 — dernière terminée : **335** (P0 `MEM-CI-GATE` : le gate N0 ne masque plus les
+échecs + `PUB-3.13` : `document-plugin 0.0.27`, BOM/catalog `0.0.119`). Avant :
+**334** (`XF-FP3-1` traducteur sans état), **333** (warnings tiers **34 → 0**).
 
-=== Mission Session 335 — ordre proposé
+=== Mission Session 336 — ordre proposé
 
-. **`PUB-3.13`** — `document-plugin 0.0.27` (le delta S-334 retire des méthodes publiques ;
-   `0.0.26` est déjà sur Central). DAG : catalogue/BOM `0.0.27` → publication → `repo1` →
-   bump platform `bakery`. Règle 2 « toujours granted », CI verte préalable.
-. **`XF-FP3-2`** — `BookTranslator` expose la trace (rapport de validation livre)
-   au lieu de la jeter.
-. **`XF-FP3-3`** — capacité explicite `TracedArticleTranslator` (supprimer le
-   downcast `is DocumentTranslator` de `BatchDocumentTranslator`).
+. **`XF-FP3-2` + `XF-FP3-3`** livrés **ensemble** (même borough, une seule release) :
+   `BookTranslator` expose la trace (rapport `book-validation-report.json`) et
+   `BatchDocumentTranslator` passe par une capacité explicite `TracedArticleTranslator`
+   (fin du downcast `is DocumentTranslator`).
+. **`PUB-3.13-bis`** — `document-plugin **0.0.28**` : DAG catalogue/BOM → plugin → `repo1`
+   → `bakery`. Règle 2 « toujours granted ».
 . `LINT-ADOPT-13` (5 boroughs sans CI) — **décision pilote** (aucune preuve possible).
+. Sinon : auditer les **codes de sortie** des autres étapes CI du workspace (piste S-335).
 
 _Documents maîtres_ : `.agents/CADRAGE_EPIC_MEM_WARN_FREE.adoc` (clos) ;
 `.agents/CADRAGE_EPIC_MEM_LINT_ADOPTION.adoc` (US-13 différée) ;
@@ -22,17 +22,17 @@ _Documents maîtres_ : `.agents/CADRAGE_EPIC_MEM_WARN_FREE.adoc` (clos) ;
 
 == État du code
 
-- Central : `agent-contracts **0.0.4**` + BOM/catalog **0.0.118** (bundle `bceecd3f`) ;
-  import `io.arrow-kt:arrow-stack:2.3.0`. Contrats N0 **sans Arrow** (D2), Arrow N1/N2 en `implementation`.
-- **Warning-free : les 13 dépôts actifs sont à 0 warning** (les 34 P2 tiers soldés
-  S-333 : `document` `AsciidoctorConversionRequest` ; `capsule` 16 runners Cucumber
-  → moteur suite JUnit Platform, garde `CucumberRunnerEngineTest`).
-- Gate lint : **12 dépôts**. Sans analyse statique : academy, dashboard, api-key-pool, jhipster, magic-stick (+ vestiges) = `LINT-ADOPT-13`.
-- CI workspace-bom : 21 jobs + gardes ; wall-clock **`5m12s…5m52s`** (KPI ≤ 5m30s à la frontière).
-- Dernières CI : document `41337263152` (S-334) ; `41332495591` ✅ 29m56s (S-333) ;
-  capsule `41333347488` ✅ + `41333347414` ✅ 25/25 ; plantuml `41317002477` ✅.
-- `document-plugin` : version locale **0.0.26 déjà publiée** → tout delta doit être
-  livré en **0.0.27** (voir `PUB-3.13`).
+- Central : `agent-contracts **0.0.4**`, `document-plugin **0.0.27**`, BOM/catalog
+  **0.0.119** (bundle `b9bc83e1`) ; `bakery` `workspaceVersion = 0.0.119`.
+  Import `io.arrow-kt:arrow-stack:2.3.0`. Contrats N0 **sans Arrow** (D2).
+- **Gate N0 réellement bloquant** depuis S-335 (`set -eo pipefail` + garde
+  `N0ContractsGateTest`) : un `./gradlew check` en échec fait échouer le job.
+- **Warning-free : les 13 dépôts actifs à 0 warning** (34 P2 tiers soldés S-333).
+- Gate lint : **12 dépôts**. Sans analyse statique : academy, dashboard, api-key-pool,
+  jhipster, magic-stick (+ vestiges) = `LINT-ADOPT-13`. CI : 21 jobs, **`5m12s…5m52s`**.
+- Dernières CI : workspace-bom `41344806846` ✅ (gate N0) ; document `41346588405` ;
+  bakery `41346591172` ; capsule `41333347488` ✅ + `41333347414` ✅ 25/25.
+- `document-plugin 0.0.27` est publié : **tout delta source part en 0.0.28**.
 
 == Doctrine XB-FP (clos — conservée pour mémoire)
 

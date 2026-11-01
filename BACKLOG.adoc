@@ -5,7 +5,9 @@
 :sectnums:
 
 _Dernière mise à jour (antérieure) : 2026-10-25 (S-307 — **BOM/catalog 0.0.101 : `document-plugin 0.0.25` + `bakery-plugin 0.0.28`**, revue cheroliv.com ; publication Central `d6e5bf37`, propagation repo1 200, CI verte `67b0d8c`. Précédent S-306 : BOM/catalog 0.0.100 bakery 0.0.27, bundle `936b54a1`, CI verte `c6dc0e1`. Précédent S-299 : CI cross-borough < 5 min.)_
-_Dernière mise à jour : 2026-11-01 (S-333 — **US d'upgrade des 34 P2 : warnings tiers 34 → 0**. **WARN-14 `document`** : `Options.map()` (déprécié AsciidoctorJ 3) → valeur pure `AsciidoctorConversionRequest`, `buildOptions` en adaptateur (3 tests migrés + 3 additifs, RED par compilation, `50301eb`). **WARN-15 `capsule`** : **16** runners Cucumber → moteur suite JUnit Platform (pattern déjà en production dans 47 runners ; le marqueur platform `io.cucumber.junit.platform.engine.Cucumber` était **aussi** déprécié, hors inventaire S-329) + garde `capsule.ci.CucumberRunnerEngineTest` (API legacy interdite, anti test fantôme sur les `.feature`), `693d19b`+`6dd56c3`. Mesure worktree `--rerun-tasks --no-build-cache` : document 3→0, capsule 31→0. CI document `41332495591` ✅, capsule `Test` `41333347488` ✅ + `Full Tests` `41333347414` ✅ 25/25. Précédent S-332 : release consommateur `agent-contracts 0.0.4`.)_
+_Dernière mise à jour : 2026-11-01 (S-335 — **P0 `MEM-CI-GATE` + `PUB-3.13`**. **Le job `N0 · contracts` était un FAUX VERT** : le script parallèle `xargs … bash -c` finissait par `echo "::endgroup::"`, donc le shell sortait 0 même quand `./gradlew check` échouait — il masquait depuis son introduction une garde catalogue rouge (`agent-contracts` attendu 0.0.3 vs 0.0.4, cassée en S-331/S-332). Correctif : `set -eo pipefail` dans le sous-shell + garde `contracts.catalog.N0ContractsGateTest` (errexit obligatoire, `|| true` interdit ; RED prouvé) + garde catalogue réparée. Preuve : CI `41344806846` ✅ (le job a réellement exécuté les 2 gardes et `PlatformCatalogAlignmentTest` 7/7). **Release DAG `document-plugin 0.0.27`** : MEMPHIS BOM/catalog **0.0.119** (bundle `b9bc83e1`, repo1 200) → `document-plugin 0.0.27` (bundle `c54a3c5f`, repo1 200) → `bakery` `workspaceVersion = 0.0.119` (`dependencyInsight` : `document-plugin:0.0.27 by constraint`). Vague suivante `document` = **0.0.28** (`XF-FP3-2`/`-3`). Précédent S-334 : `XF-FP3-1` traducteur sans état.)_
+_Dernière mise à jour (antérieure) : 2026-11-01 (S-334 — **EPIC `XF-FP-3` ouvert + `XF-FP3-1` ✅** : `document` `DocumentTranslator` **sans état** (`TranslationTrace` immuable retournée, fin du champ ambient `currentTopLevelIndex`, `ContentTranslationService` → `ConcurrentLinkedQueue`, +4 tests, CI `41337263152` ✅ 30m03s).)_
+_Dernière mise à jour (antérieure) : 2026-11-01 (S-333 — **US d'upgrade des 34 P2 : warnings tiers 34 → 0**. **WARN-14 `document`** : `Options.map()` (déprécié AsciidoctorJ 3) → valeur pure `AsciidoctorConversionRequest`, `buildOptions` en adaptateur (3 tests migrés + 3 additifs, RED par compilation, `50301eb`). **WARN-15 `capsule`** : **16** runners Cucumber → moteur suite JUnit Platform (pattern déjà en production dans 47 runners ; le marqueur platform `io.cucumber.junit.platform.engine.Cucumber` était **aussi** déprécié, hors inventaire S-329) + garde `capsule.ci.CucumberRunnerEngineTest` (API legacy interdite, anti test fantôme sur les `.feature`), `693d19b`+`6dd56c3`. Mesure worktree `--rerun-tasks --no-build-cache` : document 3→0, capsule 31→0. CI document `41332495591` ✅, capsule `Test` `41333347488` ✅ + `Full Tests` `41333347414` ✅ 25/25. Précédent S-332 : release consommateur `agent-contracts 0.0.4`.)_
 _Dernière mise à jour (antérieure) : 2026-11-01 (S-332 — **release consommateur `agent-contracts 0.0.4`** : propagation repo1 confirmée (BOM/catalog `0.0.118` POM + `.toml` **200**), les **2 seuls** dépôts qui pinnent le contrat sont repinnés (`planner` `build.gradle.kts`, `codebase` `libs.versions.toml`) ; `dependencyInsight` prouve `0.0.3 -> 0.0.4` malgré la contrainte BOM ; compiles + ktlint VERTS (0 warning), CI planner `41327481771` ✅ et codebase `41327484201` ✅ 3m45s + OCR ✅. Aucun code applicatif modifié. Précédent S-331 : XF-FP-2 clos (N0 typé + fold `PivotModel`).)_
 _Dernière mise à jour (antérieure) : 2026-11-01 (S-331 — **EPIC XF-FP-2 TERMINÉ (US-0→US-7)**. **XF-FP2-6** : N0 `AgentTool.validate` `Result<Unit>` → scellé `ValidationOutcome`/`ValidationProblem` (kotlin-stdlib only), les 4 contrôles de `GradleTaskTool` **s'accumulent**, RED prouvé par compilation ; `agent-contracts 0.0.4` publié (bundle `b47de75d`, repo1 **200**) + BOM/catalog `0.0.118` (bundle `bceecd3f`, propagation en polling). **XF-FP2-7** : `document` `PivotBlock.fold` internal exhaustif sans `else`, **91 → 24** `is` legacy (5 fichiers migrés, 5 commits, CI `41321357878` ✅ 29m56s). Précédent S-330 : MEM-WARN-FREE clos.)_
 _Dernière mise à jour (antérieure) : 2026-11-01 (S-330 — **EPIC MEM-WARN-FREE TERMINÉ (WARN-0→WARN-13)** : **478 warnings → 34** sur **13 dépôts**, zéro `@Suppress` ajouté. S-330 : planner 6→0, readme 0 (déjà propre, vérifié par sonde), hyperframes 2→0 (**P0** : `data class` à constructeur privé dont le `copy()` généré exposait le constructeur → classe régulière), codex 31→0 (15 `Json` hissés, 4 opt-ins par déclaration, 5 noms Windows-hostiles), plantuml 34→0, video-kernel+youtube-auth 3→0 (**2 `@Suppress` préexistants retirés**), N0 (9 builds) 2→0. Les 34 restants = 2 familles **tierces** consignées (Cucumber `@CucumberOptions` ×31, AsciidoctorJ `Options.map()` ×3). Pièges ajoutés : `-q` masque les warnings ; `@Suppress` préexistant = warning caché. 7 CI vertes.)_ 
@@ -281,6 +283,33 @@ occurrence). CI bakery `41267145721` ✅. Rapport
 `.agents/sessions/324-mem-lint-gate.adoc`.
 
 '''
+== ✅ EPIC MEM-CI-GATE — un gate CI qui peut échouer (P0, S-335)
+
+_Origine_ : en préparant `PUB-3.13`, la garde `PlatformCatalogAlignmentTest` contredisait
+le toml alors que la CI était verte. Lecture du run `41340247377` : `agent-contracts`
+`:test` **FAILED** (`expected: <0.0.3> but was: <0.0.4>`) et le job était **success**.
+
+_Cause racine_ : dans `n0-contracts`, le script parallèle `xargs … bash -c` finissait par
+`echo "::endgroup::"` — la dernière commande — donc le shell sortait **0** quel que soit
+le résultat de `./gradlew check`, et `xargs`/le step/le job ne voyaient jamais l'échec.
+
+[cols="1,4,2,3", options="header"]
+|===
+| US | Description | Cible | Statut
+
+| CI-GATE-1 | `set -eo pipefail` dans le script parallèle du job `n0-contracts` | `.github/workflows/test.yml` | ✅ S-335 (`b4dc526`)
+| CI-GATE-2 | Garde `contracts.catalog.N0ContractsGateTest` (2 tests) : errexit obligatoire, `\|\| true` interdit ; RED prouvé (`set -e` absent) | `agent-contracts` | ✅ S-335
+| CI-GATE-3 | Réparer la garde rouge masquée (`agent-contracts = 0.0.4`) | `agent-contracts` | ✅ S-335
+|===
+
+**Livré S-335** : le gate N0 **exécute** désormais réellement les 10 `check` (preuve :
+CI `41344806846` ✅, `N0ContractsGateTest` 2/2 et `PlatformCatalogAlignmentTest` 7/7
+PASSED dans le job). Mécanisme prouvé localement : `bash -c '( false ); echo end'` = exit 0
+(ancien) vs `set -eo pipefail` = exit 1 (nouveau). Leçon (famille S-243/S-269) : **un gate
+qui ne peut pas échouer est un faux vert** — il faut tester le gate lui-même.
+Rapport `.agents/sessions/335-n0-gate-p0-and-document-release.adoc`.
+
+'''
 == 🟢 EPIC MEM-LINT-ADOPTION — analyse statique pour tous les boroughs (S-325 →)
 
 *Cadrage* : `.agents/CADRAGE_EPIC_MEM_LINT_ADOPTION.adoc`. *Porteur* : MEMPHIS
@@ -424,8 +453,8 @@ restants.
 | US | Description | Cible | Statut
 
 | XF-FP3-1 | `DocumentTranslator` **sans état** : `TranslationTrace` immuable **retournée** (`ArticleTranslation`/`BlocksTranslation`/`DocumentTranslation`), index de bloc passé en paramètre (plus de champ ambient), `ContentTranslationService` propriétaire de son accumulateur de run (`ConcurrentLinkedQueue`, `drain…` conservé pour bakery), `BatchDocumentTranslator` lit la trace ; **+4 tests** (2 passes sans fuite, échec imbriqué attribué, parallélisme sans perte) ; RED prouvé par compilation | `document-gradle` | ✅ S-334 (`8f55131` + `08a4915`)
-| XF-FP3-2 | `BookTranslator` — exposer la trace de validation du livre (rapport `book-validation-report.json`) au lieu de la jeter | `document-gradle` | 🟡 À FAIRE
-| XF-FP3-3 | `BatchDocumentTranslator` — capacité explicite `TracedArticleTranslator` (supprimer le downcast `is DocumentTranslator`) | `document-gradle` | 🟡 À FAIRE
+| XF-FP3-2 | `BookTranslator` — exposer la trace de validation du livre (rapport `book-validation-report.json`) au lieu de la jeter | `document-gradle` | 🟡 À FAIRE (avec `0.0.28`)
+| XF-FP3-3 | `BatchDocumentTranslator` — capacité explicite `TracedArticleTranslator` (supprimer le downcast `is DocumentTranslator`) | `document-gradle` | 🟡 À FAIRE (avec `0.0.28`)
 |===
 
 _Livré S-334 (XF-FP3-1)_ : le traducteur de `document` était le seul endroit du
@@ -436,8 +465,9 @@ mutables (`tableValidationResults`, `plantUmlValidationResults`,
 immuable ; les appelants (2 en production, 5 fichiers de test/BDD) lisent le
 résultat de la passe, et le chemin parallèle accumule dans une
 `ConcurrentLinkedQueue` (la course de données sur le `LinkedHashSet` partagé
-disparaît). API retirée sans consommateur hors `document` (grep workspace) ;
-**publication en attente** en `0.0.27` (0.0.26 déjà sur Central) — voir PUB-3.13.
+disparaît). API retirée sans consommateur hors `document` (grep workspace).
+**Publié en `0.0.27` en S-335** (voir `PUB-3.13`) ; tout delta ultérieur (`XF-FP3-2`/`-3`)
+partira en **`0.0.28`**.
 Rapport `.agents/sessions/334-xf-fp3-stateless-translator.adoc`.
 
 '''
@@ -497,10 +527,10 @@ BOM + 5 libraries de contrats partagés (N0). Premier artefact publié (VAGUE 1)
 **Priorite** : P0
 **Estimation** : 1 pt
 **Dependances** : PUB-0 et PUB-1 complets (DNS TXT + GPG)
-**Statut** : ✅ PUBLIÉ + VÉRIFIÉ (dernière version **0.0.116** — S-317, 2026-10-31, `vibecoding-contracts 0.0.1` ajouté au catalogue/contraintes ; précédent 0.0.115 S-316 `video-kernel 0.7.0` + `youtube-auth 0.0.2` + capsule 0.0.15 + hyperframes 0.0.14)
+**Statut** : ✅ PUBLIÉ + VÉRIFIÉ (dernière version **0.0.119** — S-335, 2026-10-31, bundle `b9bc83e1`, `document-plugin 0.0.27` ; précédent 0.0.118 S-331 `agent-contracts 0.0.4`, 0.0.117 S-320 BOM `arrow-stack`)
 
-. Artefact : `education.cccp:workspace-bom:0.0.116` (dernière)
-. Versions publiées : 0.0.1 → 0.0.116 (historique complet `.agents/SESSIONS_HISTORY.adoc`)
+. Artefact : `education.cccp:workspace-bom:0.0.119` (dernière)
+. Versions publiées : 0.0.1 → 0.0.119 (historique complet `.agents/SESSIONS_HISTORY.adoc`)
 . Verifiée sur https://central.sonatype.com/artifact/education.cccp/workspace-bom
 
 === PUB-3.02 — agent-contracts
@@ -509,7 +539,7 @@ BOM + 5 libraries de contrats partagés (N0). Premier artefact publié (VAGUE 1)
 **Dependances** : PUB-0 et PUB-1 complets
 **Statut** : ✅ PUBLIÉ + VÉRIFIÉ
 
-. Artefact : `education.cccp:agent-contracts:0.0.3` (dernière)
+. Artefact : `education.cccp:agent-contracts:0.0.4` (dernière — S-331, bundle `b47de75d`)
 
 === PUB-3.03 — codebase-contracts
 **Priorite** : P0
@@ -548,19 +578,17 @@ BOM + 5 libraries de contrats partagés (N0). Premier artefact publié (VAGUE 1)
 **Priorite** : P2
 **Estimation** : 1 pt
 **Dependances** : DAG MEMPHIS-first (catalogue `document-plugin`), puis consumers
-**Statut** : 🟡 À FAIRE — `0.0.26` **déjà sur Central**, mais le contenu de S-334
-(XF-FP3-1 : `DocumentTranslator` sans état) n'y est pas.
+**Statut** : ✅ PUBLIÉ + VÉRIFIÉ (S-335) — `document-plugin **0.0.27**`
 
-. Version publiée : `education.cccp:document-plugin:0.0.26` (repo1 HTTP 200)
-. **Prochaine** : `0.0.27` (retrait d'API publique : `tableValidationResults`,
-  `plantUmlValidationResults`, `translationFailures`, `clearTranslationFailures()` —
-  aucun consommateur hors `document`, `ContentTranslationService.drain…` conservé)
-. Ordre : MEMPHIS catalogue/BOM `document-plugin = 0.0.27` → publication `document-plugin 0.0.27`
-  → vérification `repo1` → le consommateur `bakery` suit **via la contrainte BOM**
-  (pas de version locale hardcodée depuis MEM-CAT-3) + bump de son platform.
-. *Note* : pipeline-contracts avait été supprimé du BOM en session 084
-  (refactor shared kernel → 3 artefacts, rationale "zéro usage"). Restauré
-  session 016 car document-gradle DOC-8.1 en avait besoin.Publié session 017.
+. Contenu : delta `XF-FP3-1` (S-334) — `DocumentTranslator` sans état ; retrait d'API
+  publique (`tableValidationResults`, `plantUmlValidationResults`,
+  `translationFailures`, `clearTranslationFailures()`), aucun consommateur hors
+  `document` (`ContentTranslationService.drain…` conservé).
+. DAG : MEMPHIS BOM/catalog **0.0.119** (`document-plugin = "0.0.27"`, bundle
+  `b9bc83e1`, repo1 200) → `document-plugin **0.0.27**` (bundle `c54a3c5f`, repo1 200)
+  → consumer `bakery` `workspaceVersion = 0.0.119` (`dependencyInsight` →
+  `document-plugin:0.0.27 by constraint`).
+. **Prochaine release `document`** : `0.0.28` (tout delta source, dont `XF-FP3-2`/`XF-FP3-3`).
 
 === PUB-2.2 — Mise à jour commentaire relocation dans build.gradle.kts
 **Priorite** : P1

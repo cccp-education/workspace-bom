@@ -182,3 +182,15 @@
   (`PUB-3.13`).
 * **Bug latent corrigé** : dans le delta, le repli d'un bloc préservé n'était pas
   attribué (index ambient nul) → un échec LLM y restait figé `TRANSLATED`.
+
+== S-335 — P0 `MEM-CI-GATE` + release `document-plugin 0.0.27` ✅
+
+* **Faux vert CI** : `n0-contracts` lançait `xargs … bash -c '…'` terminé par
+  `echo "::endgroup::"` → exit 0 même quand `./gradlew check` échouait. Masquait une
+  garde catalogue rouge (`agent-contracts` 0.0.3 attendu vs 0.0.4).
+* Correctif : `set -eo pipefail` + garde `N0ContractsGateTest` (errexit, pas de
+  `|| true` ; RED prouvé) + garde catalogue réparée.
+* Preuve : CI `41344806846` ✅ (gardes réellement exécutées dans le job N0).
+* **Release DAG** : BOM/catalog `0.0.119` (`b9bc83e1`) → `document-plugin 0.0.27`
+  (`c54a3c5f`) → `bakery` `0.0.119` (`document-plugin:0.0.27 by constraint`).
+* Prochain delta `document` (XF-FP3-2/-3) = **0.0.28**.

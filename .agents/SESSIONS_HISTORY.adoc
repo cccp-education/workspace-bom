@@ -493,3 +493,33 @@ combat `DOC-TRANSLATE-RESILIENCE`). Commits `8f55131` + `08a4915`.
 `document-plugin 0.0.26` étant **déjà sur Central**, la publication du delta se fera en
 **0.0.27** (`PUB-3.13`, non exécutée). Rapport
 `.agents/sessions/334-xf-fp3-stateless-translator.adoc`.
+
+== Session 335 (2026-11-01) — P0 : le gate N0 ne masque plus les échecs ; release document 0.0.27
+
+**Audit d'ouverture** : en préparant `PUB-3.13`, la garde `PlatformCatalogAlignmentTest`
+contredisait le toml (`agent-contracts` attendu **0.0.3** vs **0.0.4**) alors que la CI
+était verte. Lecture du run `41340247377` : `agent-contracts` `:test` **FAILED** et le job
+`N0 · contracts` **success**.
+**Cause racine (P0)** : le job lance les 10 contrats par `xargs -I{} -P 5 bash -c '…'`
+dont la **dernière commande** est `echo "::endgroup::"` → le sous-shell retourne `0` quel
+que soit le résultat de `./gradlew check` ; `xargs`, le step et le job ne voient donc
+jamais l'échec. Le gate était aveugle depuis son introduction et masquait exactement un
+échec réel (garde catalogue cassée en S-331 : `97cb4a8` a bumpé la garde `workspace-bom`
+mais pas la ligne `agent-contracts`). Mécanisme prouvé : `bash -c '( false ); echo end'`
+= exit 0 vs `set -eo pipefail` = exit 1.
+**Correctif** : `set -eo pipefail` dans le script parallèle + garde
+`contracts.catalog.N0ContractsGateTest` (2 tests : errexit obligatoire, `|| true` interdit ;
+RED prouvé : 0 `set -e` avant) + garde catalogue réparée (`agent-contracts = 0.0.4`).
+Preuve : CI `41344806846` ✅ — le job N0 a réellement exécuté `N0ContractsGateTest` (2/2
+PASSED) et `PlatformCatalogAlignmentTest` (7/7 PASSED).
+**`PUB-3.13` — release DAG `document-plugin 0.0.27`** (contenu `XF-FP3-1` S-334) :
+MEMPHIS BOM/catalog **0.0.119** (`document-plugin = "0.0.27"`, bundle `b9bc83e1`,
+propagation repo1 200 ≈ 9 min) → `document-plugin **0.0.27**` (bundle `c54a3c5f`,
+repo1 200 ≈ 7 min) → consumer `bakery` `workspaceVersion = 0.0.119`
+(`dependencyInsight` → `document-plugin:0.0.27 by constraint`). Gardes alignées dans le
+même commit (`PlatformCatalogAlignmentTest` 0.0.119, `WorkspaceCatalogStructureTest`
+document 0.0.27). `document` : `ws`/platform pins `0.0.110 → 0.0.119`, toml `0.0.26 → 0.0.27`.
+**Pas de second delta `document` cette session** : le HEAD = le contenu publié ; `XF-FP3-2`
+et `XF-FP3-3` partiront en **0.0.28**. Commits : workspace-bom `b4dc526` (P0) + `84ff3d0`
+(catalogue), document `0bf8592`, bakery `b80c6474`. Rapport
+`.agents/sessions/335-n0-gate-p0-and-document-release.adoc`.

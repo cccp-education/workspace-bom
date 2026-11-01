@@ -1,0 +1,101 @@
+= Session 335 — P0 : le gate N0 ne masque plus les échecs ; release `document-plugin 0.0.27`
+:date: 2026-11-01
+:borough: MEMPHIS (workspace-bom) — EPIC `MEM-CI-GATE` (P0) + `PUB-3.13`
+:type: correctif CI (P0) + release DAG (N0 → N2)
+:ci: workspace-bom `41344806846` ✅ (P0) + `41346585962` (catalogue) ; document `41346588405` ;
+  bakery `41346591172`
+
+== 1. Mission
+
+Décision pilote (fin S-334) : « je suis ta recommandation et enchaîne ». Ordre prévu :
+`PUB-3.13` (release `document 0.0.27`), puis `XF-FP3-2`/`XF-FP3-3`.
+**L'audit d'ouverture a changé l'ordre** : en vérifiant l'état du catalogue pour PUB-3.13,
+la garde `PlatformCatalogAlignmentTest` a été lue et **contredisait** le toml
+(`agent-contracts = "0.0.3"` attendu vs `"0.0.4"` dans le toml) alors que la CI était verte.
+
+== 2. Constat P0 — le job `N0 · contracts` était un **faux vert**
+
+Lecture du run `41340247377` (job `N0 · contracts`) :
+
+----
+PlatformCatalogAlignmentTest > toml agent contracts versions aligned … FAILED
+    expected: <0.0.3> but was: <0.0.4>
+> Task :test FAILED
+BUILD FAILED in 3m 3s          ← agent-contracts
+… et pourtant : job = success
+----
+
+Cause racine dans `.github/workflows/test.yml` :
+
+[source,bash]
+----
+| xargs -I{} -P 5 bash -c '
+    echo "::group::{} check"
+    ( cd "{}" && ./gradlew check --no-daemon --console=plain )
+    echo "::endgroup::"        # ← dernière commande : le shell sort TOUJOURS 0
+  '
+----
+
+La dernière commande du `bash -c` est un `echo` : le sous-shell retourne `0` même
+quand `./gradlew check` échoue, `xargs` voit un succès, le step (et le job) sont
+**verts**. Preuve du mécanisme (shell, local) :
+
+----
+bash -c '( false ); echo end'            → exit 0   (ancien : masque)
+bash -c 'set -eo pipefail; ( false ); …' → exit 1   (nouveau : propage)
+----
+
+**Portée** : le gate N0 (« 10 builds, 5 concurrent ») était aveugle depuis son
+introduction ; il masquait exactement **un** échec réel (la garde catalogue, cassée
+en S-331/S-332 : `97cb4a8` a bumpé la garde `workspace-bom` mais pas la ligne
+`agent-contracts`, puis `cad127a`/l'adoption du contrat 0.0.4 a laissé la garde à 0.0.3).
+
+== 3. Correctif (US `MEM-CI-GATE`)
+
+. **Workflow** : `set -eo pipefail` en tête du script parallèle (avant les `echo`).
+. **Garde rouge réparée** : `PlatformCatalogAlignmentTest` → `agent-contracts = 0.0.4`
+   (message « XF-FP2-6, Central S-331 »).
+. **Garde anti-régression** `contracts.catalog.N0ContractsGateTest` (2 tests, lecture
+   textuelle du workflow) : (1) le script parallèle active **errexit** — sans quoi le
+   `echo` final masque l'échec ; (2) le job n'utilise **jamais** `|| true`.
+   RED prouvé : `set -e` absent avant le correctif (0 occurrence dans le script).
+. Preuve : CI `41344806846` ✅ — **le job N0 a réellement exécuté** `N0ContractsGateTest`
+   (2/2 PASSED) et `PlatformCatalogAlignmentTest` (7/7 PASSED).
+
+== 4. `PUB-3.13` — release DAG `document-plugin 0.0.27`
+
+Ordre DAG strict (N0 → N2), chaque maillon vérifié sur `repo1` avant le suivant :
+
+[cols="3,2,3", options="header"]
+|===
+| Maillon | Version | Preuve
+
+| **MEMPHIS** catalogue/BOM | `workspace-bom`/`workspace-catalog` **0.0.119** (`document-plugin = "0.0.27"`) | bundle `b9bc83e1-d547-4c4a-8ec0-bc332f68f565` ; `repo1` POM + `.toml` **200** (≈ 9 min)
+| **document** | `document-plugin` **0.0.27** (delta `XF-FP3-1` S-334) | bundle `c54a3c5f-b837-4f2e-a22e-914879349d8b` ; `repo1` POM **200** (≈ 7 min)
+| **bakery** (consumer) | `workspaceVersion = 0.0.119` | `dependencyInsight` → `education.cccp:document-plugin:0.0.27 (by constraint)`
+|===
+
+Gardes alignées **dans le même commit** que chaque bump :
+`PlatformCatalogAlignmentTest` (`workspace-bom = 0.0.119`),
+`WorkspaceCatalogStructureTest` (`document-plugin = 0.0.27`).
+`document` : `ws` catalog pin et platform pin `0.0.110 → 0.0.119`, toml self-version
+`0.0.26 → 0.0.27` (garde `DocumentPluginPublicationTest` = toml local == catalogue publié).
+POM publié vérifié : `document-plugin-0.0.27.pom` importe `workspace-bom:0.0.119`.
+`bakery` : compiles (`compileKotlin`/`compileTestKotlin`/`compileFunctionalTestKotlin`)
++ `ktlintCheck` VERTS.
+
+== 5. Décision : pas de second delta source `document` cette session
+
+`document-plugin 0.0.27` **vient d'être publié** : le HEAD de `document` est exactement
+le contenu publié. Ajouter `XF-FP3-2`/`XF-FP3-3` maintenant imposerait une **0.0.28** +
+un second cycle DAG complet dans la même session (thrash de version). Les deux US
+restent au backlog ; tout delta source futur de `document` partira en **0.0.28**.
+
+== 6. Reste
+
+* `XF-FP3-2` (`BookTranslator` : rapport de validation livre) et `XF-FP3-3`
+  (capacité `TracedArticleTranslator`) — à livrer avec **0.0.28**.
+* `LINT-ADOPT-13` (5 boroughs sans CI) — décision pilote (aucune preuve possible).
+* Piste issue de ce P0 : **auditer les autres `bash -c` multi-lignes** du workspace
+  (aucun autre trouvé ici : `grep` exhaustif `.github/` = 1 occurrence) et vérifier que
+  chaque étape CI propage bien son code de sortie.

@@ -1,6 +1,22 @@
 = TEST_COVERAGE_ANALYSIS — workspace-bom (MEMPHIS)
 :date: 2026-11-01
-:session: 334
+:session: 335
+
+== Session 335 (2026-11-01) — MEM-CI-GATE : le gate se teste lui-même
+
+* **`contracts.catalog.N0ContractsGateTest`** (2 tests, `agent-contracts`) : lecture
+  textuelle du workflow — le script parallèle du job `n0-contracts` doit activer
+  **errexit** (sans quoi le `echo "::endgroup::"` final rend le code de sortie nul et
+  masque un `./gradlew check` en échec) et le job ne doit jamais contenir `|| true`.
+  RED prouvé : 0 occurrence de `set -e` dans le script avant le correctif.
+* **Garde réparée** : `PlatformCatalogAlignmentTest` attendait `agent-contracts = 0.0.3`
+  alors que le toml portait 0.0.4 — l'échec était masqué par le gate. Aligné + assertions
+  de version bumpées dans le même commit que le catalogue (`workspace-bom = 0.0.119`,
+  `WorkspaceCatalogStructureTest` document = 0.0.27).
+* Preuve = CI workspace-bom `41344806846` ✅ (les 2 gardes ont réellement tourné dans le
+  job N0) ; document `41346588405` et bakery `41346591172` pour la release.
+* Leçon : **un gate qui ne peut pas échouer est un faux vert** — tester le gate.
+
 
 == Session 334 (2026-11-01) — XF-FP3-1 : traducteur sans état (assertions ajoutées)
 
