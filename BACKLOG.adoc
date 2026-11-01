@@ -1279,3 +1279,48 @@ restants · R-VC-6 sessions concurrentes (bakery, MEMPHIS epub3 WIP absorbé par
 * *S-027* — CAT-2 (5 pts, publication workspace-catalog)
 * *S-028* — CAT-3 (5 pts, pilote bakery — coordination session bakery active)
 * *S-028* — CAT-4 + CAT-5 (8 pts, propagation + BDD, clôture EPIC)
+
+== Observations — audit chaîne de livraison & accessibilité (2026-11-01)
+
+_Constat mesuré sur disque et sur Maven Central._
+
+[cols="1,4,2", options="header"]
+|===
+| # | Constat | Recommandation
+
+| O-1
+| Les 10 contrats N0 sont publiés (Central 0.0.119) mais **aucun** ne porte la sémantique d'accessibilité, alors que trois consommateurs (`document`, `capsule`, `academy`) et un producteur (`training`) en ont besoin.
+| EPIC candidat `A11Y-CONTRACTS` — créer un contrat N0 **pur** (kotlin-stdlib only) si le besoin se confirme à 2+ consommateurs réels (doctrine de factorisation « à 2 »).
+
+| O-2
+| La mesure d'accessibilité n'a pas de format d'échange : chaque borough produirait son propre rapport JSON.
+| Le contrat porte `A11yReport` (profil, livrable, constats, limites déclarées) pour que la porte d'acceptation d'`academy` puisse lire un format unique.
+
+| O-3
+| Risque de sur-ingénierie : aucun rendu ne doit entrer en N0 (règle de pureté N0).
+| Le contrat ne fait que **décrire et transporter** ; les validateurs et rendus restent dans les boroughs N2.
+|===
+
+== EPIC candidat A11Y-CONTRACTS — contrat N0 d'accessibilité (~3 pts, conditionnel)
+
+*Statut* : 🟡 CANDIDAT — à trancher (ne pas créer avant confirmation du besoin à 2+ consommateurs).
+*Motif* : trois consommateurs probables (`document`, `capsule`, `academy`) et un producteur (`training`) ;
+le seuil de factorisation est atteint.
+
+|===
+| US | Contenu | Pts | Statut
+
+| A11Y-1
+| Types purs `contracts.a11y` : `AccessibilityProfile` (WCAG_21_AA, RGAA_41), `DeliverableKind` (TEXT_HTML, EPUB, PDF, VIDEO, MOODLE), `A11yRequirement`, `A11yFinding` (sévérité, règle, localisation), `A11yReport` (livrable, profil, constats, limites déclarées)
+| 2
+| 🟡 CANDIDAT
+
+| A11Y-2
+| Publication Central + entrée catalogue/BOM + garde d'alignement (pattern MEM-CATALOG)
+| 1
+| 🟡 CANDIDAT
+|===
+
+*Condition d'ouverture* : au moins deux boroughs consommateurs ont un besoin réel et un
+format de rapport divergent à unifier. Sinon, chaque borough garde ses types locaux
+(Économie d'Encre).
