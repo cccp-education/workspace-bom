@@ -1,6 +1,35 @@
 = TEST_COVERAGE_ANALYSIS — workspace-bom (MEMPHIS)
-:date: 2026-09-02
-:session: 032
+:date: 2026-11-01
+:session: 322
+
+== Session 317 → 322 (2026-10-31 → 2026-11-01) — N0 en CI, XB-FP, tests purs
+
+*S-317 — N0 testés en CI* : nouveau job `n0-contracts` (matrice 9 builds, `xargs -P 5`)
+exécute `check` de chaque contrat N0 → **première exécution CI** de
+`PlatformCatalogAlignmentTest` (111 tests), `WorkspaceCatalogStructureTest` et de la
+nouvelle suite BDD `i18n_contracts.feature` (**9 scénarios**, `CucumberTestRunner` +
+`I18nContractsStepDefs`, `check` → `cucumberTest`). Deux dérives latentes corrigées
+(i18n `0.0.4`, bakery `0.0.29`, document `0.0.21`).
+
+*S-319 — pilote arrow (slider)* : `DeckContextValidatorTest` 17 → **20 tests**
+(+ accumulation complète, `name`+`email`, `validateEither` en `NonEmptyList`).
+
+*S-322 — tests purs* :
+* `slider` : `TaskDescriptionsI18nCatalogTest` (nouveau, **24 clés × 10 langues** +
+  4 tests) remplace 20 invocations TestKit ; `TaskDescriptionsI18nFunctionalTest`
+  réduit à **1 smoke** (16 tâches + 2 descriptions FR). `AsciidoctorJPinFunctionalTest`
+  conservé (résolution Gradle réelle = smoke assumé).
+* `plantuml` : +**3 tests** `parseEither` (FileNotFound, Malformed + cause
+  `JsonParseException`, Right nominal) — `parse()` inchangé.
+* `bakery` : source set `sharedTest` (fixtures) — **aucun test modifié** ; les tests
+  unit/BDD ne compilent plus `functionalTest` (preuve `--dry-run`).
+* `codebase` : `MetadataValidator` accumule désormais les violations (comportement
+  observable) — tests existants inchangés et verts en CI (`41259635715`).
+
+*Temps mesuré* : cross-borough **5m12s** en run isolé (S-320) ; coverage 63 s
+(artefacts Gradle cachés) ; shards BDD sans `compileFunctionalTestKotlin` (S-322).
+
+*Rappels* : Local = Build, Tests = CI. Aucun test exécuté localement dans ces sessions.
 
 == Gardes publication boroughs (EPIC MEM-CAT-ROLLOUT — S-244/S-211/S-030/S-031)
 
