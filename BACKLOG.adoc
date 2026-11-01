@@ -5,7 +5,8 @@
 :sectnums:
 
 _Dernière mise à jour (antérieure) : 2026-10-25 (S-307 — **BOM/catalog 0.0.101 : `document-plugin 0.0.25` + `bakery-plugin 0.0.28`**, revue cheroliv.com ; publication Central `d6e5bf37`, propagation repo1 200, CI verte `67b0d8c`. Précédent S-306 : BOM/catalog 0.0.100 bakery 0.0.27, bundle `936b54a1`, CI verte `c6dc0e1`. Précédent S-299 : CI cross-borough < 5 min.)_
-_Dernière mise à jour : 2026-11-01 (S-323 — **XB-FP TERMINÉ (US-0→US-7)** : `XB-FP-6` — les trois classes fonctionnelles lentes deviennent pures + **un** smoke TestKit par concern : bakery `LocalizeSeoHead` (**10 → 3 builds**) via l'objet pur `OgImageLanguage` (7 UT, RED par compilation) + 2 scénarios BDD ; graphify `Incremental` (**11 → 7**) par fusion sans perte d'assertion ; slider `GenerateDeckPipeline` (**7 → 3**). ≈ 88 s → ≈ 40 s (−55 %). **Mesure isolée `XB-FP-7` : `5m28s`** (run `41264633001`, 21/21, aucun concurrent) → KPI ≤ 5m30s tenu, gain TestKit caché non démontré. CI vertes bakery `41264081199`, graphify `41264087285`, slider `41264090679`. Découverte : `ktlintCheck` **rouge à HEAD** (le CI bakery ne lance jamais `check`) → nouvel EPIC `MEM-LINT-GATE`. Précédent S-322 : seam plantuml + tests purs slider + source set `sharedTest`.)_
+_Dernière mise à jour : 2026-11-01 (S-324 — **MEM-LINT-GATE TERMINÉ (LINT-1/2/3)** : **32 violations ktlint / 19 fichiers** résolues chez bakery (7 `src/main`, 25 `src/test` ; `ktlintFormat` a touché exactement les fichiers signalés — zéro collatéral, formatting-only, `b6852ba3`) ; le job `unit` du workflow `Test` exécute désormais `./gradlew ktlintCheck` (step `Lint (ktlint)`, ≈ 10 s, **aucun job ajouté**) et `BakeryCucumberShardCoverageTest` garde le gate (workflow contient `./gradlew ktlintCheck`, baseline sans `<file>` ; RED prouvé par construction) (`1bd46024`). CI bakery `41267145721` ✅ (4m02s). Précédent S-323 : XB-FP clos (US-0→US-7) + mesure isolée `5m28s`.)_
+_Dernière mise à jour (antérieure) : 2026-11-01 (S-323 — **XB-FP TERMINÉ (US-0→US-7)** : `XB-FP-6` — les trois classes fonctionnelles lentes deviennent pures + **un** smoke TestKit par concern : bakery `LocalizeSeoHead` (**10 → 3 builds**) via l'objet pur `OgImageLanguage` (7 UT, RED par compilation) + 2 scénarios BDD ; graphify `Incremental` (**11 → 7**) par fusion sans perte d'assertion ; slider `GenerateDeckPipeline` (**7 → 3**). ≈ 88 s → ≈ 40 s (−55 %). **Mesure isolée `XB-FP-7` : `5m28s`** (run `41264633001`, 21/21, aucun concurrent) → KPI ≤ 5m30s tenu, gain TestKit caché non démontré. CI vertes bakery `41264081199`, graphify `41264087285`, slider `41264090679`. Découverte : `ktlintCheck` **rouge à HEAD** (le CI bakery ne lance jamais `check`) → nouvel EPIC `MEM-LINT-GATE`. Précédent S-322 : seam plantuml + tests purs slider + source set `sharedTest`.)_
 _Dernière mise à jour (antérieure) : 2026-11-01 (S-322 — **XB-FP : seam plantuml ✅ (`999a15d`), tests purs slider ✅ (`09c1ea7` : matrice 24 clés × 10 langues + 1 smoke), découplage source set `sharedTest` ✅ (`04c018aa` : shards BDD sans `compileFunctionalTestKotlin`)**. XB-FP-5 et XB-FP-7 clos ; XB-FP-6 partiel (reste bakery/graphify/slider-GenerateDeckPipeline) ; mesure isolée TestKit à faire. Précédent S-321 : TestKit home hors build + caché.)
 _Dernière mise à jour (antérieure) : 2026-11-01 (S-321 — **XB-FP-7 (1/2)** : home Gradle TestKit hors `build/` (`926c1147`) + `~/.gradle-testkit` dans le cache commun (`18345ad`) ; mesure isolée reportée (run contaminé par une CI bakery concurrente). Reste : XB-FP-6 tests purs, découplage source set, seam plantuml — autorisation de modifier des tests requise (Règle 6). Précédent S-320 : Arrow 2.3.0 + BOM `arrow-stack` + adoptions.)
 _Dernière mise à jour (antérieure) : 2026-11-01 (S-320 — **XB-FP : adoption Arrow aux seams + Arrow 2.3.0 + BOM officiel `arrow-stack`**. Correction de cap (adoption, jamais suppression) : reverts `a941593`/`a8e719a`/`6a29244`, `arrow-fx` restauré (`13d405b`) ; doctrine **D12** réécrite. `workspace-bom` importe `io.arrow-kt:arrow-stack:2.3.0` (POM `<type>pom</type><scope>import</scope>` vérifié), BOM/catalog `0.0.117` (bundle `ea8bc702`, repo1 200 ×2). **XB-FP-1 mesuré isolé : 5m12s** (run `41257127568`). **XB-FP-3** bakery ; **XB-FP-4** planner ; **XB-FP-5** codebase+readme, plantuml différé. CI vertes. Précédent S-319 : cadrage XB-FP + cache + pilote slider.)
@@ -230,7 +231,7 @@ Zéro code de production modifié par le cadrage.
 _Livré S-323 (XB-FP-6 + mesure XB-FP-7)_ : les trois classes fonctionnelles lentes restantes sont traitées **sans retirer une assertion** — chaque règle pure passe en test unitaire ou BDD, chaque concern garde **un** smoke Gradle réel. bakery : `OgImageLanguage` (objet pur, 7 UT, RED prouvé par compilation) + 2 scénarios BDD, `10 → 3` builds ; graphify : fusion « cache hit » / « byte-identity » et « modification » / « suppression », `11 → 7` ; slider : surface `tasks` assertée une fois au lieu de quatre, `7 → 3`. ≈ 88 s → ≈ 40 s (−55 %). Commit de style séparé : les dix appels `DomainResolver` de `ConfigResolver` (S-320) violaient `argument-list-wrapping`. **Mesure isolée `XB-FP-7`** : `5m28s` (run `41264633001`, 21/21, aucun run concurrent dans un autre dépôt) → KPI ≤ 5m30s tenu, **aucun gain mesurable** du TestKit caché vs `5m12s` (variance des shards, D7). **EPIC XB-FP clos (US-0→US-7).** Rapport `.agents/sessions/323-xb-fp-6-slow-tests-pure-domain.adoc`.
 
 '''
-== 🟡 EPIC MEM-LINT-GATE — dette ktlint préexistante (découverte S-323)
+== ✅ EPIC MEM-LINT-GATE — dette ktlint préexistante (découverte S-323, résorbée S-324)
 
 *Constat* : `./gradlew ktlintCheck` sur `bakery-plugin` est **rouge à HEAD**
 (stash-prouvé) — le workflow `Test` de bakery n'exécute jamais `check`, seulement
@@ -245,18 +246,30 @@ un échec, mais personne ne le voit.
 Les 10 expressions `DomainResolver` de `ConfigResolver` (53 violations, S-320) ont
 été corrigées en S-323 (commit de style séparé).
 
-*Pourquoi pas maintenant* : `ktlintFormat` **global** a déjà reformaté 126 fichiers
-hors périmètre en S-231/S-244 (revert immédiat) — la correction doit être faite
-**fichier par fichier**, ou via la CLI ktlint 1.5.0 sur un lot = un source set.
+*Correction (S-324)* : `ktlintFormat` **global** avait déjà reformaté 126 fichiers
+hors périmètre en S-231/S-244 (revert immédiat). Ici le risque a été neutralisé par
+la **mesure** : tous les autres fichiers étant déjà conformes, le formateur ne
+pouvait toucher que les fautifs — vérifié, `git status` = exactement les 19 fichiers
+signalés par `ktlintCheck`.
 
 [cols="1,4,3,2", options="header"]
 |===
 | US | Description | Cible | Statut
 
-| LINT-1 | `src/main` — les 7 violations restantes (indentation/retour à la ligne des chaînes) | `bakery-gradle/bakery-plugin` | 🟡 À FAIRE
-| LINT-2 | `src/test` — les 25 violations (12 fichiers), lot par source set via CLI ktlint | `bakery-gradle/bakery-plugin` | 🟡 À FAIRE
-| LINT-3 | **Garde** — `CI-1` : le workflow `Test` de bakery exécute `ktlintCheck` (aujourd'hui jamais exécuté) pour que la dette ne se reforme pas | `.github/workflows/test.yml` | 🟡 À FAIRE
+| LINT-1 | `src/main` — les 7 violations restantes (indentation/retour à la ligne des chaînes) | `bakery-gradle/bakery-plugin` | ✅ TERMINÉ (S-324, `b6852ba3`)
+| LINT-2 | `src/test` — les 25 violations (12 fichiers), lot par source set via CLI ktlint | `bakery-gradle/bakery-plugin` | ✅ TERMINÉ (S-324, `b6852ba3` — même commit, `ktlintFormat` a touché **exactement** les 19 fichiers fautifs)
+| LINT-3 | **Garde** — `CI-1` : le workflow `Test` de bakery exécute `ktlintCheck` (aujourd'hui jamais exécuté) pour que la dette ne se reforme pas | `.github/workflows/test.yml` | ✅ TERMINÉ (S-324, `1bd46024` — step `Lint (ktlint)` dans le job `unit`, **aucun job ajouté**) + garde `BakeryCucumberShardCoverageTest` (gate exécuté **et** baseline sans `<file>`)
 |===
+
+_Livré S-324 (LINT-1/2/3)_ : **32 violations / 19 fichiers** résolues (7 `src/main`,
+25 `src/test` ; règles `multiline-expression-wrapping` 13, `chain-method-continuation`
+11, `no-empty-first-line-in-class-body` 8). `ktlintCheck` **VERT** (13 tâches) ;
+`git status` = exactement les 19 fichiers signalés (zéro collatéral, formatting-only).
+Le gate est désormais **exécuté** par le CI (job `unit`, step `Lint (ktlint)`, ≈ 10 s,
+aucun job ajouté) et **gardé** par un test (workflow contient `./gradlew ktlintCheck`,
+baseline sans `<file>`) — RED prouvé par construction (`git show b6852ba3:...` = 0
+occurrence). CI bakery `41267145721` ✅. Rapport
+`.agents/sessions/324-mem-lint-gate.adoc`.
 
 '''
 == EPIC PUB — Publication Maven Central

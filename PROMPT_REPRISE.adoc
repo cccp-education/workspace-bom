@@ -1,34 +1,33 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-324 — dernière terminée : **323** (XB-FP **clos** : tests lents → domaine pur +
-mesure isolée). Avant : **322** (seam plantuml + tests purs slider + source set
-`sharedTest`), **321** (TestKit home caché), **320** (Arrow 2.3.0 + BOM `arrow-stack`),
-**319** (cadrage EPIC XB-FP + cache CI + pilote arrow).
+325 — dernière terminée : **324** (MEM-LINT-GATE : dette ktlint résorbée + gate CI
+gardé chez bakery). Avant : **323** (XB-FP **clos**), **322** (seam plantuml + tests
+purs slider + source set `sharedTest`), **321** (TestKit home caché), **320**
+(Arrow 2.3.0 + BOM `arrow-stack`), **319** (cadrage XB-FP).
 
-=== Mission Session 324 — ordre proposé
+=== Mission Session 325 — ordre proposé
 
-. **`MEM-LINT-GATE`** (découvert S-323, P2) : `ktlintCheck` rouge à HEAD chez bakery —
-   7 violations `src/main` + 25 `src/test` (12 fichiers). Corriger **fichier par
-   fichier** (jamais `ktlintFormat` global : 126 fichiers reformatés en S-231/S-244),
-   puis câbler `ktlintCheck` dans le workflow `Test` de bakery (aujourd'hui jamais
-   exécuté) — US LINT-1/2/3 du BACKLOG.
 . **Release consommateur** au prochain artefact produit (Règle 2 « toujours granted »).
+. **Propagation du gate lint** aux autres boroughs — vérifier d'abord si leur CI
+   exécute `check` (bakery ne le faisait pas) ; ouvrir un EPIC seulement si un
+   borough est réellement aveugle (`ktlintCheck` rouge à HEAD + CI sans `check`).
 . Resync README/INDEX si un borough republie (aucun bump MEMPHIS en attente).
 
-_Document maître_ : `.agents/CADRAGE_EPIC_XB_FP.adoc` (EPIC clos) ; lint :
-`BACKLOG.adoc` § `MEM-LINT-GATE`. Suivi : Roadmap de l'INDEX.
+_Documents maîtres_ : `.agents/CADRAGE_EPIC_XB_FP.adoc` (clos) ; `BACKLOG.adoc`
+§ `MEM-LINT-GATE` (clos). Suivi : Roadmap de l'INDEX.
 
 == État du code
 
 - Central : BOM + catalog **0.0.117** (import `io.arrow-kt:arrow-stack:2.3.0`).
 - Contrats N0 : **sans Arrow** (doctrine D2) ; Arrow en N1/N2 en `implementation`.
-- XB-FP : **US-0→US-7 ✅ (EPIC clos S-323)**.
+- XB-FP : **US-0→US-7 ✅ (clos S-323)** ; MEM-LINT-GATE : **LINT-1/2/3 ✅ (S-324)**.
 - CI workspace-bom : 21 jobs + gardes `verifyCiMatrixCoverage` /
-  `verifyCrossBoroughPins`. Wall-clock **variance `5m12s…5m52s`** (runs
-  `41257127568`/`41264633001`/`41265228099`) — le KPI ≤ 5m30s est à la frontière,
-  dominé par la variance des shards TestKit.
-- Dernières CI boroughs : bakery `41264081199`, graphify `41264087285`,
+  `verifyCrossBoroughPins`. Wall-clock **variance `5m12s…5m52s`** — KPI ≤ 5m30s
+  à la frontière, variance des shards TestKit.
+- CI bakery : `ktlintCheck` **exécuté** par le job `unit` (run `41267145721` ✅,
+  4m02s) + garde de test ; dernier run workspace-bom vert `41265228099`.
+- Dernières CI boroughs : bakery `41267145721`, graphify `41264087285`,
   slider `41264090679` (toutes vertes, 2026-11-01).
 
 == Doctrine XB-FP (clos — conservée pour mémoire)
@@ -45,7 +44,8 @@ _Document maître_ : `.agents/CADRAGE_EPIC_XB_FP.adoc` (EPIC clos) ; lint :
 == Pièges (cumul)
 
 . *Version dérivée ≠ version publiée* ; garde de version bumpée dans le **même**
-   commit ; `check` inclut ktlint chez bakery (mais le CI ne le lance pas).
+   commit. `check` inclut ktlint ; chez bakery le CI l'exécute depuis S-324 (step
+   `Lint (ktlint)` du job `unit`).
 . *Contrats N0 = builds standalone* (pattern 0124).
 . *Catalogue Gradle* : un plugin inclus depuis la **racine** utilise le catalogue
    **racine**.
@@ -54,8 +54,10 @@ _Document maître_ : `.agents/CADRAGE_EPIC_XB_FP.adoc` (EPIC clos) ; lint :
 . *Cache GitHub scopé au dépôt* ; `setup-gradle cache-disabled` ; clé avec
    `github.job` ; arrêter Ollama + `chown` avant le post-step.
 . *Toolchain* : `jvmToolchain(25)` (jamais `VERSION_25.ordinal` = 24) ; foojay **0.10.0**.
-. *ktlint* : `include(...)`/`setSource(...)` sont ignorés par ktlint-gradle 12.2.0 ;
-   seul un lot **par source set** via la CLI ktlint 1.5.0 est sûr.
+. *ktlint* : `include(...)`/`setSource(...)` sont ignorés par ktlint-gradle 12.2.0.
+   `ktlintFormat` est sûr **seulement** si tous les autres fichiers sont déjà
+   conformes : le prouver par `git status` = exactement les fichiers signalés par
+   `ktlintCheck` (fait S-324 : 19/19, zéro collatéral).
 
 == Règles
 

@@ -264,3 +264,19 @@ KPI ≤ 5m30s tenu, **aucun gain mesurable** du TestKit caché vs `5m12s` (varia
 25 test restantes). CI vertes bakery `41264081199`, graphify `41264087285`,
 slider `41264090679`. Rapport
 `.agents/sessions/323-xb-fp-6-slow-tests-pure-domain.adoc`.
+
+== Session 324 (2026-11-01) — MEM-LINT-GATE TERMINÉ : dette ktlint résorbée + gate CI gardé
+
+Reprise immédiate de S-323 (« enchaine »). `ktlintCheck` était rouge à HEAD chez
+`bakery-plugin` (stash-prouvé) : **32 violations / 19 fichiers** (7 `src/main`,
+25 `src/test` ; règles `multiline-expression-wrapping` 13,
+`chain-method-continuation` 11, `no-empty-first-line-in-class-body` 8), invisibles
+parce que le workflow `Test` n'exécute jamais `check`. La baseline étant vide depuis
+S-244, `./gradlew ktlintFormat` a touché **exactement** ces 19 fichiers (zéro
+collatéral, formatting-only — aucune signature ni assertion modifiée) (`b6852ba3`).
+Le job `unit` exécute désormais `./gradlew ktlintCheck` (step `Lint (ktlint)`, ≈ 10 s,
+**aucun job ajouté**) et un test garde le gate : `BakeryCucumberShardCoverageTest`
+asserte que le workflow contient `./gradlew ktlintCheck` et que la baseline n'exempte
+aucun fichier (`1bd46024`) ; RED prouvé par construction (`git show b6852ba3:…` = 0).
+CI bakery `41267145721` ✅ (4m02s, step Lint success). Rapport
+`.agents/sessions/324-mem-lint-gate.adoc`.

@@ -65,3 +65,14 @@
   run concurrent (vérifié sur 6 dépôts) → KPI ≤ 5m30s tenu, **aucun gain mesurable**
   du TestKit caché vs la référence `5m12s`. **EPIC XB-FP clos (US-0→US-7).**
 * CI vertes : bakery `41264081199`, graphify `41264087285`, slider `41264090679`.
+
+== S-324 — MEM-LINT-GATE : dette ktlint résorbée + gate CI gardé (bakery) ✅
+
+* **LINT-1/2** : 32 violations / 19 fichiers (7 `src/main`, 25 `src/test`) résolues
+  par `ktlintFormat` — `git status` = exactement les fichiers signalés, zéro
+  collatéral, formatting-only (`b6852ba3`).
+* **LINT-3** : step `Lint (ktlint)` (`./gradlew ktlintCheck`) dans le job `unit` du
+  workflow `Test` (≈ 10 s, **aucun job ajouté**) + garde
+  `BakeryCucumberShardCoverageTest` (gate exécuté **et** baseline sans `<file>`) ;
+  RED prouvé par construction (`1bd46024`).
+* CI bakery `41267145721` ✅ (4m02s, step Lint success).

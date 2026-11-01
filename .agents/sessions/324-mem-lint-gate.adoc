@@ -1,0 +1,72 @@
+= Session 324 — MEM-LINT-GATE : dette ktlint résorbée + garde CI (cross-borough bakery)
+:date: 2026-11-01
+:borough: MEMPHIS (workspace-bom) — EPIC transverse
+:type: hygiène build + garde CI (formatting-only)
+:ci: bakery `41267145721`
+
+== Mission
+
+Reprise immédiate de la session 323 (« enchaine ») sur le seul EPIC ouvert du
+BACKLOG : **`MEM-LINT-GATE`** (découvert S-323). Constat : `./gradlew ktlintCheck`
+est **rouge à HEAD** chez `bakery-plugin` (stash-prouvé), parce que le workflow
+`Test` n'exécute que `test`, les shards et la fusion kover — **jamais `check`**.
+La baseline `config/ktlint/baseline.xml` étant **vide** depuis S-244, chaque
+violation est une erreur réelle que personne ne voyait.
+
+== 1. Mesure (état à HEAD)
+
+[cols="2,3", options="header"]
+|===
+| Source set | Violations
+
+| `src/main` | **7** — `no-empty-first-line-in-class-body` ×4 (`DomainResolver`, `DocumentDirection`, `I18nTemplateLayout`, `LocalizedSeoHead`), `multiline-expression-wrapping` ×2 (`DomainResolver`, `ConfigResolver`), `chain-method-continuation` ×1 (`LocalizeSeoHeadTask`)
+| `src/test` | **25** — `multiline-expression-wrapping` ×11, `chain-method-continuation` ×10, `no-empty-first-line-in-class-body` ×4, sur 13 fichiers (`BakeryCucumberShardCoverageTest`, les 8 `CucumberShard*Runner`, 3 tests d'objets purs, `SeoHeadLocaleSteps`)
+| `functionalTest`, `sharedTest`, `e2eTest`, scripts `.kts` | 0 (déjà conformes)
+|===
+
+*Total* : **32 violations / 19 fichiers** — aucune logique métier en cause.
+
+== 2. LINT-1/2 — résorption (formatting-only)
+
+Outil : `./gradlew ktlintFormat` (ktlint **1.5.0**, version fixée par
+`LintConventionsPlugin`). Le piège S-231/S-244 (`ktlintFormat` qui reformate
+126 fichiers hors périmètre) a été **neutralisé par la mesure** : puisque tous
+les autres fichiers sont déjà conformes, le formateur ne pouvait toucher que les
+fichiers fautifs. **Vérifié** : `git status` = **exactement les 19 fichiers**
+listés par `ktlintCheck`, zéro collatéral ; diff = retours à la ligne, indentation
+et suppression de première ligne vide — aucune signature, aucun test, aucune
+assertion modifiée.
+
+Gate locale (Local = Build) : `ktlintCheck` **VERT** (13 tâches),
+`compileKotlin compileTestKotlin compileFunctionalTestKotlin
+compileSharedTestKotlin` VERTS.
+
+== 3. LINT-3 — garde CI (le gate ne peut plus pourrir)
+
+. **Exécution** : le job `unit` du workflow `Test` lance désormais
+   `./gradlew ktlintCheck` (même daemon, même cache, ≈ 10 s, **aucun job ajouté** —
+   D9). Un échec de style est attribuable à une step `Lint (ktlint)`.
+. **Garde de test** : `BakeryCucumberShardCoverageTest` gagne un cas
+   `the unit job runs ktlint and the baseline exempts no file` qui asserte, sur
+   les sources (zéro modèle Gradle) :
+   * `test.yml` contient `./gradlew ktlintCheck` ;
+   * `config/ktlint/baseline.xml` n'exempte **aucun** fichier (`<file` absent).
+. **RED prouvé par construction** : dans la révision précédente
+   (`b6852ba3`), `git show b6852ba3:.github/workflows/test.yml | grep -c
+   ktlintCheck` = **0** → la première assertion aurait échoué ; la seconde était
+   déjà vraie (baseline vide). GREEN = CI du commit `1bd46024`.
+
+== 4. CI (preuve)
+
+| Dépôt | Commit | Run | Résultat
+| bakery | `b6852ba3` (LINT-1/2) + `1bd46024` (LINT-3) | `41267145721` | ✅ (unit + lint + 6 functional + 8 BDD + node + e2e + coverage)
+
+`Publish website` `41267145631` ✅. Zéro test lancé localement, zéro secret,
+zéro Python.
+
+== 5. Reste / suite
+
+* `MEM-LINT-GATE` **clos (LINT-1/2/3)** ; plus aucun EPIC actionnable côté MEMPHIS.
+* Prochaines missions possibles : release consommateur au prochain artefact produit ;
+  propagation du **même** gate CI aux autres boroughs (le CI de `slider` ne lance
+  pas non plus `check` — à vérifier avant d'ouvrir un EPIC).

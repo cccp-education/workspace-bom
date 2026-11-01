@@ -1,6 +1,22 @@
 = TEST_COVERAGE_ANALYSIS — workspace-bom (MEMPHIS)
 :date: 2026-11-01
-:session: 323
+:session: 324
+
+== Session 324 (2026-11-01) — MEM-LINT-GATE : gate lint exécuté et gardé (test-only + CI)
+
+* `bakery.ci.BakeryCucumberShardCoverageTest` : **+1 test**
+  (`the unit job runs ktlint and the baseline exempts no file`) — asserte sur les
+  sources que `test.yml` contient `./gradlew ktlintCheck` **et** que
+  `config/ktlint/baseline.xml` n'exempte aucun fichier (`<file` absent). RED prouvé
+  par construction (`git show b6852ba3:.github/workflows/test.yml | grep -c
+  ktlintCheck` = 0).
+* Step CI `Lint (ktlint)` ajoutée au job `unit` (exécution réelle prouvée : run
+  `41267145721`, step `success`).
+* 32 violations de style résolues (19 fichiers, formatting-only) — aucun test
+  supprimé, aucune assertion modifiée. `ktlintCheck` VERT (13 tâches).
+* Preuve = CI `41267145721` (unit + lint + 6 functional + 8 BDD + node + e2e +
+  coverage), 4m02s.
+
 
 == Session 323 (2026-11-01) — XB-FP-6 : tests lents → domaine pur (test-only)
 
