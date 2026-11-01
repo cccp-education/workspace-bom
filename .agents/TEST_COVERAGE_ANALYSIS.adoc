@@ -1,6 +1,20 @@
 = TEST_COVERAGE_ANALYSIS — workspace-bom (MEMPHIS)
 :date: 2026-11-01
-:session: 327
+:session: 328
+
+== Session 328 (2026-11-01) — XF-FP-2 : première vague (refactors iso-comportement)
+
+* **slider** `AsciidocContentParser` : refactor en `fold(ParseState())` — test existant
+  `AsciidocContentParserTest` **inchangé** (filet de sécurité), aucune assertion touchée.
+* **document** `BlockChecksum` : `else` retiré → **garde de compilation** (un nouveau
+  sous-type de `PivotBlock` casse désormais le build au lieu de passer silencieusement) ;
+  test `computeForBlocks skips hr and non-translatable block macro` inchangé.
+* **bakery** `PooledOllamaLlmService` : +**2 tests de caractérisation**
+  (`PooledOllamaLlmServiceAttemptsTest`, pool + `ChatModel` factices, sans réseau) —
+  premier succès court-circuite, épuisement = N échecs portés en valeur.
+* Aucun test supprimé ; zéro exécution locale (Local = Build, Tests = CI).
+* Preuve = CI slider `41280536422`, document `41280471103`, bakery `41281963758`.
+
 
 == Session 327 (2026-11-01) — LINT-ADOPT-3→12 : 10 boroughs (formatting-only)
 

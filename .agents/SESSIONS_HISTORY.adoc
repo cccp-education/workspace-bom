@@ -334,3 +334,21 @@ partition durcie, **step CI**, 5m41s), codebase `6f46390`+`797fea7`+`1959c81`
 seule classe non auto-corrigeable, gate gratuit si CI `build`/`check` (7 boroughs),
 step pour les CI test-only (3). Reste `LINT-ADOPT-13` (boroughs sans CI, différé).
 Rapport `.agents/sessions/327-mem-lint-adoption-parallel.adoc`.
+
+== Session 328 (2026-11-01) — XF-FP-2 : cadrage sourcé + première vague fonctionnelle
+
+Le pilote a fourni le livre *Functional Programming Ideas for the Curious Kotliner*
+(A. Serrano Mena, 2023) et invité la doc arrow-kt. PDF illisible en pièce jointe →
+**extraction locale `pdftotext`** (zéro Python), puis **4 sous-agents parallèles**
+(livre ch. 1–4, livre ch. 5–8, Arrow typed-errors, Arrow ressources/résilience) →
+`.agents/CADRAGE_EPIC_XF_FP_2.adoc` (règles, pièges de version 2.3.0, gabarit N0→N1,
+7 US). **XF-FP2-1** slider : `AsciidocContentParser` en **fold pur** `ParseState`
+(7 `MutableList` + 5 `var` supprimés, sorties identiques, `7c86268`, CI 2m45s).
+**XF-FP2-2** document : `BlockChecksum` exhaustif (9 sous-types, `else` retiré ;
+fold local non introduit — 2 sites, décision documentée, `303a9ef`, CI 18m33s).
+**XF-FP2-3** bakery : `LlmAttempt`/`LlmExhausted` internes, `attemptAll():
+Either<LlmExhausted, String>` récursif (court-circuit au 1er succès), `throw`
+seulement à la frontière, seam `ChatModel` injectable + 2 tests de caractérisation
+(`25f274b7`, CI 4m28s). Reste US-4 (capsule `Schedule`/`arrow-resilience`), US-5
+(R2DBC `Resource`), US-6 (N0 `ValidationOutcome`), US-7 (fold `PivotModel`).
+Rapport `.agents/sessions/328-xf-fp2-premiere-vague.adoc`.

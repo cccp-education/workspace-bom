@@ -103,3 +103,14 @@
   + 1 garde de partition ; 3 CI test-only ont reçu une step `Lint (ktlint)`.
 * D1 amendé : adoption parallélisable (forêt) ; contrainte = RAM (vagues de 2).
 * CI workspace-bom `41277983007` ✅ 5m21s (job `N0 · contracts` inclus).
+
+== S-328 — XF-FP-2 : cadrage sourcé + 3 US fonctionnelles ✅
+
+* **Sources** : livre Serrano Mena (extrait `pdftotext`) + docs arrow-kt 2.3.0, digérés
+  par 4 sous-agents parallèles → `CADRAGE_EPIC_XF_FP_2.adoc` (pièges : `Validated`
+  supprimé, `Schedule` → `arrow-resilience`, `AwaitClose` absent, `catch` exclut
+  `CancellationException`, jamais de `else` sur un scellé, optics non).
+* **XF-FP2-1** slider : parser en `fold(ParseState())` (12 états mutables supprimés).
+* **XF-FP2-2** document : `BlockChecksum` exhaustif (9 sous-types).
+* **XF-FP2-3** bakery : LLM en échec typé (`LlmAttempt`, `attemptAll(): Either`).
+* CI vertes : slider `41280536422`, document `41280471103`, bakery `41281963758`.

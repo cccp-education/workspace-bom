@@ -5,7 +5,8 @@
 :sectnums:
 
 _Dernière mise à jour (antérieure) : 2026-10-25 (S-307 — **BOM/catalog 0.0.101 : `document-plugin 0.0.25` + `bakery-plugin 0.0.28`**, revue cheroliv.com ; publication Central `d6e5bf37`, propagation repo1 200, CI verte `67b0d8c`. Précédent S-306 : BOM/catalog 0.0.100 bakery 0.0.27, bundle `936b54a1`, CI verte `c6dc0e1`. Précédent S-299 : CI cross-borough < 5 min.)_
-_Dernière mise à jour : 2026-11-01 (S-327 — **MEM-LINT-ADOPTION : 10 boroughs adoptés en vagues parallèles** (décision pilote « enchaine les boroughs en parallèle tant que le DAG le permet » → **D1 amendé** : l'adoption est une forêt, pas une chaîne). **39 336 violations** corrigées (≈ 2 000 fichiers) : planner 729, readme 482, hyperframes 1 867, codex 2 917, plantuml 4 455, document 5 133, slider 2 085, capsule 7 778, codebase 12 844, N0 workspace-bom 1 046. **Toutes les CI vertes** (10 repos) ; ≈ 120 wildcard imports, 185 steps Cucumber renommés, 6 renames de fichiers, `tools.kt` mort supprimé (slider) ; **5 gardes ligne-à-ligne durcies** + 1 garde de partition ; **3 CI test-only** ont reçu une step `Lint (ktlint)`. CI workspace-bom `41277983007` ✅ 5m21s (job `N0 · contracts` inclus). Précédent S-326 : `LINT-ADOPT-2` video-kernel + youtube-auth (312 violations, `jvmToolchain` 24→25).)_
+_Dernière mise à jour : 2026-11-01 (S-328 — **EPIC `XF-FP-2` ouvert (cadrage adossé aux sources : livre Serrano Mena + docs arrow-kt 2.3.0, 4 sous-agents parallèles) + 3 US livrées** : `slider` `AsciidocContentParser` en **fold pur** (`ParseState`, 12 états mutables supprimés, sorties identiques, `7c86268`), `document` `BlockChecksum` **exhaustif** (`else` retiré, 9 sous-types, `303a9ef`), `bakery` LLM **échec typé** (`LlmAttempt`/`LlmExhausted`, `attemptAll(): Either`, `throw` à la frontière, `25f274b7`). CI vertes slider `41280536422`, document `41280471103`, bakery `41281963758`. **Pièges de version vérifiés** : `Validated` supprimé, `Schedule` dans `arrow-resilience`, `AwaitClose` inexistant, `catch` exclut `CancellationException`. Précédent S-327 : 10 boroughs en lint (39 336 violations).)
+_Dernière mise à jour (antérieure) : 2026-11-01 (S-327 — **MEM-LINT-ADOPTION : 10 boroughs adoptés en vagues parallèles** (décision pilote « enchaine les boroughs en parallèle tant que le DAG le permet » → **D1 amendé** : l'adoption est une forêt, pas une chaîne). **39 336 violations** corrigées (≈ 2 000 fichiers) : planner 729, readme 482, hyperframes 1 867, codex 2 917, plantuml 4 455, document 5 133, slider 2 085, capsule 7 778, codebase 12 844, N0 workspace-bom 1 046. **Toutes les CI vertes** (10 repos) ; ≈ 120 wildcard imports, 185 steps Cucumber renommés, 6 renames de fichiers, `tools.kt` mort supprimé (slider) ; **5 gardes ligne-à-ligne durcies** + 1 garde de partition ; **3 CI test-only** ont reçu une step `Lint (ktlint)`. CI workspace-bom `41277983007` ✅ 5m21s (job `N0 · contracts` inclus). Précédent S-326 : `LINT-ADOPT-2` video-kernel + youtube-auth (312 violations, `jvmToolchain` 24→25).)_
 _Dernière mise à jour (antérieure) : 2026-11-01 (S-326 — **`LINT-ADOPT-2` ✅ : `video-kernel` + `youtube-auth`** — les 2 builds standalone du dépôt adoptent `build.lint` + `.editorconfig` tracké ; **312 violations** corrigées (62 fichiers, 200 kernel / 112 auth), `FIELD_PATTERN` → `fieldPattern` ; gate **gratuit** (`check` contient 3+4 tâches ktlint, CI `./gradlew build`), CI `41269513021` ✅ 1m10s. **Défaut réel corrigé** : `jvmToolchain(JavaVersion.VERSION_25.ordinal)` demandait le JDK **24** → `jvmToolchain(25)` (le noyau N1 était compilé pour 24). Précédent S-325 : MEM-LINT-ADOPTION ouvert + pilote graphify (647 violations).)_
 _Dernière mise à jour (antérieure) : 2026-11-01 (S-325 — **EPIC `MEM-LINT-ADOPTION` ouvert + pilote `graphify` ✅** : audit — la convention `build.lint` n'est appliquée que par bakery et conventions-gradle, ≈ **2 900 fichiers Kotlin** sans aucune analyse statique sur 22 boroughs ; cadrage `.agents/CADRAGE_EPIC_MEM_LINT_ADOPTION.adoc` (7 décisions, 14 US, 1 borough = 1 session). **Pilote** : `graphify-plugin` + `.editorconfig` tracké + **647 violations** corrigées (39 fichiers, preuve de non-collatéral) + wildcard imports + garde publication rendue **whitespace-insensitive** (piège S-244 F34 reproduit) ; gate **gratuit** (`build` → `check`, 4 tâches ktlint), CI `41268477861` ✅ 2m00s. Précédent S-324 : MEM-LINT-GATE (bakery) clos.)_
 _Dernière mise à jour (antérieure) : 2026-11-01 (S-324 — **MEM-LINT-GATE TERMINÉ (LINT-1/2/3)** : **32 violations ktlint / 19 fichiers** résolues chez bakery (7 `src/main`, 25 `src/test` ; `ktlintFormat` a touché exactement les fichiers signalés — zéro collatéral, formatting-only, `b6852ba3`) ; le job `unit` du workflow `Test` exécute désormais `./gradlew ktlintCheck` (step `Lint (ktlint)`, ≈ 10 s, **aucun job ajouté**) et `BakeryCucumberShardCoverageTest` garde le gate (workflow contient `./gradlew ktlintCheck`, baseline sans `<file>` ; RED prouvé par construction) (`1bd46024`). CI bakery `41267145721` ✅ (4m02s). Précédent S-323 : XB-FP clos (US-0→US-7) + mesure isolée `5m28s`.)_
@@ -344,6 +345,46 @@ CI `41269513021` ✅ 1m10s. **Défaut réel révélé** : `kotlin.jvmToolchain(J
 demandait le JDK **24** (ordinal décalé) — le noyau N1 était compilé pour 24 ;
 corrigé en `jvmToolchain(25)`. Rapport
 `.agents/sessions/326-lint-adopt-2-video-kernel.adoc`.
+
+'''
+== 🟢 EPIC XF-FP-2 — paradigme fonctionnel, deuxième vague (S-328 →)
+
+*Cadrage* : `.agents/CADRAGE_EPIC_XF_FP_2.adoc`, **adossé aux sources** : livre
+*Functional Programming Ideas for the Curious Kotliner* (Serrano Mena, 2023,
+extrait localement via `pdftotext`) + documentation officielle arrow-kt **2.3.0**
+(`/typed-errors/`, `/validation/`, `/coroutines/`, `/resilience/`), digérées par
+**4 sous-agents parallèles**.
+
+*Doctrine (inchangée)* : N0 sans Arrow ; Arrow en N1/N2 en `implementation` ;
+types scellés maison = frontière publique ; `fold` unique à la frontière ; muter
+en local est permis, **l'état qui s'échappe** est le défaut ; **jamais de `else`
+sur un `when` scellé**.
+
+[cols="1,4,3,2", options="header"]
+|===
+| US | Description | Cible | Statut
+
+| XF-FP2-0 | Cadrage adossé aux sources (livre + docs 2.3.0) | `workspace-bom/.agents` | ✅ S-328
+| XF-FP2-1 | **`AsciidocContentParser` → fold pur** — 7 `MutableList` + 5 `var` → `ParseState` immuable + `fold` ; sorties inchangées | `slider-gradle` | ✅ S-328 (`7c86268`, CI `41280536422`, 2m45s)
+| XF-FP2-2 | **`PivotBlock` : dispatch exhaustif** — `else` retiré (9 sous-types énumérés) ; fold local non introduit (2 sites, décision documentée) | `document-gradle` | ✅ S-328 (`303a9ef`, CI `41280471103`, 18m33s)
+| XF-FP2-3 | **`PooledOllamaLlmService` : échec typé** — `var lastError` supprimé, `attemptAll(): Either<LlmExhausted, String>` interne récursif, court-circuit au 1er succès, throw à la frontière | `bakery-gradle` | ✅ S-328 (`25f274b7`, CI `41281963758`, 4m28s)
+| XF-FP2-4 | **Résilience `Schedule`** — `FishAudioTtsEngine` busy-retry → backoff exponentiel (`arrow-resilience`, alias catalogue local), délai injectable | `capsule-gradle` | ⏳ À FAIRE
+| XF-FP2-5 | **Ressources R2DBC** — `RagVectorStore` : `try/finally` qui avale l'échec de `close()` → `install`/`Resource` + close capturé | `codebase-gradle` | ⏳ À FAIRE
+| XF-FP2-6 | **N0 `AgentTool.validate(): Result<Unit>`** — `Result` = `Either<Throwable, A>` → scellé `ValidationOutcome` **sans Arrow en N0** + DAG bump/publication | `workspace-bom/agent-contracts` | ⏳ À FAIRE
+| XF-FP2-7 | **`PivotModel` fold complet** — ~85 `is PivotBlock.*` dans 8 fichiers → un fold unique | `document-gradle` | ⏳ À FAIRE
+|===
+
+_Pièges de version vérifiés (Arrow 2.3.0)_ : `Validated` supprimé (`EitherNel`),
+`Schedule`/`retry` dans **`arrow-resilience`** (plus dans `arrow-fx-coroutines`),
+`AwaitClose` inexistant, `Map.mapOrAccumulate` déprécié, `catch` exclut
+`CancellationException`, `Schedule.recurs(n)` = n tentatives au total, context
+*parameters* encore en preview (rester au style receiver).
+
+_Livré S-328 (XF-FP2-1/2/3)_ : slider parser en `fold(ParseState())` (12 états
+mutables supprimés, sorties identiques) ; `BlockChecksum` exhaustif (un nouveau
+bloc casse la compilation) ; bakery LLM en échec typé (`LlmAttempt` +
+`LlmExhausted`, `attemptAll` récursif, `throw` à la frontière seulement).
+Rapport `.agents/sessions/328-xf-fp2-premiere-vague.adoc`.
 
 '''
 == EPIC PUB — Publication Maven Central

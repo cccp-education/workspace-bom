@@ -1,0 +1,77 @@
+= Session 328 — XF-FP-2 : première vague fonctionnelle (slider, document, bakery)
+:date: 2026-11-01
+:borough: MEMPHIS (workspace-bom) — EPIC transverse
+:type: cadrage adossé aux sources + refactors iso-comportement
+:ci: slider `41280536422`, document `41280471103`, bakery `41281963758`
+
+== 1. Sources (4 sous-agents parallèles)
+
+Le pilote a fourni le livre *Functional Programming Ideas for the Curious Kotliner*
+(A. Serrano Mena, 2023) et invité la doc officielle arrow-kt. Le PDF ne peut pas
+être lu en pièce jointe (modèle) : il a été **extrait localement** avec `pdftotext`
+(`/tmp/opencode/functional-kotliner.txt`, 6 650 lignes — outil Unix, zéro Python),
+puis quatre sous-agents ont travaillé en parallèle :
+
+| Agent | Périmètre | Livrable |
+| livre ch. 1–4 | DEDE, langage du domaine, sealed/folds, containers, optics | règles + gabarit de fold + verdict optics |
+| livre ch. 5–8 | Either/Result, fail-first vs accumulation, Raise, ressources, ports/adapters | arbre de décision + snippets |
+| Arrow typed-errors | API 2.3.0 vérifiée sur apidocs | cheatsheet exacte + pièges de version |
+| Arrow resources/résilience | `Resource`/`ResourceScope`, `Schedule`/`retry`, R2DBC | cheatsheet + artéfacts (`arrow-resilience` ≠ `arrow-fx-coroutines`) |
+
+Résultat consolidé : `.agents/CADRAGE_EPIC_XF_FP_2.adoc` (§1 règles, §2 pièges de
+version, §3 gabarit N0→N1, §4 US). Faits saillants :
+**`Validated` n'existe plus** (`EitherNel`), **`Schedule` est dans `arrow-resilience`**,
+`AwaitClose` n'existe pas en 2.3.0, `catch` exclut `CancellationException`,
+`Schedule.recurs(n)` = n tentatives au total, **jamais de `else` sur un `when` scellé**,
+**optics : non** (`copy()` suffit), **muter en local est permis — l'état qui
+s'échappe est le défaut**.
+
+== 2. US livrées
+
+=== XF-FP2-1 — `slider` : `AsciidocContentParser` en fold pur ✅
+
+Commit `7c86268`, CI `41280536422` ✅ (2m45s, 11/11 jobs).
+La machine à états (7 `MutableList` + 5 `var` + 8 paramètres `MutableList`) devient
+un **`ParseState` immuable** + `lines.withIndex().fold(ParseState(), ::reduce)` ;
+`flushList`/`flushParagraph`/`flushSlide`/`closeNote` sont des transitions pures ;
+`finish()` flushe liste → paragraphe → dernière slide. **Signature et sortie
+inchangées**, test existant intact. Pièges préservés (preamble avant la 1re slide,
+sous-titre qui vide les buffers sans les flusher, note remplacée seulement si
+non blanche).
+
+=== XF-FP2-2 — `document` : dispatch exhaustif ✅
+
+Commit `303a9ef`, CI `41280471103` ✅ (18m33s).
+`BlockChecksum.isChecksumRelevant` perd son `else -> true` : les **9 sous-types**
+de `PivotBlock` sont énumérés (`Heading`, `Paragraph`, `ListBlock`, `Table`,
+`Admonition`, `Source`, `DescriptionList` → `true` ; `BlockMacro`, `Hr` → `false`).
+Un futur bloc **casse désormais la compilation** au lieu de devenir silencieusement
+« checksum-relevant ». `serialize` était déjà exhaustif (inchangé). **Fold local NON
+introduit** : 2 sites de dispatch seulement, dont un récursif avec projection
+distincte par sous-type — un fold à 9 paramètres serait du boilerplate consommé une
+fois (décision documentée, reportée à US-7 pour les 8 autres fichiers).
+
+=== XF-FP2-3 — `bakery` : échec LLM typé, sans `var lastError` ✅
+
+Commit `25f274b7`, CI `41281963758` ✅ (4m28s, 18/18 jobs).
+Nouveaux types **internes** (kotlin-stdlib) : `LlmAttempt.Success|Failure(endpoint,
+cause)` + `LlmExhausted(failures, attempts)`. `attemptAll(messages):
+Either<LlmExhausted, String>` **récursif** (les endpoints sont consommés un à un
+depuis le pool ; la récursion dit « tentative → valeur → suivante » mieux qu'une
+boucle `Raise`), **court-circuit au premier succès**, échecs portés en `List`
+immuable. `complete()` garde **exactement** sa signature et ne lève qu'à la
+frontière (`fold` unique). Seam `(String) -> ChatModel` injectable (fabrique
+extraite), 2 tests de caractérisation (pool + `ChatModel` factices, sans réseau).
+
+== 3. Reste (EPIC XF-FP-2)
+
+- `XF-FP2-4` — `capsule` `FishAudioTtsEngine` : busy-retry → `Schedule.recurs` +
+  backoff (artifact `arrow-resilience`, alias catalogue local) ; délai injectable.
+- `XF-FP2-5` — `codebase` `RagVectorStore` : `try/finally` qui avale l'échec de
+  `close()` → `install`/`Resource` + close capturé.
+- `XF-FP2-6` — N0 `agent-contracts` `AgentTool.validate(): Result<Unit>` → scellé
+  `ValidationOutcome` (sans Arrow en N0) + bump/publication DAG.
+- `XF-FP2-7` — `document` `PivotModel` : ~85 `is PivotBlock.*` dans 8 fichiers → un
+  fold unique (gros refactor, US dédiée).
+
+Zéro test lancé localement, zéro Python (extraction PDF par `pdftotext`), zéro secret.

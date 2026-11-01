@@ -1,0 +1,90 @@
+= CADRAGE — EPIC transverse XF-FP-2 : paradigme fonctionnel, deuxième vague
+:date: 2026-11-01
+:statut: 🟢 EN COURS (US-1→US-3 lancées S-328)
+:porteur: MEMPHIS (workspace-bom) — EPIC transverse cross-borough
+:type: cadrage adossé aux sources (livre Serrano Mena 2023 + docs officielles arrow-kt 2.3.0)
+:sources: "Functional Programming Ideas for the Curious Kotliner" (A. Serrano Mena, 2023) ; https://arrow-kt.io/learn/typed-errors/ · /validation/ · /coroutines/ · /resilience/
+
+== Objet
+
+Prolonger **XB-FP** (clos S-323) au-delà des 6 seams déjà adoptés, avec une base
+documentaire vérifiée. La doctrine est inchangée : **N0 sans Arrow**, Arrow en N1/N2
+en `implementation`, **types scellés maison = frontière publique**, conversion
+`sealed ⇄ Either` **à la frontière** ; Arrow ne paie que là où il retire du code.
+
+== 1. Règles retenues des sources
+
+. **DEDE** (domaine, explicite, données, effets) — livre §1.1. Corollaire : **jamais
+   de `else` sur un `when` scellé** (il absorbe silencieusement tout cas futur).
+. **Trois issues ⇒ hiérarchie scellée**, pas `Either<E, A?>` (livre §5.1.2) ;
+   `null` seulement quand l'absence est toute l'information.
+. **Fail-first vs accumulation** : champs **indépendants** → `zipOrAccumulate` /
+   `mapOrAccumulate` → `Either<NonEmptyList<E>, A>` ; étapes **dépendantes** →
+   `flatMap` / `either { }` (livre §5.1.1, §5.3).
+. **`Raise` = code linéaire** (`ensure`, `bind`) ; **style officiel de port** :
+   `suspend fun port(): Either<E, A>` dans l'interface, `either { }` dans l'impl.
+. **Muter en local est permis** — le défaut est l'état mutable **qui s'échappe** de
+   la fonction (`clear()` par l'appelant, accumulateur partagé). Livre §4.3.
+. **Ressources** : `ResourceScope.install(acquire, release)` garde le code linéaire
+   (`use`/`try` ouvrent un scope) ; `Raise` n'a **pas** de `finally` → cleanup =
+   `install` (livre §8.2, docs `/coroutines/`).
+. **Optics : non** — `copy()` suffit ; lentilles au-delà de 2 niveaux seulement, et
+   `@optics` = plugin compilateur (contraire à « Arrow = détail d'implémentation »).
+
+== 2. Pièges de version vérifiés (Arrow 2.3.0)
+
+* `Validated` **n'existe plus** → `EitherNel<E, A>` + `zipOrAccumulate`.
+* `Schedule`/`retry` sont dans **`arrow-resilience`**, plus dans `arrow-fx-coroutines`.
+* `AwaitClose` **n'existe pas** ; `Map.mapOrAccumulate` est déprécié
+  (`mapValuesOrAccumulate`).
+* `catch` d'Arrow **exclut** `CancellationException` et les erreurs fatales
+  (≠ `runCatching`) ; `recover` ≠ `mapLeft`.
+* `Schedule.recurs(n)` = **n tentatives au total**, pas n retries.
+* Context *receivers* dépréciés, context *parameters* encore en preview → rester au
+  style receiver (Kotlin 2.1–2.4).
+
+== 3. Frontière N0 → N1 (gabarit)
+
+[source,kotlin]
+----
+// N0 : kotlin-stdlib seulement
+sealed interface ParseResult {
+    data class Ok(val value: Model) : ParseResult
+    data class Invalid(val problems: List<Problem>) : ParseResult
+}
+
+// N1 : Arrow interne, jamais dans la signature publique
+internal fun parseEither(src: String): Either<ParseError, Model> = either { … }
+
+fun parse(src: String): ParseResult =
+    parseEither(src).fold(
+        ifLeft = { ParseResult.Invalid(it.toProblems()) },
+        ifRight = { ParseResult.Ok(it) },
+    )
+----
+
+== 4. User Stories
+
+[cols="1,4,3,2", options="header"]
+|===
+| US | Description | Cible | Statut
+
+| XF-FP2-0 | Cadrage adossé aux sources (livre + docs) — ce document | `workspace-bom/.agents` | ✅ S-328
+| XF-FP2-1 | **`AsciidocContentParser` → fold pur** — 6 buffers + 4 drapeaux remplacés par un `ParseState` immuable et un `fold` ; API et sorties **inchangées** (tests existants = filet) | `slider-gradle` | 🟡 S-328
+| XF-FP2-2 | **`PivotBlock` : dispatch exhaustif + fold local** — `BlockChecksum.isChecksumRelevant` sans `else` (tout nouveau bloc ne devient plus silencieusement « checksum-relevant ») + `PivotBlock.fold` introduit et consommé dans le fichier | `document-gradle` | 🟡 S-328
+| XF-FP2-3 | **`PooledOllamaLlmService` : échec typé** — `var lastError` supprimé, échec par endpoint en valeur (`Either<NonEmptyList<EndpointFailure>, String>` interne), `fold` vers l'exception Gradle à la frontière ; API publique inchangée | `bakery-gradle` | 🟡 S-328
+| XF-FP2-4 | **Résilience `Schedule`** — `FishAudioTtsEngine` : retry busy-loop → `Schedule.recurs` + backoff exponentiel (artifact `arrow-resilience`, alias catalogue local) ; délai injectable pour les tests | `capsule-gradle` | ⏳ À FAIRE
+| XF-FP2-5 | **Ressources R2DBC** — `RagVectorStore` : `try/finally` qui avale l'échec de `close()` → `install`/`Resource` avec close capturé et journalisé | `codebase-gradle` | ⏳ À FAIRE
+| XF-FP2-6 | **N0 `AgentTool.validate(): Result<Unit>`** — `Result` = `Either<Throwable, A>` (doc) : remplacer par un scellé maison `ValidationOutcome` **sans Arrow en N0** | `workspace-bom/agent-contracts` | ⏳ À FAIRE
+| XF-FP2-7 | **`PivotModel` fold complet** — ~85 `is PivotBlock.*` dans 8 fichiers → un fold unique (gros refactor, US dédiée) | `document-gradle` | ⏳ À FAIRE
+|===
+
+== 5. Garde-fous
+
+* **Comportement préservé** : ces US sont des refactors *iso-comportement* (sauf
+  XF-FP2-4 : backoff ajouté, délai injectable = 0 dans les tests).
+* **Preuve** = CI du borough (Local = Build). Aucune exécution de tests locale.
+* **Diff reviewable** : un commit par concern ; si un renommage privé est nécessaire,
+  le mentionner.
+* **Aucune API publique cassée** : les types scellés maison restent la surface.
+* **N0 intact** : `grep "import arrow" workspace-bom/*/src/main` = 0.
