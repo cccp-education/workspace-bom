@@ -5,7 +5,8 @@
 :sectnums:
 
 _Dernière mise à jour (antérieure) : 2026-10-25 (S-307 — **BOM/catalog 0.0.101 : `document-plugin 0.0.25` + `bakery-plugin 0.0.28`**, revue cheroliv.com ; publication Central `d6e5bf37`, propagation repo1 200, CI verte `67b0d8c`. Précédent S-306 : BOM/catalog 0.0.100 bakery 0.0.27, bundle `936b54a1`, CI verte `c6dc0e1`. Précédent S-299 : CI cross-borough < 5 min.)_
-_Dernière mise à jour : 2026-11-01 (S-326 — **`LINT-ADOPT-2` ✅ : `video-kernel` + `youtube-auth`** — les 2 builds standalone du dépôt adoptent `build.lint` + `.editorconfig` tracké ; **312 violations** corrigées (62 fichiers, 200 kernel / 112 auth), `FIELD_PATTERN` → `fieldPattern` ; gate **gratuit** (`check` contient 3+4 tâches ktlint, CI `./gradlew build`), CI `41269513021` ✅ 1m10s. **Défaut réel corrigé** : `jvmToolchain(JavaVersion.VERSION_25.ordinal)` demandait le JDK **24** → `jvmToolchain(25)` (le noyau N1 était compilé pour 24). Précédent S-325 : MEM-LINT-ADOPTION ouvert + pilote graphify (647 violations).)_
+_Dernière mise à jour : 2026-11-01 (S-327 — **MEM-LINT-ADOPTION : 10 boroughs adoptés en vagues parallèles** (décision pilote « enchaine les boroughs en parallèle tant que le DAG le permet » → **D1 amendé** : l'adoption est une forêt, pas une chaîne). **39 336 violations** corrigées (≈ 2 000 fichiers) : planner 729, readme 482, hyperframes 1 867, codex 2 917, plantuml 4 455, document 5 133, slider 2 085, capsule 7 778, codebase 12 844, N0 workspace-bom 1 046. **Toutes les CI vertes** (10 repos) ; ≈ 120 wildcard imports, 185 steps Cucumber renommés, 6 renames de fichiers, `tools.kt` mort supprimé (slider) ; **5 gardes ligne-à-ligne durcies** + 1 garde de partition ; **3 CI test-only** ont reçu une step `Lint (ktlint)`. CI workspace-bom `41277983007` ✅ 5m21s (job `N0 · contracts` inclus). Précédent S-326 : `LINT-ADOPT-2` video-kernel + youtube-auth (312 violations, `jvmToolchain` 24→25).)_
+_Dernière mise à jour (antérieure) : 2026-11-01 (S-326 — **`LINT-ADOPT-2` ✅ : `video-kernel` + `youtube-auth`** — les 2 builds standalone du dépôt adoptent `build.lint` + `.editorconfig` tracké ; **312 violations** corrigées (62 fichiers, 200 kernel / 112 auth), `FIELD_PATTERN` → `fieldPattern` ; gate **gratuit** (`check` contient 3+4 tâches ktlint, CI `./gradlew build`), CI `41269513021` ✅ 1m10s. **Défaut réel corrigé** : `jvmToolchain(JavaVersion.VERSION_25.ordinal)` demandait le JDK **24** → `jvmToolchain(25)` (le noyau N1 était compilé pour 24). Précédent S-325 : MEM-LINT-ADOPTION ouvert + pilote graphify (647 violations).)_
 _Dernière mise à jour (antérieure) : 2026-11-01 (S-325 — **EPIC `MEM-LINT-ADOPTION` ouvert + pilote `graphify` ✅** : audit — la convention `build.lint` n'est appliquée que par bakery et conventions-gradle, ≈ **2 900 fichiers Kotlin** sans aucune analyse statique sur 22 boroughs ; cadrage `.agents/CADRAGE_EPIC_MEM_LINT_ADOPTION.adoc` (7 décisions, 14 US, 1 borough = 1 session). **Pilote** : `graphify-plugin` + `.editorconfig` tracké + **647 violations** corrigées (39 fichiers, preuve de non-collatéral) + wildcard imports + garde publication rendue **whitespace-insensitive** (piège S-244 F34 reproduit) ; gate **gratuit** (`build` → `check`, 4 tâches ktlint), CI `41268477861` ✅ 2m00s. Précédent S-324 : MEM-LINT-GATE (bakery) clos.)_
 _Dernière mise à jour (antérieure) : 2026-11-01 (S-324 — **MEM-LINT-GATE TERMINÉ (LINT-1/2/3)** : **32 violations ktlint / 19 fichiers** résolues chez bakery (7 `src/main`, 25 `src/test` ; `ktlintFormat` a touché exactement les fichiers signalés — zéro collatéral, formatting-only, `b6852ba3`) ; le job `unit` du workflow `Test` exécute désormais `./gradlew ktlintCheck` (step `Lint (ktlint)`, ≈ 10 s, **aucun job ajouté**) et `BakeryCucumberShardCoverageTest` garde le gate (workflow contient `./gradlew ktlintCheck`, baseline sans `<file>` ; RED prouvé par construction) (`1bd46024`). CI bakery `41267145721` ✅ (4m02s). Précédent S-323 : XB-FP clos (US-0→US-7) + mesure isolée `5m28s`.)_
 _Dernière mise à jour (antérieure) : 2026-11-01 (S-323 — **XB-FP TERMINÉ (US-0→US-7)** : `XB-FP-6` — les trois classes fonctionnelles lentes deviennent pures + **un** smoke TestKit par concern : bakery `LocalizeSeoHead` (**10 → 3 builds**) via l'objet pur `OgImageLanguage` (7 UT, RED par compilation) + 2 scénarios BDD ; graphify `Incremental` (**11 → 7**) par fusion sans perte d'assertion ; slider `GenerateDeckPipeline` (**7 → 3**). ≈ 88 s → ≈ 40 s (−55 %). **Mesure isolée `XB-FP-7` : `5m28s`** (run `41264633001`, 21/21, aucun concurrent) → KPI ≤ 5m30s tenu, gain TestKit caché non démontré. CI vertes bakery `41264081199`, graphify `41264087285`, slider `41264090679`. Découverte : `ktlintCheck` **rouge à HEAD** (le CI bakery ne lance jamais `check`) → nouvel EPIC `MEM-LINT-GATE`. Précédent S-322 : seam plantuml + tests purs slider + source set `sharedTest`.)_
@@ -297,18 +298,33 @@ toute garde qui lit un script de build est **whitespace-insensitive**.
 | LINT-ADOPT-0 | Cadrage + audit (22 boroughs, 2 populations, 7 décisions) | `workspace-bom/.agents` | ✅ S-325
 | LINT-ADOPT-1 | **Pilote `graphify`** — convention + `.editorconfig` + **647 violations** corrigées (39 fichiers) + wildcard imports + garde publication whitespace-insensitive ; gate gratuit (`build` → `check`) | `graphify-gradle` | ✅ S-325 (`a54b218`, CI `41268477861`, 2m00s)
 | LINT-ADOPT-2 | `video-kernel` (52 `.kt` + **16** `youtube-auth` du même dépôt, CI `build`) | `video-kernel-gradle` | ✅ S-326 (`7dec72e` — **312 violations** / 62 fichiers ; gate gratuit, 3+4 tâches ktlint dans `check` ; CI `41269513021` 1m10s ; **défaut réel** : `VERSION_25.ordinal` = JVM **24** → `jvmToolchain(25)`)
-| LINT-ADOPT-3 | `planner` (54, CI `:planner-plugin:build`) | `planner-gradle` | 🟡 À FAIRE
-| LINT-ADOPT-4 | `readme` (21, CI `clean check`) | `readme-gradle` | 🟡 À FAIRE
-| LINT-ADOPT-5 | `hyperframes` (109, CI `check`) | `hyperframes-gradle` | 🟡 À FAIRE
-| LINT-ADOPT-6 | `codex` (152, CI `check`) | `codex-gradle` | 🟡 À FAIRE
-| LINT-ADOPT-7 | `plantuml` (319, CI `check`) | `plantuml-gradle` | 🟡 À FAIRE
-| LINT-ADOPT-8 | `document` (390, CI `build`) | `document-gradle` | 🟡 À FAIRE
-| LINT-ADOPT-9 | `workspace-bom` N0 (10 sous-builds standalone, CI `check`) | `workspace-bom` | 🟡 À FAIRE
-| LINT-ADOPT-10 | `slider` (180, CI test-only → **step à ajouter**) | `slider-gradle` | 🟡 À FAIRE
-| LINT-ADOPT-11 | `capsule` (522, CI test-only → step) | `capsule-gradle` | 🟡 À FAIRE
-| LINT-ADOPT-12 | `codebase` (625, CI test-only → step) | `codebase-gradle` | 🟡 À FAIRE
-| LINT-ADOPT-13 | Sans workflow (academy, dashboard, api-key-pool, jhipster, magic-stick) — au cas par cas | divers | 🟡 À FAIRE
+| LINT-ADOPT-3 | `planner` (54, CI `:planner-plugin:build`) | `planner-gradle` | ✅ S-327 (`738711f`, 729 violations / 53 fichiers, CI `41270302845`)
+| LINT-ADOPT-4 | `readme` (21, CI `clean check`) | `readme-gradle` | ✅ S-327 (`94f0cb3`, 482 / 23, garde durcie, CI `41270358600`)
+| LINT-ADOPT-5 | `hyperframes` (109, CI `check`) | `hyperframes-gradle` | ✅ S-327 (`63e3fca`, 1 867 / 107, `HttpTransport`→`JdkHttpTransport`, garde durcie, CI `41270676733`)
+| LINT-ADOPT-6 | `codex` (152, CI `check`) | `codex-gradle` | ✅ S-327 (`371ef51`, 2 917 / 152, garde durcie, CI `41270810056`)
+| LINT-ADOPT-7 | `plantuml` (319, CI `check`) | `plantuml-gradle` | ✅ S-327 (`cc0d390`, 4 455 / 232, 3 renames, garde durcie, CI `41271639397`)
+| LINT-ADOPT-8 | `document` (390, CI `build`) | `document-gradle` | ✅ S-327 (`13318e0`, 5 133 / 365, garde durcie, CI `41271553488`)
+| LINT-ADOPT-9 | `workspace-bom` N0 (9 builds standalone, CI `n0-contracts` → `check`) | `workspace-bom` | ✅ S-327 (`1371adf`, 1 046 / 118, CI `41277983007`)
+| LINT-ADOPT-10 | `slider` (180, CI test-only → **step**) | `slider-gradle` | ✅ S-327 (`1f8c206`, 2 085 / 184, `tools.kt` mort supprimé, **step ajoutée**, CI `41273983277`)
+| LINT-ADOPT-11 | `capsule` (522, CI test-only → step) | `capsule-gradle` | ✅ S-327 (`d996caf`+`cbcc67c`, 7 778 / 499, 127 steps renommés, garde durcie, **step ajoutée**, CI `41275665387`/`41275665487`)
+| LINT-ADOPT-12 | `codebase` (625, CI test-only → step) | `codebase-gradle` | ✅ S-327 (`6f46390`+`797fea7`+`1959c81`, 12 844 / 612, 74 wildcard, 58 steps, **step ajoutée**, CI `41277105723`)
+| LINT-ADOPT-13 | Sans workflow (academy, dashboard, api-key-pool, jhipster, magic-stick) — sans CI le gate n'est pas exécuté | divers | 🟡 DIFFÉRÉ (assumé, rapport S-327 §5)
 |===
+
+_Livré S-327 (LINT-ADOPT-3→12, **vagues parallèles** — D1 amendé sur décision
+pilote « enchaine les boroughs en parallèle tant que le DAG le permet »)_ :
+**10 boroughs**, **39 336 violations** corrigées (≈ 2 000 fichiers), **toutes les
+CI vertes** (planner 1m55s, readme 2m16s, hyperframes 3m43s, codex 5m48s,
+slider 3m24s, capsule 5m41s, codebase 5m14s, plantuml 16m41s, document ~30m,
+N0 workspace-bom `41277983007`). Corrections manuelles : **≈ 120 wildcard imports**,
+**185 steps Cucumber** renommés camelCase (capsule 127 + codebase 58), 6 renames de
+fichiers (`HttpTransport`→`JdkHttpTransport` ×2, `models.kt`→`Models.kt` ×2,
+`RemotionCapture`→`RemotionCaptureImpl`), 13 backing properties, `tools.kt` (333
+lignes de code mort) supprimé chez slider. **5 gardes ligne-à-ligne durcies** +
+**1 garde de partition** (capsule) ; **3 CI test-only** ont reçu une step
+`Lint (ktlint)` (slider, capsule, codebase), les 7 autres étaient déjà
+`build`/`check` (gate gratuit). Rapport
+`.agents/sessions/327-mem-lint-adoption-parallel.adoc`.
 
 _Livré S-325 (LINT-ADOPT-1)_ : `graphify-plugin` applique `education.cccp.build.lint`
 0.0.7, `.editorconfig` tracké (`root = true`), **647 violations** corrigées par

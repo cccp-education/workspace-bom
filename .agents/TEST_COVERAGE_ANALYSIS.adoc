@@ -1,6 +1,23 @@
 = TEST_COVERAGE_ANALYSIS — workspace-bom (MEMPHIS)
 :date: 2026-11-01
-:session: 326
+:session: 327
+
+== Session 327 (2026-11-01) — LINT-ADOPT-3→12 : 10 boroughs (formatting-only)
+
+* **39 336 violations** de style corrigées (≈ 2 000 fichiers) sur 10 dépôts :
+  aucun test supprimé, aucune assertion métier modifiée.
+* **Renommages de tests** : 185 steps Cucumber camelCase (capsule 127, codebase 58)
+  — Cucumber lie par annotation, aucun appel externe. `_x` → `xCache` (13 backing
+  properties), 2 regex de test camelCase (document).
+* **Gardes durcies** (comportement inchangé, robustesse accrue au reflow) :
+  readme, codex, hyperframes, plantuml, document (`version` normalisé) +
+  capsule (`FILTER_TAGS_PROPERTY_NAME` replié → comparaison whitespace-insensitive).
+* `slider` : `src/functionalTest/kotlin/slider/tools.kt` supprimé — 333 lignes de
+  code **entièrement commenté** (aucune référence, vérifié par grep).
+* Gate : 7 boroughs déjà en `build`/`check` ; 3 CI test-only ont reçu une step
+  `Lint (ktlint)` (slider, capsule, codebase).
+* Preuve = CI des 10 dépôts (voir rapport S-327 §3) + workspace-bom `41277983007`.
+
 
 == Session 326 (2026-11-01) — LINT-ADOPT-2 : video-kernel + youtube-auth
 

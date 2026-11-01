@@ -1,0 +1,77 @@
+= Session 327 — MEM-LINT-ADOPTION : adoption parallèle (10 boroughs)
+:date: 2026-11-01
+:borough: MEMPHIS (workspace-bom) — EPIC transverse
+:type: adoption lint en vagues parallèles (formatting-only + gardes durcies)
+:ci: voir table §3 (workspace-bom `41277983007`)
+
+== 1. Décision pilote — parallélisation de l'EPIC
+
+Le pilote a demandé « enchaine les boroughs en parallèle tant que le DAG le
+permet ». **D1 est amendé** : l'adoption du lint est **indépendante par dépôt**
+(le « DAG » est une forêt : aucun borough ne dépend d'un autre pour porter
+`.editorconfig` + la convention + son gate). La contrainte réelle n'est pas le DAG
+mais la **RAM de la machine** (15 Go, ~5 Go libres avec l'IDE) : les vagues ont
+été dimensionnées à **2 agents concurrents**, daemons Gradle arrêtés entre les vagues.
+
+== 2. Résultat global
+
+**10 boroughs** adoptés dans la session (**39 336 violations** de style corrigées,
+≈ **2 000 fichiers**), tous en `formatting-only` sauf corrections manuelles listées.
+
+[cols="2,2,2,3,3", options="header"]
+|===
+| Borough | Violations | Fichiers | Gate | Corrections manuelles notables
+
+| `planner` | 729 | 53 | gratuit (`:planner-plugin:build`) | 1 `comment-wrapping` (metadata), 1 wildcard Cucumber
+| `readme` | 482 | 23 | gratuit (`clean check`) | 6 wildcard imports ; **garde publication durcie**
+| `codex` | 2 917 | 152 | gratuit (`check`) | 1 wildcard `tasks.*` ; **garde publication durcie**
+| `hyperframes` | 1 867 | 107 | gratuit (`check`) | `HttpTransport.kt` → `JdkHttpTransport.kt` (filename) ; KDoc doublon ; **garde durcie**
+| `plantuml` | 4 455 | 232 | gratuit (`check`) | 18 wildcard, 3 `git mv` PascalCase, 6 lignes longues ; **garde D3/BOM durcie**
+| `document` | 5 133 | 365 | gratuit (`build`) | 20 wildcard, 2 regex camelCase, KDoc doublon, 3 littéraux ; **garde durcie**
+| `slider` | 2 085 | 184 | **step ajoutée** | `models.kt`→`Models.kt`, **`tools.kt` 333 lignes de code mort supprimé**, 2 wildcard, 1 `@Suppress` justifié
+| `capsule` | 7 778 | 499 | **step ajoutée** | **127 steps Cucumber** renommés camelCase, 7 wildcard, 2 `git mv`, 13 backing properties ; **garde shards durcie**
+| `codebase` | 12 844 | 612 | **step ajoutée** | **58 steps Cucumber** renommés, **74 wildcard imports**, 1 `git mv`, 2 `@Suppress` ; gardes déjà robustes
+| `workspace-bom` N0 (9 builds) | 1 046 | 118 | gratuit (`n0-contracts` → `check`) | 5 wildcard `Assertions.*` (i18n-contracts)
+| **Total** | **39 336** | **≈ 2 000** | | |
+
+== 3. Preuves CI (toutes vertes)
+
+| Repo | Commit(s) | Run | Durée
+| planner | `738711f` | `41270302845` | 1m55s
+| readme | `94f0cb3` | `41270358600` | 2m16s
+| hyperframes | `63e3fca` | `41270676733` | 3m43s
+| codex | `371ef51` | `41270810056` | 5m48s
+| document | `13318e0` | `41271553488` | ~29m56s
+| plantuml | `cc0d390` | `41271639397` | 16m41s
+| slider | `1f8c206` | `41273983277` | 3m24s (11/11 jobs, step Lint verte)
+| capsule | `d996caf` + `cbcc67c` | `41275665387` + `41275665487` | 3m44s + 5m41s (25/25)
+| codebase | `6f46390` + `797fea7` + `1959c81` | `41277105723` + `41277105526` | 5m14s (10/10) + OCR
+| workspace-bom (N0) | `1371adf` | `41277983007` | (voir clôture)
+
+== 4. Enseignements (récurrents, généralisables)
+
+. **La garde ligne-à-ligne est le piège n°1** : `ktlintFormat` reflue
+   `version = ws.versions.<x>.plugin.get()` sur 3 lignes et casse les gardes
+   `lineSequence().first { startsWith("version =") }`. **5 gardes** durcies
+   (readme, codex, hyperframes, plantuml, document) + 1 garde de partition
+   (capsule : `FILTER_TAGS_PROPERTY_NAME` replié). Correctif unique :
+   normaliser `Regex("\\s+")` puis asserter la forme compacte (S-244 F34).
+   → **Règle** : toute garde qui lit un script/ YAML doit être
+   whitespace-insensitive **par défaut** (D6 du cadrage, désormais appliqué).
+. **Les wildcard imports** sont la seule classe systématiquement non
+   auto-corrigeable (≈ 120 expansions manuelles, dont 74 sur codebase).
+. **`property-naming`/`backing-property-naming`** (`_x` → `xCache`) et
+   **`function-naming`** (steps Cucumber en backticks autorisés, snake_case non)
+   demandent des renommages manuels (capsule : 127 steps).
+. **Deux renames de fichiers** révèlent des classes mal nommées
+   (`HttpTransport.kt` → `JdkHttpTransport.kt` dans hyperframes **et** capsule).
+. **Le gate est gratuit quand le CI exécute déjà `build`/`check`** (7 boroughs) ;
+   il faut **une step** pour les CI test-only (slider, capsule, codebase — ajoutée
+   dans le job `unit`/`test`, aucun job ajouté).
+
+== 5. Reste
+
+- `LINT-ADOPT-13` (boroughs **sans workflow** : academy 96, dashboard 29,
+  api-key-pool 16, jhipster 13, magic-stick 2) : **différé** — sans CI, le gate
+  n'est pas exécuté ; décision au cas par cas avec le pilote.
+- Vestiges (`newpipe`, `notebook`) : hors périmètre.

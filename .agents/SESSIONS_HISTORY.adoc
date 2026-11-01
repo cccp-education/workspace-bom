@@ -314,3 +314,23 @@ valait **24** (l'énumération `JavaVersion` commence à `VERSION_1_1`) — le n
 était compilé pour JVM 24 alors que le workspace cible 25 ; corrigé en
 `jvmToolchain(25)`. Commit `7dec72e`. Rapport
 `.agents/sessions/326-lint-adopt-2-video-kernel.adoc`.
+
+== Session 327 (2026-11-01) — MEM-LINT-ADOPTION : 10 boroughs en vagues parallèles
+
+Décision pilote « enchaine les boroughs en parallèle tant que le DAG le permet » →
+**D1 amendé** : l'adoption du lint est **indépendante par dépôt** (forêt) ; seule
+contrainte = la RAM (vagues de 2 agents, daemons arrêtés entre vagues).
+**10 boroughs / 39 336 violations / ≈ 2 000 fichiers**, toutes CI vertes :
+planner `738711f` (729, CI 1m55s), readme `94f0cb3` (482, garde durcie, 2m16s),
+hyperframes `63e3fca` (1 867, `HttpTransport`→`JdkHttpTransport`, garde, 3m43s),
+codex `371ef51` (2 917, garde, 5m48s), plantuml `cc0d390` (4 455, 3 renaming,
+garde, 16m41s), document `13318e0` (5 133, garde, ~30m), slider `1f8c206`
+(2 085, `tools.kt` de 333 lignes de code mort supprimé, **step CI**, 3m24s),
+capsule `d996caf`+`cbcc67c` (7 778, **127 steps Cucumber** renommés, garde de
+partition durcie, **step CI**, 5m41s), codebase `6f46390`+`797fea7`+`1959c81`
+(12 844, **74 wildcard imports**, 58 steps, **step CI**, 5m14s), N0 workspace-bom
+`1371adf` (1 046, 9 builds, job `n0-contracts`). CI workspace-bom `41277983007`
+✅ 5m21s. Leçons : garde ligne-à-ligne = piège n°1 (5 durcies), wildcard imports =
+seule classe non auto-corrigeable, gate gratuit si CI `build`/`check` (7 boroughs),
+step pour les CI test-only (3). Reste `LINT-ADOPT-13` (boroughs sans CI, différé).
+Rapport `.agents/sessions/327-mem-lint-adoption-parallel.adoc`.

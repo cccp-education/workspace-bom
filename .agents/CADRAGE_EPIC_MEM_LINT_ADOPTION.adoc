@@ -1,6 +1,6 @@
 = CADRAGE — EPIC transverse MEM-LINT-ADOPTION : analyse statique pour tous les boroughs
 :date: 2026-11-01
-:statut: 🟢 EN COURS (pilotes `graphify` ✅ S-325 et `video-kernel` + `youtube-auth` ✅ S-326 ; 11 boroughs à faire)
+:statut: 🟢 EN COURS (10 boroughs adoptés ✅ S-325→S-327 ; reste `LINT-ADOPT-13` — boroughs sans CI, différé)
 :porteur: MEMPHIS (workspace-bom) — EPIC transverse cross-borough
 :type: cadrage + audit (lecture seule) + plan d'adoption
 
@@ -75,6 +75,10 @@ style. Deux sous-populations :
 == 3. Décisions
 
 . **D1** — 1 borough = 1 session (pattern 1 US = 1 session + CI du borough).
+  **AMENDÉ S-327 (décision pilote « enchaine les boroughs en parallèle tant que
+  le DAG le permet »)** : l'adoption est **indépendante par dépôt** (forêt, pas
+  chaîne) → les boroughs peuvent être exécutés **en vagues parallèles** ; la seule
+  contrainte est la **RAM de la machine** (vagues de 2, daemons arrêtés entre vagues).
 . **D2** — Ordre : d'abord les boroughs au **gate gratuit** (CI `build`/`check`),
    du plus petit au plus gros ; ensuite ceux qui exigent une step CI.
 . **D3** — `.editorconfig` tracké, `root = true`, copie de bakery (max_line_length
@@ -98,18 +102,25 @@ style. Deux sous-populations :
 | LINT-ADOPT-0 | Cadrage + audit (ce document) | `workspace-bom/.agents` | ✅ S-325
 | LINT-ADOPT-1 | **Pilote `graphify`** — convention + `.editorconfig` + format (647 violations) + garde du publication test | `graphify-gradle` | ✅ S-325 (`a54b218`, CI `41268477861`)
 | LINT-ADOPT-2 | `video-kernel` (52 `.kt` + **16** `youtube-auth` dans le même dépôt, CI `build` par job) | `video-kernel-gradle` | ✅ S-326 (`7dec72e`, **312 violations**, 62 fichiers ; CI `41269513021`, 1m10s ; défaut réel : `VERSION_25.ordinal` = JVM 24 → `jvmToolchain(25)`)
-| LINT-ADOPT-3 | `planner` (54, CI `:planner-plugin:build`) | `planner-gradle` | 🟡 À FAIRE
-| LINT-ADOPT-4 | `readme` (21, CI `clean check`) | `readme-gradle` | 🟡 À FAIRE
-| LINT-ADOPT-5 | `hyperframes` (109, CI `check`) | `hyperframes-gradle` | 🟡 À FAIRE
-| LINT-ADOPT-6 | `codex` (152, CI `check`) | `codex-gradle` | 🟡 À FAIRE
-| LINT-ADOPT-7 | `plantuml` (319, CI `check`) | `plantuml-gradle` | 🟡 À FAIRE
-| LINT-ADOPT-8 | `document` (390, CI `build`) | `document-gradle` | 🟡 À FAIRE
-| LINT-ADOPT-9 | `workspace-bom` N0 (10 sous-builds, CI `check`) — cas particulier : chaque contrat est un build standalone | `workspace-bom` | 🟡 À FAIRE
-| LINT-ADOPT-10 | `slider` (180, CI test-only → **step à ajouter**) | `slider-gradle` | 🟡 À FAIRE
-| LINT-ADOPT-11 | `capsule` (522, CI test-only → step) | `capsule-gradle` | 🟡 À FAIRE
-| LINT-ADOPT-12 | `codebase` (625, CI test-only → step) | `codebase-gradle` | 🟡 À FAIRE
-| LINT-ADOPT-13 | Reste sans workflow (academy, dashboard, api-key-pool, jhipster, magic-stick) — décision au cas par cas | divers | 🟡 À FAIRE
+| LINT-ADOPT-3 | `planner` (54, CI `:planner-plugin:build`) | `planner-gradle` | ✅ S-327 (`738711f`, 729 violations, 53 fichiers, CI `41270302845`)
+| LINT-ADOPT-4 | `readme` (21, CI `clean check`) | `readme-gradle` | ✅ S-327 (`94f0cb3`, 482 violations, 23 fichiers, garde durcie, CI `41270358600`)
+| LINT-ADOPT-5 | `hyperframes` (109, CI `check`) | `hyperframes-gradle` | ✅ S-327 (`63e3fca`, 1 867 violations, 107 fichiers, `HttpTransport`→`JdkHttpTransport`, garde durcie, CI `41270676733`)
+| LINT-ADOPT-6 | `codex` (152, CI `check`) | `codex-gradle` | ✅ S-327 (`371ef51`, 2 917 violations, 152 fichiers, garde durcie, CI `41270810056`)
+| LINT-ADOPT-7 | `plantuml` (319, CI `check`) | `plantuml-gradle` | ✅ S-327 (`cc0d390`, 4 455 violations, 232 fichiers, 3 renames, garde durcie, CI `41271639397`)
+| LINT-ADOPT-8 | `document` (390, CI `build`) | `document-gradle` | ✅ S-327 (`13318e0`, 5 133 violations, 365 fichiers, garde durcie, CI `41271553488`)
+| LINT-ADOPT-9 | `workspace-bom` N0 (**9** builds standalone, CI `n0-contracts` → `check`) | `workspace-bom` | ✅ S-327 (`1371adf`, 1 046 violations, 118 fichiers, CI `41277983007`)
+| LINT-ADOPT-10 | `slider` (180, CI test-only → **step**) | `slider-gradle` | ✅ S-327 (`1f8c206`, 2 085 violations, 184 fichiers, `tools.kt` mort supprimé, **step ajoutée**, CI `41273983277`)
+| LINT-ADOPT-11 | `capsule` (522, CI test-only → step) | `capsule-gradle` | ✅ S-327 (`d996caf`+`cbcc67c`, 7 778 violations, 499 fichiers, 127 steps renommés, garde durcie, **step ajoutée**, CI `41275665387`/`41275665487`)
+| LINT-ADOPT-12 | `codebase` (625, CI test-only → step) | `codebase-gradle` | ✅ S-327 (`6f46390`+`797fea7`+`1959c81`, 12 844 violations, 612 fichiers, 74 wildcard, 58 steps, **step ajoutée**, CI `41277105723`)
+| LINT-ADOPT-13 | Reste **sans workflow** (academy, dashboard, api-key-pool, jhipster, magic-stick) — sans CI le gate n'est pas exécuté : décision au cas par cas | divers | 🟡 DIFFÉRÉ (assumé, rapport S-327 §5)
 |===
+
+_Livré S-327 (LINT-ADOPT-3→12, en vagues parallèles)_ : **10 boroughs**, **39 336
+violations** corrigées (≈ 2 000 fichiers), toutes les CI vertes. Cinq gardes
+ligne-à-ligne durcies (readme, codex, hyperframes, plantuml, document) + une garde
+de partition (capsule) ; trois CI test-only ont reçu une step `Lint (ktlint)`
+(slider, capsule, codebase), sept boroughs avaient déjà `build`/`check` (gate
+gratuit). Rapport `.agents/sessions/327-mem-lint-adoption-parallel.adoc`.
 
 == 5. Risques
 

@@ -1,39 +1,39 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-327 — dernière terminée : **326** (`LINT-ADOPT-2` : video-kernel + youtube-auth).
-Avant : **325** (MEM-LINT-ADOPTION : audit + pilote graphify), **324**
-(MEM-LINT-GATE bakery clos), **323** (XB-FP clos), **322** (seam plantuml + tests
-purs + `sharedTest`), **321** (TestKit home caché), **320** (Arrow).
+328 — dernière terminée : **327** (MEM-LINT-ADOPTION : **10 boroughs** en vagues
+parallèles, 39 336 violations, toutes CI vertes). Avant : **326** (video-kernel +
+youtube-auth), **325** (cadrage + pilote graphify), **324** (MEM-LINT-GATE bakery),
+**323** (XB-FP clos), **322** (seam plantuml + tests purs + `sharedTest`).
 
-=== Mission Session 327 — ordre proposé
+=== Mission Session 328 — ordre proposé
 
-. **`LINT-ADOPT-3` — `planner`** (54 `.kt`, CI `:planner-plugin:build` → gate
-   gratuit) : `.editorconfig` tracké, `build.lint` 0.0.7, `ktlintFormat` (vérifier
-   `git status` = fichiers signalés), wildcard imports, gardes whitespace-insensitive
-   (le `PlannerPluginPublicationTest`-like doit être vérifié **avant** de formater),
-   CI verte. Puis `-4` `readme` (21), `-5` `hyperframes` (109), `-6` `codex` (152),
-   `-7` `plantuml` (319), `-8` `document` (390), `-9` N0 workspace-bom.
+. **`LINT-ADOPT-13`** (boroughs **sans workflow** : academy 96, dashboard 29,
+   api-key-pool 16, jhipster 13, magic-stick 2) : **différé S-327** — sans CI le
+   gate n'est pas exécuté ; décision pilote à prendre (adopter quand même pour le
+   build local, ou attendre un CI).
 . **Release consommateur** au prochain artefact produit (Règle 2 « toujours granted »).
-. Pour les boroughs à CI **test-only** (`slider`, `capsule`, `codebase`) : ajouter
-   la step `Lint (ktlint)` (pattern S-324) en plus de la convention.
+. **Resync README/INDEX** des boroughs qui ont republié (aucun bump MEMPHIS en attente).
+. Nettoyage possible : `LINT-ADOPT-13` mis à part, l'EPIC est **complet pour les
+  12 boroughs à CI**.
 
-_Document maître_ : `.agents/CADRAGE_EPIC_MEM_LINT_ADOPTION.adoc` (audit, 7 décisions,
-14 US). Suivi : `BACKLOG.adoc` § `MEM-LINT-ADOPTION` + Roadmap de l'INDEX.
+_Document maître_ : `.agents/CADRAGE_EPIC_MEM_LINT_ADOPTION.adoc` (D1 amendé S-327 :
+adoption parallélisable, forêt). Suivi : `BACKLOG.adoc` § `MEM-LINT-ADOPTION`.
 
 == État du code
 
 - Central : BOM + catalog **0.0.117** (import `io.arrow-kt:arrow-stack:2.3.0`).
 - Contrats N0 : **sans Arrow** (D2) ; Arrow en N1/N2 en `implementation`.
 - EPICs MEMPHIS : **XB-FP clos** (S-323), **MEM-LINT-GATE clos** (S-324),
-  **MEM-LINT-ADOPTION en cours** (pilotes `graphify` ✅ S-325, `video-kernel` +
-  `youtube-auth` ✅ S-326).
-- Gate lint : bakery (step `Lint (ktlint)`), graphify / video-kernel / youtube-auth
-  (via `build` → `check`). Les 19 autres boroughs n'ont **aucune** analyse statique.
+  **MEM-LINT-ADOPTION US-0→US-12 ✅** (10 boroughs ; reste US-13, sans CI, différé).
+- Gate lint : **12 boroughs** l'exécutent (bakery, graphify, video-kernel,
+  youtube-auth, planner, readme, hyperframes, codex, plantuml, document, slider,
+  capsule, codebase, N0 workspace-bom). Restent sans analyse statique : academy,
+  dashboard, api-key-pool, jhipster, magic-stick (+ vestiges).
 - CI workspace-bom : 21 jobs + gardes ; wall-clock **variance `5m12s…5m52s`**
   (KPI ≤ 5m30s à la frontière, variance des shards TestKit).
-- Dernières CI boroughs : video-kernel `41269513021` ✅ (1m10s), graphify
-  `41268477861` ✅ (2m00s), bakery `41267145721` ✅, workspace-bom `41268822570` ✅.
+- Dernières CI : workspace-bom `41277983007` ✅ 5m21s ; codebase `41277105723` ✅
+  5m14s ; capsule `41275665487` ✅ 5m41s ; plantuml `41271639397` ✅ 16m41s.
 
 == Doctrine XB-FP (clos — conservée pour mémoire)
 

@@ -93,3 +93,13 @@
 * **312 violations** corrigées (62 fichiers), `FIELD_PATTERN` → `fieldPattern`.
 * **Défaut réel** : `VERSION_25.ordinal` demandait JVM **24** → `jvmToolchain(25)`.
 * Gate gratuit (`build` → `check`, 3+4 tâches ktlint) ; CI `41269513021` ✅ 1m10s.
+
+== S-327 — MEM-LINT-ADOPTION : 10 boroughs en vagues parallèles ✅
+
+* **39 336 violations** / ≈ 2 000 fichiers, toutes CI vertes : planner, readme,
+  hyperframes, codex, plantuml, document, slider, capsule, codebase, N0 (9 builds).
+* ≈ 120 wildcard imports, 185 steps Cucumber renommés, 6 renames de fichiers,
+  `tools.kt` (333 lignes de code mort) supprimé ; 5 gardes ligne-à-ligne durcies
+  + 1 garde de partition ; 3 CI test-only ont reçu une step `Lint (ktlint)`.
+* D1 amendé : adoption parallélisable (forêt) ; contrainte = RAM (vagues de 2).
+* CI workspace-bom `41277983007` ✅ 5m21s (job `N0 · contracts` inclus).
