@@ -25,11 +25,9 @@ _Documents maîtres_ : `.agents/CADRAGE_EPIC_MEM_WARN_FREE.adoc` (clos) ;
 - Central : `agent-contracts **0.0.4**`, `document-plugin **0.0.27**`, BOM/catalog
   **0.0.119** (bundle `b9bc83e1`) ; `bakery` `workspaceVersion = 0.0.119`.
   Import `io.arrow-kt:arrow-stack:2.3.0`. Contrats N0 **sans Arrow** (D2).
-- **Gate N0 réellement bloquant** depuis S-335 (`set -eo pipefail` + garde
-  `N0ContractsGateTest`) : un `./gradlew check` en échec fait échouer le job.
-- **Warning-free : les 13 dépôts actifs à 0 warning** (34 P2 tiers soldés S-333).
-- **Gate lint : 16 dépôts** (S-336 : + academy, dashboard, api-key-pool, jhipster) ;
-  `magic-stick` caduc (0 Kotlin). CI workspace-bom : 21 jobs, **`5m12s…5m52s`**.
+- **Gate N0 bloquant** (S-335 : `set -eo pipefail` + `N0ContractsGateTest`) ;
+  **warning-free 13 dépôts** ; **gate lint 16 dépôts** (S-336), `magic-stick` caduc.
+- CI workspace-bom : 21 jobs, **`5m12s…5m52s`**.
 - Dernières CI : academy `41351978322`, dashboard `41351988639`, api-key-pool
   `41351986527`, jhipster `41351987207`, workspace-bom `41344806846`, document
   `41346588405`, bakery `41346591172` — toutes ✅.
