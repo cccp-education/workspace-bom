@@ -31,4 +31,5 @@ runs:
           ~/.gradle/caches/*/kotlin-dsl
           ~/.gradle/caches/*/dependencies-accessors
           ~/.gradle/wrapper/dists
+          ~/.gradle-testkit
         key: cccp-common-${{ runner.os }}-${{ inputs.epoch }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.job }}-${{ strategy.job-index }}

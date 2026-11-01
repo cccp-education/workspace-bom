@@ -43,6 +43,7 @@ runs:
           ~/.gradle/caches/*/kotlin-dsl
           ~/.gradle/caches/*/dependencies-accessors
           ~/.gradle/wrapper/dists
+          ~/.gradle-testkit
         # Never matches (per-run key) → the restore always falls back on the
         # `restore-keys` prefix, i.e. the most recently saved snapshot.
         key: cccp-common-${{ runner.os }}-${{ inputs.epoch }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.job }}-${{ strategy.job-index }}
