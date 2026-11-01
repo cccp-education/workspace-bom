@@ -1,6 +1,6 @@
 = CADRAGE — EPIC transverse MEM-LINT-ADOPTION : analyse statique pour tous les boroughs
 :date: 2026-11-01
-:statut: 🟢 EN COURS (10 boroughs adoptés ✅ S-325→S-327 ; reste `LINT-ADOPT-13` — boroughs sans CI, différé)
+:statut: ✅ TERMINÉ (14 boroughs Gradle adoptés ✅ S-325→S-327 + S-336 ; `magic-stick` caduc : 0 fichier Kotlin)
 :porteur: MEMPHIS (workspace-bom) — EPIC transverse cross-borough
 :type: cadrage + audit (lecture seule) + plan d'adoption
 
@@ -112,7 +112,7 @@ style. Deux sous-populations :
 | LINT-ADOPT-10 | `slider` (180, CI test-only → **step**) | `slider-gradle` | ✅ S-327 (`1f8c206`, 2 085 violations, 184 fichiers, `tools.kt` mort supprimé, **step ajoutée**, CI `41273983277`)
 | LINT-ADOPT-11 | `capsule` (522, CI test-only → step) | `capsule-gradle` | ✅ S-327 (`d996caf`+`cbcc67c`, 7 778 violations, 499 fichiers, 127 steps renommés, garde durcie, **step ajoutée**, CI `41275665387`/`41275665487`)
 | LINT-ADOPT-12 | `codebase` (625, CI test-only → step) | `codebase-gradle` | ✅ S-327 (`6f46390`+`797fea7`+`1959c81`, 12 844 violations, 612 fichiers, 74 wildcard, 58 steps, **step ajoutée**, CI `41277105723`)
-| LINT-ADOPT-13 | Reste **sans workflow** (academy, dashboard, api-key-pool, jhipster, magic-stick) — sans CI le gate n'est pas exécuté : décision au cas par cas | divers | 🟡 DIFFÉRÉ (assumé, rapport S-327 §5)
+| LINT-ADOPT-13 | Reste **sans workflow** (academy, dashboard, api-key-pool, jhipster, magic-stick) — sans CI le gate n'est pas exécuté | divers | ✅ S-336 — **1 748 violations → 0** (academy 645, dashboard 477, jhipster 394, api-key-pool 232) ; `.editorconfig` + `build.lint` 0.0.7 ; **3 `lint.yml` minimaux** (dashboard, api-key-pool, jhipster), academy gate **gratuit** ; **magic-stick CADUQUE** (0 Kotlin) ; CI `41351978322`/`41351986527`/`41351988639`/`41351987207`
 |===
 
 _Livré S-327 (LINT-ADOPT-3→12, en vagues parallèles)_ : **10 boroughs**, **39 336
