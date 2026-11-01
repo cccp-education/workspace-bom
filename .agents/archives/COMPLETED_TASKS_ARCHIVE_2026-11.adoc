@@ -215,3 +215,24 @@
 * **DAG** : BOM/catalog `0.0.120` (`1e10ce63`) → `document-plugin 0.0.28` (`30a380b8`)
   → `bakery 0.0.120` (`document-plugin:0.0.28 by constraint`).
 * Prochain delta document = `0.0.29`.
+
+== S-338 — MEM-CI-GATE (suite) : audit des codes de sortie CI + garde N0 ✅
+
+* **Inventaire mesuré** : 68 fichiers CI (59 workflows + 9 actions composites) →
+  **16 findings uniques** dans 5 dépôts (`office` 6, `capsule` 4, `edster` 4 dont
+  2 copies, `bakery` 1, `magic-stick` 1) ; **`workspace-bom` : 0**.
+* **Règles** (`contracts.ci.CiShellAudit`, pur, sans dépendance) : **R1
+  `NoErrexit`** (bloc `run: |` multi-commandes + gate sans errexit → la dernière
+  commande décide) et **R2 `SwallowedGate`** (`|| true`/`|| echo` sur un gate,
+  continuations `\` repliées, steps `continue-on-error: true` **exemptés** —
+  cas réel `office/contact-sec-smoke-test.yml:44`).
+* **Preuves** : RED par compilation (**34 `Unresolved reference`**), GREEN
+  `compileTestKotlin` + `ktlintCheck` (`ktlintFormat` limitée aux 3 fichiers
+  neufs, vérifié `git status`). **22 tests** neufs : 15 unit (dont la
+  characterisation du script S-335), 2 de garde (0 finding + preuve anti-vide),
+  5 scénarios BDD `@ci-shell-gates` (runner dédié, tâche
+  `ciShellGatesCucumberTest` câblée à `check`).
+* **Zéro bump, zéro publication** (`agent-contracts 0.0.4` inchangé — seul le
+  source set `test` grandit). Prochain delta `document` : `0.0.29`.
+* **Suivi** `MEM-CI-GATE-2` : 3 P1 (`magic-stick` `bash -n` masqués, `office`
+  `translate-i18n` ×2) + 4 P2 (`office` deploy ×4) + P3.

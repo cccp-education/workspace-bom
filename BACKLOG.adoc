@@ -4,6 +4,7 @@
 :toc: left
 :sectnums:
 
+_Dernière mise à jour : 2026-11-02 (S-338 — **MEM-CI-GATE (suite) : audit des codes de sortie CI + garde N0**. Inventaire de **68 fichiers CI** (59 workflows + 9 actions) : **16 findings uniques** dans 5 dépôts (`office` 6, `capsule` 4, `edster` 4 dont 2 copies, `bakery` 1, `magic-stick` 1), **`workspace-bom` : 0**. Règles **R1 `NoErrexit`** / **R2 `SwallowedGate`** (continuations repliées, `continue-on-error: true` exempté) portées par `contracts.ci.CiShellAudit` + `CiShellAuditTest` (15 unit) + **garde de régression** `CiExitCodeGuardTest` (0 finding sur `.github/`, preuve anti-vide) + BDD `@ci-shell-gates` (5 scénarios, tâche `ciShellGatesCucumberTest` câblée à `check`). RED par compilation (34 `Unresolved reference`). **Zéro bump, zéro publication** (`agent-contracts 0.0.4` inchangé). Suivi `MEM-CI-GATE-2` (3 P1 + 4 P2 + P3). Précédent S-337 : `XF-FP-3` TERMINÉ + `document-plugin 0.0.28`.)_
 _Dernière mise à jour (antérieure) : 2026-10-25 (S-307 — **BOM/catalog 0.0.101 : `document-plugin 0.0.25` + `bakery-plugin 0.0.28`**, revue cheroliv.com ; publication Central `d6e5bf37`, propagation repo1 200, CI verte `67b0d8c`. Précédent S-306 : BOM/catalog 0.0.100 bakery 0.0.27, bundle `936b54a1`, CI verte `c6dc0e1`. Précédent S-299 : CI cross-borough < 5 min.)_
 _Dernière mise à jour : 2026-11-01 (S-337 — **EPIC `XF-FP-3` TERMINÉ (3/3 US) + release `document-plugin 0.0.28`**. **`XF-FP3-3`** : capacité `TracedArticleTranslator` — `BatchDocumentTranslator` ne teste plus un type concret (`when (is TracedArticleTranslator)`), `TranslationTrace`/`DocumentTranslation` deviennent publics, RED par compilation, 2 tests (`ccf5b47`). **`XF-FP3-2`** : le livre ne jette plus ses diagnostics — seam `BookTranslator.translate(onPageTrace)` (traducteur **sans état**), `BookValidationReports` (rapport `book-<lang>-{table,plantuml}-validation-report.json`, **seulement si** findings, Ink Economy), et `TranslatedBook` **mémoïse le resolver** (un livre illustré n'est plus traduit **deux fois**), 3 tests, RED par compilation (`7e50e1d`). Code prouvé par CI `41355439684` ✅ **avant** publication. **Release DAG** : BOM/catalog **0.0.120** (`1e10ce63`, repo1 200) → `document-plugin 0.0.28` (`30a380b8`, repo1 200) → `bakery` `0.0.120` (`document-plugin:0.0.28 by constraint`). Prochain delta document = 0.0.29. Précédent S-336 : `LINT-ADOPT-13` clos.)_
 _Dernière mise à jour (antérieure) : 2026-11-01 (S-336 — **`LINT-ADOPT-13` ✅ : EPIC `MEM-LINT-ADOPTION` TERMINÉ**. **1 748 violations → 0** sur les 4 derniers boroughs Gradle (`academy` 645, `dashboard` 477, `jhipster` 394, `api-key-pool` 232) + `.editorconfig` `root = true` + `education.cccp.build.lint` 0.0.7 ; `academy` a un gate **gratuit** (`build` → `check`, 4 tâches ktlint **vues dans le log CI**), les 3 autres un **`lint.yml` minimal** (une commande, `bash -e`, sans `continue-on-error` ni `echo` final — leçon S-335). Reste manuel : `models.kt`→`Models.kt`, 3 wildcard imports, **1 warning réel** (`!!` redondant + `assertEquals(true, …)` → `assertNotNull`/`assertTrue`). `magic-stick` **CADUQUE** (0 Kotlin). CI vertes `41351978322`/`41351986527`/`41351988639`/`41351987207`. Précédent S-335 : P0 `MEM-CI-GATE` + `document-plugin 0.0.27`.)_
@@ -310,6 +311,34 @@ PASSED dans le job). Mécanisme prouvé localement : `bash -c '( false ); echo e
 (ancien) vs `set -eo pipefail` = exit 1 (nouveau). Leçon (famille S-243/S-269) : **un gate
 qui ne peut pas échouer est un faux vert** — il faut tester le gate lui-même.
 Rapport `.agents/sessions/335-n0-gate-p0-and-document-release.adoc`.
+
+'''
+== 🟡 EPIC MEM-CI-GATE-2 — fermer les faux verts des autres surfaces CI (S-338)
+
+_Origine_ : l'audit S-338 (suite de S-335) a inventorié **68 fichiers CI** du
+workspace. `workspace-bom` est propre (garde `CiExitCodeGuardTest`), mais **16
+findings uniques** subsistent dans **5 dépôts**, hors périmètre d'une session
+MEMPHIS (Règle 1). Ils sont tracés ici pour être exécutés **dans leur dépôt**.
+
+_Règle appliquée_ (`contracts.ci.CiShellAudit`) : **R1** un bloc `run: |`
+multi-commandes qui invoque un gate doit activer `errexit` (sinon la dernière
+commande décide du code de sortie) ; **R2** un gate ne doit pas être neutralisé
+par `|| true` / `|| echo` (sauf step `continue-on-error: true`, explicite).
+
+[cols="1,4,3,2", options="header"]
+|===
+| US | Description | Cible | Statut
+
+| CI-GATE-2.1 | `set -euo pipefail` dans le step « Mock test A/B + persistence » — les deux `bash -n` (contrôle de syntaxe) ne peuvent **pas** échouer le job aujourd'hui (dernière commande = `bash scripts/test-persistence-mock.sh`) | `magic-stick/.github/workflows/build.yml:83` | 🟡 P1
+| CI-GATE-2.2 | `set -euo pipefail` dans les 2 steps de traduction — dernière commande = **rapport** (`cat \| python3 … print`, `echo "… complete"`) : 12 et 43 commandes masquées | `office/.github/workflows/translate-i18n-content.yml:71` et `:91` | 🟡 P1
+| CI-GATE-2.3 | `set -euo pipefail` sur les 4 steps de déploiement (`cp`/`rm` masqués jusqu'au `./gradlew` final) | `office/.github/workflows/deploy-{cccp-education,i18n-site,magic-stick,talaria}.yml` | 🟡 P2
+| CI-GATE-2.4 | `set -euo pipefail` sur les 4 steps d'installation (`apt-get update` + `install`) et les 4 restants (P3 : `edster` ×4, `bakery` website) | `capsule-gradle` (2 workflows), `edster`, `bakery-gradle` | 🟡 P2/P3
+| CI-GATE-2.5 | Répliquer `CiShellAudit` là où c'est structurel — `office` concentre 6 findings (seuil « à 2 » : extraction éligible en module utilitaire partagé, **pas** en contrat N0) | `office` (+ `capsule`, `magic-stick`) | 🟡 P2 (décision à trancher)
+|===
+
+_Note_ : la neutralisation `validateFirebaseConfig || echo "non-fatal …"` de
+`office/.github/workflows/contact-sec-smoke-test.yml:44` est **légitime** (le step
+déclare `continue-on-error: true`) — c'est le cas réel qui fonde l'exemption de R2.
 
 '''
 == ✅ EPIC MEM-LINT-ADOPTION — analyse statique pour tous les boroughs (TERMINÉ S-325 → S-336)

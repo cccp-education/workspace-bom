@@ -1,0 +1,115 @@
+= Session 338 — audit des codes de sortie CI (MEM-CI-GATE, suite)
+:date: 2026-11-02
+:borough: MEMPHIS (workspace-bom) — garde exécutée dans `agent-contracts`
+:type: test design DDD/TDD/BDD + audit transverse (gouvernance CI)
+:ci: run du push de clôture (prochaine preuve)
+
+== 1. Mission
+
+Suite de la piste S-335 (« un gate qui ne peut pas échouer est un faux vert »),
+telle que planifiée dans le `PROMPT_REPRISE` S-338 :
+
+. inventorier **tous** les `run: |` multi-lignes du workspace (un script dont la
+  dernière commande n'est pas le gate masque l'échec) ;
+. livrer une **garde** (modèle `N0ContractsGateTest`) là où c'est structurel.
+
+Périmètre : `workspace-bom` (transverse). Les corrections des autres dépôts sont
+tracées en suivi (US `CI-GATE-2.*`), pas exécutées à la place de leurs sessions.
+
+== 2. Inventaire (mesure, pas intuition)
+
+68 fichiers CI audités : **59 workflows** + **9 actions composites**.
+
+[cols="4,3,2,2", options="header"]
+|===
+| Fichier | Règle | Commandes | Verdict
+
+| `office/.github/workflows/translate-i18n-content.yml:71` | sans errexit | 12 | **P1** faux vert (dernière commande = `cat \| python3 … print`)
+| `office/.github/workflows/translate-i18n-content.yml:91` | sans errexit | 43 | **P1** faux vert (dernière commande = `echo "… complete"`)
+| `foundry/public/magic-stick/.github/workflows/build.yml:83` | sans errexit | 4 | **P1** contrôles `bash -n` masqués (la dernière commande est le script mock)
+| `office/.github/workflows/deploy-i18n-site.yml:56` | sans errexit | 53 | **P2** `cp`/`rm` masqués jusqu'au `./gradlew bake` final
+| `office/.github/workflows/deploy-talaria.yml:79` | sans errexit | 11 | **P2**
+| `office/.github/workflows/deploy-cccp-education.yml:75` | sans errexit | 3 | **P2**
+| `office/.github/workflows/deploy-magic-stick.yml:89` | sans errexit | 3 | **P2**
+| `foundry/public/capsule-gradle/.github/workflows/{full-tests,cucumber-full}.yml` ×4 | sans errexit | 2 | **P3** paire `apt-get update` + `install`
+| `foundry/private/edster{,/__codebase__}/.github/workflows/main.yml` ×4 | sans errexit | 2-3 | **P3** `chmod`/variables d'env masqués, dernière commande = gate
+| `foundry/public/bakery-gradle/.github/workflows/website.yml:31` | sans errexit | 4 | **P3** garde `if` + `printf`, dernière commande = `publishSite`
+|===
+
+*16 findings uniques* (5 dépôts) — **`workspace-bom` : 0**. Les 2 entrées `office`
+`translate-i18n-content.yml` sont aussi des *report tails* (règle R3 absorbée par R1).
+
+*Exemption prouvée sur un cas réel* : `office/.github/workflows/contact-sec-smoke-test.yml:44`
+neutralise un gate par `|| echo "non-fatal …"` **réparti sur une continuation** — mais
+le step déclare `continue-on-error: true`. La règle R2 doit donc ignorer les steps
+intentionnels, sinon elle produit un faux positif (test unitaire dédié).
+
+== 3. Livré — garde N0 (exécutée par le job CI `n0-contracts`)
+
+Domaine pur, sans YAML, sans I/O : `contracts.ci` dans `agent-contracts/src/test`.
+
+[cols="2,4", options="header"]
+|===
+| Élément | Rôle
+
+| `CiShellAudit` (object) | `blocks(text)` → `List<ShellBlock>` ; `findings(text, source)` → `List<ShellFinding>`
+| `ShellBlock` / `ShellFinding` (sealed) | `NoErrexit` (R1) et `SwallowedGate` (R2)
+| R1 `NoErrexit` | bloc `run: \|` **multi-commandes** qui invoque un gate sans `errexit` : la dernière commande (souvent un `echo` de rapport) décide du code de sortie
+| R2 `SwallowedGate` | gate neutralisé par `\|\| true` / `\|\| echo`, y compris à travers une continuation `\`, **hors** step `continue-on-error: true`
+| `CiExitCodeGuardTest` | garde de régression sur **les** `.github/workflows` + `.github/actions` du dépôt (0 finding) + preuve anti-vide (le glob voit bien `test.yml` et une action)
+| `ac_7_ci_shell_gates.feature` + `CiShellGatesSteps` + `CiShellGatesCucumberRunner` | 5 scénarios `@ci-shell-gates` (pattern S-082), tâche dédiée `ciShellGatesCucumberTest` câblée à `check`
+|===
+
+Décisions de modèle (pourquoi un audit textuel et pas un parseur YAML) :
+
+. Le contrat est le **fichier**, pas une bibliothèque : zéro dépendance ajoutée,
+  lisible en revue, et l'audit tourne dans le build N0 autonome (pattern 0124).
+. **Folding des continuations** avant les règles : sans lui, les longues
+  invocations `./gradlew … \ -x …` (plantuml, readme, workspace-bom) seraient des
+  faux positifs — 5 findings fantômes mesurés au premier passage.
+. `run: >` (scalaire replié) = **une** commande : jamais un bloc (2 faux positifs
+  `koverThresholdCheck` évités).
+. Les mots-clés de shell (`if`/`then`/`fi`/`for`/`do`) ne sont pas des commandes.
+. `continue-on-error: true` rend la neutralisation explicite → exemptée.
+
+== 4. Preuves (Local = Build, Tests = CI)
+
+* *RED prouvé par compilation* : `./gradlew compileTestKotlin` → **34
+  `Unresolved reference`** (`ShellFinding`, `CiShellAudit`, `blocks`, `findings`),
+  tests écrits avant le domaine.
+* *GREEN compilation + lint* : `./gradlew compileTestKotlin ktlintCheck` →
+  `BUILD SUCCESSFUL`. `ktlintFormat` n'a touché **que** les 3 fichiers neufs
+  (vérifié `git status` avant/après — leçon S-244).
+* *Graphe* : `./gradlew check --dry-run` liste `:ciShellGatesCucumberTest` et
+  `:cucumberTest` dans `check`.
+* *Non-régression prévue par construction* : `cucumberTest` (agrégé) exclut
+  désormais `@version-catalog` **et** `@ci-shell-gates` (pas de double exécution) ;
+  la garde de la CI du dépôt a été validée statiquement avant push (2 blocs sans
+  errexit dans `workspace-bom`, **aucun** n'invoque un gate : `docker`/`chown`/`echo`).
+* Tests ajoutés : **15 unit** (`CiShellAuditTest`) + **2** (`CiExitCodeGuardTest`)
+  + **5 scénarios BDD** = 22.
+
+== 5. Suivi — `MEM-CI-GATE-2` (créé au BACKLOG)
+
+. `CI-GATE-2.1` (P1) `magic-stick` : `set -euo pipefail` dans le step mock A/B —
+   sinon les deux `bash -n` ne peuvent pas échouer le job.
+. `CI-GATE-2.2` (P1) `office` `translate-i18n-content.yml` : errexit sur les 2 steps ;
+   de plus la dernière commande est un **rapport** (`cat | python3`, `echo`) — un
+   `set -e` suffit, mais la sortie doit cesser d'être la preuve.
+. `CI-GATE-2.3` (P2) `office` 4 steps de déploiement + `capsule` 4 steps
+   d'installation + `edster`/`bakery` (P3) : `set -euo pipefail` systématique.
+. `CI-GATE-2.4` (P2) : répliquer `CiShellAudit` là où c'est structurel (`office` a
+   le plus gros passif : 6 findings) — décision de portage inter-dépôts à trancher
+   (le seuil « à 2 » rend l'extraction éligible ; coût = un module N0 partagé).
+
+Zéro modification hors `workspace-bom` (Règle 1) : les 16 findings sont **dans**
+d'autres surfaces CI, chacune avec sa propre preuve CI.
+
+== 6. Invariants
+
+* Zéro version bumpée, zéro publication : le code publié (`agent-contracts 0.0.4`)
+  est **inchangé** — seul le source set `test` grandit.
+* Zéro secret, zéro Python dans la session (l'audit est awk/Kotlin, et la règle
+  « Zéro Python » ne s'applique pas aux workflows `office` qui préexistent — tracé
+  en suivi, hors périmètre).
+* `document` : prochain delta = **0.0.29** (aucun changement source cette session).
