@@ -22,6 +22,16 @@ catalog {
 }
 
 dependencies {
+    // Arrow publishes its own BOM (`io.arrow-kt:arrow-stack` — official docs
+    // https://arrow-kt.io/learn/quickstart/setup/) which versions the whole
+    // Arrow stack (core, fx-coroutines, optics, atomic, resilience, …). Imported
+    // here (platform dependency, generates `<type>pom</type><scope>import</scope>`
+    // in the published POM) so a consumer only needs this BOM to align every
+    // Arrow component. The explicit constraints below remain the single source of
+    // truth for the components we use; `arrow-integrations-jackson-module` is NOT
+    // part of the stack (separate versioning 0.15.1) and stays pinned apart.
+    api(platform(libs.arrow.stack))
+
     constraints {
         // ── Kotlin ──────────────────────────────────────────────────────────
         api(libs.kotlin.stdlib)
