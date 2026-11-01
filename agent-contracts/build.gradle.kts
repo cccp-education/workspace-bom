@@ -44,7 +44,7 @@ val cucumberTest =
         dependsOn(tasks.classes)
         useJUnitPlatform { excludeEngines("junit-jupiter") }
         systemProperty("cucumber.junit-platform.naming-strategy", "long")
-        systemProperty("cucumber.filter.tags", "not @version-catalog")
+        systemProperty("cucumber.filter.tags", "not @version-catalog and not @ci-shell-gates")
         maxHeapSize = "1g"
         maxParallelForks = 1
         forkEvery = 1
@@ -77,6 +77,38 @@ val versionCatalogCucumberTest =
         useJUnitPlatform { excludeEngines("junit-jupiter") }
         systemProperty("cucumber.junit-platform.naming-strategy", "long")
         systemProperty("cucumber.filter.tags", "@version-catalog")
+        maxHeapSize = "1g"
+        maxParallelForks = 1
+        forkEvery = 1
+        jvmArgs("-XX:+UseSerialGC", "-XX:MaxMetaspaceSize=256m", "-XX:TieredStopAtLevel=1")
+        timeout.set(Duration.ofMinutes(5))
+
+        testLogging {
+            events("passed", "skipped", "failed")
+            showStandardStreams = true
+            exceptionFormat = FULL
+        }
+        outputs.upToDateWhen { false }
+    }
+
+// ── MEM-CI-GATE (suite S-338) — Runner Cucumber dédié @ci-shell-gates (pattern S-082) ──
+val ciShellGatesCucumberTest =
+    tasks.register<Test>("ciShellGatesCucumberTest") {
+        description = "Runs @ci-shell-gates BDD scenarios (MEM-CI-GATE, S-338)"
+        group = "verification"
+        testClassesDirs =
+            sourceSets.test
+                .get()
+                .output.classesDirs
+        classpath = configurations.testRuntimeClasspath.get() +
+            sourceSets.test.get().output +
+            sourceSets.main.get().output +
+            files(tasks.jar.get().archiveFile)
+
+        dependsOn(tasks.classes)
+        useJUnitPlatform { excludeEngines("junit-jupiter") }
+        systemProperty("cucumber.junit-platform.naming-strategy", "long")
+        systemProperty("cucumber.filter.tags", "@ci-shell-gates")
         maxHeapSize = "1g"
         maxParallelForks = 1
         forkEvery = 1
@@ -161,5 +193,5 @@ signing {
 }
 
 tasks.named("check") {
-    dependsOn(cucumberTest, versionCatalogCucumberTest)
+    dependsOn(cucumberTest, versionCatalogCucumberTest, ciShellGatesCucumberTest)
 }
