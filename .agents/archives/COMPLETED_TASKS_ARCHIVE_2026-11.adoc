@@ -33,3 +33,15 @@
   concurrente) ; référence isolée `5m12s` (S-320). Mesure isolée reportée.
 * Reste : `XB-FP-6` (tests purs), découplage source set, seam plantuml — tous
   soumis à l'autorisation de modifier des tests (Règle 6).
+
+== S-322 — XB-FP : seam plantuml + tests purs (slider) + découplage source set ✅
+
+* **Seam `plantuml`** (`999a15d`) : `KnowledgeGraphParseError` + `parseEither()`
+  (`Either`), `parse()` replie vers les exceptions historiques ; +3 tests sur le
+  seam. **XB-FP-5 clos**.
+* **XB-FP-6 (1/3) slider** (`09c1ea7`) : matrice pure 24 clés × 10 langues
+  (`TaskDescriptionsI18nCatalogTest`) au lieu de 20 builds TestKit ; 1 smoke.
+* **XB-FP-7 (2/2)** (`04c018aa`) : source set `sharedTest` ; les 9 tâches BDD/unit
+  ne compilent plus `functionalTest` (preuve `--dry-run`).
+* CI vertes : plantuml `41262059987`, slider `41262144762`, bakery
+  `41262327823`/`41262327798`.

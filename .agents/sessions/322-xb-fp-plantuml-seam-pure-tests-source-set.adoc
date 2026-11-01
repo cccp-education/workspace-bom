@@ -1,0 +1,72 @@
+= Session 322 — XB-FP : seam plantuml, tests purs (slider), découplage source set
+:date: 2026-11-01
+:borough: MEMPHIS (workspace-bom) — EPIC transverse
+:type: refactor cross-borough + test design
+
+== Mission
+
+« oui vas y » (autorisation de modifier les tests) après S-321. Ordre : seam
+`plantuml`, `XB-FP-6` (tests lents → domaine pur), `XB-FP-7` (2/2, découplage
+source set).
+
+== 1. Seam `plantuml` — XB-FP-5 clos ✅
+
+Commit `999a15d` (CI verte `41262059987`).
+
+* `KnowledgeGraphParseError` (sealed) : `FileNotFound(path, message)` /
+  `Malformed(cause, message)`.
+* `KnowledgeGraphParser.parseEither(): Either<KnowledgeGraphParseError, KnowledgeGraph>` —
+  le fichier absent et le JSON malformé sont des **valeurs** ; `parse()` devient
+  un `fold` unique qui reconstruit les exceptions historiques
+  (`IllegalArgumentException` avec le message i18n, `JsonParseException` pour
+  Jackson) → **aucune rupture** de `KnowledgeGraphParserTest`.
+* 3 tests additifs sur le seam `Either` (FileNotFound, Malformed portant la cause,
+  Right nominal).
+
+== 2. XB-FP-6 (1/3) — slider : matrice pure au lieu de 20 builds TestKit ✅
+
+Commit `09c1ea7` (CI verte `41262144762`).
+
+* `TaskDescriptionsI18nFunctionalTest` lançait `gradle tasks --all` **une fois par
+  langue** (20 builds TestKit, ~27 s) pour vérifier les descriptions de tâches.
+* Les descriptions viennent de `i18n/Messages_*.properties` lues par
+  `SliderMessages`, qui est **pur** : la matrice exhaustive (**24 clés × 10
+  langues**, non vide + traduite, plus les chaînes EN/FR exactes) est désormais
+  couverte par `TaskDescriptionsI18nCatalogTest` (src/test, ~ms).
+* La suite functional conserve **un** smoke TestKit (`tasks --all -Planguage=fr`)
+  qui prouve le câblage `-Planguage` bout en bout et la présence des 16 tâches.
+
+== 3. XB-FP-7 (2/2) — découplage `functionalTest` ✅
+
+Commit `04c018aa` (CI bakery verte `41262327823` + `41262327798`).
+
+* Nouveau source set **`sharedTest`** (`src/sharedTest/kotlin`) : y sont déplacés
+  `FuncTestsConstants`, `TestVersions` (version du plugin sous test) et les
+  fixtures de projet (`createBuildScriptFile`, `createSettingsFile`,
+  `createDependenciesFile`, `createConfigFile`) ; `Tools.kt` disparaît.
+* `test` et `functionalTest` consomment `sharedTest.output` ; les tâches Cucumber
+  (agrégée + 8 shards) **ne dépendent plus** de `functionalTest.classesTaskName` et
+  ne mettent plus `functionalTest.output` sur leur classpath.
+* **Preuve de graphe** (`--dry-run`) :
+  `cucumberTestShardJbakeCoreFoundations` et `test` n'exécutent plus que
+  `compileSharedTestKotlin` + `compileTestKotlin` — `compileFunctionalTestKotlin`
+  a disparu des 9 jobs BDD/unit (30 fichiers / ~7 100 lignes économisés par job).
+* Kover inchangé (les fixtures partagées ne sont pas mesurées) ; `functionalTest`
+  garde `sharedTest.output` sur son classpath.
+
+== 4. CI
+
+* bakery `41262327823` + `41262327798` : **vertes**.
+* slider `41262144762` (`09c1ea7`) : **verte**.
+* plantuml `41262059987` (`999a15d`) : **verte**.
+* Zéro test local, zéro secret, zéro Python.
+
+== 5. Reste
+
+* **XB-FP-6 (2/3)** — `LocalizeSeoHeadFunctionalTest` (44 s) : la logique de
+  réécriture des `header.thyme` est portée par une tâche (I/O) ; extraire le
+  réécrivain pur (si absent) puis tester pur + un smoke.
+* **XB-FP-6 (3/3)** — `graphify.IncrementalFunctionalTest` (30 s) et
+  `slider.AsciidoctorJPinFunctionalTest` (16 s, résolution Gradle réelle → smoke
+  assumé), `slider.GenerateDeckPipelineFunctionalTest` (14 s).
+* Mesure isolée du TestKit caché (S-321) toujours à faire.
