@@ -80,7 +80,7 @@ class WorkspaceCatalogStructureTest {
     @Test
     fun `document plugin version matches bakery consumer pin`() {
         assertEquals(
-            "0.0.27",
+            "0.0.28",
             tomlVersions["document-plugin"],
             "document-plugin = version publiée Central (consommée par bakery)",
         )
