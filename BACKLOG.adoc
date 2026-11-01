@@ -187,6 +187,42 @@ exécutés en CI** — corrigé par le job `n0-contracts`.
   désync backlog.)
 
 '''
+== 🟡 EPIC XB-FP — temps de tests & paradigme fonctionnel (arrow-kt) — transverse
+
+*Cadrage* : `.agents/CADRAGE_EPIC_XB_FP.adoc` (S-319). *Porteur* : MEMPHIS (transverse) ;
+exécution US par US **dans le borough concerné** (1 US = 1 session + preuve CI du borough).
+
+*Objet* : (1) réduire le temps des tests de la CI cross-borough (chemin critique mesuré :
+shards bakery ~3m30-4m + coverage ~1m45 + file de runners) ; (2) refactoriser les
+implémentations vers un paradigme fonctionnel avec `arrow-kt`.
+
+*Invariant* : **N0 sans Arrow** (contrats `kotlin-stdlib only`, l'import ferait fuiter
+une dépendance tierce via `api` vers N1→N4). Arrow en **N1/N2** (`implementation`),
+types scellés maison conservés comme frontière publique, Arrow interne.
+
+[cols="1,4,3,2", options="header"]
+|===
+| US | Description | Cible | Statut
+
+| XB-FP-0 | **Cadrage + revue de code** — 10 constats temps de tests, 7 constats Arrow, loi N0, 12 décisions, 7 US, KPIs, risques | `workspace-bom/.agents/CADRAGE_EPIC_XB_FP.adoc` | ✅ S-319
+| XB-FP-1 | **Cache CI : artefacts Gradle + écrivains restreints** — ajouter `~/.gradle/caches/*/generated-gradle-jars` (185 Mo), `kotlin-dsl` (86 Mo), `dependencies-accessors` ; retirer `~/.m2/repository` ; `save-common-cache` uniquement sur 1 job par famille (4 `check` + `unit` + garde + N0) | `workspace-bom/.github/actions` + `test.yml` | 🟡 À FAIRE (partiel S-319)
+| XB-FP-2 | **Pilote arrow (slider)** — `DeckContextValidator` : `Either<NonEmptyList<String>, String>` interne, **accumulation** d'erreurs, `fold` à la frontière, `ValidationResult` public inchangé | `slider-gradle/slider-plugin` | 🟡 À FAIRE (S-319)
+| XB-FP-3 | **Bakery — accumulation de configuration** — `ConfigResolver` (`MutableList` + casts positionnels) + `DomainResolver` → `Either<NonEmptyList<ConfigResolutionError>, ResolvedConfigs>`, `zipOrAccumulate` | `bakery-gradle/bakery-plugin` | 🟡 À FAIRE
+| XB-FP-4 | **Planner — erreurs + retry** — `IntentionPlanner` (`var lastError`, `for` retry, `throw`) + `LifecycleAdapter` (catch-all `null`) → `Either<PlanningError, Plan>`, capture, retry fonctionnel | `planner-gradle/planner-plugin` | 🟡 À FAIRE
+| XB-FP-5 | **Hygiène dépendances Arrow** — `codebase` (225 fichiers) et `readme` (9) déclarent Arrow **sans l'utiliser** ; `arrow-fx-coroutines` inutilisé chez bakery/slider → adopter à un vrai seam ou retirer | `codebase-gradle`, `readme-gradle` | 🟡 À FAIRE
+| XB-FP-6 | **Tests lents → domaine pur** — `LocalizeSeoHeadFunctionalTest` 44 s, `IncrementalFunctionalTest` 30 s, `TaskDescriptionsI18nFunctionalTest` 27 s, `AsciidoctorJPinFunctionalTest` 16 s, `GenerateDeckPipelineFunctionalTest` 14 s : tester les fonctions pures, garder 1 smoke TestKit par concern | `bakery`, `graphify`, `slider`, `codebase` | 🟡 À FAIRE
+| XB-FP-7 | **Découplage source set + TestKit caché** — les shards BDD compilent `functionalTest` (30 fichiers) pour 2 symboles ; `org.gradle.testkit.dir` dans `build/tmp` (953 Mo-2,5 Go) jamais caché → fixtures partagées + test-kit home hors `build/`, caché, par fork si contention | `bakery-gradle/bakery-plugin` | 🟡 À FAIRE
+|===
+
+_KPIs_ : wall-clock ≤ 5m30s ; shard le plus long −15 % ; coverage −20 % ; tests > 20 s
+→ 1 smoke/concern ; couverture 88,93 % inchangée ; 0 dépendance Arrow morte ;
+`import arrow` en N0 = 0 (invariant).
+
+_Livré S-319 (XB-FP-0)_ : cadrage + revue (lecture seule, 2 audits : temps de tests
+bakery, maturité fonctionnelle 7 dépôts). Mesures et constats dans le document.
+Zéro code de production modifié par le cadrage.
+
+'''
 == EPIC PUB — Publication Maven Central
 
 BOM + 5 libraries de contrats partagés (N0). Premier artefact publié (VAGUE 1). Toutes les autres vagues dépendent de ces artefacts.

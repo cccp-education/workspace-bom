@@ -193,6 +193,10 @@ _Session en cours_ : —
 | MEM-CATALOG | Version Catalog publié `workspace-catalog` — le BOM unique source de vérité des versions plugins, transportée par artefact Maven (settings `from(...)`, accesseurs `ws.*`). Fix split-brain intra-BOM inclus. | ✅ TERMINÉ (S-026 CAT-1/2/3 + S-027 CAT-4/5 — 5/5 US ~21/21 pts, Central 0.0.29 BOM + catalog bundle `e6f571c2`, preuve propagation Central, protocole release RELEASE_PROTOCOL.adoc) | P1
 | DOC-8 | document-gradle — Consommer les contrats N0. *État S-028* : i18n-contracts ✅ consommé (TranslationService/FakeTranslationService) + pipeline-contracts ✅ (release notes). Reste : opencode-session-contracts (traçabilité release notes, dépendance présente, 0 usage — P3). | 🔄 PARTIEL (2/3 contrats consommés) | P2
 | MEM-CAT-ROLLOUT | Généralisation version catalog borough par borough (D5, adoption paresseuse) — document S-244, codex S-211, plantuml S-030, hyperframes S-031, runner S-031, readme S-212, graphify S-214, dashboard S-215 | ✅ TERMINÉ (6/6 + ordre 6 élargi : tous boroughs restants adoptés) | P1
+| MEM-CI-SHARD | Sharding CI cross-borough (matrice 1 job/bourough + 15 shards bakery + fusion kover) | ✅ TERMINÉ (S-297 → S-299, wall-clock 19m26s → 4m56s) | P1
+| MEM-CI-CONSISTENCY | Cohérence CI cross-borough (JDK 25, nmcp `?: ""`, garde pins US-3/US-5, N0 testés en CI) | ✅ TERMINÉ (S-284 → S-317, `verifyCrossBoroughPins` + job `n0-contracts`) | P1
+| PLT-DIAGRAM-OWNERSHIP | Contrat N0 `plantuml-contracts` (propriétaire unique du bloc PlantUML) | ✅ TERMINÉ (US-1 S-280, publié Central `c9a687d3` + BOM 0.0.66 ; vérifié S-317) | P1
+| XB-FP | **EPIC transverse** — temps de tests + paradigme fonctionnel (arrow-kt), N0 sans Arrow | 🟡 EN COURS (S-319 : US-0 cadrage ✅, US-1→US-7 à faire) — doc `CADRAGE_EPIC_XB_FP.adoc` | P1
 | PUB | Publication Maven Central + Plugin Portal | 🔄 EN COURS (BOM 0.0.44 + catalog 0.0.44 + graphify 0.0.4 + dashboard 0.0.1 publiés ; 8 contrats N0 ; agent-contracts 0.0.3) | P0
 |===
 

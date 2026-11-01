@@ -353,7 +353,11 @@ jobs:
           if-no-files-found: error
 
       - name: Save the repository-wide common cache
-        if: always()
+        # XB-FP-1 — one writer per dependency family: the four `check` entries
+        # and bakery's `unit` entry. The other 14 bakery shards only restore
+        # (same dependency set as `unit`), so 21 concurrent snapshots no longer
+        # thrash the 10 GB budget nor add a tar to every job's critical path.
+        if: always() && (matrix.kind == 'check' || matrix.task == 'test')
         uses: ./ci/.github/actions/save-common-cache
 
   # ── bakery merged coverage (S-298) ───────────────────────────────────────────
@@ -441,9 +445,9 @@ jobs:
           path: foundry/public/bakery-gradle/bakery-plugin/build/reports/kover/
           if-no-files-found: warn
 
-      - name: Save the repository-wide common cache
-        if: always()
-        uses: ./ci/.github/actions/save-common-cache
+      # No cache save here (XB-FP-1): the coverage job resolves exactly the same
+      # dependencies as bakery's `unit` entry, which already publishes the
+      # snapshot. Avoiding a second tar keeps the last job of the run short.
 
   # ── N0 contracts (own sub-builds) ──────────────────────────────────────────
   # Every `education.cccp:*-contracts` artefact is a standalone build (pattern

@@ -1,0 +1,168 @@
+= CADRAGE — EPIC transverse XB-FP : temps de tests & paradigme fonctionnel (arrow-kt)
+:date: 2026-10-31
+:statut: 🟡 EN COURS (US-0 cadrage ✅ — S-319)
+:porteur: MEMPHIS (workspace-bom) — EPIC transverse cross-borough
+:type: cadrage + revue de code (lecture seule) + plan de refactor
+
+== Objet
+
+Deux demandes pilote traitées comme **une seule EPIC transverse** :
+
+. **Optimiser le temps des tests** de la CI cross-borough (chemin critique mesuré :
+   shards bakery ~3m30-4m + coverage ~1m45 + file de runners).
+. **Refactoriser les implémentations vers un paradigme fonctionnel** (arrow-kt),
+   sans casser la loi N0 (contrats sans dépendance externe) ni les gates CI.
+
+Le porteur est MEMPHIS parce que l'EPIC est **transverse** (elle traverse N0 → N2,
+plusieurs boroughs) et que le workspace-bom est la source unique de vérité des
+versions (dont `arrow 2.2.2`). Chaque US est exécutée **dans le borough concerné**
+(1 US = 1 session du borough), avec preuve CI du borough.
+
+== 1. Constats — temps de tests (mesurés, S-297 → S-318)
+
+[cols="1,4,3", options="header"]
+|===
+| # | Constat | Preuve
+
+| T1 | Le **corps des tests n'explique pas** la durée d'un job : un shard BDD porte 5-42 s de scénarios pour ~200 s de job. | `bakery-plugin/.agents/sessions/260-*.adoc:31-34`
+| T2 | **Coût fixe par job** : setup 16-23 s + daemon 8-15 s + **configuration 21-42 s** + compile 5-30 s + un « gap » constant ≈ 30 s avant `Test`. | `bakery-plugin/.agents/sessions/259-*.adoc:24-38`
+| T3 | **15 compilations rejouées** (une par shard), sans `FROM-CACHE` inter-jobs : le cache commun ne cache que les **dépendances**, pas les artefacts Gradle (`gradle-api-<v>.jar` 185 Mo, `kotlin-dsl` 86 Mo, `dependencies-accessors` 20 Mo). | `setup-common-cache/action.yml:34-37` ; mesure locale
+| T4 | Les shards BDD **compilent `src/functionalTest`** (30 fichiers / 7 100 lignes, TestKit) pour 2 symboles partagés. | `bakery-plugin/build.gradle.kts:494-502`
+| T5 | **179 builds Gradle imbriqués** (TestKit) sur 28 classes ; répertoire TestKit par tâche (`build/tmp/<task>/work/.gradle-test-kit`, 953 Mo à 2,5 Go) **jamais caché** → 118 jars / 97 Mo re-résolus par job. | `src/functionalTest/**` ; `build/tmp/*/work/.gradle-test-kit`
+| T6 | **Contention TestKit** : un seul test-kit home par tâche partagé par 3 forks → verrous ; cause la plus plausible de la variance ×5 des durées par classe. | `.agents/sessions/260-*.adoc:41-52`
+| T7 | **Kover instrumente tout le classpath** (aucun `include=`), y compris JBake/AsciidoctorJ/JRuby/Thymeleaf/JGit/LangChain4j ; `showStandardStreams = true` sur les shards functional. | `build/tmp/*/kover-agent.args` ; `build.gradle.kts:595,266`
+| T8 | **Cache commun** : `~/.m2/repository` (1,7 Go, jamais alimenté en CI) inclus ; 21 jobs sauvegardent (budget 10 Go sous pression) ; 3 chemins d'artefacts Gradle manquants. | `setup-common-cache/action.yml`, `save-common-cache/action.yml`
+| T9 | **TestKit en double invocation** : `unit` lance `test` puis `nodeTest` (2 `--no-daemon` = 2 configurations). | `workspace-bom/.github/workflows/test.yml`
+| T10 | **Ne pas ré-essayer** : rééquilibrage des shards functional (mesuré comme un tirage, deux fois) ; plus de 21 jobs (file > pool) ; cache `setup-gradle` (hypothèse falsifiée). | `.agents/sessions/299-*.adoc`, `.agents/sessions/260-*.adoc`
+|===
+
+== 2. Constats — paradigme fonctionnel / arrow-kt
+
+[cols="2,3,3", options="header"]
+|===
+| Dépôt | Déclaré | Usage réel
+
+| `workspace-bom` (N0) | `arrow-core`/`arrow-fx`/`arrow-jackson` **en contraintes** du BOM (`build.gradle.kts:73-75`) | **aucun** `import arrow` dans les 10 contrats — conforme à la loi N0
+| `bakery` | `arrow-core` + `arrow-fx` | `Either` réel (`FileSystemManager`, `GitService`, `DomainResolver`…) ; `arrow-fx` inutilisé ; **accumulateurs mutables** (`ConfigResolver:393-429`, `DomainResolver:10-23`)
+| `slider` | `arrow-core` + `arrow-fx` + `arrow-jackson` | `Either` (`TranslatorManager`, `AssistantManager`), `arrow-jackson` correctement branché ; **validateur à sortie unique** (`DeckContextValidator`)
+| `codebase` | `arrow-core` + `arrow-fx` | **zéro usage** (225 fichiers) — dépendance morte
+| `readme` | arrow via bundle | **zéro usage** (9 fichiers) — dépendance morte
+| `planner`, `graphify` | non déclaré | zéro usage
+| Tous | — | **zéro** `Raise`, `NonEmptyList`, `Validated`, `Resource`, `IO` : l'accumulation d'erreurs et le bracketing de ressources ne sont pas exploités
+|===
+
+=== Loi N0 (confirmée, non négociable)
+
+Les contrats N0 sont des builds standalone **kotlin-stdlib only**
+(`codebase-contracts:18`, `i18n-contracts:19`, `ocr-contracts:19`… ; seule exception
+documentée : `agent-contracts` expose `koog-agents`). Importer arrow en N0 :
+
+* ajouterait une dépendance tierce aux artefacts publiés ;
+* la ferait **fuiter** dans les signatures publiques (`api`) vers N1→N4 ;
+* couplerait l'évolution des contrats à l'API d'Arrow.
+
+**Décision** : N0 reste **sans Arrow**. Un contrat qui a besoin d'un type de
+résultat définit son **sealed type** (déjà le cas : `ContextChannel`,
+`AgentState`, `Metadata`, `ValidationResult`…). La conversion `sealed ⇄ Either`
+se fait **à la frontière N1**.
+
+=== Abstraction maison à réutiliser (ne pas remplacer par du générique)
+
+`slider.pipeline.ValidationResult`, `slider.content.ContentAssertionResult`,
+`slider.translation.TranslationResult`, `slider.repository.DeployError`,
+`codebase.finetuning.FineTuningResult`, `codebase.rag.MetadataValidator.ValidationResult`,
+`codebase.quality.QualityVerdict`, `codebase.store.DoubtExposure`,
+`codebase.koog.pipeline.PipelineGraph`, `bakery.ConfigResolutionError`,
+`bakery.GitService.PrePushValidation`, `readme.GitValidationResult`.
+
+Doctrine : **Arrow pour la composition** (accumulation d'erreurs, capture
+d'exception, bracketing, retry) ; **types scellés maison pour le vocabulaire
+métier** ; conversion à la frontière.
+
+== 3. Décisions (D1 → D12)
+
+. **D1** — L'EPIC est **transverse**, portée par MEMPHIS, exécutée US par US dans
+  le borough concerné (1 US = 1 session du borough).
+. **D2** — **N0 sans Arrow** (loi ci-dessus). Sealed maison conservés.
+. **D3** — Arrow autorisé en **N1/N2** uniquement, en dépendance `implementation`
+  (jamais `api` d'un contrat).
+. **D4** — **Réutiliser** les types scellés maison comme frontière publique ;
+  Arrow reste **interne** (ex. `internal fun validateEither`).
+. **D5** — **Pilote** = `slider.pipeline.DeckContextValidator` (pur, 17 tests en
+  0,018 s, arrow-core déjà présent, rayon d'action = 1 objet + 1 test).
+. **D6** — Comportement du pilote : **accumulation** des erreurs
+  (`Either<NonEmptyList<String>, String>`) au lieu du premier échec ; message
+  joint par `"; "` ; aucune rupture des assertions existantes (`.contains`).
+. **D7** — **Mesurer avant d'optimiser** : tout changement de performance CI est
+  précédé d'une mesure (durées par job/étape, `--profile` sur un shard).
+. **D8** — Cache commun : ajouter les **artefacts Gradle** (`generated-gradle-jars`,
+  `kotlin-dsl`, `dependencies-accessors`), retirer `~/.m2/repository`, et limiter
+  les **écrivains** (1 par famille de dépendances) au lieu de 21.
+. **D9** — **Ne pas ajouter de jobs** (pool ~20-21) ; ne pas rééquilibrer les
+  shards functional (mesures non concluantes) ; ne pas ré-activer le cache
+  `setup-gradle`.
+. **D10** — Découpler les shards BDD de la compilation `functionalTest`
+  (source set partagé) : US dédiée, côté bakery.
+. **D11** — TestKit : répertoire **hors `build/`**, caché, par fork si la
+  contention est confirmée : US dédiée, côté bakery.
+. **D12** — **Hygiène des dépendances** : `codebase` et `readme` doivent soit
+  adopter Arrow à un vrai seam fonctionnel, soit **retirer** la dépendance ;
+  `arrow-fx-coroutines` retiré des bundles s'il reste inutilisé.
+
+== 4. User Stories (7 US, ~26 pts)
+
+[cols="1,4,2,2", options="header"]
+|===
+| US | Description | Cible | Statut
+
+| XB-FP-0 | **Cadrage** — revue de code (temps de tests + paradigme), constats, décisions, garde-fous N0, KPIs. Ce document. | `workspace-bom/.agents/` | ✅ S-319
+| XB-FP-1 | **Cache CI : artefacts Gradle + écrivains restreints** — ajouter `~/.gradle/caches/*/generated-gradle-jars`, `kotlin-dsl`, `dependencies-accessors` ; retirer `~/.m2/repository` ; `save-common-cache` seulement sur 1 job par famille (4 `check` + `unit` + garde + N0). | `workspace-bom/.github/actions` + `test.yml` | 🟡 À FAIRE (S-319 partiel)
+| XB-FP-2 | **Pilote arrow** — `DeckContextValidator` : `Either<NonEmptyList<String>, String>` interne, accumulation, `fold` à la frontière, `ValidationResult` public inchangé. | `slider-gradle` | 🟡 À FAIRE (S-319)
+| XB-FP-3 | **Bakery — accumulation de configuration** — `ConfigResolver` + `DomainResolver` : `Either<NonEmptyList<ConfigResolutionError>, ResolvedConfigs>`, `zipOrAccumulate`, suppression de l'accumulateur mutable et des casts positionnels. | `bakery-gradle` | 🟡 À FAIRE
+| XB-FP-4 | **Planner — erreurs + retry** — `IntentionPlanner`/`LifecycleAdapter` : `Either<PlanningError, Plan>`, capture d'exception, retry sans `var lastError` ; `Option`/null seulement au bord. | `planner-gradle` | 🟡 À FAIRE
+| XB-FP-5 | **Hygiène dépendances Arrow** — `codebase`/`readme` : adopter à un seam réel ou retirer ; `arrow-fx` retiré des bundles inutilisés. | `codebase-gradle`, `readme-gradle` | 🟡 À FAIRE
+| XB-FP-6 | **Tests lents → domaine pur** — `LocalizeSeoHead` (44 s), `IncrementalFunctional` (30 s), `TaskDescriptionsI18n` (27 s), `AsciidoctorJPin` (16 s), `GenerateDeckPipeline` (14 s) : tester les fonctions pures, garder **un** smoke TestKit par concern. | `bakery`, `graphify`, `slider`, `codebase` | 🟡 À FAIRE
+| XB-FP-7 | **Découplage source set + TestKit caché** — extraire les fixtures partagées, retirer `dependsOn(functionalTest)` des shards BDD ; `org.gradle.testkit.dir` hors `build/`, caché, par fork. | `bakery-gradle` | 🟡 À FAIRE
+|===
+
+== 5. KPIs (mesurés en CI uniquement)
+
+[cols="2,2,4", options="header"]
+|===
+| KPI | Baseline | Cible
+
+| Wall-clock cross-borough | 6m05s-6m52s (21 jobs) | ≤ 5m30s
+| Durée du plus long shard bakery | 3m30-4m | −15 %
+| Durée du job `bakery-coverage` | 50-82 s | −20 %
+| Tests lents (> 20 s) | 5 classes | 1 smoke par concern
+| Couverture fusionnée | 88,93 % | inchangée (± 0,1)
+| Dépendances Arrow mortes | 2 dépôts | 0
+| `import arrow` en N0 | 0 | 0 (invariant)
+|===
+
+== 6. Risques et parades
+
+[cols="2,4", options="header"]
+|===
+| Risque | Parade
+
+| Arrow en N0 par effet de bord | Garde documentaire (D2) + revue : `grep "import arrow" workspace-bom/*/src/main`
+| Accumulation d'erreurs = rupture d'API | Message joint par `"; "` ; assertions existantes en `.contains` ; `ValidationResult` public inchangé
+| Refactor N2 sans preuve locale | Local = Build ; preuve = CI du borough (1 US = 1 push = 1 run)
+| Cache 10 Go saturé par les nouveaux chemins | Écrivains restreints (D8) + `restore-keys` (un évincé est remplacé)
+| Optimisation non mesurée | D7 : mesure avant/après consignée dans le rapport de session
+| Variance TestKit | Ne pas conclure sur un run ; comparer 2 runs ; ne pas rééquilibrer (D9)
+|===
+
+== 7. Ordre d'exécution
+
+`XB-FP-0` (fait) → `XB-FP-1` (cache, rapide, mesurable) → `XB-FP-2` (pilote arrow)
+→ `XB-FP-5` (hygiène, prérequis des suivants) → `XB-FP-3` (bakery) → `XB-FP-4`
+(planner) → `XB-FP-6` (tests purs) → `XB-FP-7` (TestKit / source set).
+
+== 8. Traçabilité
+
+* BACKLOG : `== 🟡 EPIC XB-FP` (table US ci-dessus).
+* INDEX : ligne `XB-FP` dans la table Roadmap.
+* Rapports de session : un rapport par US dans le borough concerné ;
+  les synthèses transverses restent dans `workspace-bom/.agents/sessions/`.

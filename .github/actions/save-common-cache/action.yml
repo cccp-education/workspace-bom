@@ -27,6 +27,8 @@ runs:
         path: |
           ~/.gradle/caches/modules-2
           ~/.gradle/caches/jars-9
+          ~/.gradle/caches/*/generated-gradle-jars
+          ~/.gradle/caches/*/kotlin-dsl
+          ~/.gradle/caches/*/dependencies-accessors
           ~/.gradle/wrapper/dists
-          ~/.m2/repository
         key: cccp-common-${{ runner.os }}-${{ inputs.epoch }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.job }}-${{ strategy.job-index }}
