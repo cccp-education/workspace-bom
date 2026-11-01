@@ -86,8 +86,30 @@ Décisions de modèle (pourquoi un audit textuel et pas un parseur YAML) :
   désormais `@version-catalog` **et** `@ci-shell-gates` (pas de double exécution) ;
   la garde de la CI du dépôt a été validée statiquement avant push (2 blocs sans
   errexit dans `workspace-bom`, **aucun** n'invoque un gate : `docker`/`chown`/`echo`).
-* Tests ajoutés : **15 unit** (`CiShellAuditTest`) + **2** (`CiExitCodeGuardTest`)
-  + **5 scénarios BDD** = 22.
+* Tests ajoutés : **16 unit** (`CiShellAuditTest`) + **3** (`CiExitCodeGuardTest`)
+  + **5 scénarios BDD** = 24.
+
+=== Correctif imposé par la CI (run `41363590010` rouge)
+
+Le premier run de clôture a **échoué** : `CiShellGatesCucumberRunner › The historical
+false green is detected` — `Expected size: 1 but was: 0`. Cause : `RUN_LITERAL`
+n'acceptait que la forme clé de mapping (`        run: |`) et **pas** la forme item
+de séquence (`      - run: |`) utilisée par les steps de workflow — le parseur ne
+voyait donc aucun bloc dans les workflows, seulement dans les actions composites
+(forme clé). Unité et BDD ne pouvaient pas le voir puisque les deux utilisaient la
+même forme fautive.
+
+Correctif (fichier test-only, **aucun** changement de production) :
+
+. `RUN_LITERAL = ^([ \t]*)(?:-[ \t]+)?run:[ \t]*\|.*$` — groupe = indentation de
+  l'item (YAML exige un contenu plus indenté) ; vérifié hors test sur JDK 25
+  (`Pattern` : `      - run: |` → groupe 6 espaces ; `      - name: x` → aucun).
+. Test unitaire dédié « a run block declared as a sequence item is parsed ».
+. **Garde anti-vide durcie** : `CiExitCodeGuardTest` vérifie désormais que le
+  `test.yml` **réel** produit des blocs non vides et au moins un bloc avec
+  `errexit` — sans quoi la garde pouvait être verte sur un parseur aveugle
+  (leçon : la preuve anti-vide doit porter sur le **parseur**, pas seulement sur
+  le glob).
 
 == 5. Suivi — `MEM-CI-GATE-2` (créé au BACKLOG)
 

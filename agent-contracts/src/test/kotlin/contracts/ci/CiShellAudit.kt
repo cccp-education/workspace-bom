@@ -48,7 +48,13 @@ sealed interface ShellFinding {
  * exempt from the swallow rule (the neutralisation is then explicit and intended).
  */
 object CiShellAudit {
-    private val RUN_LITERAL = Regex("""^([ \t]*)run:[ \t]*\|.*$""")
+    /**
+     * The `run` key of a literal block, in both shapes: a plain mapping key
+     * (`        run: |`, composite actions) and a sequence item
+     * (`      - run: |`, workflow steps). The captured group is the indentation
+     * of the item line: YAML requires the block content to be indented deeper.
+     */
+    private val RUN_LITERAL = Regex("""^([ \t]*)(?:-[ \t]+)?run:[ \t]*\|.*$""")
     private val STEP_ITEM = Regex("""^([ \t]*)- \S.*$""")
     private val CONTINUE_ON_ERROR = Regex("""continue-on-error:[ \t]*true""")
 

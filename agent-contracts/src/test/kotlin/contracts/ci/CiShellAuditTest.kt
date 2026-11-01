@@ -24,6 +24,13 @@ class CiShellAuditTest {
     // ── Block extraction ───────────────────────────────────────────────────
 
     @Test
+    fun `a run block declared as a sequence item is parsed`() {
+        val block = CiShellAudit.blocks(step("./gradlew check")).single()
+
+        assertThat(block.commands).containsExactly("./gradlew check")
+    }
+
+    @Test
     fun `a single command continued over several lines stays one command`() {
         val script = """
             ./gradlew -p plantuml-plugin functionalTest \

@@ -45,6 +45,17 @@ class CiExitCodeGuardTest {
     }
 
     @Test
+    fun `the audit parses the real workflow blocks`() {
+        val workflow = ciFiles().first { it.name == "test.yml" && it.parentFile.name == "workflows" }
+        val blocks = CiShellAudit.blocks(workflow.readText())
+
+        assertThat(blocks).isNotEmpty()
+        assertThat(blocks.count { it.errexit })
+            .describedAs("le script parallèle du job N0 porte `set -eo pipefail` (S-335)")
+            .isPositive()
+    }
+
+    @Test
     fun `every workspace-bom CI script can fail`() {
         val findings =
             ciFiles().flatMap { file ->
