@@ -1,0 +1,83 @@
+= CADRAGE — EPIC transverse MEM-WARN-FREE : zéro warning de compilation
+:date: 2026-11-01
+:statut: 🟢 EN COURS (6 dépôts traités S-329 ; reste 6)
+:porteur: MEMPHIS (workspace-bom) — EPIC transverse cross-borough
+:type: hygiène de build (iso-comportement)
+
+== Objet
+
+Le compilateur Kotlin émet des avertissements qui, non traités, deviennent du bruit
+permanent : `npm`-style « on ne lit plus la sortie », warnings qui masquent une vraie
+régression (cast `unchecked`, `is` toujours vrai = code mort), et dette qui grossit
+avec chaque session. L'objectif est **zéro warning** par dépôt, **sans jamais
+supprimer l'information** (`@Suppress`, `-nowarn`, baseline interdits).
+
+== 1. Mesure (S-329, `--rerun-tasks --no-build-cache`)
+
+*Piège méthodologique découvert* : `--rerun-tasks` **seul** peut restaurer les sorties
+de test depuis le *build cache* et **masquer** les diagnostics. L'inventaire fiable
+est `--rerun-tasks --no-build-cache` (codebase : 4 warnings visibles au lieu de 39).
+
+[cols="2,2,2,3", options="header"]
+|===
+| Dépôt | Avant | Après | Reste
+
+| bakery | 107 | **0** | — (dont suppression de l'overload déprécié `DomainResolver.resolve(MutableList)`)
+| graphify | 7 | **0** | — (Jackson `setSerializationInclusion` migré)
+| capsule | 200 | 31 | Cucumber 7.34 `@CucumberOptions` (16 runners) — P2 différé
+| codebase | 39 | **0** | — (`--no-build-cache` requis pour les voir)
+| slider | 16 | **0** | — (déprécation réduite aux 2 entrées legacy)
+| document | 31 | 3 | AsciidoctorJ `Options.map()` (`For internal use only`) — P2
+| **Total** | **400** | **34** | 34 P2 tiers identifiés
+|===
+
+== 2. Politique (à appliquer à chaque dépôt)
+
+. **Interdits** : `@Suppress("DEPRECATION")` généralisé, `-nowarn`,
+   `allWarningsAsErrors` avant propreté, baseline de warnings. Un `@Suppress`
+   ponctuel n'est admis que si le warning est **faux** (prouvé) et commenté.
+. **P0 — vrais défauts** : cast `unchecked` (→ lecture typée / `safeCast`),
+   `check for instance is always true/false` (assertion tautologique ou branche
+   morte), API **dépréciée maison** (migrer les appelants puis **supprimer**
+   l'overload si plus utilisé), `elvis always left`.
+. **P1 — mécanique** : `!!` inutile, safe call inutile, `no cast needed`,
+   variable/paramètre inutilisé, modificateur redondant.
+. **P2 — déprécation tierce** : migrer **seulement** si petit et iso-comportement ;
+   sinon consigner (raison + issue amont) et laisser.
+. **Iso-comportement** : aucune API publique changée, aucun test affaibli ;
+   les assertions tautologiques deviennent **plus fortes**, pas supprimées.
+. **Preuve** = CI du borough (`Local = Build`) ; `compile*` + `ktlintCheck` en local.
+
+== 3. User Stories
+
+[cols="1,4,3,2", options="header"]
+|===
+| US | Description | Cible | Statut
+
+| WARN-0 | Cadrage + politique + piège `--no-build-cache` (ce document) | `workspace-bom/.agents` | ✅ S-329
+| WARN-1 | `bakery` 107 → 0 (+ suppression `resolve(MutableList)`) | `bakery-gradle` | ✅ S-329 (`cdf8ee99`, `2d73f9cc`, `5eb0a6c3`, CI `41285620028`)
+| WARN-2 | `graphify` 7 → 0 (dont 2 migrations Jackson) | `graphify-gradle` | ✅ S-329 (`bcf7e96`, CI `41284764188`)
+| WARN-3 | `capsule` 200 → 31 (P2 Cucumber consigné) | `capsule-gradle` | ✅ S-329 (`9c0ea00`, `c6b7ba3`, CI `41310031245`/`41310031268`)
+| WARN-4 | `codebase` 39 → 0 | `codebase-gradle` | ✅ S-329 (`2f7a6a7`, `8decea6`, CI `41286412977`/`41286412902`)
+| WARN-5 | `slider` 16 → 0 (déprécation maison réduite) | `slider-gradle` | ✅ S-329 (`79eca63`, CI `41310975237`)
+| WARN-6 | `document` 31 → 3 (P2 AsciidoctorJ consigné) | `document-gradle` | ✅ S-329 (`d56ee75`, `169c245`, CI `41310963557`)
+| WARN-7 | `planner` | `planner-gradle` | ⏳ À FAIRE
+| WARN-8 | `readme` | `readme-gradle` | ⏳ À FAIRE
+| WARN-9 | `hyperframes` | `hyperframes-gradle` | ⏳ À FAIRE
+| WARN-10 | `codex` | `codex-gradle` | ⏳ À FAIRE
+| WARN-11 | `plantuml` | `plantuml-gradle` | ⏳ À FAIRE
+| WARN-12 | `video-kernel` + `youtube-auth` | `video-kernel-gradle` | ⏳ À FAIRE
+| WARN-13 | N0 `workspace-bom` (10 builds) | `workspace-bom` | ⏳ À FAIRE
+|===
+
+== 4. Risques
+
+[cols="2,4", options="header"]
+|===
+| Risque | Parade
+| « Corriger » un warning en changeant le comportement | P0/P1 = iso-comportement strict ; toute sémantique touchée est documentée dans le rapport
+| Suppression silencieuse | Interdiction `@Suppress`/`-nowarn` ; revue du diff
+| Faux inventaire | `--rerun-tasks --no-build-cache` obligatoire
+| Dérive Gradle API (`providers`) | Migration testée par la CI ; les mocks de test réalignés sur le type non-null
+| P2 en masse | Consigné, jamais forcé : une US dédiée si un upgrade de lib est requis
+|===

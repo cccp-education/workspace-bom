@@ -1,6 +1,6 @@
 = CADRAGE — EPIC transverse XF-FP-2 : paradigme fonctionnel, deuxième vague
 :date: 2026-11-01
-:statut: 🟢 EN COURS (US-1→US-3 lancées S-328)
+:statut: 🟢 EN COURS (US-1→US-5 ✅ S-328/S-329 ; reste US-6 N0, US-7 fold `PivotModel`)
 :porteur: MEMPHIS (workspace-bom) — EPIC transverse cross-borough
 :type: cadrage adossé aux sources (livre Serrano Mena 2023 + docs officielles arrow-kt 2.3.0)
 :sources: "Functional Programming Ideas for the Curious Kotliner" (A. Serrano Mena, 2023) ; https://arrow-kt.io/learn/typed-errors/ · /validation/ · /coroutines/ · /resilience/
@@ -73,8 +73,8 @@ fun parse(src: String): ParseResult =
 | XF-FP2-1 | **`AsciidocContentParser` → fold pur** — 6 buffers + 4 drapeaux remplacés par un `ParseState` immuable et un `fold` ; API et sorties **inchangées** (tests existants = filet) | `slider-gradle` | 🟡 S-328
 | XF-FP2-2 | **`PivotBlock` : dispatch exhaustif + fold local** — `BlockChecksum.isChecksumRelevant` sans `else` (tout nouveau bloc ne devient plus silencieusement « checksum-relevant ») + `PivotBlock.fold` introduit et consommé dans le fichier | `document-gradle` | 🟡 S-328
 | XF-FP2-3 | **`PooledOllamaLlmService` : échec typé** — `var lastError` supprimé, échec par endpoint en valeur (`Either<NonEmptyList<EndpointFailure>, String>` interne), `fold` vers l'exception Gradle à la frontière ; API publique inchangée | `bakery-gradle` | 🟡 S-328
-| XF-FP2-4 | **Résilience `Schedule`** — `FishAudioTtsEngine` : retry busy-loop → `Schedule.recurs` + backoff exponentiel (artifact `arrow-resilience`, alias catalogue local) ; délai injectable pour les tests | `capsule-gradle` | ⏳ À FAIRE
-| XF-FP2-5 | **Ressources R2DBC** — `RagVectorStore` : `try/finally` qui avale l'échec de `close()` → `install`/`Resource` avec close capturé et journalisé | `codebase-gradle` | ⏳ À FAIRE
+| XF-FP2-4 | **Résilience `Schedule`** — `FishAudioTtsEngine` : retry busy-loop → `Schedule.recurs` + backoff exponentiel (artifact `arrow-resilience`, alias catalogue local) ; délai injectable pour les tests | `capsule-gradle` | ✅ S-329 (`e1be602` — `FishFailure` + `attemptOnce(): Either`, `exponential(250ms).jittered() and recurs(maxAttempts-1)`, `retryDelay` injectable ; CI `41284073845`/`41284073867`)
+| XF-FP2-5 | **Ressources R2DBC** — `RagVectorStore` : `try/finally` qui avale l'échec de `close()` → `install`/`Resource` avec close capturé et journalisé | `codebase-gradle` | ✅ S-329 (`6d9d164` — `withConnection { resourceScope { install } }`, close `Either.catch` + `log.warn`, 3 sites ; CI `41283863148`/`41283863150`)
 | XF-FP2-6 | **N0 `AgentTool.validate(): Result<Unit>`** — `Result` = `Either<Throwable, A>` (doc) : remplacer par un scellé maison `ValidationOutcome` **sans Arrow en N0** | `workspace-bom/agent-contracts` | ⏳ À FAIRE
 | XF-FP2-7 | **`PivotModel` fold complet** — ~85 `is PivotBlock.*` dans 8 fichiers → un fold unique (gros refactor, US dédiée) | `document-gradle` | ⏳ À FAIRE
 |===

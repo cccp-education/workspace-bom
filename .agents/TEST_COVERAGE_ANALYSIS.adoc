@@ -1,6 +1,22 @@
 = TEST_COVERAGE_ANALYSIS — workspace-bom (MEMPHIS)
 :date: 2026-11-01
-:session: 328
+:session: 329
+
+== Session 329 (2026-11-01) — XF-FP-2 US-4/5 + warnings (aucun test affaibli)
+
+* **XF-FP2-4** capsule : aucun test modifié (les tests `@fish` assertent des comptes
+  d'appels ; `retryDelay` injectable permet des tests à délai nul).
+* **XF-FP2-5** codebase : aucun test modifié (`RagVectorStoreTest`, `…DoubtTest`,
+  `…PageProvenanceTest` et les fakes `RecordingRagStore` inchangés).
+* **MEM-WARN-FREE** : 3 assertions **tautologiques** remplacées par des assertions
+  plus fortes (type concret / comportement) — bakery (`is Set<String>`,
+  `configs is ResolvedConfigs`), capsule (`model is ChatModel` → `OllamaChatModel` /
+  `LlmProviderChatModelAdapter`), codebase (4 `is` toujours vrais). Aucune assertion
+  supprimée, aucun `@Suppress` ajouté.
+* 34 warnings P2 laissés (Cucumber `@CucumberOptions` ×31, AsciidoctorJ
+  `Options.map()` ×3) : migration non validable sans exécuter les tests.
+* Preuve = 6 CI de boroughs (voir rapport S-329).
+
 
 == Session 328 (2026-11-01) — XF-FP-2 : première vague (refactors iso-comportement)
 

@@ -1,0 +1,82 @@
+= Session 329 — XF-FP-2 (US-4/5) + EPIC MEM-WARN-FREE (6 dépôts)
+:date: 2026-11-01
+:borough: MEMPHIS (workspace-bom) — EPIC transverses
+:type: refactor fonctionnel + hygiène de build
+:ci: capsule `41284073845`/`41284073867`, codebase `41283863148`/`41283863150`, bakery `41285620028`, graphify `41284764188`, capsule `41310031245`/`41310031268`, codebase `41286412977`/`41286412902`, slider `41310975237`, document `41310963557`
+
+== 1. XF-FP-2 — US-4 et US-5 ✅
+
+=== XF-FP2-4 — `capsule` : résilience `Schedule` (commit `e1be602`)
+
+`FishAudioTtsEngine` : busy-retry `for (attempt in 1..maxAttempts)` + `var lastError`
+→ **une tentative = une valeur** (`FishFailure.HttpStatus|Transport`,
+`attemptOnce(): Either<FishFailure, ByteArray>`) + `Schedule.exponential(250 ms)
+.jittered() and Schedule.recurs(maxAttempts - 1)` puis `retryEither`.
+**Découverte de version** : en Arrow 2.3.0 `recurs(n)` = **n retries**
+(`AT_LEAST_ONCE` exécute une fois avant de faire avancer le schedule) → il faut
+`recurs(maxAttempts - 1)` pour garder « maxAttempts = tentatives totales » (assertion
+de test existante respectée). Délai injectable `retryDelay: (Duration) -> Duration`
+(défaut réel, tests à zéro). `arrow = 2.3.0` + alias `arrow-resilience` ajoutés au
+**catalogue local** (le BOM importe `arrow-stack`, pas de bump MEMPHIS).
+CI `Test` `41284073845` ✅ 4m05s + `Full Tests` `41284073867` ✅ 25/25, 6m14s.
+Delta assumé : backoff jitté (≤250 ms, puis ≤500 ms) ; écritures/MP3 hors de la
+boucle de retry ; `maxAttempts <= 0` = une tentative.
+
+=== XF-FP2-5 — `codebase` : connexions R2DBC scopées (commit `6d9d164`)
+
+`RagVectorStore` : trois `try/finally { conn.close().awaitFirstOrNull() }` (échec de
+`close()` **avalé silencieusement**) → `private suspend fun <A> withConnection(block)`
+en `resourceScope { install(create/close) }` ; le close est
+`Either.catch { … }.onLeft { log.warn("[rag] close failed", it) }`. Sites remplacés :
+`ingestWithDoubt`, `searchSimilar`, `searchSimilarWithDoubt` (les params `factory`
+devenus morts sont supprimés). SQL, batching, API publique et tests inchangés.
+Risque assumé et **positif** : sur annulation, le close s'exécute vraiment
+(finalizers NonCancellable) ; la fabrique reste créée par appel.
+CI `CI` `41283863148` ✅ 3m35s (Unit, Unit-Ollama, Fast, 7 BDD) + `OCR` `41283863150` ✅ 3m02s.
+
+== 2. MEM-WARN-FREE — zéro warning de compilation (nouvel EPIC)
+
+Cadrage : `.agents/CADRAGE_EPIC_MEM_WARN_FREE.adoc` (politique P0/P1/P2, interdiction
+de `@Suppress`/`-nowarn`, iso-comportement). **Piège méthodologique** :
+`--rerun-tasks` seul restaure les sorties de test depuis le *build cache* et
+**masque** les diagnostics → inventaire obligatoire avec `--rerun-tasks
+--no-build-cache` (codebase : 4 visibles au lieu de 39).
+
+[cols="2,2,2,3", options="header"]
+|===
+| Dépôt | Avant | Après | Commits / CI
+
+| bakery | 107 | **0** | `cdf8ee99`, `2d73f9cc`, `5eb0a6c3` — CI `41285620028` ✅ 3m58s
+| graphify | 7 | **0** | `bcf7e96` — CI `41284764188` ✅ 1m17s
+| capsule | 200 | 31 (P2 Cucumber) | `9c0ea00`, `c6b7ba3` — CI `41310031245` ✅ 4m05s / `41310031268` ✅ 25/25
+| codebase | 39 | **0** | `2f7a6a7`, `8decea6` — CI `41286412977` ✅ 3m55s / OCR `41286412902` ✅
+| slider | 16 | **0** | `79eca63` — CI `41310975237` ✅ 2m58s
+| document | 31 | 3 (P2 AsciidoctorJ) | `d56ee75`, `169c245` — CI `41310963557` ✅ 30m45s
+| **Total** | **400** | **34** | 6 dépôts, 6 CI vertes
+|===
+
+Faits saillants :
+* **`DomainResolver.resolve(MutableList)` déprécié supprimé** (bakery) après migration
+  des 9 appels de test vers `resolveOutcome()` — zéro appelant prod.
+* **Assertions tautologiques** (`is Set<String>`, `configs is ResolvedConfigs`,
+  `model is ChatModel`) remplacées par des assertions **plus fortes** (type concret,
+  comportement), jamais supprimées.
+* **Déprécations maison réduites** : slider `TranslatorManager` (l'annotation ne
+  couvre plus que les 2 entrées legacy `create…Task`, cœurs `internal` non dépréciés).
+* **Gradle `project.properties`** (bakery) → `providers.gradlePropertiesPrefixedBy` ;
+  2 échecs CI de mocks réalignés ensuite (`5eb0a6c3`) — leçon : migrer les fixtures
+  de test dans le même commit.
+* **Cast unchecked** : `SiteContextCollector` (bakery) en `TypeReference` Jackson
+  typé ; codebase `bind(0, requireNotNull(id))` (échec rapide au lieu d'un nullable).
+* **P2 consignés** : Cucumber 7.34 `@CucumberOptions` (16 runners, migration vers le
+  suite engine impossible à valider sans exécuter les tests) et AsciidoctorJ
+  `Options.map()` (`For internal use only`).
+
+== 3. Reste
+
+* WARN-7→WARN-13 : `planner`, `readme`, `hyperframes`, `codex`, `plantuml`,
+  `video-kernel` + `youtube-auth`, N0 workspace-bom (10 builds).
+* XF-FP-2 : US-6 (N0 `ValidationOutcome` + DAG publication), US-7 (fold `PivotModel`).
+* 34 warnings P2 connus (2 familles), à traiter par une US d'upgrade dédiée.
+
+Zéro test lancé localement, zéro Python, zéro `@Suppress` ajouté, zéro force-push.

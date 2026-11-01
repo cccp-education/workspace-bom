@@ -352,3 +352,22 @@ seulement à la frontière, seam `ChatModel` injectable + 2 tests de caractéris
 (`25f274b7`, CI 4m28s). Reste US-4 (capsule `Schedule`/`arrow-resilience`), US-5
 (R2DBC `Resource`), US-6 (N0 `ValidationOutcome`), US-7 (fold `PivotModel`).
 Rapport `.agents/sessions/328-xf-fp2-premiere-vague.adoc`.
+
+== Session 329 (2026-11-01) — XF-FP-2 US-4/5 + EPIC MEM-WARN-FREE (6 dépôts)
+
+**XF-FP2-4** capsule : `FishAudioTtsEngine` busy-retry → `Schedule.exponential(
+250ms).jittered() and recurs(maxAttempts-1)` + `retryEither`, `FishFailure` +
+`attemptOnce(): Either`, délai injectable ; `arrow-resilience` ajouté au catalogue
+**local** (piège : en 2.3.0 `recurs(n)` = n **retries**). `e1be602`, CI 4m05s/6m14s.
+**XF-FP2-5** codebase : `RagVectorStore` en `resourceScope { install }` (3
+`try/finally` supprimés), échec de `close()` capturé (`Either.catch` + `log.warn`).
+`6d9d164`, CI 3m55s/3m02s.
+**Nouvel EPIC MEM-WARN-FREE** (cadrage `.agents/CADRAGE_EPIC_MEM_WARN_FREE.adoc`,
+politique P0/P1/P2, `@Suppress`/`-nowarn` interdits, **piège** : `--rerun-tasks`
+seul restaure le build cache et masque les diagnostics → `--no-build-cache`).
+**400 warnings → 34** sur 6 dépôts : bakery 107→0 (overload déprécié
+`DomainResolver.resolve(MutableList)` supprimé, assertions tautologiques renforcées,
+`project.properties`→`providers` + 2 mocks réalignés), graphify 7→0, capsule 200→31
+(P2 Cucumber `@CucumberOptions`), codebase 39→0, slider 16→0 (déprécation maison
+réduite aux 2 entrées legacy), document 31→3 (P2 AsciidoctorJ). 6 CI vertes.
+Rapport `.agents/sessions/329-xf-fp2-suite-warnings.adoc`.
