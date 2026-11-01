@@ -120,8 +120,14 @@ capsule/codebase/planner).
 
 **Verdict honnête (D7)** : **aucun gain mesurable** du home TestKit caché — l'écart
 de `+16 s` vs la référence est dans la variance déjà documentée des shards TestKit
-(×5 entre runs). Le KPI **wall-clock ≤ 5m30s est tenu** (`5m28s`) ; on ne prétend pas
-que le cache l'a produit. `XB-FP-7` est **mesuré**, pas « amélioré ».
+(×5 entre runs). Le KPI **wall-clock ≤ 5m30s est tenu** sur cette mesure (`5m28s`) ;
+on ne prétend pas que le cache l'a produit.
+
+*Contrôle de variance* : le run suivant, **docs-only** (`41265228099`, commit de
+clôture `65bc748`, même code), mesure **`5m52s`** — soit **`5m12s … 5m52s`** selon le
+run. La conclusion est donc : *wall-clock à la frontière du KPI, dominé par la
+variance des shards*, et le cache TestKit n'est **pas** un levier démontré (D7 : ne
+pas l'affirmer sans mesure répétée).
 
 == 7. Reste
 

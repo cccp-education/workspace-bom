@@ -25,8 +25,9 @@ _Document maître_ : `.agents/CADRAGE_EPIC_XB_FP.adoc` (EPIC clos) ; lint :
 - Contrats N0 : **sans Arrow** (doctrine D2) ; Arrow en N1/N2 en `implementation`.
 - XB-FP : **US-0→US-7 ✅ (EPIC clos S-323)**.
 - CI workspace-bom : 21 jobs + gardes `verifyCiMatrixCoverage` /
-  `verifyCrossBoroughPins`. Wall-clock isolé : **`5m28s`** (run `41264633001`,
-  KPI ≤ 5m30s) ; référence antérieure `5m12s`.
+  `verifyCrossBoroughPins`. Wall-clock **variance `5m12s…5m52s`** (runs
+  `41257127568`/`41264633001`/`41265228099`) — le KPI ≤ 5m30s est à la frontière,
+  dominé par la variance des shards TestKit.
 - Dernières CI boroughs : bakery `41264081199`, graphify `41264087285`,
   slider `41264090679` (toutes vertes, 2026-11-01).
 
