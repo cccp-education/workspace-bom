@@ -1,6 +1,19 @@
 = TEST_COVERAGE_ANALYSIS — workspace-bom (MEMPHIS)
 :date: 2026-11-01
-:session: 335
+:session: 336
+
+== Session 336 (2026-11-01) — LINT-ADOPT-13 (formatting ; 1 assertion renforcée)
+
+* Aucun test supprimé ni affaibli par le reformatage (formatting-only, `ktlintCheck` 0).
+* **`api-key-pool`** : `RateLimitHeadersParserTest` — `assertEquals(true, x!! > 0)` →
+  `val retryAfter = assertNotNull(result.retryAfterSeconds, …)` + `assertTrue(…)`
+  (assertion **plus forte** et warning `!!` redondant supprimé).
+* **`academy`** : suite complète intacte — la CI `41351978322` ✅ exécute les
+  `cucumberTest*` dédiés **et** les 4 tâches ktlint (gate réellement exécuté).
+* **`dashboard`/`jhipster`** : compiles des source sets VERTS, `ktlintCheck` 0.
+* Gate = `ktlintCheck` (0 violation) + CI du borough ; pas de test ajouté (US de
+  formatage). `magic-stick` hors périmètre (0 fichier Kotlin).
+
 
 == Session 335 (2026-11-01) — MEM-CI-GATE : le gate se teste lui-même
 

@@ -523,3 +523,25 @@ document 0.0.27). `document` : `ws`/platform pins `0.0.110 → 0.0.119`, toml `0
 et `XF-FP3-3` partiront en **0.0.28**. Commits : workspace-bom `b4dc526` (P0) + `84ff3d0`
 (catalogue), document `0bf8592`, bakery `b80c6474`. Rapport
 `.agents/sessions/335-n0-gate-p0-and-document-release.adoc`.
+
+== Session 336 (2026-11-01) — LINT-ADOPT-13 : EPIC MEM-LINT-ADOPTION terminé
+
+Décision pilote : « ok il est temps de le faire ». Dernière US de `MEM-LINT-ADOPTION`
+(différée depuis S-327 parce qu'elle exigeait une décision : ces boroughs n'ont pas de CI
+exécutant un gate).
+**Audit** : academy 111 `.kt` (`test.yml` → `./gradlew build`, gate gratuit) ; dashboard 29,
+api-key-pool 16, jhipster 13 (aucun gate : `readme_truth.yml` ne lance rien) ;
+**magic-stick 0 `.kt`** et pas de build Gradle → **CADUQUE**.
+**Livré** : `.editorconfig` (`root = true`) + `education.cccp.build.lint` 0.0.7 dans les 4 ;
+**1 748 violations → 0** (academy 645, dashboard 477, jhipster 394, api-key-pool 232).
+Reste manuel : `models.kt` → `Models.kt`, 3 wildcard imports `Assertions.*` expansés, et
+**1 warning réel** (double `!!` dont le second était redondant + `assertEquals(true, …)`
+faible → `assertNotNull` + `assertTrue`, politique MEM-WARN-FREE : assertion renforcée).
+**Gate réellement exécuté** : academy `41351978322` ✅ (`ktlintMainSourceSetCheck`,
+`ktlintTestSourceSetCheck`, `ktlintFunctionalTestSourceSetCheck`, `ktlintKotlinScriptCheck`
+visibles dans le log + suite complète) ; **3 `lint.yml` minimaux** créés pour dashboard
+(`41351988639` ✅), api-key-pool (`41351986527` ✅) et jhipster (`41351987207` ✅) —
+une commande, `bash -e`, **sans** `continue-on-error` ni `echo` final (leçon S-335).
+Compiles VERTS, `ktlintCheck` = 0 partout, zéro `@Suppress`, zero baseline, formatting-only.
+**EPIC `MEM-LINT-ADOPTION` TERMINÉ** : 16 dépôts sous gate ktlint. Rapports
+`.agents/sessions/336-lint-adopt-13.adoc`.

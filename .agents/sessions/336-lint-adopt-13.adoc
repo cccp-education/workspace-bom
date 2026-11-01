@@ -1,0 +1,68 @@
+= Session 336 — LINT-ADOPT-13 : analyse statique des 5 boroughs restants
+:date: 2026-11-01
+:borough: MEMPHIS (workspace-bom) — EPIC `MEM-LINT-ADOPTION`, dernière US
+:type: adoption de gate (formatting-only) + 3 workflows minimaux
+:ci: academy `41351978322` ✅ ; api-key-pool `41351986527` ✅ ; dashboard `41351988639` ✅ ;
+  jhipster `41351987207` ✅
+
+== 1. Mission
+
+Décision pilote : « ok il est temps de le faire ». `LINT-ADOPT-13` était la dernière
+US ouverte de `MEM-LINT-ADOPTION`, **différée depuis S-327** parce que ces boroughs
+n'ont pas de CI exécutant un gate (une US qui exige une décision pilote).
+
+== 2. Audit (avant toute modification)
+
+| Borough | `.kt` | CI existante | Verdict
+| academy | 111 | `test.yml` → `./gradlew build` | gate **gratuit**
+| dashboard | 29 | **aucune** | workflow minimal à ajouter
+| api-key-pool | 16 | **aucune** | workflow minimal à ajouter
+| jhipster | 13 | `readme_truth.yml` (ne lance aucun gate) | workflow minimal à ajouter
+| magic-stick | **0** | aucune | **CADUQUE** — pas de projet Gradle ni de Kotlin (site JBake)
+
+== 3. Livré
+
+* `.editorconfig` (`root = true`, identique à bakery/graphify) à la racine des 4 dépôts.
+* `id("education.cccp.build.lint") version "0.0.7"` dans le build du plugin
+  (`academy-plugin`, `api-key-pool-plugin`, `:dashboard-plugin`, `:persistence` +
+  `:assistant`).
+* **1 748 violations corrigées** (`ktlintFormat`, puis manuel) :
+
+[cols="2,1,3", options="header"]
+|===
+| Borough | Violations | Reste manuel
+| academy | **645 → 0** | —
+| dashboard | **477 → 0** | —
+| jhipster | **394 → 0** | —
+| api-key-pool | **232 → 0** | `models.kt` → `Models.kt` (`filename`), 3 wildcard imports
+    (`org.junit.jupiter.api.Assertions.*`) expansés, + **1 warning réel** : `retryAfterSeconds!!`
+    redondant (le premier `!!` smart-cast la valeur) et `assertEquals(true, …)` faible
+    → `assertNotNull` + `assertTrue` (politique MEM-WARN-FREE : assertion **renforcée**)
+|===
+
+* **3 workflows minimaux** (`lint.yml`) pour api-key-pool, dashboard, jhipster —
+  **leçon S-335 appliquée** : une seule commande, pas de `continue-on-error`, **pas de
+  `echo` final**, donc le code de sortie de `./gradlew ktlintCheck` **est** le gate.
+  academy n'en a pas besoin (`build` → `check` contient déjà les 4 tâches ktlint).
+
+== 4. Preuves
+
+* **Gate exécuté, pas seulement déclaré** : `check --dry-run` contient les tâches ktlint
+  (academy 9, api-key-pool 7, dashboard 7, jhipster 14) ;
+  CI academy `41351978322` ✅ — le log montre `ktlintMainSourceSetCheck`,
+  `ktlintTestSourceSetCheck`, `ktlintFunctionalTestSourceSetCheck` et
+  `ktlintKotlinScriptCheck` exécutés **et** la suite complète (cucumberTest*).
+* **Les 3 workflows tournent** : api-key-pool `41351986527` ✅, dashboard `41351988639` ✅,
+  jhipster `41351987207` ✅ (step `ktlintCheck` exécuté sous `bash -e`).
+* `ktlintFormat` n'a touché **que** les fichiers signalés (`dirty ⊆ flagged`, mesuré par
+  `git status` vs inventaire `ktlintCheck`) — aucun collatéral.
+* Compiles VERTS pour chaque borough (`compileKotlin`/`compileTestKotlin`, dashboard et
+  jhipster avec leurs source sets) ; `ktlintCheck` **0** partout.
+* Zéro `@Suppress`, zéro baseline, formatting-only (aucune sémantique modifiée).
+
+== 5. Reste
+
+* `MEM-LINT-ADOPTION` est **complet** : 16 dépôts sous gate ktlint (les 12 précédents +
+  academy, api-key-pool, dashboard, jhipster) ; `magic-stick` est caduc (0 Kotlin).
+* Vestiges sans analyse statique : `newpipe`, `notebook`, `office-template` (aucun code
+  Kotlin actif) — hors périmètre, à documenter si l'un est réactivé.

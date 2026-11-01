@@ -1,23 +1,23 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-336 — dernière terminée : **335** (P0 `MEM-CI-GATE` : le gate N0 ne masque plus les
-échecs + `PUB-3.13` : `document-plugin 0.0.27`, BOM/catalog `0.0.119`). Avant :
-**334** (`XF-FP3-1` traducteur sans état), **333** (warnings tiers **34 → 0**).
+337 — dernière terminée : **336** (`LINT-ADOPT-13` ✅ : EPIC `MEM-LINT-ADOPTION`
+**TERMINÉ**, 1 748 violations → 0, 3 `lint.yml` minimaux). Avant : **335**
+(P0 `MEM-CI-GATE` + `PUB-3.13` `document-plugin 0.0.27`), **334** (`XF-FP3-1`).
 
-=== Mission Session 336 — ordre proposé
+=== Mission Session 337 — ordre proposé
 
 . **`XF-FP3-2` + `XF-FP3-3`** livrés **ensemble** (même borough, une seule release) :
    `BookTranslator` expose la trace (rapport `book-validation-report.json`) et
    `BatchDocumentTranslator` passe par une capacité explicite `TracedArticleTranslator`
-   (fin du downcast `is DocumentTranslator`).
+   (fin du downcast `is DocumentTranslator`). **RED par compilation**, puis tests.
 . **`PUB-3.13-bis`** — `document-plugin **0.0.28**` : DAG catalogue/BOM → plugin → `repo1`
    → `bakery`. Règle 2 « toujours granted ».
-. `LINT-ADOPT-13` (5 boroughs sans CI) — **décision pilote** (aucune preuve possible).
-. Sinon : auditer les **codes de sortie** des autres étapes CI du workspace (piste S-335).
+. Sinon : auditer les **codes de sortie** des autres étapes CI du workspace (piste S-335 :
+   un `bash -c` multi-lignes qui finit par un `echo` masque l'échec).
 
 _Documents maîtres_ : `.agents/CADRAGE_EPIC_MEM_WARN_FREE.adoc` (clos) ;
-`.agents/CADRAGE_EPIC_MEM_LINT_ADOPTION.adoc` (US-13 différée) ;
+`.agents/CADRAGE_EPIC_MEM_LINT_ADOPTION.adoc` (clos) ;
 `.agents/CADRAGE_EPIC_XF_FP_2.adoc` (clos) ; `BACKLOG.adoc` § `XF-FP-3`.
 
 == État du code
@@ -28,10 +28,11 @@ _Documents maîtres_ : `.agents/CADRAGE_EPIC_MEM_WARN_FREE.adoc` (clos) ;
 - **Gate N0 réellement bloquant** depuis S-335 (`set -eo pipefail` + garde
   `N0ContractsGateTest`) : un `./gradlew check` en échec fait échouer le job.
 - **Warning-free : les 13 dépôts actifs à 0 warning** (34 P2 tiers soldés S-333).
-- Gate lint : **12 dépôts**. Sans analyse statique : academy, dashboard, api-key-pool,
-  jhipster, magic-stick (+ vestiges) = `LINT-ADOPT-13`. CI : 21 jobs, **`5m12s…5m52s`**.
-- Dernières CI : workspace-bom `41344806846` ✅ (gate N0) ; document `41346588405` ;
-  bakery `41346591172` ; capsule `41333347488` ✅ + `41333347414` ✅ 25/25.
+- **Gate lint : 16 dépôts** (S-336 : + academy, dashboard, api-key-pool, jhipster) ;
+  `magic-stick` caduc (0 Kotlin). CI workspace-bom : 21 jobs, **`5m12s…5m52s`**.
+- Dernières CI : academy `41351978322`, dashboard `41351988639`, api-key-pool
+  `41351986527`, jhipster `41351987207`, workspace-bom `41344806846`, document
+  `41346588405`, bakery `41346591172` — toutes ✅.
 - `document-plugin 0.0.27` est publié : **tout delta source part en 0.0.28**.
 
 == Doctrine XB-FP (clos — conservée pour mémoire)

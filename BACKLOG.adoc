@@ -5,7 +5,8 @@
 :sectnums:
 
 _Dernière mise à jour (antérieure) : 2026-10-25 (S-307 — **BOM/catalog 0.0.101 : `document-plugin 0.0.25` + `bakery-plugin 0.0.28`**, revue cheroliv.com ; publication Central `d6e5bf37`, propagation repo1 200, CI verte `67b0d8c`. Précédent S-306 : BOM/catalog 0.0.100 bakery 0.0.27, bundle `936b54a1`, CI verte `c6dc0e1`. Précédent S-299 : CI cross-borough < 5 min.)_
-_Dernière mise à jour : 2026-11-01 (S-335 — **P0 `MEM-CI-GATE` + `PUB-3.13`**. **Le job `N0 · contracts` était un FAUX VERT** : le script parallèle `xargs … bash -c` finissait par `echo "::endgroup::"`, donc le shell sortait 0 même quand `./gradlew check` échouait — il masquait depuis son introduction une garde catalogue rouge (`agent-contracts` attendu 0.0.3 vs 0.0.4, cassée en S-331/S-332). Correctif : `set -eo pipefail` dans le sous-shell + garde `contracts.catalog.N0ContractsGateTest` (errexit obligatoire, `|| true` interdit ; RED prouvé) + garde catalogue réparée. Preuve : CI `41344806846` ✅ (le job a réellement exécuté les 2 gardes et `PlatformCatalogAlignmentTest` 7/7). **Release DAG `document-plugin 0.0.27`** : MEMPHIS BOM/catalog **0.0.119** (bundle `b9bc83e1`, repo1 200) → `document-plugin 0.0.27` (bundle `c54a3c5f`, repo1 200) → `bakery` `workspaceVersion = 0.0.119` (`dependencyInsight` : `document-plugin:0.0.27 by constraint`). Vague suivante `document` = **0.0.28** (`XF-FP3-2`/`-3`). Précédent S-334 : `XF-FP3-1` traducteur sans état.)_
+_Dernière mise à jour : 2026-11-01 (S-336 — **`LINT-ADOPT-13` ✅ : EPIC `MEM-LINT-ADOPTION` TERMINÉ**. **1 748 violations → 0** sur les 4 derniers boroughs Gradle (`academy` 645, `dashboard` 477, `jhipster` 394, `api-key-pool` 232) + `.editorconfig` `root = true` + `education.cccp.build.lint` 0.0.7 ; `academy` a un gate **gratuit** (`build` → `check`, 4 tâches ktlint **vues dans le log CI**), les 3 autres un **`lint.yml` minimal** (une commande, `bash -e`, sans `continue-on-error` ni `echo` final — leçon S-335). Reste manuel : `models.kt`→`Models.kt`, 3 wildcard imports, **1 warning réel** (`!!` redondant + `assertEquals(true, …)` → `assertNotNull`/`assertTrue`). `magic-stick` **CADUQUE** (0 Kotlin). CI vertes `41351978322`/`41351986527`/`41351988639`/`41351987207`. Précédent S-335 : P0 `MEM-CI-GATE` + `document-plugin 0.0.27`.)_
+_Dernière mise à jour (antérieure) : 2026-11-01 (S-335 — **P0 `MEM-CI-GATE` + `PUB-3.13`**. **Le job `N0 · contracts` était un FAUX VERT** : le script parallèle `xargs … bash -c` finissait par `echo "::endgroup::"`, donc le shell sortait 0 même quand `./gradlew check` échouait — il masquait depuis son introduction une garde catalogue rouge (`agent-contracts` attendu 0.0.3 vs 0.0.4, cassée en S-331/S-332). Correctif : `set -eo pipefail` dans le sous-shell + garde `contracts.catalog.N0ContractsGateTest` (errexit obligatoire, `|| true` interdit ; RED prouvé) + garde catalogue réparée. Preuve : CI `41344806846` ✅ (le job a réellement exécuté les 2 gardes et `PlatformCatalogAlignmentTest` 7/7). **Release DAG `document-plugin 0.0.27`** : MEMPHIS BOM/catalog **0.0.119** (bundle `b9bc83e1`, repo1 200) → `document-plugin 0.0.27` (bundle `c54a3c5f`, repo1 200) → `bakery` `workspaceVersion = 0.0.119` (`dependencyInsight` : `document-plugin:0.0.27 by constraint`). Vague suivante `document` = **0.0.28** (`XF-FP3-2`/`-3`). Précédent S-334 : `XF-FP3-1` traducteur sans état.)_
 _Dernière mise à jour (antérieure) : 2026-11-01 (S-334 — **EPIC `XF-FP-3` ouvert + `XF-FP3-1` ✅** : `document` `DocumentTranslator` **sans état** (`TranslationTrace` immuable retournée, fin du champ ambient `currentTopLevelIndex`, `ContentTranslationService` → `ConcurrentLinkedQueue`, +4 tests, CI `41337263152` ✅ 30m03s).)_
 _Dernière mise à jour (antérieure) : 2026-11-01 (S-333 — **US d'upgrade des 34 P2 : warnings tiers 34 → 0**. **WARN-14 `document`** : `Options.map()` (déprécié AsciidoctorJ 3) → valeur pure `AsciidoctorConversionRequest`, `buildOptions` en adaptateur (3 tests migrés + 3 additifs, RED par compilation, `50301eb`). **WARN-15 `capsule`** : **16** runners Cucumber → moteur suite JUnit Platform (pattern déjà en production dans 47 runners ; le marqueur platform `io.cucumber.junit.platform.engine.Cucumber` était **aussi** déprécié, hors inventaire S-329) + garde `capsule.ci.CucumberRunnerEngineTest` (API legacy interdite, anti test fantôme sur les `.feature`), `693d19b`+`6dd56c3`. Mesure worktree `--rerun-tasks --no-build-cache` : document 3→0, capsule 31→0. CI document `41332495591` ✅, capsule `Test` `41333347488` ✅ + `Full Tests` `41333347414` ✅ 25/25. Précédent S-332 : release consommateur `agent-contracts 0.0.4`.)_
 _Dernière mise à jour (antérieure) : 2026-11-01 (S-332 — **release consommateur `agent-contracts 0.0.4`** : propagation repo1 confirmée (BOM/catalog `0.0.118` POM + `.toml` **200**), les **2 seuls** dépôts qui pinnent le contrat sont repinnés (`planner` `build.gradle.kts`, `codebase` `libs.versions.toml`) ; `dependencyInsight` prouve `0.0.3 -> 0.0.4` malgré la contrainte BOM ; compiles + ktlint VERTS (0 warning), CI planner `41327481771` ✅ et codebase `41327484201` ✅ 3m45s + OCR ✅. Aucun code applicatif modifié. Précédent S-331 : XF-FP-2 clos (N0 typé + fold `PivotModel`).)_
@@ -310,7 +311,7 @@ qui ne peut pas échouer est un faux vert** — il faut tester le gate lui-même
 Rapport `.agents/sessions/335-n0-gate-p0-and-document-release.adoc`.
 
 '''
-== 🟢 EPIC MEM-LINT-ADOPTION — analyse statique pour tous les boroughs (S-325 →)
+== ✅ EPIC MEM-LINT-ADOPTION — analyse statique pour tous les boroughs (TERMINÉ S-325 → S-336)
 
 *Cadrage* : `.agents/CADRAGE_EPIC_MEM_LINT_ADOPTION.adoc`. *Porteur* : MEMPHIS
 (transverse) ; **1 borough = 1 session**, exécution dans le borough concerné.
@@ -343,7 +344,7 @@ toute garde qui lit un script de build est **whitespace-insensitive**.
 | LINT-ADOPT-10 | `slider` (180, CI test-only → **step**) | `slider-gradle` | ✅ S-327 (`1f8c206`, 2 085 / 184, `tools.kt` mort supprimé, **step ajoutée**, CI `41273983277`)
 | LINT-ADOPT-11 | `capsule` (522, CI test-only → step) | `capsule-gradle` | ✅ S-327 (`d996caf`+`cbcc67c`, 7 778 / 499, 127 steps renommés, garde durcie, **step ajoutée**, CI `41275665387`/`41275665487`)
 | LINT-ADOPT-12 | `codebase` (625, CI test-only → step) | `codebase-gradle` | ✅ S-327 (`6f46390`+`797fea7`+`1959c81`, 12 844 / 612, 74 wildcard, 58 steps, **step ajoutée**, CI `41277105723`)
-| LINT-ADOPT-13 | Sans workflow (academy, dashboard, api-key-pool, jhipster, magic-stick) — sans CI le gate n'est pas exécuté | divers | 🟡 DIFFÉRÉ (assumé, rapport S-327 §5)
+| LINT-ADOPT-13 | Sans workflow (academy, dashboard, api-key-pool, jhipster, magic-stick) — gate exécuté ou créé | divers | ✅ S-336 — **1 748 violations → 0** : academy **645** (gate gratuit via `build`), dashboard **477**, jhipster **394**, api-key-pool **232** (+1 warning réel corrigé) ; **3 `lint.yml` minimaux** créés (dashboard, api-key-pool, jhipster) ; **magic-stick CADUQUE** (0 fichier Kotlin). CI vertes `41351978322`/`41351986527`/`41351988639`/`41351987207`
 |===
 
 _Livré S-327 (LINT-ADOPT-3→12, **vagues parallèles** — D1 amendé sur décision
@@ -379,6 +380,18 @@ CI `41269513021` ✅ 1m10s. **Défaut réel révélé** : `kotlin.jvmToolchain(J
 demandait le JDK **24** (ordinal décalé) — le noyau N1 était compilé pour 24 ;
 corrigé en `jvmToolchain(25)`. Rapport
 `.agents/sessions/326-lint-adopt-2-video-kernel.adoc`.
+
+_Livré S-336 (LINT-ADOPT-13 — EPIC **TERMINÉ**)_ : **1 748 violations → 0** sur 4 dépôts
+(`academy` 645, `dashboard` 477, `jhipster` 394, `api-key-pool` 232) + `.editorconfig`
+`root = true` et `education.cccp.build.lint` 0.0.7 partout. `academy` a un gate
+**gratuit** (`build` → `check` : 4 tâches ktlint **observées dans le log CI**) ; les 3
+autres ont reçu un **`lint.yml` minimal** (une commande, `bash -e`, pas de
+`continue-on-error`, **pas de `echo` final** — leçon S-335). Reste manuel : `models.kt`
+→ `Models.kt`, 3 wildcard imports, et **1 warning réel** (`!!` redondant + assertion
+`assertEquals(true, …)` faible → `assertNotNull`/`assertTrue`). `magic-stick`
+**CADUQUE** (0 fichier Kotlin, pas de build Gradle). CI vertes `41351978322`,
+`41351986527`, `41351988639`, `41351987207`. Rapport
+`.agents/sessions/336-lint-adopt-13.adoc`.
 
 '''
 == ✅ EPIC XF-FP-2 — paradigme fonctionnel, deuxième vague (TERMINÉ S-328 → S-331)
