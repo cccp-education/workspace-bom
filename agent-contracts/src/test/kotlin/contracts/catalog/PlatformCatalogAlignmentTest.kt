@@ -57,7 +57,7 @@ class PlatformCatalogAlignmentTest {
 
     @Test
     fun `toml agent contracts versions aligned with published central`() {
-        assertEquals("0.0.3", tomlVersions["agent-contracts"], "agent-contracts (Central S-020)")
+        assertEquals("0.0.4", tomlVersions["agent-contracts"], "agent-contracts (XF-FP2-6, Central S-331)")
         assertEquals("0.0.2", tomlVersions["codebase-contracts"], "codebase-contracts")
         assertEquals("0.0.5", tomlVersions["i18n-contracts"], "i18n-contracts")
         assertEquals("0.0.2", tomlVersions["llm-pool-contracts"], "llm-pool-contracts")

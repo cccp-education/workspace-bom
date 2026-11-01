@@ -496,6 +496,11 @@ jobs:
             ocr-contracts opencode-session-contracts pipeline-contracts \
             plantuml-contracts runtime-contracts \
           | xargs -I{} -P 5 bash -c '
+              # P0 (S-335): WITHOUT errexit the trailing `echo` makes this shell
+              # exit 0 even when `./gradlew check` fails, so xargs sees success
+              # and the N0 gate is a FALSE GREEN. Guarded by
+              # contracts.catalog.N0ContractsGateTest.
+              set -eo pipefail
               echo "::group::{} check"
               ( cd "{}" && ./gradlew check --no-daemon --console=plain )
               echo "::endgroup::"
