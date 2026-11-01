@@ -83,8 +83,8 @@ connexions R2DBC scopées codebase. Vague 3 (S-331) : N0 typé + fold `PivotMode
 
 == 4. Reste
 
-* Propagation BOM/catalog `0.0.118` : polling repo1 en cours (l'artefact
-  `agent-contracts 0.0.4` est déjà à 200).
+* Propagation BOM/catalog `0.0.118` : **repo1 200 confirmée** (POM + catalogue `.toml`),
+comme `agent-contracts 0.0.4`.
 * Aucun consommateur ne doit être repiné (le `validate` typé n'est utilisé par
   personne hors du contrat) ; les catalogues restent à `0.0.117` jusqu'à leur
   prochaine session.

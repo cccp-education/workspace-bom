@@ -24,7 +24,7 @@ _Documents maîtres_ : `.agents/CADRAGE_EPIC_XF_FP_2.adoc` (clos),
 == État du code
 
 - Central : `agent-contracts **0.0.4**` + BOM/catalog **0.0.118** (bundle
-  `bceecd3f`, propagation BOM en polling fin S-331) ; import
+  `bceecd3f`, propagation repo1 **200** confirmée (BOM + catalogue)) ; import
   `io.arrow-kt:arrow-stack:2.3.0`.
 - Contrats N0 : **sans Arrow** (D2) ; Arrow en N1/N2 en `implementation`.
 - EPICs MEMPHIS : **XB-FP clos** (S-323), **MEM-LINT-GATE clos** (S-324),
