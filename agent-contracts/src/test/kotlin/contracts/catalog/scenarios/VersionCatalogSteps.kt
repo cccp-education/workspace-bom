@@ -6,7 +6,7 @@ import io.cucumber.java.en.When
 import org.assertj.core.api.Assertions.assertThat
 import java.io.File
 import java.net.HttpURLConnection
-import java.net.URL
+import java.net.URI
 
 /**
  * MEM-CAT-5 — Step defs BDD `@version-catalog`.
@@ -132,7 +132,9 @@ class VersionCatalogSteps {
 
     private fun httpOk(url: String): Boolean =
         try {
-            val conn = URL(url).openConnection() as HttpURLConnection
+            // MEM-WARN-FREE (S-330) — the `URL(String)` constructor is deprecated
+            // since Java 20 (it does not validate): build the URI first, then convert.
+            val conn = URI.create(url).toURL().openConnection() as HttpURLConnection
             conn.connectTimeout = 5_000
             conn.readTimeout = 10_000
             (conn.responseCode == 200).also { conn.disconnect() }

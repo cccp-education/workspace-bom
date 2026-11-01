@@ -1,0 +1,68 @@
+= Session 330 — MEM-WARN-FREE : EPIC TERMINÉ (13 dépôts, 478 → 34 warnings)
+:date: 2026-11-01
+:borough: MEMPHIS (workspace-bom) — EPIC transverse
+:type: hygiène de build (iso-comportement), 7 dépôts + N0
+:ci: planner `41314999600`, hyperframes `41315521912`, codex `41315948060`, plantuml `41317002477`, video-kernel `41316775132`, workspace-bom (clôture)
+
+== 1. Livré (WARN-7 → WARN-13)
+
+[cols="2,2,2,3", options="header"]
+|===
+| Dépôt | Avant | Après | Commits / CI
+
+| planner | 6 | **0** | `d751fc4` — CI `41314999600` ✅ 1m34s
+| readme | 0 | **0** | déjà propre (vérifié par sonde : l'outillage émet bien `w:`) — aucun commit
+| hyperframes | 2 | **0** | `84b94f8` — CI `41315521912` ✅ 3m09s
+| codex | 31 | **0** | `f89524f` — CI `41315948060` ✅ 4m06s
+| plantuml | 34 | **0** | `66a120f` + `4cb6a45` + `b464f85` — CI `41317002477` ✅ 14m23s
+| video-kernel + youtube-auth | 3 | **0** | `5e7478e` — CI `41316775132` ✅ 1m06s
+| N0 workspace-bom (9 builds) | 2 | **0** | commit N0 + CI workspace-bom
+| **Total S-330** | **78** | **0** | 7 CI vertes
+|===
+
+**MEM-WARN-FREE est terminé** (WARN-0→WARN-13) : **478 warnings mesurés → 34** sur
+13 dépôts (2 sessions, S-329 + S-330), **zéro `@Suppress` ajouté**, **zéro
+`-nowarn`/baseline**. Les 34 restants sont **2 familles tierces consignées**
+(Cucumber 7.34 `@CucumberOptions` ×31, AsciidoctorJ `Options.map()` ×3).
+
+== 2. Faits saillants
+
+* **P0 réel (hyperframes)** : `PronunciationHint` était un `data class` à
+  **constructeur primaire privé** → le `copy()` généré **exposait** le constructeur
+  et contournait l'invariant. Converti en classe régulière préservant
+  `equals`/`hashCode`/`toString` + la fabrique `of()` (aucun `copy()`/destructuring
+  appelé). C'est exactement le genre de warning qui cache un défaut d'API.
+* **`@Suppress` préexistant = warning caché** (video-kernel) : deux tests lisaient les
+  alias gelés `speakerNote`/`manimScene` sous `@Suppress("DEPRECATION")` → remplacés
+  par de la réflexion sur les mêmes getters, suppression retirée, surface gelée
+  (`KernelApiSurface`) intacte.
+* **codex** : 15 constructions `Json` redondantes → instance hissée ; 4 opt-ins
+  expérimentaux par **déclaration** (pas de `@Suppress`) en préservant l'indentation
+  2-espaces ; 5 noms de test Windows-hostiles (`*`, `%`) renommés.
+* **plantuml** : `buildDir` → `layout.buildDirectory`, `project.properties` →
+  `providers`, `Runtime.exec(String)` → `exec(String[])`.
+* **planner** : `is ChatModel` remplacé par les types concrets (`OllamaChatModel`,
+  `LlmProviderChatModelAdapter`) ; paramètre `compositeContext` réaligné sur
+  `PlannerPort.context` (sécurité des arguments nommés).
+* **N0** : `URL(String)` (déprécié Java 20) → `URI.create(url).toURL()` ;
+  `outcome as? Translated` inutile (le port anonyme inférait `Translated`) → le port
+  est **typé comme l'interface**, ce qui rend l'assertion de type non tautologique.
+
+== 3. Pièges (ajoutés à la politique)
+
+. `./gradlew … -q` **masque** les warnings du compilateur → inventaire **sans `-q`**.
+. `--rerun-tasks` seul restaure les sorties du build cache → **`--no-build-cache`**
+   obligatoire (S-329).
+. Un `@Suppress("DEPRECATION")` **préexistant** est un warning caché : le traiter.
+. Un `data class` à constructeur primaire privé génère un `copy()` qui l'expose (P0).
+
+== 4. Reste / suite
+
+* **34 P2** (2 familles) : une US d'upgrade dédiée si le pilote le souhaite
+  (Cucumber suite-engine ; AsciidoctorJ `Options.map()`).
+* **`XF-FP2-6`** — N0 `agent-contracts` `AgentTool.validate(): Result<Unit>` → scellé
+  `ValidationOutcome` + DAG publication (`agent-contracts 0.0.4` → BOM `0.0.118`).
+* **`XF-FP2-7`** — fold `PivotModel` (~85 `is` sur 8 fichiers).
+* Release consommateur au prochain artefact produit.
+
+Zéro test lancé localement, zéro Python, zéro secret.

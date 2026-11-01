@@ -1,6 +1,6 @@
 = CADRAGE — EPIC transverse MEM-WARN-FREE : zéro warning de compilation
 :date: 2026-11-01
-:statut: 🟢 EN COURS (7 dépôts traités ; reste 5)
+:statut: ✅ TERMINÉ (WARN-0→WARN-13 — 13 dépôts, 2 sessions S-329/S-330 ; 34 P2 tiers consignés)
 :porteur: MEMPHIS (workspace-bom) — EPIC transverse cross-borough
 :type: hygiène de build (iso-comportement)
 
@@ -29,7 +29,13 @@ est `--rerun-tasks --no-build-cache` (codebase : 4 warnings visibles au lieu de 
 | slider | 16 | **0** | — (déprécation réduite aux 2 entrées legacy)
 | document | 31 | 3 | AsciidoctorJ `Options.map()` (`For internal use only`) — P2
 | codex | 31 | **0** | — (`prettyPrintIndent` opt-in ponctuel, format 2-espaces préservé)
-| **Total** | **431** | **34** | 34 P2 tiers identifiés
+| planner | 6 | **0** | — (assertions `is ChatModel` renforcées, paramètre réaligné sur `PlannerPort`)
+| readme | 0 | **0** | — déjà propre (vérifié par sonde : l'outillage émet bien `w:`)
+| hyperframes | 2 | **0** | — P0 : `data class` à constructeur privé exposait `copy()` → classe régulière
+| plantuml | 34 | **0** | — `buildDir`→`layout.buildDirectory`, `project.properties`→`providers`, `Runtime.exec(String)`→`exec(String[])`
+| video-kernel + youtube-auth | 3 | **0** | — 2 `@Suppress("DEPRECATION")` préexistants **supprimés** (réflexion sur les alias gelés)
+| N0 workspace-bom (9 builds) | 2 | **0** | — `URL(String)`→`URI.create().toURL()` ; cast inutile + assertion tautologique corrigée
+| **Total** | **478** | **34** | 34 P2 tiers identifiés (Cucumber 31, AsciidoctorJ 3)
 |===
 
 == 2. Politique (à appliquer à chaque dépôt)
@@ -62,14 +68,19 @@ est `--rerun-tasks --no-build-cache` (codebase : 4 warnings visibles au lieu de 
 | WARN-4 | `codebase` 39 → 0 | `codebase-gradle` | ✅ S-329 (`2f7a6a7`, `8decea6`, CI `41286412977`/`41286412902`)
 | WARN-5 | `slider` 16 → 0 (déprécation maison réduite) | `slider-gradle` | ✅ S-329 (`79eca63`, CI `41310975237`)
 | WARN-6 | `document` 31 → 3 (P2 AsciidoctorJ consigné) | `document-gradle` | ✅ S-329 (`d56ee75`, `169c245`, CI `41310963557`)
-| WARN-7 | `planner` | `planner-gradle` | ⏳ À FAIRE
-| WARN-8 | `readme` | `readme-gradle` | ⏳ À FAIRE
-| WARN-9 | `hyperframes` | `hyperframes-gradle` | ⏳ À FAIRE
-| WARN-10 | `codex` 31 → 0 | `codex-gradle` | ✅ S-330 (`f89524f`, CI `41315948060`)
-| WARN-11 | `plantuml` | `plantuml-gradle` | ⏳ À FAIRE
-| WARN-12 | `video-kernel` + `youtube-auth` | `video-kernel-gradle` | ⏳ À FAIRE
-| WARN-13 | N0 `workspace-bom` (10 builds) | `workspace-bom` | ⏳ À FAIRE
+| WARN-7 | `planner` 6 → 0 | `planner-gradle` | ✅ S-330 (`d751fc4`, CI `41314999600`, 1m34s)
+| WARN-8 | `readme` 0 → 0 (déjà propre, vérifié par sonde) | `readme-gradle` | ✅ S-330 (aucun commit nécessaire)
+| WARN-9 | `hyperframes` 2 → 0 (P0 `copy()` d'un data class à constructeur privé) | `hyperframes-gradle` | ✅ S-330 (`84b94f8`, CI `41315521912`, 3m09s)
+| WARN-10 | `codex` 31 → 0 | `codex-gradle` | ✅ S-330 (`f89524f`, CI `41315948060`, 4m06s)
+| WARN-11 | `plantuml` 34 → 0 | `plantuml-gradle` | ✅ S-330 (`66a120f`/`4cb6a45`/`b464f85`, CI `41317002477`, 14m23s)
+| WARN-12 | `video-kernel` + `youtube-auth` 3 → 0 (2 `@Suppress` préexistants retirés) | `video-kernel-gradle` | ✅ S-330 (`5e7478e`, CI `41316775132`, 1m06s)
+| WARN-13 | N0 `workspace-bom` (9 builds) 2 → 0 | `workspace-bom` | ✅ S-330 (commit N0 + CI workspace-bom)
 |===
+
+_Pièges additionnels (S-330)_ : `./gradlew … -q` **masque** les warnings du compilateur
+(inventaire sans `-q`) ; un `@Suppress("DEPRECATION")` **préexistant** compte comme
+warning caché (video-kernel : 2 alias gelés lus par réflexion au lieu d'être supprimés) ;
+un data class à constructeur privé génère un `copy()` qui expose le constructeur (P0).
 
 == 4. Risques
 

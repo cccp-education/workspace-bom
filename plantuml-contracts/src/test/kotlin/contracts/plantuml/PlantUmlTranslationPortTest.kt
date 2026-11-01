@@ -19,7 +19,10 @@ class PlantUmlTranslationPortTest {
 
     @Test
     fun `port can be implemented and invoked`() {
-        val port =
+        // MEM-WARN-FREE (S-330) — the port is declared *as the interface* so the
+        // test exercises the contract (an anonymous-object type would infer the
+        // concrete `Translated` return type and make the type assertion tautological).
+        val port: PlantUmlTranslationPort =
             object : PlantUmlTranslationPort {
                 override fun translate(request: PlantUmlTranslationRequest) =
                     PlantUmlTranslationOutcome.Translated(
@@ -34,7 +37,12 @@ class PlantUmlTranslationPortTest {
             )
         val outcome = port.translate(request)
         assertThat(outcome).isInstanceOf(PlantUmlTranslationOutcome.Translated::class.java)
-        val translated = outcome as PlantUmlTranslationOutcome.Translated
+        // MEM-WARN-FREE (S-330) — `assertThat(...).isInstanceOf(...)` does not smart-cast;
+        // `require` states the contract explicitly instead of an unchecked `as`.
+        val translated =
+            requireNotNull(outcome as? PlantUmlTranslationOutcome.Translated) {
+                "expected a Translated outcome, got ${outcome::class.simpleName}"
+            }
         assertThat(translated.block.raw).contains("User")
     }
 

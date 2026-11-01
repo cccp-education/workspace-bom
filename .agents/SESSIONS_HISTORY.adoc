@@ -371,3 +371,21 @@ seul restaure le build cache et masque les diagnostics → `--no-build-cache`).
 (P2 Cucumber `@CucumberOptions`), codebase 39→0, slider 16→0 (déprécation maison
 réduite aux 2 entrées legacy), document 31→3 (P2 AsciidoctorJ). 6 CI vertes.
 Rapport `.agents/sessions/329-xf-fp2-suite-warnings.adoc`.
+
+== Session 330 (2026-11-01) — MEM-WARN-FREE TERMINÉ (13 dépôts, 478 → 34)
+
+WARN-7→WARN-13 : planner 6→0 (`d751fc4`, assertions `is ChatModel` renforcées,
+paramètre réaligné sur `PlannerPort`), readme 0 (déjà propre, vérifié par sonde),
+hyperframes 2→0 (`84b94f8`, **P0** : `data class` à constructeur privé dont le
+`copy()` généré exposait le constructeur → classe régulière préservant
+equals/hashCode/toString), codex 31→0 (`f89524f`, 15 `Json` hissés, 4 opt-ins par
+déclaration, 5 noms Windows-hostiles), plantuml 34→0 (`66a120f`/`4cb6a45`/`b464f85`,
+`buildDir`→`layout.buildDirectory`, `providers`, `exec(String[])`),
+video-kernel+youtube-auth 3→0 (`5e7478e`, **2 `@Suppress("DEPRECATION")`
+préexistants retirés** via réflexion sur les alias gelés), N0 9 builds 2→0
+(`URL(String)`→`URI.create().toURL()`, port typé en interface pour rendre
+l'assertion non tautologique). **EPIC clos : 478 warnings → 34** sur 13 dépôts, zéro
+`@Suppress` ajouté ; les 34 restants sont 2 familles **tierces** consignées
+(Cucumber `@CucumberOptions` ×31, AsciidoctorJ `Options.map()` ×3). Pièges ajoutés :
+`-q` masque les warnings ; un `@Suppress` préexistant est un warning caché.
+Rapport `.agents/sessions/330-mem-warn-free-closed.adoc`.

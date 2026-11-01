@@ -1,6 +1,20 @@
 = TEST_COVERAGE_ANALYSIS — workspace-bom (MEMPHIS)
 :date: 2026-11-01
-:session: 329
+:session: 330
+
+== Session 330 (2026-11-01) — MEM-WARN-FREE WARN-7→13 (aucun test affaibli)
+
+* **Assertions renforcées** : planner `is ChatModel` → types concrets ; plantuml
+  `is` toujours vrai ×2 ; codex `is` ×4 ; plantuml-contracts port **typé comme
+  l'interface** (l'assertion de type n'est plus tautologique).
+* **`@Suppress` préexistants retirés** (video-kernel) : les tests lisent les alias
+  gelés `speakerNote`/`manimScene` par réflexion sur les mêmes getters.
+* **Réflexion/URI** : `URL(String)` déprécié → `URI.create(url).toURL()` (agent-contracts).
+* **Noms de test Windows-hostiles** (codex, `*`/`%`) renommés — labels seulement.
+* Aucun test supprimé, aucun `@Suppress` ajouté ; 34 P2 tiers consignés
+  (Cucumber `@CucumberOptions`, AsciidoctorJ `Options.map()`).
+* Preuve = 7 CI de boroughs + CI workspace-bom (voir rapport S-330).
+
 
 == Session 329 (2026-11-01) — XF-FP-2 US-4/5 + warnings (aucun test affaibli)
 

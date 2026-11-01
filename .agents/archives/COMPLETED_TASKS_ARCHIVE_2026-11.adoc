@@ -123,3 +123,11 @@
   de l'overload déprécié, graphify 7→0, capsule 200→31 P2, codebase 39→0,
   slider 16→0, document 31→3 P2) ; zéro `@Suppress` ; `--no-build-cache` obligatoire.
 * 6 CI vertes (capsule, codebase, bakery, graphify, slider, document).
+
+== S-330 — MEM-WARN-FREE TERMINÉ (13 dépôts, 478 → 34) ✅
+
+* planner 6→0, readme 0, hyperframes 2→0 (P0 `copy()` d'un data class privé),
+  codex 31→0, plantuml 34→0, video-kernel+youtube-auth 3→0 (2 `@Suppress` retirés),
+  N0 9 builds 2→0. 7 CI vertes.
+* 34 restants = 2 familles tierces consignées (Cucumber ×31, AsciidoctorJ ×3).
+* Pièges : `-q` masque les warnings ; `@Suppress` préexistant = warning caché.

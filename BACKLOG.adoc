@@ -5,7 +5,8 @@
 :sectnums:
 
 _Dernière mise à jour (antérieure) : 2026-10-25 (S-307 — **BOM/catalog 0.0.101 : `document-plugin 0.0.25` + `bakery-plugin 0.0.28`**, revue cheroliv.com ; publication Central `d6e5bf37`, propagation repo1 200, CI verte `67b0d8c`. Précédent S-306 : BOM/catalog 0.0.100 bakery 0.0.27, bundle `936b54a1`, CI verte `c6dc0e1`. Précédent S-299 : CI cross-borough < 5 min.)_
-_Dernière mise à jour : 2026-11-01 (S-329 — **XF-FP-2 US-4/US-5 ✅** (capsule `FishAudioTtsEngine` en `Schedule` + backoff jitté, `arrow-resilience` au catalogue local, piège `recurs(n)` = n retries ; codebase `RagVectorStore` en `resourceScope { install }` avec échec de `close()` **capturé**) **+ nouvel EPIC `MEM-WARN-FREE` : 400 warnings → 34 sur 6 dépôts** (bakery 107→0 dont suppression de l'overload déprécié `DomainResolver.resolve(MutableList)`, graphify 7→0, capsule 200→31 P2 Cucumber, codebase 39→0, slider 16→0, document 31→3 P2 AsciidoctorJ), **6 CI vertes**, zéro `@Suppress` ajouté ; **piège** : `--rerun-tasks` seul masque les warnings via le build cache → `--no-build-cache`. Précédent S-328 : XF-FP-2 ouvert + 3 US.)_
+_Dernière mise à jour : 2026-11-01 (S-330 — **EPIC MEM-WARN-FREE TERMINÉ (WARN-0→WARN-13)** : **478 warnings → 34** sur **13 dépôts**, zéro `@Suppress` ajouté. S-330 : planner 6→0, readme 0 (déjà propre, vérifié par sonde), hyperframes 2→0 (**P0** : `data class` à constructeur privé dont le `copy()` généré exposait le constructeur → classe régulière), codex 31→0 (15 `Json` hissés, 4 opt-ins par déclaration, 5 noms Windows-hostiles), plantuml 34→0, video-kernel+youtube-auth 3→0 (**2 `@Suppress` préexistants retirés**), N0 (9 builds) 2→0. Les 34 restants = 2 familles **tierces** consignées (Cucumber `@CucumberOptions` ×31, AsciidoctorJ `Options.map()` ×3). Pièges ajoutés : `-q` masque les warnings ; `@Suppress` préexistant = warning caché. 7 CI vertes.)_ 
+_Dernière mise à jour (antérieure) : 2026-11-01 (S-329 — **XF-FP-2 US-4/US-5 ✅** (capsule `FishAudioTtsEngine` en `Schedule` + backoff jitté, `arrow-resilience` au catalogue local, piège `recurs(n)` = n retries ; codebase `RagVectorStore` en `resourceScope { install }` avec échec de `close()` **capturé**) **+ nouvel EPIC `MEM-WARN-FREE` : 400 warnings → 34 sur 6 dépôts** (bakery 107→0 dont suppression de l'overload déprécié `DomainResolver.resolve(MutableList)`, graphify 7→0, capsule 200→31 P2 Cucumber, codebase 39→0, slider 16→0, document 31→3 P2 AsciidoctorJ), **6 CI vertes**, zéro `@Suppress` ajouté ; **piège** : `--rerun-tasks` seul masque les warnings via le build cache → `--no-build-cache`. Précédent S-328 : XF-FP-2 ouvert + 3 US.)_
 _Dernière mise à jour (antérieure) : 2026-11-01 (S-328 — **EPIC `XF-FP-2` ouvert (cadrage adossé aux sources : livre Serrano Mena + docs arrow-kt 2.3.0, 4 sous-agents parallèles) + 3 US livrées** : `slider` `AsciidocContentParser` en **fold pur** (`ParseState`, 12 états mutables supprimés, sorties identiques, `7c86268`), `document` `BlockChecksum` **exhaustif** (`else` retiré, 9 sous-types, `303a9ef`), `bakery` LLM **échec typé** (`LlmAttempt`/`LlmExhausted`, `attemptAll(): Either`, `throw` à la frontière, `25f274b7`). CI vertes slider `41280536422`, document `41280471103`, bakery `41281963758`. **Pièges de version vérifiés** : `Validated` supprimé, `Schedule` dans `arrow-resilience`, `AwaitClose` inexistant, `catch` exclut `CancellationException`. Précédent S-327 : 10 boroughs en lint (39 336 violations).)
 _Dernière mise à jour (antérieure) : 2026-11-01 (S-327 — **MEM-LINT-ADOPTION : 10 boroughs adoptés en vagues parallèles** (décision pilote « enchaine les boroughs en parallèle tant que le DAG le permet » → **D1 amendé** : l'adoption est une forêt, pas une chaîne). **39 336 violations** corrigées (≈ 2 000 fichiers) : planner 729, readme 482, hyperframes 1 867, codex 2 917, plantuml 4 455, document 5 133, slider 2 085, capsule 7 778, codebase 12 844, N0 workspace-bom 1 046. **Toutes les CI vertes** (10 repos) ; ≈ 120 wildcard imports, 185 steps Cucumber renommés, 6 renames de fichiers, `tools.kt` mort supprimé (slider) ; **5 gardes ligne-à-ligne durcies** + 1 garde de partition ; **3 CI test-only** ont reçu une step `Lint (ktlint)`. CI workspace-bom `41277983007` ✅ 5m21s (job `N0 · contracts` inclus). Précédent S-326 : `LINT-ADOPT-2` video-kernel + youtube-auth (312 violations, `jvmToolchain` 24→25).)_
 _Dernière mise à jour (antérieure) : 2026-11-01 (S-326 — **`LINT-ADOPT-2` ✅ : `video-kernel` + `youtube-auth`** — les 2 builds standalone du dépôt adoptent `build.lint` + `.editorconfig` tracké ; **312 violations** corrigées (62 fichiers, 200 kernel / 112 auth), `FIELD_PATTERN` → `fieldPattern` ; gate **gratuit** (`check` contient 3+4 tâches ktlint, CI `./gradlew build`), CI `41269513021` ✅ 1m10s. **Défaut réel corrigé** : `jvmToolchain(JavaVersion.VERSION_25.ordinal)` demandait le JDK **24** → `jvmToolchain(25)` (le noyau N1 était compilé pour 24). Précédent S-325 : MEM-LINT-ADOPTION ouvert + pilote graphify (647 violations).)_
@@ -395,7 +396,7 @@ codebase `RagVectorStore` avec connexions scopées (`resourceScope { install }`)
 `.agents/sessions/329-xf-fp2-suite-warnings.adoc`.
 
 '''
-== 🟢 EPIC MEM-WARN-FREE — zéro warning de compilation (S-329 →)
+== ✅ EPIC MEM-WARN-FREE — zéro warning de compilation (TERMINÉ S-329 → S-330)
 
 *Cadrage* : `.agents/CADRAGE_EPIC_MEM_WARN_FREE.adoc`. *Porteur* : MEMPHIS.
 **Politique** : `@Suppress`/`-nowarn`/baseline **interdits** ; P0 = vrais défauts
@@ -415,14 +416,21 @@ et masque les diagnostics → `--rerun-tasks --no-build-cache` obligatoire.
 | WARN-4 | `codebase` **39 → 0** | ✅ S-329 | CI `41286412977` ✅ 3m55s / OCR ✅
 | WARN-5 | `slider` **16 → 0** | ✅ S-329 | CI `41310975237` ✅ 2m58s
 | WARN-6 | `document` **31 → 3** | ✅ S-329 | 3 P2 AsciidoctorJ (`Options.map()`) ; CI `41310963557` ✅ 30m45s
-| WARN-7 | `planner` | ⏳ À FAIRE | —
-| WARN-8 | `readme` | ⏳ À FAIRE | —
-| WARN-9 | `hyperframes` | ⏳ À FAIRE | —
-| WARN-10 | `codex` | ⏳ À FAIRE | —
-| WARN-11 | `plantuml` | ⏳ À FAIRE | —
-| WARN-12 | `video-kernel` + `youtube-auth` | ⏳ À FAIRE | —
-| WARN-13 | N0 `workspace-bom` (10 builds) | ⏳ À FAIRE | —
+| WARN-7 | `planner` 6 → 0 | ✅ S-330 | `d751fc4`, CI `41314999600` ✅ 1m34s
+| WARN-8 | `readme` 0 → 0 (déjà propre) | ✅ S-330 | vérifié par sonde, aucun commit
+| WARN-9 | `hyperframes` 2 → 0 (P0 `copy()` d'un data class privé) | ✅ S-330 | `84b94f8`, CI `41315521912` ✅ 3m09s
+| WARN-10 | `codex` 31 → 0 | ✅ S-330 | `f89524f`, CI `41315948060` ✅ 4m06s
+| WARN-11 | `plantuml` 34 → 0 | ✅ S-330 | `66a120f`/`4cb6a45`/`b464f85`, CI `41317002477` ✅ 14m23s
+| WARN-12 | `video-kernel` + `youtube-auth` 3 → 0 (2 `@Suppress` préexistants retirés) | ✅ S-330 | `5e7478e`, CI `41316775132` ✅ 1m06s
+| WARN-13 | N0 `workspace-bom` (9 builds) 2 → 0 | ✅ S-330 | commit N0 + CI workspace-bom
 |===
+
+**EPIC MEM-WARN-FREE TERMINÉ (WARN-0→WARN-13)** : **478 warnings → 34** sur 13 dépôts,
+zéro `@Suppress` ajouté, zéro `-nowarn`. Les 34 restants = 2 familles **tierces**
+(Cucumber `@CucumberOptions` ×31, AsciidoctorJ `Options.map()` ×3), consignées pour une
+US d'upgrade. Pièges ajoutés : `-q` masque les warnings ; `@Suppress` préexistant =
+warning caché ; `data class` à constructeur privé → `copy()` exposant (P0).
+Rapport `.agents/sessions/330-mem-warn-free-closed.adoc`.
 
 _Livré S-329 (WARN-0→WARN-6)_ : **400 warnings → 34** sur 6 dépôts, **6 CI vertes**,
 zéro `@Suppress` ajouté. Faits saillants : overload déprécié supprimé, assertions
