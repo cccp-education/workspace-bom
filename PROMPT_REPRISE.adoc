@@ -1,70 +1,69 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-321 — dernières terminées : **317** (cache CI commun, N0 en CI, garde de pins,
-BOM 0.0.116), **318** (mesure, repins, résidus), **319** (EPIC transverse **XB-FP**
-cadrée + cache + pilote arrow), **320** (Arrow 2.3.0 + BOM officiel `arrow-stack`,
-adoption aux seams bakery/planner/codebase/readme).
+322 — dernières : **317** (cache CI commun, N0 en CI, garde pins, BOM 0.0.116),
+**318** (mesure, repins, résidus), **319** (EPIC **XB-FP** cadrée + pilote arrow),
+**320** (Arrow 2.3.0 + BOM `arrow-stack`, adoption bakery/planner/codebase/readme),
+**321** (XB-FP-7 : home TestKit hors `build/` + caché).
 
-=== Mission Session 321 — ordre proposé
+=== Mission Session 322 — ordre proposé
 
-. **`XB-FP-6` — tests lents → domaine pur** : `LocalizeSeoHeadFunctionalTest`
-   (44 s), `IncrementalFunctionalTest` (30 s), `TaskDescriptionsI18nFunctionalTest`
-   (27 s), `AsciidoctorJPinFunctionalTest` (16 s), `GenerateDeckPipelineFunctionalTest`
-   (14 s) → tester la fonction pure, garder **un** smoke TestKit par concern.
-. **`XB-FP-7` — source set partagé + TestKit caché** (bakery) : extraire
-   `FuncTestsConstants`/`createConfigFile` de `functionalTest`, retirer
-   `dependsOn(functionalTest)` des shards BDD ; `org.gradle.testkit.dir` hors
-   `build/`, ajouté au cache commun, par fork si contention.
-. **Seam `plantuml`** (XB-FP-5 reste) : `KnowledgeGraphParser.parse` →
-   `Either<KnowledgeGraphParseError, KnowledgeGraph>` (API + appelants + tests).
-. **Backlog** : vérifier l'absence de marqueur périmé ; ne créer que des items
-   issus d'un constat réel.
+. **`XB-FP-7` mesure isolée** : aucun push dans un autre dépôt pendant la fenêtre
+   (le run S-321 a été contaminé par la CI bakery ; pool GitHub partagé). Comparer
+   les shards `functional-*`/`bdd-*` chauds vs la référence isolée S-320 (`5m12s`).
+. **`XB-FP-6` — tests lents → domaine pur** (`LocalizeSeoHead` 44 s,
+   `IncrementalFunctional` 30 s, `TaskDescriptionsI18n` 27 s, `AsciidoctorJPin`
+   16 s, `GenerateDeckPipeline` 14 s). **Autorisation explicite requise** pour
+   modifier des tests (Règle 6) : remplacer les assertions TestKit par des
+   assertions sur les fonctions pures, garder **un** smoke TestKit par concern.
+. **`XB-FP-7` (2/2)** — découpler les shards BDD de `src/functionalTest`
+   (fixtures `FuncTestsConstants`/`createConfigFile` → source set partagé) :
+   déplacement de fichiers de test, même autorisation.
+. **Seam `plantuml`** — `KnowledgeGraphParser.parse` → `Either<ParseError, …>` ;
+   bloqué par `KnowledgeGraphParserTest.should throw on malformed JSON`
+   (`JsonParseException`) : met à jour le test = même autorisation.
 
 _Document maître_ : `.agents/CADRAGE_EPIC_XB_FP.adoc` (D1→D12, 7 US, KPIs).
-Suivi : `BACKLOG.adoc` § `EPIC XB-FP` + table Roadmap de l'INDEX.
+Suivi : `BACKLOG.adoc` § `EPIC XB-FP` + Roadmap de l'INDEX.
 
 _Hors scope_ : upload YouTube réel — **gelé S-037**.
 
 == État du code
 
-- Central : BOM + catalog **0.0.117** (import officiel `io.arrow-kt:arrow-stack:2.3.0`).
-- Arrow **2.3.0** partout (dernière release) ; `arrow-integrations-jackson-module`
-  0.15.1 (hors stack). Alias catalogue `arrow-stack`.
-- CI workspace-bom : 21 jobs, **5m12s** en run isolé (cache artefacts Gradle,
-  coverage 63 s). Guards `verifyCiMatrixCoverage` + `verifyCrossBoroughPins`.
-- Adoptions Arrow : `slider` (`DeckContextValidator`), `bakery`
-  (`resolveOutcome`/`listOfNotNull`), `planner` (`PlanningError` + retry `fold`),
-  `codebase` (`QualityRetryCircuit`, `MetadataValidator`), `readme`
-  (`JGitRemoteValidator`). `plantuml` : dépendance conservée, seam différé.
-- Contrats N0 : **sans Arrow** (invariant XB-FP D2) — sealed maison conservés.
+- Central : BOM + catalog **0.0.117** (import `io.arrow-kt:arrow-stack:2.3.0`).
+- Arrow **2.3.0** ; adoptions : slider `DeckContextValidator`, bakery
+  `DomainResolver`/`ConfigResolver`, planner `PlanningError`+retry, codebase
+  `QualityRetryCircuit`/`MetadataValidator`, readme `JGitRemoteValidator`.
+- TestKit home : `~/.gradle-testkit` (bakery) + cache commun (`~/.gradle-testkit`).
+- CI workspace-bom : 21 jobs ; référence isolée **5m12s** (S-320) ; guards
+  `verifyCiMatrixCoverage` + `verifyCrossBoroughPins`.
+- Contrats N0 : **sans Arrow** (D2).
 
-== Doctrine XB-FP à ne pas perdre
+== Doctrine XB-FP
 
 * **D2** N0 sans Arrow ; **D3** Arrow N1/N2 en `implementation` ; **D4** sealed
-  maison = frontière publique, Arrow interne.
-* **D12** une dépendance Arrow déclarée sans usage est une **dette d'adoption** :
-  on l'utilise à un seam, on ne la supprime pas.
-* **D7** mesurer avant/après ; **D9** pas de nouveau job (pool ~20), pas de
-  rééquilibrage des shards functional, pas de cache `setup-gradle`.
+  maison = frontière, Arrow interne.
+* **D12** dépendance Arrow sans usage = **dette d'adoption** : l'utiliser à un
+  seam, jamais la retirer.
+* **D7** mesurer avant/après ; **D9** pas de nouveau job, pas de rééquilibrage
+  des shards functional, pas de cache `setup-gradle`.
 
 == Pièges (cumul)
 
 . *Version dérivée ≠ version publiée* ; *Catch-22 D8* ; gardes dans le même commit.
 . *Contrats N0 = builds standalone* (pattern 0124).
 . *Catalogue Gradle* : un plugin inclus depuis la **racine** utilise le catalogue
-   **racine** (`<repo>/gradle/libs.versions.toml`), pas celui du sous-build — vérifier
-   `./gradlew :<plugin>:compileKotlin` **depuis la racine** (piège S-320 planner).
-. *Local = Build, Tests = CI* — jamais de suite locale ; preuve = CI du commit.
+   **racine** — vérifier `./gradlew :<plugin>:compileKotlin` depuis la racine.
+. *Local = Build, Tests = CI* ; **une CI concurrente (autre dépôt) fausse le
+   wall-clock** (pool partagé) — vérifier les `startedAt` avant de conclure.
 . *Cache GitHub scopé au dépôt* ; `setup-gradle cache-disabled` ; clé avec
-   `github.job` (hors matrice `job-index` = 0) ; artefacts Gradle cachés.
+   `github.job` ; artefacts Gradle + TestKit home cachés.
 . *Ollama* : arrêter le conteneur + `chown` avant le post-step de cache.
 . *Toolchain* : `jvmToolchain(25)` (jamais `VERSION_25.ordinal` = 24) ; foojay **0.10.0**.
-. *Mesure CI* : un run partagé avec une autre CI (pool) fausse le wall-clock —
-   vérifier les `startedAt` avant d'incriminer un job.
 
 == Règles
 
 - Voir `AGENT.adoc` — commit/push/publish autorisés (Règle 2 « toujours granted »).
-- Publication Central : `./gradlew publishAggregationToCentralPortal` (agrégatif).
+- **Règle 6** : ne pas modifier les tests sans autorisation explicite.
+- Publication Central : `./gradlew publishAggregationToCentralPortal`.
 - Zéro Python.

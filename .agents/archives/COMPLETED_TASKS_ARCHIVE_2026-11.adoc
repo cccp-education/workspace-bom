@@ -22,3 +22,14 @@
 * CI vertes : workspace-bom `41257700045`, bakery `41259485451`, planner
   `41259762865`, codebase `41259635715`, readme `41258451065`, slider
   `41258018084`, plantuml `41258013789`.
+
+== S-321 — XB-FP-7 (1/2) : home TestKit hors `build/` + caché ✅
+
+* `bakery-plugin` : `org.gradle.testkit.dir = ~/.gradle-testkit` (`926c1147`) —
+  le home par défaut était recréé par job et re-résolvait 118 jars pour 179 builds
+  imbriqués.
+* `workspace-bom` : `~/.gradle-testkit` ajouté au cache commun (`18345ad`).
+* Mesure **non concluante** (run `41261199696` 8m34s, contaminé par la CI bakery
+  concurrente) ; référence isolée `5m12s` (S-320). Mesure isolée reportée.
+* Reste : `XB-FP-6` (tests purs), découplage source set, seam plantuml — tous
+  soumis à l'autorisation de modifier des tests (Règle 6).

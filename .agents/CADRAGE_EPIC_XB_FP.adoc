@@ -1,6 +1,6 @@
 = CADRAGE — EPIC transverse XB-FP : temps de tests & paradigme fonctionnel (arrow-kt)
 :date: 2026-10-31
-:statut: 🟢 EN COURS (US-0 ✅, US-1 ✅, US-2 ✅, US-3 ✅, US-4 ✅ — S-319/S-320 ; US-5 partiel, US-6/7 à faire)
+:statut: 🟢 EN COURS (US-0→US-4 ✅ ; US-5 partiel — plantuml différé ; US-7 partiel — TestKit caché ; US-6/7-reste à faire — S-321)
 :porteur: MEMPHIS (workspace-bom) — EPIC transverse cross-borough
 :type: cadrage + revue de code (lecture seule) + plan de refactor
 
@@ -140,7 +140,7 @@ métier** ; conversion à la frontière.
 | XB-FP-4 | **Planner — erreurs + retry** — `IntentionPlanner`/`LifecycleAdapter` : `Either<PlanningError, Plan>`, capture d'exception, retry sans `var lastError` ; `Option`/null seulement au bord. | `planner-gradle` | ✅ S-320 (commit `4d8db65`, `Either<PlanningError, Plan>` + retry `fold`, `Either.catch` dans `LifecycleAdapter`)
 | XB-FP-5 | **Hygiène dépendances Arrow** — `codebase`/`readme` : adopter à un seam réel ou retirer ; `arrow-fx` retiré des bundles inutilisés. | `codebase-gradle`, `readme-gradle` | 🟡 PARTIEL S-320 — `codebase` (`b30c232` : `QualityRetryCircuit` immuable) et `readme` (`67fceac` : `JGitRemoteValidator` en `Either`) adoptés ; `plantuml` seam différé (`KnowledgeGraphParser`)
 | XB-FP-6 | **Tests lents → domaine pur** — `LocalizeSeoHead` (44 s), `IncrementalFunctional` (30 s), `TaskDescriptionsI18n` (27 s), `AsciidoctorJPin` (16 s), `GenerateDeckPipeline` (14 s) : tester les fonctions pures, garder **un** smoke TestKit par concern. | `bakery`, `graphify`, `slider`, `codebase` | 🟡 À FAIRE
-| XB-FP-7 | **Découplage source set + TestKit caché** — extraire les fixtures partagées, retirer `dependsOn(functionalTest)` des shards BDD ; `org.gradle.testkit.dir` hors `build/`, caché, par fork. | `bakery-gradle` | 🟡 À FAIRE
+| XB-FP-7 | **Découplage source set + TestKit caché** — extraire les fixtures partagées, retirer `dependsOn(functionalTest)` des shards BDD ; `org.gradle.testkit.dir` hors `build/`, caché, par fork. | `bakery-gradle` | 🟡 PARTIEL S-321 — `org.gradle.testkit.dir` hors `build/` + caché (`926c1147`/`18345ad`) ; source set + mesure isolée à faire
 |===
 
 == 5. KPIs (mesurés en CI uniquement)

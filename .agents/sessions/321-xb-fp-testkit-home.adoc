@@ -1,0 +1,56 @@
+= Session 321 — XB-FP-7 : home TestKit hors `build/` et mis en cache
+:date: 2026-11-01
+:borough: MEMPHIS (workspace-bom) + bakery-gradle (cross-borough)
+:type: build config + CI cache
+
+== Mission
+
+« enchaine continue » après S-320. Ordre : `XB-FP-6` (tests lents → domaine pur),
+`XB-FP-7` (source set partagé + TestKit caché), seam `plantuml`.
+
+== Livré — XB-FP-7 (partie TestKit)
+
+* `bakery-plugin/build.gradle.kts` : `systemProperty("org.gradle.testkit.dir",
+  ~/.gradle-testkit)` dans le bloc `tasks.withType<Test>` (commit `926c1147`).
+  Motivation (audit S-319) : le home par défaut
+  `build/tmp/<task>/work/.gradle-test-kit` (953 Mo à 2,5 Go en local) est recréé à
+  chaque job et re-résout **118 jars** pour chacun des **179 builds Gradle
+  imbriqués**.
+* `workspace-bom/.github/actions/{setup,save}-common-cache` : `~/.gradle-testkit`
+  ajouté aux chemins du cache commun (commit `18345ad`, `[skip ci]`).
+* Compile bakery VERT ; YAML des deux actions VERT.
+
+== Mesure — non concluante (protocole)
+
+Deux runs consécutifs ont été **contaminés par une CI concurrente** (pool GitHub
+partagé entre dépôts) :
+
+| Run | Fenêtre | Durée | Concurrence
+| `41261199696` (workspace-bom) | 01:27:58 → 01:36:32 | **8m34s** | CI `bakery-gradle` `41261193657` 01:27:53 → 01:32:16 (même push)
+| `41257127568` (référence isolée S-320) | 00:31:35 → 00:36:47 | **5m12s** | aucune
+
+Conclusion : **ne pas conclure** sur `41261199696`. L'effet du TestKit caché
+doit être mesuré en run strictement isolé (aucun push dans un autre dépôt dans la
+fenêtre), en comparant la durée des shards `functional-*` et `bdd-*` à chaud.
+
+== Reste (non fait, assumé)
+
+* **`XB-FP-6`** — tests lents → domaine pur (`LocalizeSeoHead` 44 s,
+  `IncrementalFunctional` 30 s, `TaskDescriptionsI18n` 27 s, `AsciidoctorJPin`
+  16 s, `GenerateDeckPipeline` 14 s). **Requiert une autorisation explicite** de
+  modifier les tests (AGENT.adoc Règle 6) : la US remplace des assertions TestKit
+  par des assertions sur les fonctions pures et conserve **un** smoke TestKit.
+* **`XB-FP-7` (2/2)** — découpler les shards BDD de `src/functionalTest`
+  (déplacement de fixtures `FuncTestsConstants`/`createConfigFile` vers un source
+  set partagé) : déplacement de fichiers de test, même autorisation.
+* **Seam `plantuml`** — `KnowledgeGraphParser.parse` : le test
+  `should throw on malformed JSON` attend explicitement
+  `JsonParseException` ; passer à `Either<KnowledgeGraphParseError, …>` suppose de
+  mettre à jour ce test (même autorisation). Décision différée, documentée.
+
+== État
+
+* CI vertes : workspace-bom `41261199696` (24/24 jobs, malgré la contention),
+  bakery `41261193657`/`41261193715`.
+* Commits : bakery `926c1147`, workspace-bom `18345ad`.
+* Zéro test modifié, zéro secret, zéro Python.
