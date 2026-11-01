@@ -1,32 +1,35 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-331 — dernière terminée : **330** (**MEM-WARN-FREE TERMINÉ** : 13 dépôts,
-478 → 34 warnings). Avant : **329** (XF-FP-2 US-4/5 + warnings 6 dépôts),
-**328** (XF-FP-2 ouvert, cadrage sourcé + 3 US), **327** (lint 10 boroughs).
+332 — dernière terminée : **331** (**XF-FP-2 TERMINÉ** : N0 `ValidationOutcome`
+publié + fold `PivotModel`). Avant : **330** (MEM-WARN-FREE clos), **329**
+(XF-FP-2 US-4/5 + warnings), **328** (XF-FP-2 ouvert), **327** (lint 10 boroughs).
 
-=== Mission Session 331 — ordre proposé
+=== Mission Session 332 — ordre proposé
 
-. **`XF-FP2-6`** — N0 `agent-contracts` `AgentTool.validate(): Result<Unit>` →
-   scellé `ValidationOutcome` (jamais Arrow en N0), puis **DAG publication** :
-   `agent-contracts 0.0.4` Central → BOM/catalog `0.0.118` → vérifier les
-   consommateurs (planner/codebase).
-. **`XF-FP2-7`** — `document` fold `PivotModel` (~85 `is` sur 8 fichiers) : gros
-   refactor, US dédiée, preuve = CI document (~30 min).
-. Optionnel : US d'upgrade pour les **34 P2** (Cucumber suite-engine,
-   AsciidoctorJ `Options.map()`) si le pilote le souhaite.
-. Release consommateur au prochain artefact produit (Règle 2 « toujours granted »).
+. **Vérifier la propagation** `workspace-bom`/`workspace-catalog 0.0.118` sur repo1
+   (l'artefact `agent-contracts 0.0.4` est déjà à 200 ; le BOM était en polling en
+   fin de S-331). Si 200 : noter dans l'INDEX.
+. **Release consommateur** : repiner les catalogues des boroughs consommateurs sur
+   `0.0.118` (`planner`, `codebase`, …) — Règle 2 « toujours granted », ordre DAG.
+3. **Optionnel** : US d'upgrade des **34 P2** (Cucumber suite-engine, AsciidoctorJ
+   `Options.map()`), ou `LINT-ADOPT-13` (boroughs sans CI), au choix pilote.
+. Aucun EPIC actionnable restant hors ces options : proposer un cadrage au pilote
+   plutôt que d'improviser (Règle 1).
 
-_Documents maîtres_ : `.agents/CADRAGE_EPIC_XF_FP_2.adoc` (fonctionnel),
-`.agents/CADRAGE_EPIC_MEM_WARN_FREE.adoc` (clos), `.agents/CADRAGE_EPIC_MEM_LINT_ADOPTION.adoc`.
+_Documents maîtres_ : `.agents/CADRAGE_EPIC_XF_FP_2.adoc` (clos),
+`.agents/CADRAGE_EPIC_MEM_WARN_FREE.adoc` (clos),
+`.agents/CADRAGE_EPIC_MEM_LINT_ADOPTION.adoc` (US-13 différée).
 
 == État du code
 
-- Central : BOM + catalog **0.0.117** (import `io.arrow-kt:arrow-stack:2.3.0`).
+- Central : `agent-contracts **0.0.4**` + BOM/catalog **0.0.118** (bundle
+  `bceecd3f`, propagation BOM en polling fin S-331) ; import
+  `io.arrow-kt:arrow-stack:2.3.0`.
 - Contrats N0 : **sans Arrow** (D2) ; Arrow en N1/N2 en `implementation`.
 - EPICs MEMPHIS : **XB-FP clos** (S-323), **MEM-LINT-GATE clos** (S-324),
   **MEM-LINT-ADOPTION US-0→US-12 ✅** (10 boroughs ; reste US-13, sans CI, différé),
-  **XF-FP-2 en cours** (US-0→US-5 ✅ ; reste US-6 N0, US-7 fold),
+  **XF-FP-2 ✅ TERMINÉ** (US-0→US-7 ; `agent-contracts 0.0.4` + BOM/catalog `0.0.118` publiés),
   **MEM-WARN-FREE ✅ TERMINÉ** (WARN-0→13 : **478 → 34** warnings sur 13 dépôts).
 - Warning-free : 11 dépôts à **0** ; capsule 31 et document 3 = **P2 tiers consignés**
   (Cucumber `@CucumberOptions`, AsciidoctorJ `Options.map()`), à traiter par une US
@@ -37,9 +40,8 @@ _Documents maîtres_ : `.agents/CADRAGE_EPIC_XF_FP_2.adoc` (fonctionnel),
   dashboard, api-key-pool, jhipster, magic-stick (+ vestiges).
 - CI workspace-bom : 21 jobs + gardes ; wall-clock **variance `5m12s…5m52s`**
   (KPI ≤ 5m30s à la frontière, variance des shards TestKit).
-- Dernières CI : plantuml `41317002477` ✅ 14m23s ; codex `41315948060` ✅ 4m06s ;
-  hyperframes `41315521912` ✅ 3m09s ; planner `41314999600` ✅ 1m34s ;
-  video-kernel `41316775132` ✅ 1m06s.
+- Dernières CI : document `41321357878` ✅ 29m56s ; workspace-bom `41324949688` ✅ ;
+  plantuml `41317002477` ✅ 14m23s ; codex `41315948060` ✅ 4m06s.
 
 == Doctrine XB-FP (clos — conservée pour mémoire)
 

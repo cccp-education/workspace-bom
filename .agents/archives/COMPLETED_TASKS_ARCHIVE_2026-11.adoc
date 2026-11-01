@@ -131,3 +131,12 @@
   N0 9 builds 2→0. 7 CI vertes.
 * 34 restants = 2 familles tierces consignées (Cucumber ×31, AsciidoctorJ ×3).
 * Pièges : `-q` masque les warnings ; `@Suppress` préexistant = warning caché.
+
+== S-331 — XF-FP-2 TERMINÉ : N0 `ValidationOutcome` + fold `PivotModel` ✅
+
+* `AgentTool.validate` : `Result<Unit>` → `ValidationOutcome`/`ValidationProblem`
+  (stdlib only), accumulation des 4 contrôles, RED par compilation.
+* Publications : `agent-contracts 0.0.4` (`b47de75d`, repo1 200) + BOM/catalog
+  `0.0.118` (`bceecd3f`, polling).
+* `document` : `PivotBlockFold` exhaustif sans `else`, 91 → 24 `is` legacy,
+  5 commits, CI 29m56s. **EPIC clos.**

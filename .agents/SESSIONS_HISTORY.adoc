@@ -389,3 +389,22 @@ l'assertion non tautologique). **EPIC clos : 478 warnings → 34** sur 13 dépô
 (Cucumber `@CucumberOptions` ×31, AsciidoctorJ `Options.map()` ×3). Pièges ajoutés :
 `-q` masque les warnings ; un `@Suppress` préexistant est un warning caché.
 Rapport `.agents/sessions/330-mem-warn-free-closed.adoc`.
+
+== Session 331 (2026-11-01) — XF-FP-2 TERMINÉ : N0 typé + fold PivotModel
+
+**XF-FP2-6** : N0 `AgentTool.validate` passait `Result<Unit>` (erreur effacée en
+`Throwable`, un seul problème possible). Remplacé par `ValidationOutcome`
+(`Valid` / `Invalid(problems)` non vide) + `ValidationProblem(code, message)`,
+**kotlin-stdlib only** (loi N0). Les 4 contrôles de `GradleTaskTool` sont
+indépendants → **accumulés** (`buildList`) ; la frontière Gradle formate une fois.
+RED prouvé par compilation + `ValidationOutcomeTest`. Aucun implémenteur externe
+(grep). **Publication** : `agent-contracts 0.0.4` (bundle `b47de75d`, repo1 **200**)
+puis BOM/catalog `0.0.118` (bundle `bceecd3f`, propagation en polling), garde
+`PlatformCatalogAlignmentTest` bumpée dans le même commit.
+**XF-FP2-7** : `document` `PivotBlockFold.kt` (`internal`, `when` exhaustif sans
+`else`, récursion fournie par l'appelant) ; **91 → 24** `is PivotBlock.*` legacy
+(`Content`, `ArticleTreeAudit`, 3 renderers, `TreeTranslationAdapter`,
+`DocumentTranslator`), `BlockChecksum` laissé (déjà exhaustif). 5 commits
+(`1029d60`, `0e34519`, `e672c4b`, `db9ec9d`, `fbacbda`), CI `41321357878` ✅ 29m56s.
+**EPIC XF-FP-2 clos (US-0→US-7).** Rapport
+`.agents/sessions/331-xf-fp2-n0-typed-fold-pivot.adoc`.

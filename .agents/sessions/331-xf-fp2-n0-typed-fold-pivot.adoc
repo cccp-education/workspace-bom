@@ -1,0 +1,94 @@
+= Session 331 — XF-FP-2 : US-6 (N0 typé + publication) et US-7 (fold PivotModel) — EPIC clos
+:date: 2026-11-01
+:borough: MEMPHIS (workspace-bom) — EPIC transverse
+:type: contrat N0 (breaking) + refactor fonctionnel
+:ci: document `41321357878`, workspace-bom `41324949688`
+
+== 1. XF-FP2-6 — N0 `ValidationOutcome` (breaking, publié)
+
+**Motif** (livre ch. 5.1.2 + docs `/typed-errors/`) : `Result<Unit>` est un
+`Either<Throwable, A>` déguisé — il **efface le type d'erreur**, ne peut pas porter
+**plusieurs** problèmes, et force l'appelant à parser un message. Sur un contrat de
+validation, c'est le mauvais outil.
+
+**Livré** (`agent-contracts`, kotlin-stdlib only — N0 sans Arrow) :
+[source,kotlin]
+----
+data class ValidationProblem(val code: String, val message: String)
+
+sealed interface ValidationOutcome {
+    data object Valid : ValidationOutcome
+    data class Invalid(val problems: List<ValidationProblem>) : ValidationOutcome {
+        init { require(problems.isNotEmpty()) }
+    }
+}
+----
+`AgentTool.validate(input): ValidationOutcome` (au lieu de `Result<Unit>`).
+
+* `GradleTaskTool` : les **4 vérifications sont indépendantes** → elles
+  **s'accumulent** (`buildList`) au lieu de s'arrêter à la première ; codes
+  stables `BLACKLISTED_TASK`, `BLANK_PROJECT`, `BLANK_TASK`,
+  `TIMEOUT_OUT_OF_RANGE`. La frontière Gradle formate une seule fois
+  (`BLOCKED: …; …`).
+* **RED prouvé par compilation** (`Unresolved reference 'ValidationOutcome'` ×4)
+  avant d'ajouter le contrat ; test unitaire `ValidationOutcomeTest` (singleton,
+  invariant non-vide, égalité par contenu).
+* Aucun implémenteur externe (`grep AgentTool` hors `agent-contracts` = 0) : le
+  breaking change ne casse aucun consommateur.
+* BDD : les steps assertent `Valid` / `instanceof Invalid` et joignent les messages
+  (les 2 features `ac_2`/`ac_3` restent vertes).
+
+**DAG publication** : `agent-contracts 0.0.3 → 0.0.4` (bundle `b47de75d`,
+propagation repo1 **HTTP 200** vérifiée) → `workspace-bom`/catalog
+`0.0.117 → 0.0.118` (bundle `bceecd3f`, constraint + entrée catalogue alignées,
+garde `PlatformCatalogAlignmentTest` bumpée dans le même commit).
+
+== 2. XF-FP2-7 — `document` : `PivotBlock.fold` (91 → 24 `is` legacy)
+
+`translation/PivotBlockFold.kt` (`internal`) :
+
+[source,kotlin]
+----
+internal fun <R> PivotBlock.fold(
+    heading: (PivotBlock.Heading) -> R, paragraph: (PivotBlock.Paragraph) -> R,
+    listBlock: (PivotBlock.ListBlock) -> R, table: (PivotBlock.Table) -> R,
+    admonition: (PivotBlock.Admonition) -> R, source: (PivotBlock.Source) -> R,
+    descriptionList: (PivotBlock.DescriptionList) -> R,
+    blockMacro: (PivotBlock.BlockMacro) -> R, hr: (PivotBlock.Hr) -> R,
+): R
+----
+`when` exhaustif **sans `else`** ; la récursion reste fournie par l'appelant (chaque
+consommateur garde sa traversée). Migration (5 commits, un par lot) :
+
+| Fichier | `is PivotBlock.*` avant → après |
+| `tree/Content.kt` | 9 → 0 |
+| `ArticleTreeAudit` | 10 → 1 (`if (block is Heading …)` : partition, pas dispatch) |
+| `PivotYamlRenderer` | 8 → 0 |
+| `JbakeNativeRenderer` | 9 → 0 |
+| `AsciiDocRenderer` | 10 → 1 (`Hr` prédicat local) |
+| `TreeTranslationAdapter` | 14 → 0 |
+| `DocumentTranslator` | 15 → 6 (prédicats d'indexation `Table`, `Source && plantuml`) |
+| `BlockChecksum` | 16 → 16 (déjà exhaustif depuis S-329 : le fold n'ajoute qu'une couche) |
+
+**Total dispatch legacy : 91 → 24** (+9 dans le fold). Aucun test modifié, aucune
+sortie de rendu changée (la CI document de 30 min est la preuve).
+Commits `1029d60` (fold), `0e34519` (tree), `e672c4b` (renderers), `db9ec9d`
+(adapter), `fbacbda` (translator) — CI `41321357878` ✅ 29m56s.
+
+== 3. État de l'EPIC
+
+**XF-FP-2 TERMINÉ (US-0→US-7)**. Vague 1 (S-328) : fold parser slider, dispatch
+exhaustif document, échec LLM typé bakery. Vague 2 (S-329) : `Schedule` capsule,
+connexions R2DBC scopées codebase. Vague 3 (S-331) : N0 typé + fold `PivotModel`.
+
+== 4. Reste
+
+* Propagation BOM/catalog `0.0.118` : polling repo1 en cours (l'artefact
+  `agent-contracts 0.0.4` est déjà à 200).
+* Aucun consommateur ne doit être repiné (le `validate` typé n'est utilisé par
+  personne hors du contrat) ; les catalogues restent à `0.0.117` jusqu'à leur
+  prochaine session.
+* 34 warnings P2 tiers (Cucumber ×31, AsciidoctorJ ×3) : US d'upgrade optionnelle.
+* `LINT-ADOPT-13` (boroughs sans CI) : toujours différé.
+
+Zéro test lancé localement, zéro Python, zéro secret.

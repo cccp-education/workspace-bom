@@ -1,6 +1,18 @@
 = TEST_COVERAGE_ANALYSIS — workspace-bom (MEMPHIS)
 :date: 2026-11-01
-:session: 330
+:session: 331
+
+== Session 331 (2026-11-01) — XF-FP2-6/7 (contrat N0 typé + fold)
+
+* **N0** : +`ValidationOutcomeTest` (4 tests : singleton `Valid`, invariant
+  non-vide, égalité par contenu). BDD `ac_2_agent_tool`/`ac_3_gradle_task_tool` :
+  steps migrés vers le scellé (mêmes scénarios, assertions **plus précises**).
+  RED prouvé par compilation (`Unresolved reference 'ValidationOutcome'`).
+* **document** : **aucun test modifié** — la suite (≈30 min) est le filet du
+  refactor `PivotBlockFold` ; 5 commits bisectables.
+* 34 warnings P2 tiers inchangés (Cucumber ×31, AsciidoctorJ ×3).
+* Preuve = CI document `41321357878` ✅ + CI workspace-bom (N0 + BOM).
+
 
 == Session 330 (2026-11-01) — MEM-WARN-FREE WARN-7→13 (aucun test affaibli)
 
