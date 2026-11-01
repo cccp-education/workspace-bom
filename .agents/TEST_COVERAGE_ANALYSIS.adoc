@@ -1,6 +1,34 @@
 = TEST_COVERAGE_ANALYSIS — workspace-bom (MEMPHIS)
 :date: 2026-11-01
-:session: 322
+:session: 323
+
+== Session 323 (2026-11-01) — XB-FP-6 : tests lents → domaine pur (test-only)
+
+Aucun test supprimé, aucune assertion perdue : les règles pures passent en test
+unitaire/BDD, chaque concern garde **un** smoke Gradle réel.
+
+[cols="3,2,2,2", options="header"]
+|===
+| Classe | Avant | Après | Δ builds
+
+| `bakery.LocalizeSeoHeadFunctionalTest` | 9 tests / 10 builds (~44 s) | 2 tests / **3 builds** (~13 s) | −70 %
+| `bakery.seo.OgImageLanguageTest` | — | **+7 UT** (`src/test`) | +7
+| `graphify.IncrementalFunctionalTest` | 6 tests / 11 builds (~30 s) | 4 tests / **7 builds** (~20 s) | −36 %
+| `slider.GenerateDeckPipelineFunctionalTest` | 7 tests / 7 builds (~14 s) | 3 tests / **3 builds** (~7 s) | −57 %
+|===
+
+* BDD : `69_seo_head_locale.feature` **8 → 10 scénarios** (sélection du répertoire
+  `og-images/{lang}/` depuis l'ensemble disponible — le step rejoue la règle de la
+  tâche, `OgImageLanguage`).
+* RED prouvé par compilation (`Unresolved reference 'OgImageLanguage'`, ×7 sites)
+  avant l'implémentation de l'objet pur.
+* `AsciidoctorJPinFunctionalTest` (slider, 16 s) **conservé** : il prouve une
+  résolution Gradle réelle (`asciidoctorj 3.0.0 -> 3.0.1`), non simulable en pur.
+* Temps mesuré : ≈ 88 s → ≈ 40 s (−55 %) sur les trois classes. Preuve = CI des
+  boroughs (bakery `41264081199`, graphify `41264087285`, slider `41264090679`).
+* Découverte : `ktlintCheck` rouge à HEAD chez bakery (`check` jamais exécuté par
+  son CI) → EPIC `MEM-LINT-GATE`. Les nouveaux fichiers sont conformes.
+
 
 == Session 317 → 322 (2026-10-31 → 2026-11-01) — N0 en CI, XB-FP, tests purs
 

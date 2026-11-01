@@ -5,7 +5,8 @@
 :sectnums:
 
 _Dernière mise à jour (antérieure) : 2026-10-25 (S-307 — **BOM/catalog 0.0.101 : `document-plugin 0.0.25` + `bakery-plugin 0.0.28`**, revue cheroliv.com ; publication Central `d6e5bf37`, propagation repo1 200, CI verte `67b0d8c`. Précédent S-306 : BOM/catalog 0.0.100 bakery 0.0.27, bundle `936b54a1`, CI verte `c6dc0e1`. Précédent S-299 : CI cross-borough < 5 min.)_
-_Dernière mise à jour : 2026-11-01 (S-322 — **XB-FP : seam plantuml ✅ (`999a15d`), tests purs slider ✅ (`09c1ea7` : matrice 24 clés × 10 langues + 1 smoke), découplage source set `sharedTest` ✅ (`04c018aa` : shards BDD sans `compileFunctionalTestKotlin`)**. XB-FP-5 et XB-FP-7 clos ; XB-FP-6 partiel (reste bakery/graphify/slider-GenerateDeckPipeline) ; mesure isolée TestKit à faire. Précédent S-321 : TestKit home hors build + caché.)
+_Dernière mise à jour : 2026-11-01 (S-323 — **XB-FP-6 TERMINÉ** : les trois classes fonctionnelles lentes deviennent pures + **un** smoke TestKit par concern. bakery `LocalizeSeoHead` (**10 → 3 builds**) via le nouvel objet pur `OgImageLanguage` (sélection `og-images/{lang}/`, 7 UT, RED par compilation) + 2 scénarios BDD ; graphify `Incremental` (**11 → 7**) par fusion sans perte d'assertion ; slider `GenerateDeckPipeline` (**7 → 3**). ≈ 88 s → ≈ 40 s de temps fonctionnel (−55 %), zéro assertion retirée. CI vertes bakery `41264081199`, graphify `41264087285`, slider `41264090679`. Découverte : `ktlintCheck` **rouge à HEAD** (le CI ne lance jamais `check` chez bakery) → nouvel EPIC `MEM-LINT-GATE`. Reste `XB-FP-7` (mesure isolée). Précédent S-322 : seam plantuml + tests purs slider + source set `sharedTest`.)_
+_Dernière mise à jour (antérieure) : 2026-11-01 (S-322 — **XB-FP : seam plantuml ✅ (`999a15d`), tests purs slider ✅ (`09c1ea7` : matrice 24 clés × 10 langues + 1 smoke), découplage source set `sharedTest` ✅ (`04c018aa` : shards BDD sans `compileFunctionalTestKotlin`)**. XB-FP-5 et XB-FP-7 clos ; XB-FP-6 partiel (reste bakery/graphify/slider-GenerateDeckPipeline) ; mesure isolée TestKit à faire. Précédent S-321 : TestKit home hors build + caché.)
 _Dernière mise à jour (antérieure) : 2026-11-01 (S-321 — **XB-FP-7 (1/2)** : home Gradle TestKit hors `build/` (`926c1147`) + `~/.gradle-testkit` dans le cache commun (`18345ad`) ; mesure isolée reportée (run contaminé par une CI bakery concurrente). Reste : XB-FP-6 tests purs, découplage source set, seam plantuml — autorisation de modifier des tests requise (Règle 6). Précédent S-320 : Arrow 2.3.0 + BOM `arrow-stack` + adoptions.)
 _Dernière mise à jour (antérieure) : 2026-11-01 (S-320 — **XB-FP : adoption Arrow aux seams + Arrow 2.3.0 + BOM officiel `arrow-stack`**. Correction de cap (adoption, jamais suppression) : reverts `a941593`/`a8e719a`/`6a29244`, `arrow-fx` restauré (`13d405b`) ; doctrine **D12** réécrite. `workspace-bom` importe `io.arrow-kt:arrow-stack:2.3.0` (POM `<type>pom</type><scope>import</scope>` vérifié), BOM/catalog `0.0.117` (bundle `ea8bc702`, repo1 200 ×2). **XB-FP-1 mesuré isolé : 5m12s** (run `41257127568`). **XB-FP-3** bakery ; **XB-FP-4** planner ; **XB-FP-5** codebase+readme, plantuml différé. CI vertes. Précédent S-319 : cadrage XB-FP + cache + pilote slider.)
 _Dernière mise à jour (antérieure) : 2026-11-01 (S-319 — **EPIC transverse `XB-FP`** cadrée (temps de tests + arrow-kt, loi N0 sans Arrow) + `XB-FP-1` cache CI (artefacts Gradle, 7 écrivains) + `XB-FP-2` pilote arrow slider (`DeckContextValidator`, accumulation `Either<NonEmptyList<...>>`, CI verte `41256091035`). Précédent S-318 : mesure cache chaud + repins + résidus.)
@@ -213,8 +214,8 @@ types scellés maison conservés comme frontière publique, Arrow interne.
 | XB-FP-2 | **Pilote arrow (slider)** — `DeckContextValidator` : `Either<NonEmptyList<String>, String>` interne, **accumulation** d'erreurs, `fold` à la frontière, `ValidationResult` public inchangé | `slider-gradle/slider-plugin` | ✅ TERMINÉ (S-319, commit `a4daf82`, CI verte `41256091035`)
 | XB-FP-3 | **Bakery — accumulation de configuration** — `ConfigResolver` (`MutableList` + casts positionnels) + `DomainResolver` → `Either<NonEmptyList<ConfigResolutionError>, ResolvedConfigs>`, `zipOrAccumulate` | `bakery-gradle/bakery-plugin` | ✅ S-320 (commit `8ed6d84d` — `resolveOutcome()` pur, `listOfNotNull`, plus de `MutableList` ni de casts positionnels)
 | XB-FP-4 | **Planner — erreurs + retry** — `IntentionPlanner` (`var lastError`, `for` retry, `throw`) + `LifecycleAdapter` (catch-all `null`) → `Either<PlanningError, Plan>`, capture, retry fonctionnel | `planner-gradle/planner-plugin` | ✅ S-320 (commit `4d8db65` — `Either<PlanningError, Plan>`, retry `fold`, `Either.catch` dans `LifecycleAdapter`)
-| XB-FP-5 | **Adoption Arrow aux seams réels** — `codebase` (225 fichiers) et `readme` (9) déclarent Arrow **sans encore l'exploiter** : les solidifier par un seam fonctionnel (`Either`/`Resource`/retry), jamais retirer l'outil (D12). `arrow-fx-coroutines` conservé pour les refactors à venir. | `codebase-gradle`, `readme-gradle`, `plantuml-gradle` | 🟡 PARTIEL S-320 — `codebase` (`b30c232`, `QualityRetryCircuit` immuable) et `readme` (`67fceac`, `JGitRemoteValidator` en `Either`) adoptés ; `plantuml` seam **livré** S-322 (`999a15d` : `parseEither` + `KnowledgeGraphParseError`) — **US terminée**
-| XB-FP-6 | **Tests lents → domaine pur** — `LocalizeSeoHeadFunctionalTest` 44 s, `IncrementalFunctionalTest` 30 s, `TaskDescriptionsI18nFunctionalTest` 27 s, `AsciidoctorJPinFunctionalTest` 16 s, `GenerateDeckPipelineFunctionalTest` 14 s : tester les fonctions pures, garder 1 smoke TestKit par concern | `bakery`, `graphify`, `slider`, `codebase` | 🟡 PARTIEL S-322 — `slider` fait (`09c1ea7` : matrice pure 24 clés × 10 langues + 1 smoke, `TaskDescriptionsI18nFunctionalTest`) ; restent `LocalizeSeoHead` (bakery), `IncrementalFunctional` (graphify), `GenerateDeckPipeline` (slider)
+| XB-FP-5 | **Adoption Arrow aux seams réels** — `codebase` (225 fichiers) et `readme` (9) déclarent Arrow **sans encore l'exploiter** : les solidifier par un seam fonctionnel (`Either`/`Resource`/retry), jamais retirer l'outil (D12). `arrow-fx-coroutines` conservé pour les refactors à venir. | `codebase-gradle`, `readme-gradle`, `plantuml-gradle` | ✅ TERMINÉ (S-320/S-322) — `codebase` (`b30c232`, `QualityRetryCircuit` immuable) et `readme` (`67fceac`, `JGitRemoteValidator` en `Either`) adoptés ; `plantuml` seam **livré** S-322 (`999a15d` : `parseEither` + `KnowledgeGraphParseError`)
+| XB-FP-6 | **Tests lents → domaine pur** — `LocalizeSeoHeadFunctionalTest` 44 s, `IncrementalFunctionalTest` 30 s, `TaskDescriptionsI18nFunctionalTest` 27 s, `AsciidoctorJPinFunctionalTest` 16 s, `GenerateDeckPipelineFunctionalTest` 14 s : tester les fonctions pures, garder 1 smoke TestKit par concern | `bakery`, `graphify`, `slider`, `codebase` | ✅ **TERMINÉ S-323** — `slider` `TaskDescriptionsI18n` (S-322, `09c1ea7`) ; `bakery` `LocalizeSeoHead` **10 → 3 builds** (objet pur `OgImageLanguage` + 7 UT + 2 scénarios BDD, `8c6edf37`) ; `graphify` `Incremental` **11 → 7** (`7a17ceb`) ; `slider` `GenerateDeckPipeline` **7 → 3** (`70e1bda`). `AsciidoctorJPin` = smoke assumé (résolution Gradle réelle). CI `41264081199`/`41264087285`/`41264090679`.
 | XB-FP-7 | **Découplage source set + TestKit caché** — les shards BDD compilent `functionalTest` (30 fichiers) pour 2 symboles ; `org.gradle.testkit.dir` dans `build/tmp` (953 Mo-2,5 Go) jamais caché → fixtures partagées + test-kit home hors `build/`, caché, par fork si contention | `bakery-gradle/bakery-plugin` | 🟡 PARTIEL S-321 — home TestKit hors `build/` + caché (`926c1147` + `18345ad`) ; **découplage source set livré S-322** (`04c018aa` : source set `sharedTest`, shards BDD sans `compileFunctionalTestKotlin` — preuve `--dry-run`) ; mesure isolée du TestKit caché à faire
 |===
 
@@ -225,6 +226,45 @@ _KPIs_ : wall-clock ≤ 5m30s ; shard le plus long −15 % ; coverage −20 % ; 
 _Livré S-319 (XB-FP-0)_ : cadrage + revue (lecture seule, 2 audits : temps de tests
 bakery, maturité fonctionnelle 7 dépôts). Mesures et constats dans le document.
 Zéro code de production modifié par le cadrage.
+
+_Livré S-323 (XB-FP-6)_ : les trois classes fonctionnelles lentes restantes sont
+traitées **sans retirer une assertion** — chaque règle pure passe en test unitaire
+ou BDD, chaque concern garde **un** smoke Gradle réel. bakery : `OgImageLanguage`
+(objet pur, 7 UT, RED prouvé par compilation) + 2 scénarios BDD, `10 → 3` builds ;
+graphify : fusion « cache hit » / « byte-identity » et « modification » /
+« suppression », `11 → 7` ; slider : surface `tasks` assertée une fois au lieu de
+quatre, `7 → 3`. ≈ 88 s → ≈ 40 s (−55 %). Commit de style séparé : les dix appels
+`DomainResolver` de `ConfigResolver` (S-320) violaient `argument-list-wrapping`.
+Rapport `.agents/sessions/323-xb-fp-6-slow-tests-pure-domain.adoc`.
+
+'''
+== 🟡 EPIC MEM-LINT-GATE — dette ktlint préexistante (découverte S-323)
+
+*Constat* : `./gradlew ktlintCheck` sur `bakery-plugin` est **rouge à HEAD**
+(stash-prouvé) — le workflow `Test` de bakery n'exécute jamais `check`, seulement
+`test`, les shards fonctionnels/BDD et la fusion kover. La baseline
+`config/ktlint/baseline.xml` est **vide** depuis S-244 : toute violation est donc
+un échec, mais personne ne le voit.
+
+*Mesure S-323* : `src/main` 7 violations restantes (`DomainResolver` ×2,
+`DocumentDirection`/`I18nTemplateLayout`/`LocalizedSeoHead`/`LocalizeSeoHeadTask`
+×1, `ConfigResolver:464`) ; `src/test` 25 violations sur 12 fichiers (shards
+`CucumberShard*Runner`, `BakeryCucumberShardCoverageTest`, 3 tests d'objets purs).
+Les 10 expressions `DomainResolver` de `ConfigResolver` (53 violations, S-320) ont
+été corrigées en S-323 (commit de style séparé).
+
+*Pourquoi pas maintenant* : `ktlintFormat` **global** a déjà reformaté 126 fichiers
+hors périmètre en S-231/S-244 (revert immédiat) — la correction doit être faite
+**fichier par fichier**, ou via la CLI ktlint 1.5.0 sur un lot = un source set.
+
+[cols="1,4,3,2", options="header"]
+|===
+| US | Description | Cible | Statut
+
+| LINT-1 | `src/main` — les 7 violations restantes (indentation/retour à la ligne des chaînes) | `bakery-gradle/bakery-plugin` | 🟡 À FAIRE
+| LINT-2 | `src/test` — les 25 violations (12 fichiers), lot par source set via CLI ktlint | `bakery-gradle/bakery-plugin` | 🟡 À FAIRE
+| LINT-3 | **Garde** — `CI-1` : le workflow `Test` de bakery exécute `ktlintCheck` (aujourd'hui jamais exécuté) pour que la dette ne se reforme pas | `.github/workflows/test.yml` | 🟡 À FAIRE
+|===
 
 '''
 == EPIC PUB — Publication Maven Central

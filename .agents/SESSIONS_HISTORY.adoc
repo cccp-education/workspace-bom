@@ -205,3 +205,59 @@ typographique, bug révélé par `hyperframes lint`). Bump `hyperframes-plugin
 Central bundle `566b2ba8-b4e6-4c3b-934f-bb9c9f150385` (AUTOMATIC), propagation
 repo1 200. DAG : MEMPHIS `0.0.108` → hyperframes `0.0.11` (`5e1db54d`).
 Rapport `.agents/sessions/311-bom-0.0.108-hyperframes-0.0.11.adoc`.
+
+== Session 319 (2026-11-01) — EPIC transverse XB-FP : cadrage + cache CI + pilote arrow
+
+Cadrage `CADRAGE_EPIC_XB_FP.adoc` (10 constats temps de tests, 7 constats Arrow,
+loi **N0 sans Arrow**, 12 décisions, 7 US, KPIs) ; `XB-FP-1` cache CI (artefacts
+Gradle `generated-gradle-jars`/`kotlin-dsl`/`dependencies-accessors`, `~/.m2`
+retiré, 7 écrivains) ; `XB-FP-2` pilote arrow slider (`DeckContextValidator`,
+accumulation `Either<NonEmptyList<String>, String>`, API publique inchangée).
+CI vertes workspace-bom `41256096163`, slider `41256091035`.
+Rapport `.agents/sessions/319-xb-fp-cadrage-cache-pilote-arrow.adoc`.
+
+== Session 320 (2026-11-01) — XB-FP : Arrow 2.3.0 + BOM `arrow-stack` + adoption aux seams
+
+Correction de cap (adoption, pas suppression) : reverts `a941593`/`a8e719a`/`6a29244`,
+`arrow-fx` restauré (`13d405b`), doctrine **D12** réécrite. `workspace-bom` importe
+`io.arrow-kt:arrow-stack:2.3.0` (`<type>pom</type><scope>import</scope>` vérifié) ;
+BOM/catalog `0.0.117` (bundle `ea8bc702`). **XB-FP-1 mesuré isolé : 5m12s**
+(run `41257127568`). `XB-FP-3` bakery `8ed6d84d`, `XB-FP-4` planner `4d8db65`,
+`XB-FP-5` codebase/readme adoptés (seam plantuml différé).
+Rapport `.agents/sessions/320-xb-fp-arrow-adoption-latest-bom.adoc`.
+
+== Session 321 (2026-11-01) — XB-FP-7 (1/2) : home TestKit hors `build/` + caché
+
+`org.gradle.testkit.dir = ~/.gradle-testkit` (bakery `926c1147`) + chemin ajouté au
+cache commun (`18345ad`) : le home par défaut (`build/tmp/<task>/work/.gradle-test-kit`,
+953 Mo-2,5 Go) était recréé par job et re-résolvait 118 jars pour 179 builds
+imbriqués. Mesure non concluante (run `41261199696` 8m34s, contaminé par la CI bakery
+concurrente) — référence isolée `5m12s`.
+Rapport `.agents/sessions/321-xb-fp-testkit-home.adoc`.
+
+== Session 322 (2026-11-01) — XB-FP : seam plantuml, tests purs (slider), découplage source set
+
+Seam `plantuml` (`999a15d`, `KnowledgeGraphParseError` + `parseEither()`, `parse()`
+replié sur les exceptions historiques — XB-FP-5 clos) ; `TaskDescriptionsI18nCatalogTest`
+(matrice pure 24 clés × 10 langues + 1 smoke, `09c1ea7`) ; source set **`sharedTest`**
+(`04c018aa` : les 9 tâches BDD/unit ne compilent plus `functionalTest`, preuve
+`--dry-run`). CI vertes plantuml `41262059987`, slider `41262144762`, bakery
+`41262327823`/`41262327798`.
+Rapport `.agents/sessions/322-xb-fp-plantuml-seam-pure-tests-source-set.adoc`.
+
+== Session 323 (2026-11-01) — XB-FP-6 TERMINÉ : tests lents → domaine pur (bakery, graphify, slider)
+
+Les trois classes fonctionnelles lentes restantes sont traitées **sans retirer une
+assertion** (chaque règle pure passe en test unitaire ou BDD, chaque concern garde
+**un** smoke Gradle réel). bakery : `OgImageLanguage` (objet pur de sélection
+`og-images/{lang}/`, 7 UT, RED prouvé par compilation) + 2 scénarios BDD,
+`LocalizeSeoHeadFunctionalTest` **10 → 3 builds** (`8c6edf37`). graphify :
+`IncrementalFunctionalTest` **11 → 7** (fusion cache-hit/byte-identity et
+modification/suppression, `7a17ceb`). slider : `GenerateDeckPipelineFunctionalTest`
+**7 → 3** (`70e1bda`). ≈ 88 s → ≈ 40 s (−55 %). Commit de style séparé : les dix
+appels `DomainResolver` de `ConfigResolver` (S-320) violaient
+`argument-list-wrapping` (`d9a9aa12`). **Découverte** : `ktlintCheck` est rouge à
+HEAD (le CI bakery n'exécute jamais `check`) → EPIC `MEM-LINT-GATE` (7 violations
+main + 25 test restantes). CI vertes bakery `41264081199`, graphify `41264087285`,
+slider `41264090679`. Reste `XB-FP-7` (mesure isolée du TestKit caché).
+Rapport `.agents/sessions/323-xb-fp-6-slow-tests-pure-domain.adoc`.

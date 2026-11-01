@@ -1,69 +1,66 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-322 — dernières : **317** (cache CI commun, N0 en CI, garde pins, BOM 0.0.116),
-**318** (mesure, repins, résidus), **319** (EPIC **XB-FP** cadrée + pilote arrow),
-**320** (Arrow 2.3.0 + BOM `arrow-stack`, adoption bakery/planner/codebase/readme),
-**321** (XB-FP-7 : home TestKit hors `build/` + caché).
+324 — dernière terminée : **323** (XB-FP-6 : tests lents → domaine pur, cross-borough
+bakery/graphify/slider). Avant : **322** (seam plantuml + tests purs slider + source set
+`sharedTest`), **321** (TestKit home caché), **320** (Arrow 2.3.0 + BOM `arrow-stack`),
+**319** (cadrage EPIC XB-FP + cache CI + pilote arrow).
 
-=== Mission Session 322 — ordre proposé
+=== Mission Session 324 — ordre proposé
 
-. **`XB-FP-7` mesure isolée** : aucun push dans un autre dépôt pendant la fenêtre
-   (le run S-321 a été contaminé par la CI bakery ; pool GitHub partagé). Comparer
-   les shards `functional-*`/`bdd-*` chauds vs la référence isolée S-320 (`5m12s`).
-. **`XB-FP-6` — tests lents → domaine pur** (`LocalizeSeoHead` 44 s,
-   `IncrementalFunctional` 30 s, `TaskDescriptionsI18n` 27 s, `AsciidoctorJPin`
-   16 s, `GenerateDeckPipeline` 14 s). **Autorisation explicite requise** pour
-   modifier des tests (Règle 6) : remplacer les assertions TestKit par des
-   assertions sur les fonctions pures, garder **un** smoke TestKit par concern.
-. **`XB-FP-7` (2/2)** — découpler les shards BDD de `src/functionalTest`
-   (fixtures `FuncTestsConstants`/`createConfigFile` → source set partagé) :
-   déplacement de fichiers de test, même autorisation.
-. **Seam `plantuml`** — `KnowledgeGraphParser.parse` → `Either<ParseError, …>` ;
-   bloqué par `KnowledgeGraphParserTest.should throw on malformed JSON`
-   (`JsonParseException`) : met à jour le test = même autorisation.
+. **`XB-FP-7` — mesure isolée du TestKit caché** (seul reste de l'EPIC) : pousser
+   `workspace-bom` alors qu'**aucun autre dépôt ne pousse** (pool GitHub partagé),
+   comparer le wall-clock à la référence isolée S-320 (`5m12s`, run `41257127568`).
+   Vérifier les `startedAt` de tous les jobs avant de conclure (piège cumul du S-321).
+. **`MEM-LINT-GATE`** (découvert S-323) : `ktlintCheck` rouge à HEAD chez bakery —
+   7 violations `src/main` + 25 `src/test` (12 fichiers). Corriger **fichier par
+   fichier** (jamais `ktlintFormat` global : 126 fichiers reformatés en S-231/S-244),
+   puis câbler `ktlintCheck` dans le workflow `Test` de bakery (aujourd'hui jamais
+   exécuté) — US LINT-1/2/3 du BACKLOG.
+. **Release consommateur** au prochain artefact produit (Règle 2 « toujours granted »).
 
-_Document maître_ : `.agents/CADRAGE_EPIC_XB_FP.adoc` (D1→D12, 7 US, KPIs).
-Suivi : `BACKLOG.adoc` § `EPIC XB-FP` + Roadmap de l'INDEX.
-
-_Hors scope_ : upload YouTube réel — **gelé S-037**.
+_Document maître_ : `.agents/CADRAGE_EPIC_XB_FP.adoc` ; EPIC lint : `BACKLOG.adoc`
+§ `MEM-LINT-GATE`. Suivi : `BACKLOG.adoc` § `EPIC XB-FP` + Roadmap de l'INDEX.
 
 == État du code
 
 - Central : BOM + catalog **0.0.117** (import `io.arrow-kt:arrow-stack:2.3.0`).
-- Arrow **2.3.0** ; adoptions : slider `DeckContextValidator`, bakery
-  `DomainResolver`/`ConfigResolver`, planner `PlanningError`+retry, codebase
-  `QualityRetryCircuit`/`MetadataValidator`, readme `JGitRemoteValidator`.
-- TestKit home : `~/.gradle-testkit` (bakery) + cache commun (`~/.gradle-testkit`).
-- CI workspace-bom : 21 jobs ; référence isolée **5m12s** (S-320) ; guards
-  `verifyCiMatrixCoverage` + `verifyCrossBoroughPins`.
-- Contrats N0 : **sans Arrow** (D2).
+- Contrats N0 : **sans Arrow** (doctrine D2) ; Arrow en N1/N2 en `implementation`.
+- XB-FP : US-0→US-6 ✅ (US-6 close S-323), US-7 ✅ S-322 sauf **mesure isolée**.
+- CI workspace-bom : 21 jobs + gardes `verifyCiMatrixCoverage` /
+  `verifyCrossBoroughPins`. Référence isolée : **5m12s** (S-320).
+- Dernières CI boroughs : bakery `41264081199`, graphify `41264087285`,
+  slider `41264090679` (toutes vertes, 2026-11-01).
 
 == Doctrine XB-FP
 
 * **D2** N0 sans Arrow ; **D3** Arrow N1/N2 en `implementation` ; **D4** sealed
-  maison = frontière, Arrow interne.
+  maison = frontière publique, Arrow interne.
+* **D9** ne pas ajouter de jobs, ni rééquilibrer les shards functional, ni
+  ré-activer le cache `setup-gradle`.
 * **D12** dépendance Arrow sans usage = **dette d'adoption** : l'utiliser à un
   seam, jamais la retirer.
-* **D7** mesurer avant/après ; **D9** pas de nouveau job, pas de rééquilibrage
-  des shards functional, pas de cache `setup-gradle`.
+* **D7** mesurer avant/après ; **D10/D11** source set découplé (fait) + TestKit
+  hors `build/` (fait).
 
 == Pièges (cumul)
 
-. *Version dérivée ≠ version publiée* ; *Catch-22 D8* ; gardes dans le même commit.
+. *Version dérivée ≠ version publiée* ; garde de version bumpée dans le **même**
+   commit ; `check` inclut ktlint chez bakery (mais le CI ne le lance pas).
 . *Contrats N0 = builds standalone* (pattern 0124).
 . *Catalogue Gradle* : un plugin inclus depuis la **racine** utilise le catalogue
-   **racine** — vérifier `./gradlew :<plugin>:compileKotlin` depuis la racine.
-. *Local = Build, Tests = CI* ; **une CI concurrente (autre dépôt) fausse le
-   wall-clock** (pool partagé) — vérifier les `startedAt` avant de conclure.
+   **racine**.
+. *Local = Build, Tests = CI* ; une CI concurrente (autre dépôt) fausse le
+   wall-clock — vérifier les `startedAt`.
 . *Cache GitHub scopé au dépôt* ; `setup-gradle cache-disabled` ; clé avec
-   `github.job` ; artefacts Gradle + TestKit home cachés.
-. *Ollama* : arrêter le conteneur + `chown` avant le post-step de cache.
+   `github.job` ; arrêter Ollama + `chown` avant le post-step.
 . *Toolchain* : `jvmToolchain(25)` (jamais `VERSION_25.ordinal` = 24) ; foojay **0.10.0**.
+. *ktlint* : `include(...)`/`setSource(...)` sont ignorés par ktlint-gradle 12.2.0 ;
+   seul un lot **par source set** via la CLI ktlint 1.5.0 est sûr.
 
 == Règles
 
 - Voir `AGENT.adoc` — commit/push/publish autorisés (Règle 2 « toujours granted »).
-- **Règle 6** : ne pas modifier les tests sans autorisation explicite.
+- **Règle 6** : ne jamais lancer ni modifier des tests sans autorisation explicite.
 - Publication Central : `./gradlew publishAggregationToCentralPortal`.
 - Zéro Python.

@@ -1,0 +1,114 @@
+= Session 323 — XB-FP-6 : tests lents → domaine pur (bakery, graphify, slider)
+:date: 2026-11-01
+:borough: MEMPHIS (workspace-bom) — EPIC transverse
+:type: test design + refactor cross-borough (test-only)
+:ci: bakery `41264081199`, graphify `41264087285`, slider `41264090679`
+
+== Mission
+
+Reprise par le `PROMPT_REPRISE` S-322 et le `BACKLOG` (EPIC **XB-FP**) :
+terminer **`XB-FP-6`** — les tests fonctionnels lents (> 20 s) doivent devenir des
+assertions sur les fonctions pures, avec **un** smoke TestKit par concern.
+Autorisation de modifier des tests donnée par la reprise (« reprenons … avec son
+prompt de reprise et son backlog »). Méthode **baby-step DDD/TDD/BDD**
+(unit → functional → Cucumber), Local = Build, Tests = CI.
+
+Classes ciblées (mesures S-319) : `LocalizeSeoHeadFunctionalTest` (bakery, 44 s),
+`IncrementalFunctionalTest` (graphify, 30 s), `GenerateDeckPipelineFunctionalTest`
+(slider, 14 s). `TaskDescriptionsI18nFunctionalTest` (27 s) était déjà traité en
+S-322 ; `AsciidoctorJPinFunctionalTest` (16 s) est un smoke assumé (il prouve une
+**résolution Gradle réelle** de `asciidoctorj 3.0.0 -> 3.0.1`, non simulable en pur).
+
+== 1. bakery — `LocalizeSeoHeadFunctionalTest` : 10 builds → 3
+
+Le défaut : neuf tests, chacun lançant `gradle localizeSeoHead` pour **une**
+assertion (≈ 44 s). Les règles de réécriture étaient déjà pures
+(`LocalizedSeoHead`, `DocumentDirection`, `I18nTemplateLayout`) ; la seule règle
+restée dans la tâche était la **sélection** du répertoire `og-images/{lang}/`.
+
+Baby-step strict :
+
+. **RED** (compilation) : `compileTestKotlin` —
+   `Unresolved reference 'OgImageLanguage'` (×7 sites) sur
+   `OgImageLanguageTest` (7 tests : propre si présent, sinon référence, jamais un
+   voisin, référence absente, langue/blanc rejetés).
+. **GREEN** : `bakery.seo.OgImageLanguage.resolve(language, defaultLanguage,
+   available)` — objet pur, zéro I/O ; la tâche garde **une** sonde disque
+   (`availableOgLanguageDirs`) et délègue la décision.
+. **BDD** : `69_seo_head_locale.feature` +2 scénarios (« le répertoire est le sien
+   quand il existe sur disque », « variante sans cartes → référence ») et un step
+   `the head is localised for … with the available og directories …` qui rejoue la
+   sélection comme la tâche.
+. **REFACTOR** : `LocalizeSeoHeadFunctionalTest` = **1 smoke bout-en-bout**
+   (layout `i18n/{lang}/templates`, head de référence sans préfixe, repli disque
+   vers `fr`, `dir=rtl`, idempotence sur un second run) + **1 test** de la surface
+   publiée (groupe `transform`). **3 builds** au lieu de 10.
+
+Dette latente révélée au passage (stash-prouvée, préexistante) : `ktlintCheck`
+est **rouge à HEAD** (le CI n'exécute jamais `check` chez bakery, seulement les
+shards et `test`). Les dix appels `DomainResolver` de `ConfigResolver` (S-320)
+violaient `argument-list-wrapping` : reformatage mécanique dans un commit séparé.
+Le gate reste rouge sur 5 fichiers `src/main` + 12 fichiers `src/test`
+préexistants → EPIC `MEM-LINT-GATE` ouvert au BACKLOG (aucune correction en
+masse : `ktlintFormat` global a déjà sinistré 126 fichiers en S-231/S-244).
+
+== 2. graphify — `IncrementalFunctionalTest` : 11 builds → 7
+
+Six tests, onze builds : le contrat « cache hit » **rejouait** le second run du
+test d'identité byte-à-byte, et « fichier modifié » / « fichier supprimé »
+étaient deux paires de runs pour un même concern (l'état du disque après édition
+et suppression). Fusion sans perte d'assertion :
+
+* identité byte-à-byte **+** cache écrit **+** types de nœuds canoniques
+  (`project`, `directory`, `file`, `section`) — un seul couple de runs ;
+* modification **et** suppression dans le même couple : la nouvelle section
+  apparaît, le nœud du fichier disparu ne subsiste pas, le voisin est intact ;
+* cache corrompu (dégradation) et opt-in désactivé : inchangés.
+
+Aucune production modifiée : les règles de fingerprint (fast path, drift,
+réutilisation par hash, élagage) restent pinnées par les tests purs
+`graphify.fingerprint.*`.
+
+== 3. slider — `GenerateDeckPipelineFunctionalTest` : 7 builds → 3
+
+Quatre builds `tasks … --group generate` pour la **même** surface (enregistrement,
+groupe, description EN, description FR). La matrice des descriptions (24 clés ×
+10 langues) est déjà couverte par `TaskDescriptionsI18nCatalogTest` et le câblage
+`-Planguage` par l'unique smoke de `TaskDescriptionsI18nFunctionalTest` (S-322).
+
+Il reste **un** build de surface (enregistrement + groupe `generate` +
+description localisée EN) et les **deux gardes d'entrée** (subject manquant, LLM
+injoignable) — comportement de tâche, non simulable en pur.
+
+== 4. Bilan des builds TestKit
+
+[cols="3,2,2,2", options="header"]
+|===
+| Classe | Avant | Après | Δ
+
+| `LocalizeSeoHeadFunctionalTest` (bakery) | 10 builds (~44 s) | **3** (~13 s) | −70 %
+| `IncrementalFunctionalTest` (graphify) | 11 builds (~30 s) | **7** (~20 s) | −36 %
+| `GenerateDeckPipelineFunctionalTest` (slider) | 7 builds (~14 s) | **3** (~7 s) | −57 %
+|===
+
+Soit ≈ **88 s → ≈ 40 s** de temps fonctionnel pour ces trois classes (−55 %),
+sans retirer une assertion : chaque règle pure est désormais couverte par un test
+unitaire ou BDD, et chaque concern garde **un** smoke Gradle réel.
+
+== 5. CI (preuve)
+
+| Dépôt | Commit | Run | Résultat
+| bakery | `8c6edf37` (test) + `d9a9aa12` (style) | `41264081199` | ✅
+| graphify | `7a17ceb` | `41264087285` | ✅
+| slider | `70e1bda` | `41264090679` | ✅
+
+Compiles locales (Local = Build) : `compileKotlin compileTestKotlin
+compileFunctionalTestKotlin validatePlugins` VERTS sur les trois plugins.
+Aucun test lancé localement. Zéro secret, zéro Python.
+
+== 6. Reste
+
+* **`XB-FP-7` — mesure isolée** du TestKit caché : à faire sur un run
+  workspace-bom **seul** (les trois pushes ci-dessus occupaient le pool).
+* `AsciidoctorJPinFunctionalTest` : smoke assumé (résolution Gradle réelle).
+* `MEM-LINT-GATE` : dette ktlint préexistante (5 fichiers main, 12 test).

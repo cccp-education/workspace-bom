@@ -45,3 +45,20 @@
   ne compilent plus `functionalTest` (preuve `--dry-run`).
 * CI vertes : plantuml `41262059987`, slider `41262144762`, bakery
   `41262327823`/`41262327798`.
+
+== S-323 — XB-FP-6 : tests lents → domaine pur (bakery, graphify, slider) ✅
+
+* **Bakery** : `OgImageLanguage` (objet pur — `og-images/{lang}/` propre si présent,
+  référence sinon ; 7 UT, RED prouvé par compilation) ; la tâche garde une seule
+  sonde disque. BDD +2 scénarios. `LocalizeSeoHeadFunctionalTest` : 9 tests /
+  10 builds → **1 smoke bout-en-bout + 1 test de surface / 3 builds** (`8c6edf37`).
+* **Graphify** : `IncrementalFunctionalTest` fusionne « cache hit » dans
+  « byte-identity » (types de nœuds inclus) et « modification » + « suppression »
+  dans un même couple de runs → **11 → 7 builds** (`7a17ceb`).
+* **Slider** : `GenerateDeckPipelineFunctionalTest` → **7 → 3 builds** (`70e1bda`).
+* ≈ **88 s → ≈ 40 s** (−55 %) de temps fonctionnel, **zéro assertion retirée**.
+  `AsciidoctorJPinFunctionalTest` conservé (résolution Gradle réelle).
+* Découverte (stash-prouvée) : `ktlintCheck` **rouge à HEAD** chez bakery (son CI
+  n'exécute jamais `check`) → EPIC `MEM-LINT-GATE` ; les 10 expressions
+  `DomainResolver` de `ConfigResolver` corrigées (`d9a9aa12`).
+* CI vertes : bakery `41264081199`, graphify `41264087285`, slider `41264090679`.
