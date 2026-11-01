@@ -80,7 +80,6 @@ data class PreservedText(
  * design — a translated `toc::[]` cannot come back.
  */
 object PreserveCatalog {
-
     const val DEFAULT_PREFIX: String = "@@PRESERVE_"
     const val SUFFIX: String = "@@"
 
@@ -90,7 +89,11 @@ object PreserveCatalog {
     ): PreservedText {
         if (text.isEmpty()) return PreservedText(text, emptyList())
 
-        data class Candidate(val range: IntRange, val rule: PreserveRule, val value: String)
+        data class Candidate(
+            val range: IntRange,
+            val rule: PreserveRule,
+            val value: String,
+        )
 
         val candidates =
             PreserveRule.entries

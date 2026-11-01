@@ -5,7 +5,7 @@ data class OllamaConfig(
     val model: String = "gemma4:31b-cloud",
     val portStart: Int = 11437,
     val portEnd: Int = 11465,
-    val timeoutSeconds: Long = 300
+    val timeoutSeconds: Long = 300,
 ) {
     init {
         require(model.isNotBlank()) { "model must not be blank" }

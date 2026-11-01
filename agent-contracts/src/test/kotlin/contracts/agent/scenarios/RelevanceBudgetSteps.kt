@@ -8,7 +8,6 @@ import io.cucumber.java.en.When
 import org.assertj.core.api.Assertions.assertThat
 
 class RelevanceBudgetSteps {
-
     private var channels: Map<String, String> = emptyMap()
     private var budget: RelevanceBudget? = null
 
@@ -18,16 +17,20 @@ class RelevanceBudgetSteps {
     }
 
     @Given("channel {string} with content {string}")
-    fun givenChannel(name: String, content: String) {
+    fun givenChannel(
+        name: String,
+        content: String,
+    ) {
         channels = channels + (name to content)
     }
 
     @Given("a budget with 2 channels")
     fun givenBudgetWithTwoChannels() {
-        val channelScores = listOf(
-            ChannelScore("RAG", "relevant content here", 0.85),
-            ChannelScore("EAGER", "governance rules", 0.30)
-        )
+        val channelScores =
+            listOf(
+                ChannelScore("RAG", "relevant content here", 0.85),
+                ChannelScore("EAGER", "governance rules", 0.30),
+            )
         budget = RelevanceBudget(totalTokens = 1000, channels = channelScores)
     }
 

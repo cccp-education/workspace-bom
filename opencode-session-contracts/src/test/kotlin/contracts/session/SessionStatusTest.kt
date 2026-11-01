@@ -5,7 +5,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class SessionStatusTest {
-
     @Test
     fun `all four status values exist`() {
         val values = SessionStatus.entries

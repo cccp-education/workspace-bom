@@ -1,19 +1,21 @@
 package contracts.i18n
 
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.Assertions.*
 
 class SupportedLanguageTest {
-
     @Test
     fun `should construct with all fields`() {
-        val lang = SupportedLanguage(
-            code = "fr",
-            name = "French",
-            nativeName = "Français",
-            rtl = false,
-            localeTag = "fr-FR"
-        )
+        val lang =
+            SupportedLanguage(
+                code = "fr",
+                name = "French",
+                nativeName = "Français",
+                rtl = false,
+                localeTag = "fr-FR",
+            )
         assertEquals("fr", lang.code)
         assertEquals("French", lang.name)
         assertEquals("Français", lang.nativeName)
@@ -35,13 +37,14 @@ class SupportedLanguageTest {
 
     @Test
     fun `should support RTL languages`() {
-        val lang = SupportedLanguage(
-            code = "ar",
-            name = "Arabic",
-            nativeName = "العربية",
-            rtl = true,
-            localeTag = "ar-SA"
-        )
+        val lang =
+            SupportedLanguage(
+                code = "ar",
+                name = "Arabic",
+                nativeName = "العربية",
+                rtl = true,
+                localeTag = "ar-SA",
+            )
         assertTrue(lang.rtl)
     }
 

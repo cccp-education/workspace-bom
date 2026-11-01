@@ -8,5 +8,5 @@ enum class ResetPolicy {
     WEEKLY,
     MONTHLY,
     NEVER,
-    MANUAL
+    MANUAL,
 }

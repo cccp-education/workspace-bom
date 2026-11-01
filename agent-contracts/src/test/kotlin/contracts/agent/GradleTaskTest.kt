@@ -6,7 +6,6 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 
 class GradleTaskTest {
-
     @Test
     fun `GradleTask defaults to GRADLE toolType with blank target`() {
         val task = GradleTask(description = "Run tests", gradleTask = "./gradlew test")
@@ -17,12 +16,13 @@ class GradleTaskTest {
 
     @Test
     fun `GradleTask accepts EDIT_FILE toolType with target`() {
-        val task = GradleTask(
-            description = "Patch build.gradle.kts",
-            gradleTask = "",
-            toolType = TaskType.EDIT_FILE,
-            target = "build.gradle.kts"
-        )
+        val task =
+            GradleTask(
+                description = "Patch build.gradle.kts",
+                gradleTask = "",
+                toolType = TaskType.EDIT_FILE,
+                target = "build.gradle.kts",
+            )
 
         assertThat(task.toolType).isEqualTo(TaskType.EDIT_FILE)
         assertThat(task.target).isEqualTo("build.gradle.kts")
@@ -30,12 +30,13 @@ class GradleTaskTest {
 
     @Test
     fun `GradleTask accepts EXEC_SHELL toolType with target`() {
-        val task = GradleTask(
-            description = "Run npm install",
-            gradleTask = "",
-            toolType = TaskType.EXEC_SHELL,
-            target = "npm install"
-        )
+        val task =
+            GradleTask(
+                description = "Run npm install",
+                gradleTask = "",
+                toolType = TaskType.EXEC_SHELL,
+                target = "npm install",
+            )
 
         assertThat(task.toolType).isEqualTo(TaskType.EXEC_SHELL)
         assertThat(task.target).isEqualTo("npm install")
@@ -64,7 +65,7 @@ class GradleTaskTest {
                 description = "Patch file",
                 gradleTask = "",
                 toolType = TaskType.EDIT_FILE,
-                target = "  "
+                target = "  ",
             )
         }.isInstanceOf(IllegalArgumentException::class.java)
             .hasMessageContaining("target")
@@ -77,7 +78,7 @@ class GradleTaskTest {
                 description = "Run shell",
                 gradleTask = "",
                 toolType = TaskType.EXEC_SHELL,
-                target = ""
+                target = "",
             )
         }.isInstanceOf(IllegalArgumentException::class.java)
             .hasMessageContaining("target")
@@ -90,7 +91,7 @@ class GradleTaskTest {
                 description = "Edit file",
                 gradleTask = "",
                 toolType = TaskType.EDIT_FILE,
-                target = "path/to/file"
+                target = "path/to/file",
             )
         }.doesNotThrowAnyException()
     }
@@ -100,7 +101,7 @@ class GradleTaskTest {
         assertThat(TaskType.values().toList()).containsExactly(
             TaskType.GRADLE,
             TaskType.EDIT_FILE,
-            TaskType.EXEC_SHELL
+            TaskType.EXEC_SHELL,
         )
     }
 }

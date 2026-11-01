@@ -13,7 +13,6 @@ import kotlin.test.assertTrue
  * (ordinary prose mentioning an attribute reference).
  */
 class PreserveRuleTest {
-
     @Test
     fun `the catalog exposes the measured rule ids`() {
         assertEquals(

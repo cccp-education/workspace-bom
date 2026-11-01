@@ -10,16 +10,16 @@ data class CompositeContext(
     val ragSection: String,
     val graphifySection: String,
     val docsSection: String = "",
-    val config: CompositeContextConfig
+    val config: CompositeContextConfig,
 ) {
-    fun toChannels(): List<ContextChannel> = listOf(
-        ContextChannel.Eager(eagerSection),
-        ContextChannel.Rag(ragSection),
-        ContextChannel.Graphify(graphifySection),
-        ContextChannel.Docs(docsSection),
-        ContextChannel.Resource("")
-    )
+    fun toChannels(): List<ContextChannel> =
+        listOf(
+            ContextChannel.Eager(eagerSection),
+            ContextChannel.Rag(ragSection),
+            ContextChannel.Graphify(graphifySection),
+            ContextChannel.Docs(docsSection),
+            ContextChannel.Resource(""),
+        )
 
-    fun channelsWithBudget(budget: ChannelBudget): List<ContextChannel> =
-        budget.applyBudget(toChannels())
+    fun channelsWithBudget(budget: ChannelBudget): List<ContextChannel> = budget.applyBudget(toChannels())
 }

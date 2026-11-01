@@ -16,7 +16,7 @@ data class OcrRequest(
     val imageData: ByteArray,
     val format: String,
     val language: String,
-    val prompt: String? = null
+    val prompt: String? = null,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -35,6 +35,5 @@ data class OcrRequest(
         return result
     }
 
-    override fun toString(): String =
-        "OcrRequest(format='$format', language='$language', imageSize=${imageData.size} bytes, prompt=$prompt)"
+    override fun toString(): String = "OcrRequest(format='$format', language='$language', imageSize=${imageData.size} bytes, prompt=$prompt)"
 }

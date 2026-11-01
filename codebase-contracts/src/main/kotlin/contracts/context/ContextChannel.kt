@@ -10,44 +10,58 @@ enum class ChannelType { EAGER, RAG, GRAPHIFY, RESOURCE, DOCS }
  * Canal de contexte — sealed class 5 variants.
  * Source unique de vérité N0 pour tous les boroughs N1/N2.
  */
-sealed class ContextChannel(val source: String, val content: String) {
+sealed class ContextChannel(
+    val source: String,
+    val content: String,
+) {
     /** Type du canal dérivé du source */
-    val type: ChannelType get() = when (this) {
-        is Eager -> ChannelType.EAGER
-        is Rag -> ChannelType.RAG
-        is Graphify -> ChannelType.GRAPHIFY
-        is Resource -> ChannelType.RESOURCE
-        is Docs -> ChannelType.DOCS
-    }
+    val type: ChannelType get() =
+        when (this) {
+            is Eager -> ChannelType.EAGER
+            is Rag -> ChannelType.RAG
+            is Graphify -> ChannelType.GRAPHIFY
+            is Resource -> ChannelType.RESOURCE
+            is Docs -> ChannelType.DOCS
+        }
 
     abstract val budgetProportion: Double
     abstract val name: String
     abstract val description: String
 
     val contentNonEmpty: Boolean get() = content.isNotBlank()
+
     fun isNotEmpty(): Boolean = contentNonEmpty
-    fun withContent(newContent: String): ContextChannel = when (this) {
-        is Eager -> Eager(newContent)
-        is Rag -> Rag(newContent)
-        is Graphify -> Graphify(newContent)
-        is Resource -> Resource(newContent)
-        is Docs -> Docs(newContent)
-    }
+
+    fun withContent(newContent: String): ContextChannel =
+        when (this) {
+            is Eager -> Eager(newContent)
+            is Rag -> Rag(newContent)
+            is Graphify -> Graphify(newContent)
+            is Resource -> Resource(newContent)
+            is Docs -> Docs(newContent)
+        }
 
     /** Section header utilisé dans l'assemblage composite */
     open val sectionHeader: String get() = ""
 
     /** Contexte chargé immédiatement (fichiers .adoc EAGER) */
-    data class Eager(val contentOnly: String = "") : ContextChannel("EAGER", contentOnly) {
+    data class Eager(
+        val contentOnly: String = "",
+    ) : ContextChannel("EAGER", contentOnly) {
         override val budgetProportion: Double get() = 0.40
         override val name: String get() = "EAGER/LAZY"
         override val description: String get() = "Gouvernance déterministe (.adoc)"
         override val sectionHeader: String get() = "RÈGLES_EAGER"
-        constructor(content: String, @Suppress("UNUSED_PARAMETER") dummy: Unit = Unit) : this(content)
+        constructor(
+            content: String,
+            @Suppress("UNUSED_PARAMETER") dummy: Unit = Unit,
+        ) : this(content)
     }
 
     /** Contexte extrait du RAG pgvector (similarité sémantique) */
-    data class Rag(val contentOnly: String = "") : ContextChannel("RAG", contentOnly) {
+    data class Rag(
+        val contentOnly: String = "",
+    ) : ContextChannel("RAG", contentOnly) {
         override val budgetProportion: Double get() = 0.30
         override val name: String get() = "RAG/pgvector"
         override val description: String get() = "Similarité vectorielle (pgvector)"
@@ -55,7 +69,9 @@ sealed class ContextChannel(val source: String, val content: String) {
     }
 
     /** Contexte extrait du graphe de dépendances Graphify */
-    data class Graphify(val contentOnly: String = "") : ContextChannel("Graphify", contentOnly) {
+    data class Graphify(
+        val contentOnly: String = "",
+    ) : ContextChannel("Graphify", contentOnly) {
         override val budgetProportion: Double get() = 0.20
         override val name: String get() = "Graphify"
         override val description: String get() = "Relations structurelles (graphe)"
@@ -63,7 +79,9 @@ sealed class ContextChannel(val source: String, val content: String) {
     }
 
     /** Contexte chargé à la demande (fichiers LAZY) */
-    data class Resource(val contentOnly: String = "") : ContextChannel("Resource", contentOnly) {
+    data class Resource(
+        val contentOnly: String = "",
+    ) : ContextChannel("Resource", contentOnly) {
         override val budgetProportion: Double get() = 0.10
         override val name: String get() = "Ressources"
         override val description: String get() = "Mémoire froide (sur demande)"
@@ -71,7 +89,9 @@ sealed class ContextChannel(val source: String, val content: String) {
     }
 
     /** Contexte documentaire — résultats de la recherche vectorielle codex (corpus AFNOR, REAC, manuels) */
-    data class Docs(val contentOnly: String = "") : ContextChannel("Docs", contentOnly) {
+    data class Docs(
+        val contentOnly: String = "",
+    ) : ContextChannel("Docs", contentOnly) {
         override val budgetProportion: Double get() = 0.10
         override val name: String get() = "Codex/Docs"
         override val description: String get() = "Corpus documentaire (codex pgvector)"
@@ -79,9 +99,15 @@ sealed class ContextChannel(val source: String, val content: String) {
     }
 
     companion object {
-        fun all(): List<ContextChannel> = listOf(
-            Eager(), Rag(), Graphify(), Resource(), Docs()
-        )
+        fun all(): List<ContextChannel> =
+            listOf(
+                Eager(),
+                Rag(),
+                Graphify(),
+                Resource(),
+                Docs(),
+            )
+
         fun estimateTokens(text: String): Int = (text.length / 3.5).toInt().coerceAtLeast(1)
 
         /** Token budget par défaut utilisé pour les calculs tronqués. */
@@ -94,11 +120,16 @@ sealed class ContextChannel(val source: String, val content: String) {
      */
     fun truncateToTokens(maxTokens: Int): ContextChannel {
         val lines = content.lines()
-        val truncated = lines.fold("" to 0) { (acc, count), line ->
-            val lineTokens = estimateTokens(line)
-            if (count + lineTokens <= maxTokens) (acc + line + "\n") to (count + lineTokens)
-            else acc to count
-        }.first
+        val truncated =
+            lines
+                .fold("" to 0) { (acc, count), line ->
+                    val lineTokens = estimateTokens(line)
+                    if (count + lineTokens <= maxTokens) {
+                        (acc + line + "\n") to (count + lineTokens)
+                    } else {
+                        acc to count
+                    }
+                }.first
         return when (this) {
             is Eager -> Eager(truncated)
             is Rag -> Rag(truncated)
@@ -120,7 +151,7 @@ data class ChannelBudget(
     val budgetRag: Double = 0.30,
     val budgetGraphify: Double = 0.20,
     val budgetDocs: Double = 0.10,
-    val budgetResource: Double = 0.0
+    val budgetResource: Double = 0.0,
 ) {
     init {
         val sum = budgetEager + budgetRag + budgetGraphify + budgetDocs + budgetResource
@@ -133,13 +164,14 @@ data class ChannelBudget(
     val docsTokens: Int get() = (totalTokenBudget * budgetDocs).toInt()
     val resourceTokens: Int get() = (totalTokenBudget * budgetResource).toInt()
 
-    fun tokensFor(type: ChannelType): Int = when (type) {
-        ChannelType.EAGER -> eagerTokens
-        ChannelType.RAG -> ragTokens
-        ChannelType.GRAPHIFY -> graphifyTokens
-        ChannelType.DOCS -> docsTokens
-        ChannelType.RESOURCE -> resourceTokens
-    }
+    fun tokensFor(type: ChannelType): Int =
+        when (type) {
+            ChannelType.EAGER -> eagerTokens
+            ChannelType.RAG -> ragTokens
+            ChannelType.GRAPHIFY -> graphifyTokens
+            ChannelType.DOCS -> docsTokens
+            ChannelType.RESOURCE -> resourceTokens
+        }
 
     fun tokensFor(channel: ContextChannel): Int = tokensFor(channel.type)
 
@@ -151,15 +183,14 @@ data class ChannelBudget(
     }
 
     companion object {
-        fun fromConfig(config: CompositeContextConfig): ChannelBudget {
-            return ChannelBudget(
+        fun fromConfig(config: CompositeContextConfig): ChannelBudget =
+            ChannelBudget(
                 totalTokenBudget = config.totalTokenBudget,
                 budgetEager = config.budgetEagerLazy,
                 budgetRag = config.budgetRag,
                 budgetGraphify = config.budgetGraphify,
                 budgetDocs = config.budgetDocs,
-                budgetResource = config.budgetOverhead
+                budgetResource = config.budgetOverhead,
             )
-        }
     }
 }

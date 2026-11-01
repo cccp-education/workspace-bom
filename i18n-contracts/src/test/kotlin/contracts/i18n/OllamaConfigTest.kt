@@ -7,7 +7,6 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class OllamaConfigTest {
-
     @Test
     fun `default config has no device keys`() {
         val config = OllamaConfig()
@@ -20,9 +19,10 @@ class OllamaConfigTest {
 
     @Test
     fun `config with device keys is configured`() {
-        val config = OllamaConfig(
-            deviceKeys = listOf(OllamaDeviceKey("k1", "pk1"))
-        )
+        val config =
+            OllamaConfig(
+                deviceKeys = listOf(OllamaDeviceKey("k1", "pk1")),
+            )
         assertTrue(config.isConfigured)
     }
 
@@ -73,9 +73,10 @@ class OllamaConfigTest {
 
     @Test
     fun `full config with 29 device keys`() {
-        val keys = (1..29).map { i ->
-            OllamaDeviceKey(keyName = "ollama-${11436 + i}", privateKey = "pk-$i")
-        }
+        val keys =
+            (1..29).map { i ->
+                OllamaDeviceKey(keyName = "ollama-${11436 + i}", privateKey = "pk-$i")
+            }
         val config = OllamaConfig(deviceKeys = keys)
         assertTrue(config.isConfigured)
         assertEquals(29, config.deviceKeys.size)

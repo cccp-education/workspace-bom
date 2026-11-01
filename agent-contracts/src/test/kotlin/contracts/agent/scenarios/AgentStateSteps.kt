@@ -9,7 +9,6 @@ import io.cucumber.java.en.When
 import org.assertj.core.api.Assertions.assertThat
 
 class AgentStateSteps {
-
     private var intention: String = ""
     private var currentState: AgentState? = null
     private var classified: AgentState.Classified? = null
@@ -24,25 +23,31 @@ class AgentStateSteps {
     }
 
     @Given("a Classified state with classification {string} and model {string}")
-    fun givenClassified(classification: String, modele: String) {
-        classified = AgentState.Classified(
-            intention = "Formation Java 17",
-            compositeContext = "ctx",
-            classification = classification,
-            modelChoice = modele
-        )
+    fun givenClassified(
+        classification: String,
+        modele: String,
+    ) {
+        classified =
+            AgentState.Classified(
+                intention = "Formation Java 17",
+                compositeContext = "ctx",
+                classification = classification,
+                modelChoice = modele,
+            )
     }
 
     @Given("a Planned state with {int} EPICs")
     fun givenPlanned(nbEpics: Int) {
-        val epics = (1..nbEpics).map { i ->
-            Epic(name = "EPIC-$i", description = "Desc", points = i * 3)
-        }
-        planned = AgentState.Planned(
-            intention = "Formation Java 17",
-            planJson = "{}",
-            epics = epics
-        )
+        val epics =
+            (1..nbEpics).map { i ->
+                Epic(name = "EPIC-$i", description = "Desc", points = i * 3)
+            }
+        planned =
+            AgentState.Planned(
+                intention = "Formation Java 17",
+                planJson = "{}",
+                epics = epics,
+            )
     }
 
     @Given("an Executed state with result {string}")
@@ -50,37 +55,41 @@ class AgentStateSteps {
         val separator = ": "
         val key = resultat.substringBefore(separator)
         val value = resultat.substringAfter(separator)
-        executed = AgentState.Executed(
-            intention = "Formation Java 17",
-            executionResults = mapOf(key to value)
-        )
+        executed =
+            AgentState.Executed(
+                intention = "Formation Java 17",
+                executionResults = mapOf(key to value),
+            )
     }
 
     @Given("an Evaluated state with score {double}")
     fun givenEvaluated(score: Double) {
-        evaluated = AgentState.Evaluated(
-            intention = "Formation Java 17",
-            evaluationScore = score,
-            evaluationFeedback = if (score >= 7.0) "OK" else "Revision needed"
-        )
+        evaluated =
+            AgentState.Evaluated(
+                intention = "Formation Java 17",
+                evaluationScore = score,
+                evaluationFeedback = if (score >= 7.0) "OK" else "Revision needed",
+            )
     }
 
     @Given("a Finalized state with output {string}")
     fun givenFinalizedOk(sortie: String) {
-        finalized = AgentState.Finalized(
-            intention = "Formation Java 17",
-            finalOutput = sortie,
-            error = null
-        )
+        finalized =
+            AgentState.Finalized(
+                intention = "Formation Java 17",
+                finalOutput = sortie,
+                error = null,
+            )
     }
 
     @Given("a Finalized state with error {string}")
     fun givenFinalizedError(erreur: String) {
-        finalized = AgentState.Finalized(
-            intention = "Formation Java 17",
-            finalOutput = "",
-            error = erreur
-        )
+        finalized =
+            AgentState.Finalized(
+                intention = "Formation Java 17",
+                finalOutput = "",
+                error = erreur,
+            )
     }
 
     @When("an AgentState.Initial is created")
@@ -90,11 +99,12 @@ class AgentStateSteps {
 
     @When("an AgentState.ContextReady is created")
     fun whenContextReady() {
-        currentState = AgentState.ContextReady(
-            intention = intention,
-            compositeContext = "composite context assembled from EAGER, RAG, Graphify",
-            afnorCorpus = "AFNOR/REAC corpus"
-        )
+        currentState =
+            AgentState.ContextReady(
+                intention = intention,
+                compositeContext = "composite context assembled from EAGER, RAG, Graphify",
+                afnorCorpus = "AFNOR/REAC corpus",
+            )
     }
 
     @Then("the state phase is {word}")
@@ -150,7 +160,10 @@ class AgentStateSteps {
     }
 
     @Then("the result for {string} is {string}")
-    fun thenResultat(borough: String, valeur: String) {
+    fun thenResultat(
+        borough: String,
+        valeur: String,
+    ) {
         assertThat(executed!!.executionResults).containsEntry(borough, valeur)
     }
 
@@ -159,8 +172,7 @@ class AgentStateSteps {
         assertThat(evaluated!!.evaluationScore).isEqualTo(score)
     }
 
-    private fun stateUnderTest(): AgentState {
-        return currentState ?: classified ?: planned ?: executed ?: evaluated ?: finalized
+    private fun stateUnderTest(): AgentState =
+        currentState ?: classified ?: planned ?: executed ?: evaluated ?: finalized
             ?: throw IllegalStateException("No state has been created")
-    }
 }

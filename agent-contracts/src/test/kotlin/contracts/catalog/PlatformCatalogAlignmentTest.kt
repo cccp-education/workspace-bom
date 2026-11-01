@@ -13,7 +13,6 @@ import kotlin.test.assertTrue
  * hardcoder. Ce test vérifie l'alignement des valeurs clés partagées.
  */
 class PlatformCatalogAlignmentTest {
-
     private val repoRoot: File by lazy {
         sequenceOf(File(".."), File("."))
             .map { it.resolve("gradle/libs.versions.toml") }
@@ -33,22 +32,26 @@ class PlatformCatalogAlignmentTest {
     @Test
     fun `toml version workspace-bom matches platform version`() {
         assertEquals(
-            "0.0.117", tomlVersions["workspace-bom"],
-            "workspace-bom dans le toml (tri-split C2 supprimé)"
+            "0.0.117",
+            tomlVersions["workspace-bom"],
+            "workspace-bom dans le toml (tri-split C2 supprimé)",
         )
         assertTrue(
             platformScript.contains("version = libs.versions.workspace.bom.get()"),
-            "la version BOM doit être dérivée du toml (libs.versions.workspace.bom)"
+            "la version BOM doit être dérivée du toml (libs.versions.workspace.bom)",
         )
     }
 
     @Test
     fun `platform does not hardcode education cccp artifacts`() {
-        val hardcoded = Regex("""api\("education\.cccp:[^"]+:[^"]+"\)""")
-            .findAll(platformScript).map { it.value }.toList()
+        val hardcoded =
+            Regex("""api\("education\.cccp:[^"]+:[^"]+"\)""")
+                .findAll(platformScript)
+                .map { it.value }
+                .toList()
         assertTrue(
             hardcoded.isEmpty(),
-            "artefacts education.cccp hardcodés dans la platform (doivent passer par libs.*): $hardcoded"
+            "artefacts education.cccp hardcodés dans la platform (doivent passer par libs.*): $hardcoded",
         )
     }
 
@@ -64,13 +67,18 @@ class PlatformCatalogAlignmentTest {
         assertEquals("0.0.1", tomlVersions["runtime-contracts"], "runtime-contracts")
         assertEquals("0.0.1", tomlVersions["ocr-contracts"], "ocr-contracts")
         assertEquals("0.0.1", tomlVersions["plantuml-contracts"], "plantuml-contracts (PLT-DIAGRAM-OWNERSHIP US-1, 10e contrat N0)")
-        assertEquals("0.0.7", tomlVersions["conventions-plugin"], "conventions-plugin (Central 0.0.7, P2/P3 review S-019 : anti-drift BOM + opt-in cucumber + sondes BDD réelles)")
+        assertEquals(
+            "0.0.7",
+            tomlVersions["conventions-plugin"],
+            "conventions-plugin (Central 0.0.7, P2/P3 review S-019 : anti-drift BOM + opt-in cucumber + sondes BDD réelles)",
+        )
     }
 
     @Test
     fun `toml codebase plugin version is the published S-264 release`() {
         assertEquals(
-            "0.0.18", tomlVersions["codebase-plugin"],
+            "0.0.18",
+            tomlVersions["codebase-plugin"],
             "codebase-plugin 0.0.18 (KOOG-PIPELINE-DEDUP BS-1 : squelette codebase.koog.pipeline N1)",
         )
     }
@@ -78,19 +86,30 @@ class PlatformCatalogAlignmentTest {
     @Test
     fun `toml bakery plugin version is aligned on the latest N2 release`() {
         assertEquals(
-            "0.0.30", tomlVersions["bakery-plugin"],
+            "0.0.30",
+            tomlVersions["bakery-plugin"],
             "bakery-plugin 0.0.29 (BOM 0.0.103 : document 0.0.25, plantuml 0.0.13, codebase 0.0.18)",
         )
     }
 
     @Test
     fun `toml plugin versions are non blank and semver like`() {
-        val plugins = listOf(
-            "bakery-plugin", "capsule-plugin", "codex-plugin", "planner-plugin", "slider-plugin",
-            "plantuml-plugin", "readme-plugin", "hyperframes-plugin", "graphify-plugin",
-            "api-key-pool-plugin", "codebase-plugin", "conventions-plugin",
-            "document-plugin"
-        )
+        val plugins =
+            listOf(
+                "bakery-plugin",
+                "capsule-plugin",
+                "codex-plugin",
+                "planner-plugin",
+                "slider-plugin",
+                "plantuml-plugin",
+                "readme-plugin",
+                "hyperframes-plugin",
+                "graphify-plugin",
+                "api-key-pool-plugin",
+                "codebase-plugin",
+                "conventions-plugin",
+                "document-plugin",
+            )
         plugins.forEach { key ->
             val version = tomlVersions[key]
             assertTrue(!version.isNullOrBlank(), "$key doit avoir une version dans le toml")
@@ -103,7 +122,7 @@ class PlatformCatalogAlignmentTest {
         assertEquals("2.2.0", tomlVersions["asciidoctorj-epub3"], "asciidoctorj-epub3 (version réelle Central, alignée document-gradle)")
         assertTrue(
             platformScript.contains("api(libs.asciidoctorj.epub3)"),
-            "la platform doit consommer asciidoctorj-epub3 via le toml"
+            "la platform doit consommer asciidoctorj-epub3 via le toml",
         )
     }
 

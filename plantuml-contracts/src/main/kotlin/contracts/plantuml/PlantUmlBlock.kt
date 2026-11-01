@@ -41,22 +41,23 @@ data class PlantUmlBlock(
      */
     fun labels(): List<String> {
         val quoted =
-            labelRegex.findAll(raw)
+            labelRegex
+                .findAll(raw)
                 .map { it.groupValues[1] }
                 .filter { label ->
                     !technicalIdentifierRegex.matches(label) &&
                         label.any { it.isLetter() }
                 }
         val directives =
-            directiveRegex.findAll(raw)
+            directiveRegex
+                .findAll(raw)
                 .map { it.groupValues[1].trim() }
                 .filter { it.isNotEmpty() && it.any { ch -> ch.isLetter() } }
         return (quoted + directives).distinct().toList()
     }
 
     /** Whether the block contains any of the borrowed (preserved) terms. */
-    fun hasBorrowedVocabulary(): Boolean =
-        borrowedVocabulary.any { vocab -> raw.contains("\"$vocab\"") }
+    fun hasBorrowedVocabulary(): Boolean = borrowedVocabulary.any { vocab -> raw.contains("\"$vocab\"") }
 
     /** Whether the block has at least one translatable label. */
     fun hasTranslatableLabels(): Boolean = labels().isNotEmpty()

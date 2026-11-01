@@ -7,11 +7,12 @@ data class SessionBootstrap(
     val formationId: String,
     val byokLlmConfig: ByokLlmConfig,
     val workspaceRoot: String,
-    val locale: SupportedLanguage = SupportedLanguage(
-        code = "en",
-        name = "English",
-        nativeName = "English",
-    ),
+    val locale: SupportedLanguage =
+        SupportedLanguage(
+            code = "en",
+            name = "English",
+            nativeName = "English",
+        ),
 ) {
     init {
         require(learnerId.isNotBlank()) { "learnerId must be non-blank" }

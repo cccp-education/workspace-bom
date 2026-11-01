@@ -11,7 +11,7 @@ sealed class AgentState {
         override val intention: String,
         override val phase: AgentPhase = AgentPhase.BUILD_CONTEXT,
         val workspaceRoot: String = System.getProperty("user.dir"),
-        override val error: String? = null
+        override val error: String? = null,
     ) : AgentState()
 
     data class ContextReady(
@@ -19,7 +19,7 @@ sealed class AgentState {
         val compositeContext: String = "",
         val afnorCorpus: String = "",
         override val phase: AgentPhase = AgentPhase.CLASSIFY,
-        override val error: String? = null
+        override val error: String? = null,
     ) : AgentState()
 
     data class Classified(
@@ -29,7 +29,7 @@ sealed class AgentState {
         val classification: String = "",
         val modelChoice: String = "",
         override val phase: AgentPhase = AgentPhase.PLAN,
-        override val error: String? = null
+        override val error: String? = null,
     ) : AgentState()
 
     data class Planned(
@@ -41,7 +41,7 @@ sealed class AgentState {
         val planJson: String = "",
         val epics: List<Epic> = emptyList(),
         override val phase: AgentPhase = AgentPhase.EXECUTE,
-        override val error: String? = null
+        override val error: String? = null,
     ) : AgentState()
 
     data class Executed(
@@ -54,7 +54,7 @@ sealed class AgentState {
         val epics: List<Epic> = emptyList(),
         val executionResults: Map<String, String> = emptyMap(),
         override val phase: AgentPhase = AgentPhase.EVALUATE,
-        override val error: String? = null
+        override val error: String? = null,
     ) : AgentState()
 
     data class Evaluated(
@@ -71,14 +71,14 @@ sealed class AgentState {
         val replanCount: Int = 0,
         val maxReplans: Int = 3,
         override val phase: AgentPhase = AgentPhase.FINALIZE,
-        override val error: String? = null
+        override val error: String? = null,
     ) : AgentState()
 
     data class Finalized(
         override val intention: String,
         val finalOutput: String = "",
         override val phase: AgentPhase = AgentPhase.FINALIZE,
-        override val error: String? = null
+        override val error: String? = null,
     ) : AgentState() {
         val isSuccessful: Boolean get() = error == null
     }
@@ -90,7 +90,7 @@ data class Epic(
     val name: String,
     val description: String,
     val points: Int,
-    val userStories: List<UserStory> = emptyList()
+    val userStories: List<UserStory> = emptyList(),
 )
 
 /**
@@ -101,12 +101,12 @@ data class Plan(
     val title: String,
     val epics: List<Epic>,
     val totalPoints: Int,
-    val estimatedSessions: String
+    val estimatedSessions: String,
 )
 
 data class UserStory(
     val description: String,
-    val tasks: List<GradleTask> = emptyList()
+    val tasks: List<GradleTask> = emptyList(),
 )
 
 /**
@@ -120,7 +120,7 @@ data class UserStory(
 enum class TaskType {
     GRADLE,
     EDIT_FILE,
-    EXEC_SHELL
+    EXEC_SHELL,
 }
 
 data class GradleTask(
@@ -131,7 +131,7 @@ data class GradleTask(
     val project: String = "",
     val expectedOutput: String = "BUILD SUCCESSFUL",
     val maxRetries: Int = 3,
-    val verifyHook: String? = null
+    val verifyHook: String? = null,
 ) {
     init {
         require(description.isNotBlank()) {

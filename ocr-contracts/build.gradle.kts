@@ -1,10 +1,9 @@
-import java.time.Duration
-
 plugins {
     signing
     `java-library`
     `maven-publish`
     alias(libs.plugins.kotlin.jvm)
+    id("education.cccp.build.lint") version "0.0.7"
 }
 
 group = "education.cccp"

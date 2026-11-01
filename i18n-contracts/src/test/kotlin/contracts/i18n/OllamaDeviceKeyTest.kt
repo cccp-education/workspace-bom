@@ -7,7 +7,6 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class OllamaDeviceKeyTest {
-
     @Test
     fun `construct valid device key`() {
         val key = OllamaDeviceKey(keyName = "ollama-11437", privateKey = "ed25519-base64-key")
@@ -31,10 +30,11 @@ class OllamaDeviceKeyTest {
 
     @Test
     fun `toString masks private key`() {
-        val key = OllamaDeviceKey(
-            keyName = "ollama-11437",
-            privateKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI-very-secret-private-key-material"
-        )
+        val key =
+            OllamaDeviceKey(
+                keyName = "ollama-11437",
+                privateKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI-very-secret-private-key-material",
+            )
         val str = key.toString()
         assertTrue(str.contains("keyName=ollama-11437"))
         assertTrue(str.contains("ssh-ed25519***["))

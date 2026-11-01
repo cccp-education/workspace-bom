@@ -5,17 +5,17 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 class CompositeContextTest {
-
     @Test
     fun `toChannels converts all sections`() {
         val config = CompositeContextConfig()
-        val ctx = CompositeContext(
-            eagerSection = "EAGER content",
-            ragSection = "RAG content",
-            graphifySection = "GRAPHIFY content",
-            docsSection = "DOCS content",
-            config = config
-        )
+        val ctx =
+            CompositeContext(
+                eagerSection = "EAGER content",
+                ragSection = "RAG content",
+                graphifySection = "GRAPHIFY content",
+                docsSection = "DOCS content",
+                config = config,
+            )
         val channels = ctx.toChannels()
         assertEquals(5, channels.size)
         assertEquals("EAGER content", (channels[0] as ContextChannel.Eager).contentOnly)
@@ -28,12 +28,13 @@ class CompositeContextTest {
     @Test
     fun `channelsWithBudget applies truncation`() {
         val config = CompositeContextConfig(totalTokenBudget = 100)
-        val ctx = CompositeContext(
-            eagerSection = "A very long eager section that should be truncated because it exceeds the budget",
-            ragSection = "RAG section shorter",
-            graphifySection = "GRAPHIFY",
-            config = config
-        )
+        val ctx =
+            CompositeContext(
+                eagerSection = "A very long eager section that should be truncated because it exceeds the budget",
+                ragSection = "RAG section shorter",
+                graphifySection = "GRAPHIFY",
+                config = config,
+            )
         val channels = ctx.channelsWithBudget(ChannelBudget(totalTokenBudget = 100))
         assertEquals(5, channels.size)
         // Tous doivent être non-null

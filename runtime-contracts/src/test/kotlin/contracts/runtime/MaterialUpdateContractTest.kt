@@ -5,14 +5,14 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 class MaterialUpdateContractTest {
-
     @Test
     fun `creates material update contract with all fields`() {
-        val contract = MaterialUpdateContract(
-            remoteUrl = "https://github.com/cccp-education/formation-fpa",
-            currentVersion = "v1.0",
-            latestVersion = "v1.1",
-        )
+        val contract =
+            MaterialUpdateContract(
+                remoteUrl = "https://github.com/cccp-education/formation-fpa",
+                currentVersion = "v1.0",
+                latestVersion = "v1.1",
+            )
         assertThat(contract.remoteUrl).isEqualTo("https://github.com/cccp-education/formation-fpa")
         assertThat(contract.currentVersion).isEqualTo("v1.0")
         assertThat(contract.latestVersion).isEqualTo("v1.1")
@@ -20,24 +20,25 @@ class MaterialUpdateContractTest {
 
     @Test
     fun `creates material update contract with null versions`() {
-        val contract = MaterialUpdateContract(
-            remoteUrl = "https://github.com/cccp-education/formation-fpa",
-        )
+        val contract =
+            MaterialUpdateContract(
+                remoteUrl = "https://github.com/cccp-education/formation-fpa",
+            )
         assertThat(contract.currentVersion).isNull()
         assertThat(contract.latestVersion).isNull()
     }
 
     @Test
     fun `remoteUrl must be non-blank`() {
-        val ex = assertThrows<IllegalArgumentException> {
-            MaterialUpdateContract(remoteUrl = "")
-        }
+        val ex =
+            assertThrows<IllegalArgumentException> {
+                MaterialUpdateContract(remoteUrl = "")
+            }
         assertThat(ex.message).contains("remoteUrl")
     }
 }
 
 class MaterialUpdateResultTest {
-
     @Test
     fun `up to date result`() {
         val result = MaterialUpdateResult.UpToDate
@@ -58,7 +59,6 @@ class MaterialUpdateResultTest {
 }
 
 class MaterialUpdateResolverTest {
-
     @Test
     fun `fetchLatest returns latest version via fake implementation`() {
         val resolver = FakeMaterialUpdateResolver(latestVersion = "v2.0")
@@ -102,7 +102,10 @@ private class FakeMaterialUpdateResolver(
 ) : MaterialUpdateResolver {
     override fun fetchLatest(remoteUrl: String): String? = latestVersion
 
-    override fun pull(remoteUrl: String, targetVersion: String): MaterialUpdateResult {
+    override fun pull(
+        remoteUrl: String,
+        targetVersion: String,
+    ): MaterialUpdateResult {
         if (shouldFail) return MaterialUpdateResult.Error(message = "pull failed")
         if (latestVersion == targetVersion) return MaterialUpdateResult.UpToDate
         return MaterialUpdateResult.Updated(targetVersion = targetVersion)

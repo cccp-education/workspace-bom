@@ -4,18 +4,18 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class OcrResultTest {
-
     @Test
     fun `should create result with all fields`() {
-        val result = OcrResult(
-            structuredText = "= Title\n\nContent",
-            confidence = 0.95,
-            language = "fr",
-            sourceFormat = "image/png",
-            generatedAt = "2026-08-24T10:00:00Z",
-            model = "qwen3-vl:235b-cloud",
-            metadata = mapOf("page" to "1")
-        )
+        val result =
+            OcrResult(
+                structuredText = "= Title\n\nContent",
+                confidence = 0.95,
+                language = "fr",
+                sourceFormat = "image/png",
+                generatedAt = "2026-08-24T10:00:00Z",
+                model = "qwen3-vl:235b-cloud",
+                metadata = mapOf("page" to "1"),
+            )
         assertThat(result.structuredText).isEqualTo("= Title\n\nContent")
         assertThat(result.confidence).isEqualTo(0.95)
         assertThat(result.language).isEqualTo("fr")
@@ -27,25 +27,27 @@ class OcrResultTest {
 
     @Test
     fun `should create result with empty metadata default`() {
-        val result = OcrResult(
-            structuredText = "text",
-            confidence = 0.5,
-            language = "en",
-            sourceFormat = "image/jpeg",
-            generatedAt = "2026-01-01T00:00:00Z",
-            model = "gemini-2.5-flash"
-        )
+        val result =
+            OcrResult(
+                structuredText = "text",
+                confidence = 0.5,
+                language = "en",
+                sourceFormat = "image/jpeg",
+                generatedAt = "2026-01-01T00:00:00Z",
+                model = "gemini-2.5-flash",
+            )
         assertThat(result.metadata).isEmpty()
     }
 
     @Test
     fun `of factory should create result with sensible defaults`() {
-        val result = OcrResult.of(
-            text = "Extracted text",
-            confidence = 0.88,
-            language = "fr",
-            model = "qwen3-vl:235b-cloud"
-        )
+        val result =
+            OcrResult.of(
+                text = "Extracted text",
+                confidence = 0.88,
+                language = "fr",
+                model = "qwen3-vl:235b-cloud",
+            )
         assertThat(result.structuredText).isEqualTo("Extracted text")
         assertThat(result.confidence).isEqualTo(0.88)
         assertThat(result.language).isEqualTo("fr")
@@ -57,13 +59,14 @@ class OcrResultTest {
 
     @Test
     fun `of factory should accept metadata`() {
-        val result = OcrResult.of(
-            text = "text",
-            confidence = 0.9,
-            language = "de",
-            model = "gemini-2.5-pro",
-            metadata = mapOf("title" to "Invoice", "page" to "2")
-        )
+        val result =
+            OcrResult.of(
+                text = "text",
+                confidence = 0.9,
+                language = "de",
+                model = "gemini-2.5-pro",
+                metadata = mapOf("title" to "Invoice", "page" to "2"),
+            )
         assertThat(result.metadata)
             .containsEntry("title", "Invoice")
             .containsEntry("page", "2")

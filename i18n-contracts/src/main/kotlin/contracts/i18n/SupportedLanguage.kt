@@ -5,5 +5,5 @@ data class SupportedLanguage(
     val name: String,
     val nativeName: String,
     val rtl: Boolean = false,
-    val localeTag: String = code
+    val localeTag: String = code,
 )

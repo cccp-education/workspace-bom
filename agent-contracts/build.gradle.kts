@@ -6,6 +6,7 @@ plugins {
     `java-library`
     `maven-publish`
     alias(libs.plugins.kotlin.jvm)
+    id("education.cccp.build.lint") version "0.0.7"
 }
 
 group = "education.cccp"
@@ -27,60 +28,68 @@ dependencies {
     testImplementation(libs.bundles.cucumber)
 }
 
-val cucumberTest = tasks.register<Test>("cucumberTest") {
-    description = "Runs Cucumber BDD tests (agent-contracts)"
-    group = "verification"
-    testClassesDirs = sourceSets.test.get().output.classesDirs
-    classpath = configurations.testRuntimeClasspath.get() +
-        sourceSets.test.get().output +
-        sourceSets.main.get().output +
-        files(tasks.jar.get().archiveFile)
+val cucumberTest =
+    tasks.register<Test>("cucumberTest") {
+        description = "Runs Cucumber BDD tests (agent-contracts)"
+        group = "verification"
+        testClassesDirs =
+            sourceSets.test
+                .get()
+                .output.classesDirs
+        classpath = configurations.testRuntimeClasspath.get() +
+            sourceSets.test.get().output +
+            sourceSets.main.get().output +
+            files(tasks.jar.get().archiveFile)
 
-    dependsOn(tasks.classes)
-    useJUnitPlatform { excludeEngines("junit-jupiter") }
-    systemProperty("cucumber.junit-platform.naming-strategy", "long")
-    systemProperty("cucumber.filter.tags", "not @version-catalog")
-    maxHeapSize = "1g"
-    maxParallelForks = 1
-    forkEvery = 1
-    jvmArgs("-XX:+UseSerialGC", "-XX:MaxMetaspaceSize=256m", "-XX:TieredStopAtLevel=1")
-    timeout.set(Duration.ofMinutes(5))
+        dependsOn(tasks.classes)
+        useJUnitPlatform { excludeEngines("junit-jupiter") }
+        systemProperty("cucumber.junit-platform.naming-strategy", "long")
+        systemProperty("cucumber.filter.tags", "not @version-catalog")
+        maxHeapSize = "1g"
+        maxParallelForks = 1
+        forkEvery = 1
+        jvmArgs("-XX:+UseSerialGC", "-XX:MaxMetaspaceSize=256m", "-XX:TieredStopAtLevel=1")
+        timeout.set(Duration.ofMinutes(5))
 
-    testLogging {
-        events("passed", "skipped", "failed")
-        showStandardStreams = true
-        exceptionFormat = FULL
+        testLogging {
+            events("passed", "skipped", "failed")
+            showStandardStreams = true
+            exceptionFormat = FULL
+        }
+        outputs.upToDateWhen { false }
     }
-    outputs.upToDateWhen { false }
-}
 
 // ── MEM-CAT-5 — Runner Cucumber dédié @version-catalog (pattern S-082) ──
-val versionCatalogCucumberTest = tasks.register<Test>("versionCatalogCucumberTest") {
-    description = "Runs @version-catalog BDD scenarios (MEM-CAT-5)"
-    group = "verification"
-    testClassesDirs = sourceSets.test.get().output.classesDirs
-    classpath = configurations.testRuntimeClasspath.get() +
-        sourceSets.test.get().output +
-        sourceSets.main.get().output +
-        files(tasks.jar.get().archiveFile)
+val versionCatalogCucumberTest =
+    tasks.register<Test>("versionCatalogCucumberTest") {
+        description = "Runs @version-catalog BDD scenarios (MEM-CAT-5)"
+        group = "verification"
+        testClassesDirs =
+            sourceSets.test
+                .get()
+                .output.classesDirs
+        classpath = configurations.testRuntimeClasspath.get() +
+            sourceSets.test.get().output +
+            sourceSets.main.get().output +
+            files(tasks.jar.get().archiveFile)
 
-    dependsOn(tasks.classes)
-    useJUnitPlatform { excludeEngines("junit-jupiter") }
-    systemProperty("cucumber.junit-platform.naming-strategy", "long")
-    systemProperty("cucumber.filter.tags", "@version-catalog")
-    maxHeapSize = "1g"
-    maxParallelForks = 1
-    forkEvery = 1
-    jvmArgs("-XX:+UseSerialGC", "-XX:MaxMetaspaceSize=256m", "-XX:TieredStopAtLevel=1")
-    timeout.set(Duration.ofMinutes(5))
+        dependsOn(tasks.classes)
+        useJUnitPlatform { excludeEngines("junit-jupiter") }
+        systemProperty("cucumber.junit-platform.naming-strategy", "long")
+        systemProperty("cucumber.filter.tags", "@version-catalog")
+        maxHeapSize = "1g"
+        maxParallelForks = 1
+        forkEvery = 1
+        jvmArgs("-XX:+UseSerialGC", "-XX:MaxMetaspaceSize=256m", "-XX:TieredStopAtLevel=1")
+        timeout.set(Duration.ofMinutes(5))
 
-    testLogging {
-        events("passed", "skipped", "failed")
-        showStandardStreams = true
-        exceptionFormat = FULL
+        testLogging {
+            events("passed", "skipped", "failed")
+            showStandardStreams = true
+            exceptionFormat = FULL
+        }
+        outputs.upToDateWhen { false }
     }
-    outputs.upToDateWhen { false }
-}
 
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()

@@ -15,7 +15,9 @@ sealed class PlantUmlTranslationOutcome {
     /**
      * The labels were translated — the returned [block] carries the new labels.
      */
-    data class Translated(val block: PlantUmlBlock) : PlantUmlTranslationOutcome()
+    data class Translated(
+        val block: PlantUmlBlock,
+    ) : PlantUmlTranslationOutcome()
 
     /**
      * The block was kept verbatim — the caller keeps the source block unchanged.
@@ -23,5 +25,7 @@ sealed class PlantUmlTranslationOutcome {
      * @property reason human-readable reason (preserved strategy, unknown
      *   language, empty labels…)
      */
-    data class Preserved(val reason: String) : PlantUmlTranslationOutcome()
+    data class Preserved(
+        val reason: String,
+    ) : PlantUmlTranslationOutcome()
 }

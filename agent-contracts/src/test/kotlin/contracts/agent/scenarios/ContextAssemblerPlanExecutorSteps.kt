@@ -11,7 +11,6 @@ import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 
 class ContextAssemblerPlanExecutorSteps {
-
     private var assembler: ContextAssembler? = null
     private var executor: PlanExecutor? = null
     private var result: AgentState? = null
@@ -20,44 +19,46 @@ class ContextAssemblerPlanExecutorSteps {
     @Given("a ContextAssembler with workspace {string}")
     fun givenAssembler(workspace: String) {
         workspaceRoot = workspace
-        assembler = object : ContextAssembler {
-            override suspend fun assemble(intention: String, workspaceRoot: String): AgentState.ContextReady {
-                return AgentState.ContextReady(
-                    intention = intention,
-                    compositeContext = "assembled from $workspaceRoot for $intention",
-                    afnorCorpus = "corpus content"
-                )
+        assembler =
+            object : ContextAssembler {
+                override suspend fun assemble(
+                    intention: String,
+                    workspaceRoot: String,
+                ): AgentState.ContextReady =
+                    AgentState.ContextReady(
+                        intention = intention,
+                        compositeContext = "assembled from $workspaceRoot for $intention",
+                        afnorCorpus = "corpus content",
+                    )
             }
-        }
     }
 
     @Given("a PlanExecutor")
     fun givenPlanExecutor() {
-        executor = object : PlanExecutor {
-            override suspend fun execute(state: AgentState.Planned): AgentState.Executed {
-                return AgentState.Executed(
-                    intention = state.intention,
-                    executionResults = mapOf("task1" to "completed")
-                )
-            }
+        executor =
+            object : PlanExecutor {
+                override suspend fun execute(state: AgentState.Planned): AgentState.Executed =
+                    AgentState.Executed(
+                        intention = state.intention,
+                        executionResults = mapOf("task1" to "completed"),
+                    )
 
-            override suspend fun evaluate(state: AgentState.Executed): AgentState.Evaluated {
-                return AgentState.Evaluated(
-                    intention = state.intention,
-                    executionResults = state.executionResults,
-                    evaluationScore = 0.85,
-                    evaluationFeedback = "all tasks completed successfully"
-                )
-            }
+                override suspend fun evaluate(state: AgentState.Executed): AgentState.Evaluated =
+                    AgentState.Evaluated(
+                        intention = state.intention,
+                        executionResults = state.executionResults,
+                        evaluationScore = 0.85,
+                        evaluationFeedback = "all tasks completed successfully",
+                    )
 
-            override suspend fun replan(state: AgentState.Evaluated): AgentState.Evaluated {
-                if (state.replanCount >= state.maxReplans) return state
-                return state.copy(
-                    replanCount = state.replanCount + 1,
-                    evaluationFeedback = "replanned: ${state.evaluationFeedback}"
-                )
+                override suspend fun replan(state: AgentState.Evaluated): AgentState.Evaluated {
+                    if (state.replanCount >= state.maxReplans) return state
+                    return state.copy(
+                        replanCount = state.replanCount + 1,
+                        evaluationFeedback = "replanned: ${state.evaluationFeedback}",
+                    )
+                }
             }
-        }
     }
 
     @When("assembling context for intention {string}")
@@ -85,11 +86,12 @@ class ContextAssemblerPlanExecutorSteps {
 
     @And("a Planned state with intention {string}")
     fun givenPlannedState(intention: String) {
-        result = AgentState.Planned(
-            intention = intention,
-            compositeContext = "context for $intention",
-            planJson = """{"plan":"build $intention"}"""
-        )
+        result =
+            AgentState.Planned(
+                intention = intention,
+                compositeContext = "context for $intention",
+                planJson = """{"plan":"build $intention"}""",
+            )
     }
 
     @When("executing the plan")
@@ -113,10 +115,11 @@ class ContextAssemblerPlanExecutorSteps {
 
     @And("an Executed state with execution results")
     fun givenExecutedState() {
-        result = AgentState.Executed(
-            intention = "test intention",
-            executionResults = mapOf("task1" to "ok", "task2" to "ok")
-        )
+        result =
+            AgentState.Executed(
+                intention = "test intention",
+                executionResults = mapOf("task1" to "ok", "task2" to "ok"),
+            )
     }
 
     @When("evaluating the execution")
@@ -146,14 +149,15 @@ class ContextAssemblerPlanExecutorSteps {
 
     @And("an Evaluated state with evaluation feedback")
     fun givenEvaluatedStateWithFeedback() {
-        result = AgentState.Evaluated(
-            intention = "test intention",
-            executionResults = mapOf("task1" to "ok"),
-            evaluationScore = 0.5,
-            evaluationFeedback = "needs improvement",
-            replanCount = 0,
-            maxReplans = 3
-        )
+        result =
+            AgentState.Evaluated(
+                intention = "test intention",
+                executionResults = mapOf("task1" to "ok"),
+                evaluationScore = 0.5,
+                evaluationFeedback = "needs improvement",
+                replanCount = 0,
+                maxReplans = 3,
+            )
     }
 
     @When("replanning")
@@ -171,15 +175,19 @@ class ContextAssemblerPlanExecutorSteps {
     }
 
     @And("an Evaluated state with replan count {int} and max replans {int}")
-    fun givenEvaluatedStateAtMax(count: Int, max: Int) {
-        result = AgentState.Evaluated(
-            intention = "test intention",
-            executionResults = mapOf("task1" to "ok"),
-            evaluationScore = 0.3,
-            evaluationFeedback = "poor results",
-            replanCount = count,
-            maxReplans = max
-        )
+    fun givenEvaluatedStateAtMax(
+        count: Int,
+        max: Int,
+    ) {
+        result =
+            AgentState.Evaluated(
+                intention = "test intention",
+                executionResults = mapOf("task1" to "ok"),
+                evaluationScore = 0.3,
+                evaluationFeedback = "poor results",
+                replanCount = count,
+                maxReplans = max,
+            )
     }
 
     @And("the replan count does not increase beyond max replans")

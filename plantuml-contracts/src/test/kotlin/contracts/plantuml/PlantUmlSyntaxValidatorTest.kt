@@ -4,12 +4,14 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class PlantUmlSyntaxValidatorTest {
-
     @Test
     fun `is a functional interface usable as a lambda`() {
         val validator: PlantUmlSyntaxValidator = { code ->
-            if (code.contains("@enduml")) SyntaxValidationResult.Valid
-            else SyntaxValidationResult.Invalid("Missing @enduml", "")
+            if (code.contains("@enduml")) {
+                SyntaxValidationResult.Valid
+            } else {
+                SyntaxValidationResult.Invalid("Missing @enduml", "")
+            }
         }
         assertThat(validator.validate("@startuml\n@enduml")).isEqualTo(SyntaxValidationResult.Valid)
         assertThat(validator.validate("@startuml")).isInstanceOf(SyntaxValidationResult.Invalid::class.java)

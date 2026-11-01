@@ -1,10 +1,10 @@
 package contracts.i18n
 
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.Assertions.*
 
 class I18nConfigTest {
-
     @Test
     fun `should construct with defaults`() {
         val config = I18nConfig()
@@ -15,21 +15,23 @@ class I18nConfigTest {
 
     @Test
     fun `should validate valid config`() {
-        val config = I18nConfig(
-            activeLanguage = "fr",
-            supportedLanguages = listOf("fr", "en"),
-            fallbackLanguage = "en"
-        )
+        val config =
+            I18nConfig(
+                activeLanguage = "fr",
+                supportedLanguages = listOf("fr", "en"),
+                fallbackLanguage = "en",
+            )
         assertTrue(config.validate() is I18nValidationResult.Valid)
     }
 
     @Test
     fun `should reject active language not in supported`() {
-        val config = I18nConfig(
-            activeLanguage = "zh",
-            supportedLanguages = listOf("fr", "en"),
-            fallbackLanguage = "en"
-        )
+        val config =
+            I18nConfig(
+                activeLanguage = "zh",
+                supportedLanguages = listOf("fr", "en"),
+                fallbackLanguage = "en",
+            )
         val result = config.validate()
         assertTrue(result is I18nValidationResult.Invalid)
         val invalid = result as I18nValidationResult.Invalid
@@ -39,11 +41,12 @@ class I18nConfigTest {
 
     @Test
     fun `should reject fallback language not in supported`() {
-        val config = I18nConfig(
-            activeLanguage = "fr",
-            supportedLanguages = listOf("fr"),
-            fallbackLanguage = "en"
-        )
+        val config =
+            I18nConfig(
+                activeLanguage = "fr",
+                supportedLanguages = listOf("fr"),
+                fallbackLanguage = "en",
+            )
         val result = config.validate()
         assertTrue(result is I18nValidationResult.Invalid)
         val invalid = result as I18nValidationResult.Invalid
@@ -53,31 +56,34 @@ class I18nConfigTest {
 
     @Test
     fun `should validate with all supported languages`() {
-        val config = I18nConfig(
-            activeLanguage = "ar",
-            supportedLanguages = LanguageCatalog.supportedCodes().toList(),
-            fallbackLanguage = "en"
-        )
+        val config =
+            I18nConfig(
+                activeLanguage = "ar",
+                supportedLanguages = LanguageCatalog.supportedCodes().toList(),
+                fallbackLanguage = "en",
+            )
         assertTrue(config.validate() is I18nValidationResult.Valid)
     }
 
     @Test
     fun `should validate with single language`() {
-        val config = I18nConfig(
-            activeLanguage = "en",
-            supportedLanguages = listOf("en"),
-            fallbackLanguage = "en"
-        )
+        val config =
+            I18nConfig(
+                activeLanguage = "en",
+                supportedLanguages = listOf("en"),
+                fallbackLanguage = "en",
+            )
         assertTrue(config.validate() is I18nValidationResult.Valid)
     }
 
     @Test
     fun `should support custom fallback`() {
-        val config = I18nConfig(
-            activeLanguage = "es",
-            supportedLanguages = listOf("es", "pt"),
-            fallbackLanguage = "pt"
-        )
+        val config =
+            I18nConfig(
+                activeLanguage = "es",
+                supportedLanguages = listOf("es", "pt"),
+                fallbackLanguage = "pt",
+            )
         assertTrue(config.validate() is I18nValidationResult.Valid)
     }
 

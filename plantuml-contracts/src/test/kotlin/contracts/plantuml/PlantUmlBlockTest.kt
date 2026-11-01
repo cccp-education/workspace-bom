@@ -4,7 +4,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class PlantUmlBlockTest {
-
     @Test
     fun `extracts quoted labels and ignores technical identifiers`() {
         val block =

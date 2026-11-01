@@ -1,12 +1,12 @@
 package contracts.catalog.scenarios
 
-import java.io.File
-import java.net.HttpURLConnection
-import java.net.URL
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
 import org.assertj.core.api.Assertions.assertThat
+import java.io.File
+import java.net.HttpURLConnection
+import java.net.URL
 
 /**
  * MEM-CAT-5 — Step defs BDD `@version-catalog`.
@@ -16,7 +16,6 @@ import org.assertj.core.api.Assertions.assertThat
  * un artefact Maven, pas une tâche.
  */
 class VersionCatalogSteps {
-
     private lateinit var tomlContent: String
     private var accessedVersion: String? = null
     private var hardcodedCoordinates: List<String> = emptyList()
@@ -41,13 +40,17 @@ class VersionCatalogSteps {
 
     @When("the platform script is inspected for hardcoded coordinates")
     fun whenPlatformScriptInspected() {
-        val script = sequenceOf(File(".."), File("."))
-            .map { it.resolve("build.gradle.kts") }
-            .firstOrNull { it.exists() }
-            ?.readText()
-            ?: error("build.gradle.kts introuvable")
-        hardcodedCoordinates = Regex("""api\("education\.cccp:[^"]+:[^"]+"\)""")
-            .findAll(script).map { it.value }.toList()
+        val script =
+            sequenceOf(File(".."), File("."))
+                .map { it.resolve("build.gradle.kts") }
+                .firstOrNull { it.exists() }
+                ?.readText()
+                ?: error("build.gradle.kts introuvable")
+        hardcodedCoordinates =
+            Regex("""api\("education\.cccp:[^"]+:[^"]+"\)""")
+                .findAll(script)
+                .map { it.value }
+                .toList()
     }
 
     // ── Then ───────────────────────────────────────────────────────────────
@@ -74,12 +77,22 @@ class VersionCatalogSteps {
         assertThat(tomlContent).doesNotContain("training-plugin")
     }
 
-    private fun resolvablePlugins(): List<String> = listOf(
-        "bakery-plugin", "capsule-plugin", "codex-plugin", "planner-plugin", "slider-plugin",
-        "plantuml-plugin", "readme-plugin", "hyperframes-plugin", "graphify-plugin",
-        "api-key-pool-plugin", "codebase-plugin", "conventions-plugin",
-        "document-plugin"
-    )
+    private fun resolvablePlugins(): List<String> =
+        listOf(
+            "bakery-plugin",
+            "capsule-plugin",
+            "codex-plugin",
+            "planner-plugin",
+            "slider-plugin",
+            "plantuml-plugin",
+            "readme-plugin",
+            "hyperframes-plugin",
+            "graphify-plugin",
+            "api-key-pool-plugin",
+            "codebase-plugin",
+            "conventions-plugin",
+            "document-plugin",
+        )
 
     @Then("the accessor returns a published semver {string}")
     fun thenAccessorReturnsSemver(expected: String) {
@@ -90,8 +103,9 @@ class VersionCatalogSteps {
     @Then("the version is resolvable from mavenLocal or Central")
     fun thenVersionResolvable() {
         val v = accessedVersion ?: error("aucune version lue au préalable")
-        val local = File(System.getProperty("user.home"))
-            .resolve(".m2/repository/education/cccp/planner-plugin/$v/planner-plugin-$v.pom")
+        val local =
+            File(System.getProperty("user.home"))
+                .resolve(".m2/repository/education/cccp/planner-plugin/$v/planner-plugin-$v.pom")
         val central = "https://repo1.maven.org/maven2/education/cccp/planner-plugin/$v/planner-plugin-$v.pom"
         val resolved = local.exists() || httpOk(central)
         assertThat(resolved).describedAs("planner-plugin:$v résolvable (mavenLocal ou Central)").isTrue
@@ -106,21 +120,23 @@ class VersionCatalogSteps {
 
     // ── Helpers ────────────────────────────────────────────────────────────
 
-    private fun versionFromToml(key: String): String =
-        versionFromTomlOrNull(key) ?: error("version '$key' absente du toml")
+    private fun versionFromToml(key: String): String = versionFromTomlOrNull(key) ?: error("version '$key' absente du toml")
 
     private fun versionFromTomlOrNull(key: String): String? =
-        tomlContent.lineSequence()
+        tomlContent
+            .lineSequence()
             .map { it.substringBefore('#').trim() }
             .firstOrNull { it.startsWith("$key =") }
-            ?.substringAfter('"')?.substringBefore('"')
+            ?.substringAfter('"')
+            ?.substringBefore('"')
 
-    private fun httpOk(url: String): Boolean = try {
-        val conn = URL(url).openConnection() as HttpURLConnection
-        conn.connectTimeout = 5_000
-        conn.readTimeout = 10_000
-        (conn.responseCode == 200).also { conn.disconnect() }
-    } catch (_: Exception) {
-        false
-    }
+    private fun httpOk(url: String): Boolean =
+        try {
+            val conn = URL(url).openConnection() as HttpURLConnection
+            conn.connectTimeout = 5_000
+            conn.readTimeout = 10_000
+            (conn.responseCode == 200).also { conn.disconnect() }
+        } catch (_: Exception) {
+            false
+        }
 }

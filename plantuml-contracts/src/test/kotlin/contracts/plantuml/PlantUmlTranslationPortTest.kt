@@ -4,7 +4,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class PlantUmlTranslationPortTest {
-
     @Test
     fun `outcome Translated carries the new block`() {
         val translated = PlantUmlBlock("@startuml\nclass \"User\"\n@enduml")

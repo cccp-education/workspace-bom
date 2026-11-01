@@ -3,6 +3,7 @@ plugins {
     `java-library`
     `maven-publish`
     alias(libs.plugins.kotlin.jvm)
+    id("education.cccp.build.lint") version "0.0.7"
 }
 
 group = "education.cccp"
@@ -41,7 +42,9 @@ publishing {
             from(components["java"])
             pom {
                 name.set("PlantUML Contracts")
-                description.set("N0 shared library — cross-borough PlantUML diagram block contracts (PlantUmlBlock, PlantUmlStrategy, SyntaxValidationResult, PlantUmlSyntaxValidator, PlantUmlTranslationPort)")
+                description.set(
+                    "N0 shared library — cross-borough PlantUML diagram block contracts (PlantUmlBlock, PlantUmlStrategy, SyntaxValidationResult, PlantUmlSyntaxValidator, PlantUmlTranslationPort)",
+                )
                 url.set("https://github.com/cccp-education/workspace-bom")
                 licenses {
                     license {

@@ -13,7 +13,7 @@ package contracts.llmpool
 data class QuotaConfig(
     val limitValue: Long = 1000,
     val thresholdPercent: Int = 80,
-    val resetPolicy: ResetPolicy = ResetPolicy.DAILY
+    val resetPolicy: ResetPolicy = ResetPolicy.DAILY,
 ) {
     init {
         require(limitValue > 0) { "limitValue must be positive" }

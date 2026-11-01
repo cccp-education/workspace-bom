@@ -1,11 +1,10 @@
 package contracts.i18n
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.Assertions.*
 import java.util.Locale
 
 class LocaleResolverTest {
-
     private class MockLocaleResolver : LocaleResolver {
         override fun resolve(config: I18nConfig): Locale {
             val lang = LanguageCatalog.findByCode(config.activeLanguage)

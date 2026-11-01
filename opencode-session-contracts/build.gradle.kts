@@ -5,6 +5,7 @@ plugins {
     `java-library`
     `maven-publish`
     alias(libs.plugins.kotlin.jvm)
+    id("education.cccp.build.lint") version "0.0.7"
 }
 
 group = "education.cccp"
@@ -24,31 +25,35 @@ dependencies {
     testImplementation(libs.bundles.cucumber)
 }
 
-val cucumberTest = tasks.register<Test>("cucumberTest") {
-    description = "Runs Cucumber BDD tests (opencode-session-contracts)"
-    group = "verification"
-    testClassesDirs = sourceSets.test.get().output.classesDirs
-    classpath = configurations.testRuntimeClasspath.get() +
-        sourceSets.test.get().output +
-        sourceSets.main.get().output +
-        files(tasks.jar.get().archiveFile)
+val cucumberTest =
+    tasks.register<Test>("cucumberTest") {
+        description = "Runs Cucumber BDD tests (opencode-session-contracts)"
+        group = "verification"
+        testClassesDirs =
+            sourceSets.test
+                .get()
+                .output.classesDirs
+        classpath = configurations.testRuntimeClasspath.get() +
+            sourceSets.test.get().output +
+            sourceSets.main.get().output +
+            files(tasks.jar.get().archiveFile)
 
-    dependsOn(tasks.classes)
-    useJUnitPlatform { excludeEngines("junit-jupiter") }
-    systemProperty("cucumber.junit-platform.naming-strategy", "long")
-    maxHeapSize = "1g"
-    maxParallelForks = 1
-    forkEvery = 1
-    jvmArgs("-XX:+UseSerialGC", "-XX:MaxMetaspaceSize=256m", "-XX:TieredStopAtLevel=1")
-    timeout.set(Duration.ofMinutes(5))
+        dependsOn(tasks.classes)
+        useJUnitPlatform { excludeEngines("junit-jupiter") }
+        systemProperty("cucumber.junit-platform.naming-strategy", "long")
+        maxHeapSize = "1g"
+        maxParallelForks = 1
+        forkEvery = 1
+        jvmArgs("-XX:+UseSerialGC", "-XX:MaxMetaspaceSize=256m", "-XX:TieredStopAtLevel=1")
+        timeout.set(Duration.ofMinutes(5))
 
-    testLogging {
-        events("passed", "skipped", "failed")
-        showStandardStreams = true
-        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        testLogging {
+            events("passed", "skipped", "failed")
+            showStandardStreams = true
+            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        }
+        outputs.upToDateWhen { false }
     }
-    outputs.upToDateWhen { false }
-}
 
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
@@ -70,7 +75,9 @@ publishing {
             from(components["java"])
             pom {
                 name.set("Opencode Session Contracts")
-                description.set("N0 shared library — cross-borough opencode session protocol contracts (SessionPrompt, SessionResponse, AgentContext, SessionStatus, ToolCallRecord, TokenUsage)")
+                description.set(
+                    "N0 shared library — cross-borough opencode session protocol contracts (SessionPrompt, SessionResponse, AgentContext, SessionStatus, ToolCallRecord, TokenUsage)",
+                )
                 url.set("https://github.com/cccp-education/workspace-bom")
                 licenses {
                     license {

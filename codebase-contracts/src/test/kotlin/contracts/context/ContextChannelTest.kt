@@ -2,11 +2,9 @@ package contracts.context
 
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class ContextChannelTest {
-
     @Test
     fun `Eager variant has correct type`() {
         val eager = ContextChannel.Eager("hello")

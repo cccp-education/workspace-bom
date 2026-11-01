@@ -6,7 +6,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class ToolCallRecordTest {
-
     @Test
     fun `construct with minimal fields`() {
         val record = ToolCallRecord(toolName = "read_file")
@@ -19,12 +18,13 @@ class ToolCallRecordTest {
     @Test
     fun `construct with all fields`() {
         val ts = Instant.parse("2026-06-14T10:00:00Z")
-        val record = ToolCallRecord(
-            toolName = "exec_gradle",
-            args = mapOf("task" to "compileKotlin", "projectDir" to "/tmp/test"),
-            result = "BUILD SUCCESSFUL in 2s",
-            timestamp = ts,
-        )
+        val record =
+            ToolCallRecord(
+                toolName = "exec_gradle",
+                args = mapOf("task" to "compileKotlin", "projectDir" to "/tmp/test"),
+                result = "BUILD SUCCESSFUL in 2s",
+                timestamp = ts,
+            )
         assertEquals("exec_gradle", record.toolName)
         assertEquals(2, record.args.size)
         assertEquals("compileKotlin", record.args["task"])

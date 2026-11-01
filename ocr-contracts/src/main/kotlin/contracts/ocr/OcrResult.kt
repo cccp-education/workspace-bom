@@ -21,7 +21,7 @@ data class OcrResult(
     val sourceFormat: String,
     val generatedAt: String,
     val model: String,
-    val metadata: Map<String, String> = emptyMap()
+    val metadata: Map<String, String> = emptyMap(),
 ) {
     companion object {
         /**
@@ -39,15 +39,19 @@ data class OcrResult(
             confidence: Double,
             language: String,
             model: String,
-            metadata: Map<String, String> = emptyMap()
-        ): OcrResult = OcrResult(
-            structuredText = text,
-            confidence = confidence,
-            language = language,
-            sourceFormat = "image/png",
-            generatedAt = java.time.Instant.now().toString(),
-            model = model,
-            metadata = metadata
-        )
+            metadata: Map<String, String> = emptyMap(),
+        ): OcrResult =
+            OcrResult(
+                structuredText = text,
+                confidence = confidence,
+                language = language,
+                sourceFormat = "image/png",
+                generatedAt =
+                    java.time.Instant
+                        .now()
+                        .toString(),
+                model = model,
+                metadata = metadata,
+            )
     }
 }

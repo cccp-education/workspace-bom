@@ -2,19 +2,18 @@ package contracts.ocr
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 
 class OcrRequestTest {
-
     @Test
     fun `should create request with all fields`() {
         val data = byteArrayOf(0x50, 0x47, 0x0A)
-        val request = OcrRequest(
-            imageData = data,
-            format = "image/png",
-            language = "fr",
-            prompt = null
-        )
+        val request =
+            OcrRequest(
+                imageData = data,
+                format = "image/png",
+                language = "fr",
+                prompt = null,
+            )
         assertThat(request.imageData).isEqualTo(data)
         assertThat(request.format).isEqualTo("image/png")
         assertThat(request.language).isEqualTo("fr")
@@ -23,12 +22,13 @@ class OcrRequestTest {
 
     @Test
     fun `should create request with custom prompt`() {
-        val request = OcrRequest(
-            imageData = ByteArray(10),
-            format = "image/jpeg",
-            language = "en",
-            prompt = "Extract tables as AsciiDoc"
-        )
+        val request =
+            OcrRequest(
+                imageData = ByteArray(10),
+                format = "image/jpeg",
+                language = "en",
+                prompt = "Extract tables as AsciiDoc",
+            )
         assertThat(request.prompt).isEqualTo("Extract tables as AsciiDoc")
     }
 

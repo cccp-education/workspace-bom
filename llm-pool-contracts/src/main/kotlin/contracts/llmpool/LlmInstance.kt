@@ -18,5 +18,5 @@ data class LlmInstance(
     val baseUrl: String,
     val model: String,
     val quota: QuotaConfig = QuotaConfig(),
-    val volumeTag: String? = null
+    val volumeTag: String? = null,
 )

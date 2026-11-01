@@ -10,7 +10,7 @@ data class CompositeContextConfig(
     val budgetRag: Double = 0.30,
     val budgetGraphify: Double = 0.20,
     val budgetDocs: Double = 0.10,
-    val budgetOverhead: Double = 0.0
+    val budgetOverhead: Double = 0.0,
 ) {
     init {
         val sum = budgetEagerLazy + budgetRag + budgetGraphify + budgetDocs + budgetOverhead

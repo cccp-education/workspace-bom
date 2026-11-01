@@ -20,7 +20,7 @@ import org.junit.platform.suite.api.Suite
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "contracts.catalog.scenarios")
 @ConfigurationParameter(
     key = PLUGIN_PROPERTY_NAME,
-    value = "pretty, html:build/reports/cucumber-catalog.html, json:build/reports/cucumber-catalog.json"
+    value = "pretty, html:build/reports/cucumber-catalog.html, json:build/reports/cucumber-catalog.json",
 )
 @ConfigurationParameter(key = FILTER_TAGS_PROPERTY_NAME, value = "@version-catalog")
 class VersionCatalogCucumberRunner

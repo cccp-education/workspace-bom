@@ -8,7 +8,6 @@ import io.cucumber.java.en.When
 import org.assertj.core.api.Assertions.assertThat
 
 class AgentToolSteps {
-
     private var validationResult: Result<Unit>? = null
     private var lastArgs: GradleTaskTool.Args? = null
 
@@ -33,7 +32,10 @@ class AgentToolSteps {
     }
 
     @When("validating Args with project {string} and task {string}")
-    fun whenValidate(project: String, task: String) {
+    fun whenValidate(
+        project: String,
+        task: String,
+    ) {
         lastArgs = GradleTaskTool.Args(project = project, task = task)
         validationResult = GradleTaskTool.validate(lastArgs!!)
     }

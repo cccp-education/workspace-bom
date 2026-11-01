@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Test
  * @since 0.0.3
  */
 class GradleTaskVerifyTest {
-
     @Test
     fun `GradleTask defaults expectedOutput to BUILD SUCCESSFUL`() {
         val task = GradleTask(description = "Run tests", gradleTask = "./gradlew test")
@@ -43,33 +42,36 @@ class GradleTaskVerifyTest {
 
     @Test
     fun `GradleTask accepts custom expectedOutput`() {
-        val task = GradleTask(
-            description = "Generate SPG",
-            gradleTask = "./gradlew generateSPG",
-            expectedOutput = "SPG generated"
-        )
+        val task =
+            GradleTask(
+                description = "Generate SPG",
+                gradleTask = "./gradlew generateSPG",
+                expectedOutput = "SPG generated",
+            )
 
         assertThat(task.expectedOutput).isEqualTo("SPG generated")
     }
 
     @Test
     fun `GradleTask accepts custom maxRetries within bounds`() {
-        val task = GradleTask(
-            description = "Compile",
-            gradleTask = "./gradlew build",
-            maxRetries = 5
-        )
+        val task =
+            GradleTask(
+                description = "Compile",
+                gradleTask = "./gradlew build",
+                maxRetries = 5,
+            )
 
         assertThat(task.maxRetries).isEqualTo(5)
     }
 
     @Test
     fun `GradleTask accepts custom verifyHook`() {
-        val task = GradleTask(
-            description = "Run tests",
-            gradleTask = "./gradlew test",
-            verifyHook = "grep FAILED"
-        )
+        val task =
+            GradleTask(
+                description = "Run tests",
+                gradleTask = "./gradlew test",
+                verifyHook = "grep FAILED",
+            )
 
         assertThat(task.verifyHook).isEqualTo("grep FAILED")
     }
@@ -80,7 +82,7 @@ class GradleTaskVerifyTest {
             GradleTask(
                 description = "Run tests",
                 gradleTask = "./gradlew test",
-                expectedOutput = "   "
+                expectedOutput = "   ",
             )
         }.isInstanceOf(IllegalArgumentException::class.java)
             .hasMessageContaining("expectedOutput")
@@ -92,7 +94,7 @@ class GradleTaskVerifyTest {
             GradleTask(
                 description = "Run tests",
                 gradleTask = "./gradlew test",
-                maxRetries = 0
+                maxRetries = 0,
             )
         }.isInstanceOf(IllegalArgumentException::class.java)
             .hasMessageContaining("maxRetries")
@@ -104,7 +106,7 @@ class GradleTaskVerifyTest {
             GradleTask(
                 description = "Run tests",
                 gradleTask = "./gradlew test",
-                maxRetries = 11
+                maxRetries = 11,
             )
         }.isInstanceOf(IllegalArgumentException::class.java)
             .hasMessageContaining("maxRetries")
@@ -116,7 +118,7 @@ class GradleTaskVerifyTest {
             GradleTask(
                 description = "Run tests",
                 gradleTask = "./gradlew test",
-                maxRetries = 1
+                maxRetries = 1,
             )
         }.doesNotThrowAnyException()
     }
@@ -127,19 +129,20 @@ class GradleTaskVerifyTest {
             GradleTask(
                 description = "Run tests",
                 gradleTask = "./gradlew test",
-                maxRetries = 10
+                maxRetries = 10,
             )
         }.doesNotThrowAnyException()
     }
 
     @Test
     fun `GradleTask preserves legacy 5-fields construction with verification defaults`() {
-        val task = GradleTask(
-            description = "Edit config",
-            gradleTask = "",
-            toolType = TaskType.EDIT_FILE,
-            target = "build.gradle.kts"
-        )
+        val task =
+            GradleTask(
+                description = "Edit config",
+                gradleTask = "",
+                toolType = TaskType.EDIT_FILE,
+                target = "build.gradle.kts",
+            )
 
         assertThat(task.expectedOutput).isEqualTo("BUILD SUCCESSFUL")
         assertThat(task.maxRetries).isEqualTo(3)

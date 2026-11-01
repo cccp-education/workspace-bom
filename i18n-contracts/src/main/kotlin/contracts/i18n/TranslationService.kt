@@ -12,14 +12,13 @@ package contracts.i18n
  * glossaire, pas de contexte. Le contrat grossira si un borough en a besoin.
  */
 interface TranslationService {
-
     fun translate(request: TranslationRequest): TranslationResult
 }
 
 data class TranslationRequest(
     val sourceText: String,
     val sourceLanguage: String,
-    val targetLanguage: String
+    val targetLanguage: String,
 ) {
     init {
         require(sourceText.isNotBlank()) { "sourceText must not be blank" }
@@ -32,10 +31,16 @@ data class TranslationRequest(
 }
 
 sealed class TranslationResult {
-    data class Success(val translatedText: String) : TranslationResult() {
-        init { require(translatedText.isNotBlank()) { "translatedText must not be blank" } }
+    data class Success(
+        val translatedText: String,
+    ) : TranslationResult() {
+        init {
+            require(translatedText.isNotBlank()) { "translatedText must not be blank" }
+        }
     }
 
     /** LLM indisponible, quota dépassé, réseau coupé, etc. */
-    data class Failure(val reason: String) : TranslationResult()
+    data class Failure(
+        val reason: String,
+    ) : TranslationResult()
 }

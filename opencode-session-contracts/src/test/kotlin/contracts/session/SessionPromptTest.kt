@@ -9,7 +9,6 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class SessionPromptTest {
-
     @Test
     fun `construct with minimal fields`() {
         val prompt = SessionPrompt(prompt = "Generate a README")
@@ -24,13 +23,14 @@ class SessionPromptTest {
     fun `construct with all fields`() {
         val sessionId = UUID.randomUUID()
         val context = AgentContext(eagerRules = "RULES")
-        val prompt = SessionPrompt(
-            sessionId = sessionId,
-            prompt = "Fix compilation error",
-            context = context,
-            maxActions = 5,
-            model = "gemma4:31b-cloud",
-        )
+        val prompt =
+            SessionPrompt(
+                sessionId = sessionId,
+                prompt = "Fix compilation error",
+                context = context,
+                maxActions = 5,
+                model = "gemma4:31b-cloud",
+            )
         assertEquals(sessionId, prompt.sessionId)
         assertEquals("Fix compilation error", prompt.prompt)
         assertEquals(context, prompt.context)

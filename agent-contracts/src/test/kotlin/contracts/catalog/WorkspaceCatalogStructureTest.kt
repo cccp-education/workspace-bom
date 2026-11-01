@@ -12,13 +12,13 @@ import kotlin.test.assertTrue
  * education.cccp consommables via `ws.versions.*` par les boroughs (D3/D4).
  */
 class WorkspaceCatalogStructureTest {
-
     private val tomlVersions: Map<String, String> by lazy {
-        val root = sequenceOf(File(".."), File("."))
-            .map { it.resolve("gradle/libs.versions.toml") }
-            .firstOrNull { it.exists() }
-            ?.let { it.parentFile.parentFile }
-            ?: error("gradle/libs.versions.toml introuvable")
+        val root =
+            sequenceOf(File(".."), File("."))
+                .map { it.resolve("gradle/libs.versions.toml") }
+                .firstOrNull { it.exists() }
+                ?.let { it.parentFile.parentFile }
+                ?: error("gradle/libs.versions.toml introuvable")
         parseVersions(root.resolve("gradle/libs.versions.toml").readText())
     }
 
@@ -27,7 +27,7 @@ class WorkspaceCatalogStructureTest {
         val script = repoRoot().resolve("build.gradle.kts").readText()
         assertTrue(
             script.contains("""artifactId = "workspace-catalog""""),
-            "la publication versionCatalog doit produire education.cccp:workspace-catalog"
+            "la publication versionCatalog doit produire education.cccp:workspace-catalog",
         )
     }
 
@@ -35,20 +35,21 @@ class WorkspaceCatalogStructureTest {
 
     @Test
     fun `all education cccp plugins have resolvable coordinates in catalog`() {
-        val plugins = mapOf(
-            "bakery-plugin" to "education.cccp:bakery-plugin",
-            "capsule-plugin" to "education.cccp:capsule-plugin",
-            "codex-plugin" to "education.cccp:codex-plugin",
-            "planner-plugin" to "education.cccp:planner-plugin",
-            "slider-plugin" to "education.cccp:slider-plugin",
-            "plantuml-plugin" to "education.cccp:plantuml-plugin",
-            "readme-plugin" to "education.cccp:readme-plugin",
-            "hyperframes-plugin" to "education.cccp:hyperframes-plugin",
-            "youtube-auth-plugin" to "education.cccp:youtube-auth-plugin",
-            "graphify-plugin" to "education.cccp:graphify-plugin",
-            "codebase-plugin" to "education.cccp:codebase-plugin",
-            "conventions-plugin" to "education.cccp.build:conventions-plugin"
-        )
+        val plugins =
+            mapOf(
+                "bakery-plugin" to "education.cccp:bakery-plugin",
+                "capsule-plugin" to "education.cccp:capsule-plugin",
+                "codex-plugin" to "education.cccp:codex-plugin",
+                "planner-plugin" to "education.cccp:planner-plugin",
+                "slider-plugin" to "education.cccp:slider-plugin",
+                "plantuml-plugin" to "education.cccp:plantuml-plugin",
+                "readme-plugin" to "education.cccp:readme-plugin",
+                "hyperframes-plugin" to "education.cccp:hyperframes-plugin",
+                "youtube-auth-plugin" to "education.cccp:youtube-auth-plugin",
+                "graphify-plugin" to "education.cccp:graphify-plugin",
+                "codebase-plugin" to "education.cccp:codebase-plugin",
+                "conventions-plugin" to "education.cccp.build:conventions-plugin",
+            )
         plugins.forEach { (versionKey, coordinates) ->
             val declared = parseLibraries().any { it.contains(coordinates) }
             assertTrue(declared, "alias bibliothèque manquant pour $coordinates")
@@ -64,23 +65,24 @@ class WorkspaceCatalogStructureTest {
         // is no longer a ghost entry — it is now legitimately in the catalog.
         assertTrue(
             libraries.contains("education.cccp:capsule-plugin"),
-            "capsule-plugin publié Central (S-225) — doit être résolvable via le catalogue"
+            "capsule-plugin publié Central (S-225) — doit être résolvable via le catalogue",
         )
         assertTrue(
             !libraries.contains("jhipster"),
-            "jhipster jamais publié Central — entrée fantôme interdite (D8)"
+            "jhipster jamais publié Central — entrée fantôme interdite (D8)",
         )
         assertTrue(
             !libraries.contains("training-plugin"),
-            "training-plugin jamais publié Central — entrée fantôme interdite (D8)"
+            "training-plugin jamais publié Central — entrée fantôme interdite (D8)",
         )
     }
 
     @Test
     fun `document plugin version matches bakery consumer pin`() {
         assertEquals(
-            "0.0.26", tomlVersions["document-plugin"],
-            "document-plugin = version publiée Central (consommée par bakery)"
+            "0.0.26",
+            tomlVersions["document-plugin"],
+            "document-plugin = version publiée Central (consommée par bakery)",
         )
     }
 

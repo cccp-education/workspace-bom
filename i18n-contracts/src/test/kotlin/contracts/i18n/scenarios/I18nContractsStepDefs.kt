@@ -15,14 +15,14 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class I18nContractsStepDefs {
-
     private var language: SupportedLanguage? = null
     private var validationResult: I18nValidationResult? = null
     private var resolvedLocale: Locale? = null
     private var fallbackLocale: Locale? = null
-    private var bundle: MessageBundle = InMemoryMessageBundle(
-        messages = mapOf("fr" to mapOf("greeting" to "Bonjour"))
-    )
+    private var bundle: MessageBundle =
+        InMemoryMessageBundle(
+            messages = mapOf("fr" to mapOf("greeting" to "Bonjour")),
+        )
     private var message: String? = null
     private var missingMessage: String? = null
 
@@ -38,7 +38,12 @@ class I18nContractsStepDefs {
     }
 
     @Then("the language catalog contains the codes {string}, {string}, {string} and {string}")
-    fun thenCatalogContains(first: String, second: String, third: String, fourth: String) {
+    fun thenCatalogContains(
+        first: String,
+        second: String,
+        third: String,
+        fourth: String,
+    ) {
         val codes = LanguageCatalog.supportedCodes()
         listOf(first, second, third, fourth).forEach { code ->
             assertTrue(code in codes, "catalog is missing the '$code' language")
@@ -46,9 +51,14 @@ class I18nContractsStepDefs {
     }
 
     @Then("the language {string} is named {string} with native name {string}")
-    fun thenLanguageIsNamed(code: String, name: String, nativeName: String) {
-        val found = LanguageCatalog.findByCode(code)
-            ?: error("catalog has no '$code' language")
+    fun thenLanguageIsNamed(
+        code: String,
+        name: String,
+        nativeName: String,
+    ) {
+        val found =
+            LanguageCatalog.findByCode(code)
+                ?: error("catalog has no '$code' language")
         assertEquals(name, found.name)
         assertEquals(nativeName, found.nativeName)
     }
@@ -71,12 +81,17 @@ class I18nContractsStepDefs {
     }
 
     @When("an I18nConfig is created with active {string}, supported {string} and fallback {string}")
-    fun whenConfigCreated(active: String, supported: String, fallback: String) {
-        validationResult = I18nConfig(
-            activeLanguage = active,
-            supportedLanguages = supported.split(",").map(String::trim),
-            fallbackLanguage = fallback,
-        ).validate()
+    fun whenConfigCreated(
+        active: String,
+        supported: String,
+        fallback: String,
+    ) {
+        validationResult =
+            I18nConfig(
+                activeLanguage = active,
+                supportedLanguages = supported.split(",").map(String::trim),
+                fallbackLanguage = fallback,
+            ).validate()
     }
 
     @Then("the i18n config is valid")
@@ -95,12 +110,17 @@ class I18nContractsStepDefs {
     }
 
     @When("a LocaleResolver resolves active {string} among {string} with fallback {string}")
-    fun whenLocaleResolved(active: String, supported: String, fallback: String) {
-        val config = I18nConfig(
-            activeLanguage = active,
-            supportedLanguages = supported.split(",").map(String::trim),
-            fallbackLanguage = fallback,
-        )
+    fun whenLocaleResolved(
+        active: String,
+        supported: String,
+        fallback: String,
+    ) {
+        val config =
+            I18nConfig(
+                activeLanguage = active,
+                supportedLanguages = supported.split(",").map(String::trim),
+                fallbackLanguage = fallback,
+            )
         val resolver = ContractLocaleResolver()
         resolvedLocale = resolver.resolve(config)
         fallbackLocale = resolver.resolveWithFallback(config)
@@ -117,7 +137,10 @@ class I18nContractsStepDefs {
     }
 
     @When("a message bundle is asked for key {string} in locale {string}")
-    fun whenBundleAsked(key: String, locale: String) {
+    fun whenBundleAsked(
+        key: String,
+        locale: String,
+    ) {
         val target = Locale.forLanguageTag(locale)
         message = bundle.get(key, target)
         missingMessage = bundle.get("missing", target)
@@ -134,8 +157,7 @@ class I18nContractsStepDefs {
     }
 
     private class ContractLocaleResolver : LocaleResolver {
-        override fun resolve(config: I18nConfig): Locale =
-            Locale.forLanguageTag(config.activeLanguage)
+        override fun resolve(config: I18nConfig): Locale = Locale.forLanguageTag(config.activeLanguage)
 
         override fun resolveWithFallback(config: I18nConfig): Locale =
             if (config.activeLanguage in config.supportedLanguages) {
@@ -148,11 +170,12 @@ class I18nContractsStepDefs {
     private class InMemoryMessageBundle(
         private val messages: Map<String, Map<String, String>>,
     ) : MessageBundle {
-        override fun get(key: String, locale: Locale): String? =
-            messages[locale.language]?.get(key)
+        override fun get(
+            key: String,
+            locale: Locale,
+        ): String? = messages[locale.language]?.get(key)
 
-        override fun keys(): Set<String> =
-            messages.values.flatMap { it.keys }.toSet()
+        override fun keys(): Set<String> = messages.values.flatMap { it.keys }.toSet()
 
         override fun locale(): Locale = Locale.forLanguageTag(messages.keys.first())
     }

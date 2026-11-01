@@ -1,17 +1,22 @@
 package contracts.i18n
 
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.Assertions.*
 import java.util.Locale
 
 class MessageBundleTest {
-
     private class MockMessageBundle(
         private val messages: Map<String, String>,
-        private val bundleLocale: Locale = Locale.FRENCH
+        private val bundleLocale: Locale = Locale.FRENCH,
     ) : MessageBundle {
-        override fun get(key: String, locale: Locale): String? = messages[key]
+        override fun get(
+            key: String,
+            locale: Locale,
+        ): String? = messages[key]
+
         override fun keys(): Set<String> = messages.keys
+
         override fun locale(): Locale = bundleLocale
     }
 

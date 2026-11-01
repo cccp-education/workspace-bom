@@ -20,7 +20,8 @@ data class ByokLlmConfig(
             }
             LlmProviderKind.GEMINI,
             LlmProviderKind.HUGGINGFACE,
-            LlmProviderKind.CUSTOM -> {
+            LlmProviderKind.CUSTOM,
+            -> {
                 require(!apiKeyEnvVar.isNullOrBlank()) {
                     "apiKeyEnvVar is required for $provider provider"
                 }

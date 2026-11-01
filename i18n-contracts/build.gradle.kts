@@ -5,6 +5,7 @@ plugins {
     `java-library`
     `maven-publish`
     alias(libs.plugins.kotlin.jvm)
+    id("education.cccp.build.lint") version "0.0.7"
 }
 
 group = "education.cccp"
@@ -30,31 +31,35 @@ dependencies {
 // Local = Build, Tests = CI: the cross-borough CI runs `check` in this
 // standalone N0 build (`n0-contracts` matrix in workspace-bom), and `check`
 // depends on this task so the feature is never a "test fantôme" (S-269).
-val cucumberTest = tasks.register<Test>("cucumberTest") {
-    description = "Runs Cucumber BDD tests (i18n-contracts)"
-    group = "verification"
-    testClassesDirs = sourceSets.test.get().output.classesDirs
-    classpath = configurations.testRuntimeClasspath.get() +
-        sourceSets.test.get().output +
-        sourceSets.main.get().output +
-        files(tasks.jar.get().archiveFile)
+val cucumberTest =
+    tasks.register<Test>("cucumberTest") {
+        description = "Runs Cucumber BDD tests (i18n-contracts)"
+        group = "verification"
+        testClassesDirs =
+            sourceSets.test
+                .get()
+                .output.classesDirs
+        classpath = configurations.testRuntimeClasspath.get() +
+            sourceSets.test.get().output +
+            sourceSets.main.get().output +
+            files(tasks.jar.get().archiveFile)
 
-    dependsOn(tasks.classes)
-    useJUnitPlatform { excludeEngines("junit-jupiter") }
-    systemProperty("cucumber.junit-platform.naming-strategy", "long")
-    maxHeapSize = "1g"
-    maxParallelForks = 1
-    forkEvery = 1
-    jvmArgs("-XX:+UseSerialGC", "-XX:MaxMetaspaceSize=256m", "-XX:TieredStopAtLevel=1")
-    timeout.set(Duration.ofMinutes(5))
+        dependsOn(tasks.classes)
+        useJUnitPlatform { excludeEngines("junit-jupiter") }
+        systemProperty("cucumber.junit-platform.naming-strategy", "long")
+        maxHeapSize = "1g"
+        maxParallelForks = 1
+        forkEvery = 1
+        jvmArgs("-XX:+UseSerialGC", "-XX:MaxMetaspaceSize=256m", "-XX:TieredStopAtLevel=1")
+        timeout.set(Duration.ofMinutes(5))
 
-    testLogging {
-        events("passed", "skipped", "failed")
-        showStandardStreams = true
-        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        testLogging {
+            events("passed", "skipped", "failed")
+            showStandardStreams = true
+            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        }
+        outputs.upToDateWhen { false }
     }
-    outputs.upToDateWhen { false }
-}
 
 tasks.named("check") {
     dependsOn(cucumberTest)
@@ -75,7 +80,9 @@ publishing {
             from(components["java"])
             pom {
                 name.set("i18n Contracts")
-                description.set("N0 shared library — cross-borough internationalization contracts (SupportedLanguage, LanguageCatalog, I18nConfig, MessageBundle, LocaleResolver, TranslationService)")
+                description.set(
+                    "N0 shared library — cross-borough internationalization contracts (SupportedLanguage, LanguageCatalog, I18nConfig, MessageBundle, LocaleResolver, TranslationService)",
+                )
                 url.set("https://github.com/cccp-education/workspace-bom")
                 licenses {
                     license {

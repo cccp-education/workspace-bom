@@ -5,7 +5,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class AgentContextTest {
-
     @Test
     fun `construct empty context`() {
         val ctx = AgentContext()
@@ -17,12 +16,13 @@ class AgentContextTest {
 
     @Test
     fun `construct full context`() {
-        val ctx = AgentContext(
-            eagerRules = "NE JAMAIS commit sans permission",
-            ragChunks = listOf("chunk1", "chunk2"),
-            graphRelations = "codebase → runner",
-            backlogItems = listOf("EPIC X-4", "EPIC Y-3"),
-        )
+        val ctx =
+            AgentContext(
+                eagerRules = "NE JAMAIS commit sans permission",
+                ragChunks = listOf("chunk1", "chunk2"),
+                graphRelations = "codebase → runner",
+                backlogItems = listOf("EPIC X-4", "EPIC Y-3"),
+            )
         assertEquals("NE JAMAIS commit sans permission", ctx.eagerRules)
         assertEquals(2, ctx.ragChunks.size)
         assertEquals("chunk1", ctx.ragChunks[0])

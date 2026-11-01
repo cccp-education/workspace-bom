@@ -1,10 +1,12 @@
 package contracts.i18n
 
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.Assertions.*
 
 class LanguageCatalogTest {
-
     @Test
     fun `should contain exactly 22 languages`() {
         assertEquals(22, LanguageCatalog.ALL.size)
@@ -113,16 +115,41 @@ class LanguageCatalogTest {
 
     @Test
     fun `should have exactly 3 RTL languages`() {
-        val rtl = LanguageCatalog.ALL.filter { it.rtl }.map { it.code }.toSet()
+        val rtl =
+            LanguageCatalog.ALL
+                .filter { it.rtl }
+                .map { it.code }
+                .toSet()
         assertEquals(setOf("ar", "ur", "fa"), rtl)
     }
 
     @Test
     fun `should expose talaria school target languages`() {
-        val talaria = setOf(
-            "fr", "en", "zh", "hi", "es", "ar", "bn", "pt", "ru", "ur",
-            "it", "nl", "de", "el", "tr", "vi", "th", "id", "ko", "ja", "sr", "fa"
-        )
+        val talaria =
+            setOf(
+                "fr",
+                "en",
+                "zh",
+                "hi",
+                "es",
+                "ar",
+                "bn",
+                "pt",
+                "ru",
+                "ur",
+                "it",
+                "nl",
+                "de",
+                "el",
+                "tr",
+                "vi",
+                "th",
+                "id",
+                "ko",
+                "ja",
+                "sr",
+                "fa",
+            )
         assertEquals(talaria, LanguageCatalog.supportedCodes())
     }
 }

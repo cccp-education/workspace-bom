@@ -16,7 +16,6 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class OpencodeSessionStepDefs {
-
     private var prompt: SessionPrompt? = null
     private var response: SessionResponse? = null
     private var tokenUsage: TokenUsage? = null
@@ -31,63 +30,93 @@ class OpencodeSessionStepDefs {
         }
     }
 
-    @When("a SessionPrompt is created with prompt {string} and context containing eager rules {string} and RAG chunks {string} and graph relations {string} and backlog items {string}")
-    fun whenPromptWithContext(promptText: String, eagerRules: String, ragChunks: String, graphRelations: String, backlogItems: String) {
+    @When(
+        "a SessionPrompt is created with prompt {string} and context containing eager rules {string} and RAG chunks {string} and graph relations {string} and backlog items {string}",
+    )
+    fun whenPromptWithContext(
+        promptText: String,
+        eagerRules: String,
+        ragChunks: String,
+        graphRelations: String,
+        backlogItems: String,
+    ) {
         val chunks = if (ragChunks.isBlank()) emptyList() else ragChunks.split(",").map { it.trim() }
         val items = if (backlogItems.isBlank()) emptyList() else backlogItems.split(",").map { it.trim() }
-        val context = AgentContext(
-            eagerRules = eagerRules,
-            ragChunks = chunks,
-            graphRelations = graphRelations,
-            backlogItems = items,
-        )
+        val context =
+            AgentContext(
+                eagerRules = eagerRules,
+                ragChunks = chunks,
+                graphRelations = graphRelations,
+                backlogItems = items,
+            )
         prompt = SessionPrompt(prompt = promptText, context = context)
     }
 
     @When("a SessionResponse is created with output {string} and status {word}")
-    fun whenResponse(output: String, status: String) {
-        response = SessionResponse(
-            sessionId = UUID.randomUUID(),
-            output = output,
-            status = SessionStatus.valueOf(status),
-        )
+    fun whenResponse(
+        output: String,
+        status: String,
+    ) {
+        response =
+            SessionResponse(
+                sessionId = UUID.randomUUID(),
+                output = output,
+                status = SessionStatus.valueOf(status),
+            )
     }
 
     @When("a SessionResponse is created with output {string} and status {word} and {int} tool call {string} with result {string}")
-    fun whenResponseWithToolCalls(output: String, status: String, count: Int, toolName: String, result: String) {
-        val toolCalls = (1..count).map {
-            ToolCallRecord(
-                toolName = toolName,
-                args = mapOf("task" to "compileKotlin"),
-                result = result,
-                timestamp = Instant.now(),
+    fun whenResponseWithToolCalls(
+        output: String,
+        status: String,
+        count: Int,
+        toolName: String,
+        result: String,
+    ) {
+        val toolCalls =
+            (1..count).map {
+                ToolCallRecord(
+                    toolName = toolName,
+                    args = mapOf("task" to "compileKotlin"),
+                    result = result,
+                    timestamp = Instant.now(),
+                )
+            }
+        response =
+            SessionResponse(
+                sessionId = UUID.randomUUID(),
+                output = output,
+                toolCalls = toolCalls,
+                status = SessionStatus.valueOf(status),
             )
-        }
-        response = SessionResponse(
-            sessionId = UUID.randomUUID(),
-            output = output,
-            toolCalls = toolCalls,
-            status = SessionStatus.valueOf(status),
-        )
     }
 
     @When("a TokenUsage is created with promptTokens {int} and completionTokens {int}")
-    fun whenTokenUsage(promptTokens: Int, completionTokens: Int) {
-        tokenUsage = TokenUsage(
-            promptTokens = promptTokens,
-            completionTokens = completionTokens,
-            totalTokens = promptTokens + completionTokens,
-        )
+    fun whenTokenUsage(
+        promptTokens: Int,
+        completionTokens: Int,
+    ) {
+        tokenUsage =
+            TokenUsage(
+                promptTokens = promptTokens,
+                completionTokens = completionTokens,
+                totalTokens = promptTokens + completionTokens,
+            )
     }
 
     @When("a TokenUsage is created with promptTokens {int} and completionTokens {int} and cost {double}")
-    fun whenTokenUsageWithCost(promptTokens: Int, completionTokens: Int, cost: Double) {
-        tokenUsage = TokenUsage(
-            promptTokens = promptTokens,
-            completionTokens = completionTokens,
-            totalTokens = promptTokens + completionTokens,
-            cost = cost,
-        )
+    fun whenTokenUsageWithCost(
+        promptTokens: Int,
+        completionTokens: Int,
+        cost: Double,
+    ) {
+        tokenUsage =
+            TokenUsage(
+                promptTokens = promptTokens,
+                completionTokens = completionTokens,
+                totalTokens = promptTokens + completionTokens,
+                cost = cost,
+            )
     }
 
     @Then("the prompt is {string}")
