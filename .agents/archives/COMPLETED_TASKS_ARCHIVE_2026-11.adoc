@@ -76,3 +76,13 @@
   `BakeryCucumberShardCoverageTest` (gate exécuté **et** baseline sans `<file>`) ;
   RED prouvé par construction (`1bd46024`).
 * CI bakery `41267145721` ✅ (4m02s, step Lint success).
+
+== S-325 — MEM-LINT-ADOPTION : audit + pilote graphify ✅
+
+* **Audit** : convention `build.lint` appliquée seulement par bakery + conventions ;
+  ≈ 2 900 `.kt` sans gate sur 22 boroughs. Cadrage `CADRAGE_EPIC_MEM_LINT_ADOPTION.adoc`
+  (7 décisions, 14 US, 1 borough = 1 session).
+* **Pilote `graphify`** (`a54b218`) : convention + `.editorconfig` tracké +
+  **647 violations** corrigées (39 fichiers, non-collatéral prouvé) + wildcard
+  imports expansés + garde publication whitespace-insensitive (S-244 F34).
+* Gate **gratuit** (`build` → `check`, 4 tâches ktlint) ; CI `41268477861` ✅ 2m00s.

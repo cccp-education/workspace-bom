@@ -280,3 +280,22 @@ asserte que le workflow contient `./gradlew ktlintCheck` et que la baseline n'ex
 aucun fichier (`1bd46024`) ; RED prouvé par construction (`git show b6852ba3:…` = 0).
 CI bakery `41267145721` ✅ (4m02s, step Lint success). Rapport
 `.agents/sessions/324-mem-lint-gate.adoc`.
+
+== Session 325 (2026-11-01) — MEM-LINT-ADOPTION : audit + pilote graphify
+
+Reprise immédiate de S-324 (« enchaine »). L'audit demandé (« un autre borough
+est-il réellement aveugle ? ») a montré que la convention `education.cccp.build.lint`
+n'est appliquée que par **bakery** et **conventions-gradle** : ≈ **2 900 fichiers
+Kotlin** sur 22 boroughs n'ont aucune analyse statique. Cadrage
+`.agents/CADRAGE_EPIC_MEM_LINT_ADOPTION.adoc` (2 populations — CI `build`/`check`
+= gate gratuit, CI test-only = step à ajouter ; 7 décisions ; 14 US ; 1 borough =
+1 session).
+**Pilote `graphify`** : `education.cccp.build.lint` 0.0.7 + `.editorconfig` tracké
+(`root = true`) → `ktlintCheck` **647 violations** (39 fichiers) corrigées par
+`ktlintFormat` (preuve de non-collatéral : `git status` = uniquement les fichiers
+signalés) ; wildcard `kotlin.io.path.*` expansé (5 symboles main / 4 test) ;
+`GraphifyPluginPublicationTest` rendu **whitespace-insensitive** car le reflow
+ktlint cassait la garde ligne-à-ligne (famille S-244 F34). Gate **gratuit** :
+`check --dry-run` contient 4 tâches ktlint et le CI lance `./gradlew build` —
+aucun workflow modifié. CI `41268477861` ✅ (2m00s). Commit `a54b218`. Rapport
+`.agents/sessions/325-mem-lint-adoption-graphify.adoc`.

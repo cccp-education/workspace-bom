@@ -1,34 +1,35 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-325 — dernière terminée : **324** (MEM-LINT-GATE : dette ktlint résorbée + gate CI
-gardé chez bakery). Avant : **323** (XB-FP **clos**), **322** (seam plantuml + tests
-purs slider + source set `sharedTest`), **321** (TestKit home caché), **320**
-(Arrow 2.3.0 + BOM `arrow-stack`), **319** (cadrage XB-FP).
+326 — dernière terminée : **325** (MEM-LINT-ADOPTION : audit + pilote `graphify`).
+Avant : **324** (MEM-LINT-GATE bakery clos), **323** (XB-FP clos), **322** (seam
+plantuml + tests purs + `sharedTest`), **321** (TestKit home caché), **320** (Arrow).
 
-=== Mission Session 325 — ordre proposé
+=== Mission Session 326 — ordre proposé
 
+. **`LINT-ADOPT-2` — `video-kernel`** (68 `.kt`, CI `./gradlew build` → gate
+   gratuit) : `.editorconfig` tracké, `build.lint` 0.0.7, `ktlintFormat` (vérifier
+   `git status` = fichiers signalés), wildcard imports, gardes whitespace-insensitive,
+   CI verte. Puis `LINT-ADOPT-3` `planner`, `-4` `readme`, `-5` `hyperframes`, …
 . **Release consommateur** au prochain artefact produit (Règle 2 « toujours granted »).
-. **Propagation du gate lint** aux autres boroughs — vérifier d'abord si leur CI
-   exécute `check` (bakery ne le faisait pas) ; ouvrir un EPIC seulement si un
-   borough est réellement aveugle (`ktlintCheck` rouge à HEAD + CI sans `check`).
-. Resync README/INDEX si un borough republie (aucun bump MEMPHIS en attente).
+. Pour les boroughs à CI **test-only** (`slider`, `capsule`, `codebase`) : ajouter
+   la step `Lint (ktlint)` (pattern S-324) en plus de la convention.
 
-_Documents maîtres_ : `.agents/CADRAGE_EPIC_XB_FP.adoc` (clos) ; `BACKLOG.adoc`
-§ `MEM-LINT-GATE` (clos). Suivi : Roadmap de l'INDEX.
+_Document maître_ : `.agents/CADRAGE_EPIC_MEM_LINT_ADOPTION.adoc` (audit, 7 décisions,
+14 US). Suivi : `BACKLOG.adoc` § `MEM-LINT-ADOPTION` + Roadmap de l'INDEX.
 
 == État du code
 
 - Central : BOM + catalog **0.0.117** (import `io.arrow-kt:arrow-stack:2.3.0`).
-- Contrats N0 : **sans Arrow** (doctrine D2) ; Arrow en N1/N2 en `implementation`.
-- XB-FP : **US-0→US-7 ✅ (clos S-323)** ; MEM-LINT-GATE : **LINT-1/2/3 ✅ (S-324)**.
-- CI workspace-bom : 21 jobs + gardes `verifyCiMatrixCoverage` /
-  `verifyCrossBoroughPins`. Wall-clock **variance `5m12s…5m52s`** — KPI ≤ 5m30s
-  à la frontière, variance des shards TestKit.
-- CI bakery : `ktlintCheck` **exécuté** par le job `unit` (run `41267145721` ✅,
-  4m02s) + garde de test ; dernier run workspace-bom vert `41265228099`.
-- Dernières CI boroughs : bakery `41267145721`, graphify `41264087285`,
-  slider `41264090679` (toutes vertes, 2026-11-01).
+- Contrats N0 : **sans Arrow** (D2) ; Arrow en N1/N2 en `implementation`.
+- EPICs MEMPHIS : **XB-FP clos** (S-323), **MEM-LINT-GATE clos** (S-324),
+  **MEM-LINT-ADOPTION en cours** (pilote graphify ✅ S-325).
+- Gate lint : bakery (step `Lint (ktlint)`), graphify (via `build` → `check`).
+  Les 22 autres boroughs n'ont **aucune** analyse statique.
+- CI workspace-bom : 21 jobs + gardes ; wall-clock **variance `5m12s…5m52s`**
+  (KPI ≤ 5m30s à la frontière, variance des shards TestKit).
+- Dernières CI boroughs : graphify `41268477861` ✅ (2m00s), bakery `41267145721` ✅,
+  workspace-bom `41267555637` ✅ (5m19s).
 
 == Doctrine XB-FP (clos — conservée pour mémoire)
 

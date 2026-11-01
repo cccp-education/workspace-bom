@@ -1,6 +1,19 @@
 = TEST_COVERAGE_ANALYSIS — workspace-bom (MEMPHIS)
 :date: 2026-11-01
-:session: 324
+:session: 325
+
+== Session 325 (2026-11-01) — MEM-LINT-ADOPTION : pilote graphify (garde durcie)
+
+* `graphify.GraphifyPluginPublicationTest` : **garde rendue whitespace-insensitive**
+  (normalisation `\s+` + assertion `version=ws.versions.graphify.plugin.get()`).
+  Elle parsait le script ligne à ligne et aurait échoué par accident après le
+  reflow ktlint (famille S-244 F34). Nombre de tests inchangé, assertion plus
+  robuste (preuve statique : `tr -d '[:space:]' < build.gradle.kts | grep …`).
+* **647 violations** de style corrigées (39 fichiers, formatting-only) : aucun test
+  supprimé, aucune assertion métier modifiée, un wildcard import expansé.
+* Gate exécuté **sans nouveau job** : `check --dry-run` contient 4 tâches ktlint,
+  et le CI de graphify lance `./gradlew build` → CI `41268477861` (2m00s).
+
 
 == Session 324 (2026-11-01) — MEM-LINT-GATE : gate lint exécuté et gardé (test-only + CI)
 

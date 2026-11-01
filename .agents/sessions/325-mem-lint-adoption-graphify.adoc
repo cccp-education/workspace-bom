@@ -1,0 +1,66 @@
+= Session 325 — MEM-LINT-ADOPTION : pilote graphify (analyse statique cross-borough)
+:date: 2026-11-01
+:borough: MEMPHIS (workspace-bom) — EPIC transverse
+:type: audit + cadrage + adoption pilote (formatting-only + garde)
+:ci: graphify `41268477861`
+
+== Mission
+
+Reprise immédiate de S-324 (« enchaine »). La consigne de sortie était : *vérifier
+si un autre borough est réellement aveugle (ktlint rouge à HEAD + CI sans `check`)
+avant d'ouvrir un EPIC*. L'audit a montré un problème **plus large** : la
+convention `education.cccp.build.lint` n'est appliquée que par **bakery** et
+**conventions-gradle** — les 22 autres boroughs n'ont **aucune analyse statique**.
+
+== 1. Audit (lecture seule) → `.agents/CADRAGE_EPIC_MEM_LINT_ADOPTION.adoc`
+
+* ≈ **2 900 fichiers Kotlin** hors bakery/conventions sans gate de style.
+* Deux populations : celles dont le CI exécute déjà `build`/`check` (document,
+  plantuml, codex, workspace-bom, hyperframes, video-kernel, planner, readme) —
+  **gate gratuit** ; celles dont le CI ne lance que des tâches de test (codebase,
+  capsule, slider…) — **step à ajouter** ; et celles sans workflow (academy,
+  dashboard, api-key-pool, bureau, container-provision, review, flow).
+* 7 décisions (D1 1 borough = 1 session ; D2 gate gratuit d'abord ; D3
+  `.editorconfig` tracké identique ; D4 baseline vide ; D5 preuve de non-collatéral
+  par `git status` ; D6 garde whitespace-insensitive ; D7 vestiges hors périmètre)
+  et 14 US (`LINT-ADOPT-0` → `-13`).
+
+== 2. Pilote `graphify` (LINT-ADOPT-1) ✅
+
+Choix : N0, **37 fichiers `.kt`**, CI déjà en `./gradlew build` → gate sans nouveau
+job.
+
+. **Convention** : `id("education.cccp.build.lint") version "0.0.7"` + `.editorconfig`
+   **tracké** (`root = true`, règles identiques à bakery) — sans lui, une CI isolée
+   retombe sur les défauts (leçon bakery V10).
+. **RED mesuré** : `ktlintCheck` → **647 violations**, 4 tâches (kotlin scripts,
+   main, test, functionalTest) ; règles dominantes : `trailing-comma-on-call-site`
+   124, `function-signature` 113, `multiline-expression-wrapping` 101,
+   `argument-list-wrapping` 65, `no-empty-first-line-in-class-body` 62.
+. **GREEN** : `ktlintFormat` corrige tout sauf les wildcard imports
+   (`kotlin.io.path.*`, non auto-corrigeables) → expansion manuelle des symboles
+   réellement utilisés (5 en main : `exists`, `extension`, `isDirectory`,
+   `isRegularFile` + `fileName` fourni par le membre Java ; 4 en test :
+   `createDirectories`, `exists`, `readText`, `writeText`).
+   **Preuve de non-collatéral (D5)** : `git status` = 39 fichiers, tous signalés par
+   `ktlintCheck` (aucun fichier conforme touché).
+. **Garde** : `ktlintFormat` a reflué `version =\n    ws.versions.graphify.plugin\n
+   .get()` → `GraphifyPluginPublicationTest` (parse ligne à ligne) **aurait échoué
+   par accident** (famille S-244 F34). Garde rendue whitespace-insensitive :
+   normalisation `\s+` + assertion `version=ws.versions.graphify.plugin.get()`
+   (preuve statique : `tr -d '[:space:]' < build.gradle.kts | grep …` = OK).
+. **Gate exécuté sans job ajouté** : `check --dry-run` contient **4** tâches
+   ktlint ; le CI lance `./gradlew build` → CI verte `41268477861` (**2m00s**).
+
+_Transparence de commit_ : le durcissement de la garde a été pris dans le premier
+commit (`a54b218`) par un `git add graphify-plugin/src` — le message du commit dit
+« no assertion changed », ce qui ne vaut que pour le formatage : la garde a bien
+été modifiée, c'est le correctif documenté ci-dessus.
+
+== 3. État / reste
+
+- **LINT-ADOPT-1 ✅** (graphify). Restent `video-kernel`, `planner`, `readme`,
+  `hyperframes`, `codex`, `plantuml`, `document`, `workspace-bom` (gate gratuit),
+  puis `slider`, `capsule`, `codebase` (step CI à ajouter) et le reste sans workflow.
+- `MEM-LINT-GATE` (bakery) reste clos ; ce nouvel EPIC le **généralise**.
+- Prochaine session : `LINT-ADOPT-2` (`video-kernel`, 68 `.kt`, CI `build`).
