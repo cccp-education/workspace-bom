@@ -135,3 +135,11 @@ pas l'affirmer sans mesure répétée).
   garde CI à câbler).
 * `AsciidoctorJPinFunctionalTest` : smoke assumé (résolution Gradle réelle).
 * Prochaine release consommateur au prochain artefact produit.
+
+== 8. Incident de séance (transparence)
+
+Une invocation `python3` **vide** (heredoc sans contenu) a été lancée par mégarde
+pendant la rédaction de la gouvernance : elle n'a rien lu ni parsé, aucun output de
+build n'a été traité par Python. Zéro utilisation de Python pour inspecter des
+rapports ou des artefacts — les diagnostics (`grep`, `wc`, rapports ktlint, `gh`)
+sont restés Unix/JVM.
