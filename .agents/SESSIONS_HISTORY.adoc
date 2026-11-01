@@ -245,7 +245,7 @@ replié sur les exceptions historiques — XB-FP-5 clos) ; `TaskDescriptionsI18n
 `41262327823`/`41262327798`.
 Rapport `.agents/sessions/322-xb-fp-plantuml-seam-pure-tests-source-set.adoc`.
 
-== Session 323 (2026-11-01) — XB-FP-6 TERMINÉ : tests lents → domaine pur (bakery, graphify, slider)
+== Session 323 (2026-11-01) — XB-FP TERMINÉ : tests lents → domaine pur + mesure isolée
 
 Les trois classes fonctionnelles lentes restantes sont traitées **sans retirer une
 assertion** (chaque règle pure passe en test unitaire ou BDD, chaque concern garde
@@ -256,8 +256,11 @@ assertion** (chaque règle pure passe en test unitaire ou BDD, chaque concern ga
 modification/suppression, `7a17ceb`). slider : `GenerateDeckPipelineFunctionalTest`
 **7 → 3** (`70e1bda`). ≈ 88 s → ≈ 40 s (−55 %). Commit de style séparé : les dix
 appels `DomainResolver` de `ConfigResolver` (S-320) violaient
-`argument-list-wrapping` (`d9a9aa12`). **Découverte** : `ktlintCheck` est rouge à
-HEAD (le CI bakery n'exécute jamais `check`) → EPIC `MEM-LINT-GATE` (7 violations
-main + 25 test restantes). CI vertes bakery `41264081199`, graphify `41264087285`,
-slider `41264090679`. Reste `XB-FP-7` (mesure isolée du TestKit caché).
-Rapport `.agents/sessions/323-xb-fp-6-slow-tests-pure-domain.adoc`.
+`argument-list-wrapping` (`d9a9aa12`). **Mesure isolée `XB-FP-7`** : run
+`41264633001`, **`5m28s`**, 21/21 verts, aucun run concurrent dans un autre dépôt →
+KPI ≤ 5m30s tenu, **aucun gain mesurable** du TestKit caché vs `5m12s` (variance).
+**EPIC XB-FP clos (US-0→US-7).** **Découverte** : `ktlintCheck` est rouge à HEAD
+(le CI bakery n'exécute jamais `check`) → EPIC `MEM-LINT-GATE` (7 violations main +
+25 test restantes). CI vertes bakery `41264081199`, graphify `41264087285`,
+slider `41264090679`. Rapport
+`.agents/sessions/323-xb-fp-6-slow-tests-pure-domain.adoc`.

@@ -1,8 +1,8 @@
-= Session 323 — XB-FP-6 : tests lents → domaine pur (bakery, graphify, slider)
+= Session 323 — XB-FP TERMINÉ : tests lents → domaine pur + mesure isolée (US-6, US-7)
 :date: 2026-11-01
 :borough: MEMPHIS (workspace-bom) — EPIC transverse
 :type: test design + refactor cross-borough (test-only)
-:ci: bakery `41264081199`, graphify `41264087285`, slider `41264090679`
+:ci: bakery `41264081199`, graphify `41264087285`, slider `41264090679`, workspace-bom `41264633001`
 
 == Mission
 
@@ -106,9 +106,26 @@ Compiles locales (Local = Build) : `compileKotlin compileTestKotlin
 compileFunctionalTestKotlin validatePlugins` VERTS sur les trois plugins.
 Aucun test lancé localement. Zéro secret, zéro Python.
 
-== 6. Reste
+== 6. Mesure isolée `XB-FP-7` — TestKit caché
 
-* **`XB-FP-7` — mesure isolée** du TestKit caché : à faire sur un run
-  workspace-bom **seul** (les trois pushes ci-dessus occupaient le pool).
+Push `workspace-bom` `9240da4` → run **`41264633001`**, **isolé** (aucun autre dépôt
+n'a créé de run entre `02:18` et `02:24` — vérifié sur bakery/graphify/slider/
+capsule/codebase/planner).
+
+* Wall-clock : **`02:18:22` → `02:23:50` = `5m28s`** (21 jobs, 21/21 verts).
+* Référence isolée S-320 : `5m12s` (run `41257127568`).
+* Chemin critique : shards → `Bakery · coverage` (`02:22:23` → `02:23:50`, **87 s**) ;
+  `N0 · contracts` est parallèle (`4m29s`) ; shards functional **3m32-3m58**, BDD
+  **2m15-3m50**.
+
+**Verdict honnête (D7)** : **aucun gain mesurable** du home TestKit caché — l'écart
+de `+16 s` vs la référence est dans la variance déjà documentée des shards TestKit
+(×5 entre runs). Le KPI **wall-clock ≤ 5m30s est tenu** (`5m28s`) ; on ne prétend pas
+que le cache l'a produit. `XB-FP-7` est **mesuré**, pas « amélioré ».
+
+== 7. Reste
+
+* `MEM-LINT-GATE` : dette ktlint préexistante (7 violations `src/main`, 25 `src/test` ;
+  garde CI à câbler).
 * `AsciidoctorJPinFunctionalTest` : smoke assumé (résolution Gradle réelle).
-* `MEM-LINT-GATE` : dette ktlint préexistante (5 fichiers main, 12 test).
+* Prochaine release consommateur au prochain artefact produit.

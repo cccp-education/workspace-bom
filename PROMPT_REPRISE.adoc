@@ -1,38 +1,36 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-324 — dernière terminée : **323** (XB-FP-6 : tests lents → domaine pur, cross-borough
-bakery/graphify/slider). Avant : **322** (seam plantuml + tests purs slider + source set
+324 — dernière terminée : **323** (XB-FP **clos** : tests lents → domaine pur +
+mesure isolée). Avant : **322** (seam plantuml + tests purs slider + source set
 `sharedTest`), **321** (TestKit home caché), **320** (Arrow 2.3.0 + BOM `arrow-stack`),
 **319** (cadrage EPIC XB-FP + cache CI + pilote arrow).
 
 === Mission Session 324 — ordre proposé
 
-. **`XB-FP-7` — mesure isolée du TestKit caché** (seul reste de l'EPIC) : pousser
-   `workspace-bom` alors qu'**aucun autre dépôt ne pousse** (pool GitHub partagé),
-   comparer le wall-clock à la référence isolée S-320 (`5m12s`, run `41257127568`).
-   Vérifier les `startedAt` de tous les jobs avant de conclure (piège cumul du S-321).
-. **`MEM-LINT-GATE`** (découvert S-323) : `ktlintCheck` rouge à HEAD chez bakery —
+. **`MEM-LINT-GATE`** (découvert S-323, P2) : `ktlintCheck` rouge à HEAD chez bakery —
    7 violations `src/main` + 25 `src/test` (12 fichiers). Corriger **fichier par
    fichier** (jamais `ktlintFormat` global : 126 fichiers reformatés en S-231/S-244),
    puis câbler `ktlintCheck` dans le workflow `Test` de bakery (aujourd'hui jamais
    exécuté) — US LINT-1/2/3 du BACKLOG.
 . **Release consommateur** au prochain artefact produit (Règle 2 « toujours granted »).
+. Resync README/INDEX si un borough republie (aucun bump MEMPHIS en attente).
 
-_Document maître_ : `.agents/CADRAGE_EPIC_XB_FP.adoc` ; EPIC lint : `BACKLOG.adoc`
-§ `MEM-LINT-GATE`. Suivi : `BACKLOG.adoc` § `EPIC XB-FP` + Roadmap de l'INDEX.
+_Document maître_ : `.agents/CADRAGE_EPIC_XB_FP.adoc` (EPIC clos) ; lint :
+`BACKLOG.adoc` § `MEM-LINT-GATE`. Suivi : Roadmap de l'INDEX.
 
 == État du code
 
 - Central : BOM + catalog **0.0.117** (import `io.arrow-kt:arrow-stack:2.3.0`).
 - Contrats N0 : **sans Arrow** (doctrine D2) ; Arrow en N1/N2 en `implementation`.
-- XB-FP : US-0→US-6 ✅ (US-6 close S-323), US-7 ✅ S-322 sauf **mesure isolée**.
+- XB-FP : **US-0→US-7 ✅ (EPIC clos S-323)**.
 - CI workspace-bom : 21 jobs + gardes `verifyCiMatrixCoverage` /
-  `verifyCrossBoroughPins`. Référence isolée : **5m12s** (S-320).
+  `verifyCrossBoroughPins`. Wall-clock isolé : **`5m28s`** (run `41264633001`,
+  KPI ≤ 5m30s) ; référence antérieure `5m12s`.
 - Dernières CI boroughs : bakery `41264081199`, graphify `41264087285`,
   slider `41264090679` (toutes vertes, 2026-11-01).
 
-== Doctrine XB-FP
+== Doctrine XB-FP (clos — conservée pour mémoire)
 
 * **D2** N0 sans Arrow ; **D3** Arrow N1/N2 en `implementation` ; **D4** sealed
   maison = frontière publique, Arrow interne.
@@ -40,8 +38,8 @@ _Document maître_ : `.agents/CADRAGE_EPIC_XB_FP.adoc` ; EPIC lint : `BACKLOG.ad
   ré-activer le cache `setup-gradle`.
 * **D12** dépendance Arrow sans usage = **dette d'adoption** : l'utiliser à un
   seam, jamais la retirer.
-* **D7** mesurer avant/après ; **D10/D11** source set découplé (fait) + TestKit
-  hors `build/` (fait).
+* **D7** mesurer avant/après — la mesure du TestKit caché (`5m28s`) **ne démontre
+  pas** de gain : ne pas la présenter comme telle.
 
 == Pièges (cumul)
 

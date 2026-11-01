@@ -46,7 +46,7 @@
 * CI vertes : plantuml `41262059987`, slider `41262144762`, bakery
   `41262327823`/`41262327798`.
 
-== S-323 — XB-FP-6 : tests lents → domaine pur (bakery, graphify, slider) ✅
+== S-323 — XB-FP TERMINÉ : tests lents → domaine pur + mesure isolée ✅
 
 * **Bakery** : `OgImageLanguage` (objet pur — `og-images/{lang}/` propre si présent,
   référence sinon ; 7 UT, RED prouvé par compilation) ; la tâche garde une seule
@@ -61,4 +61,7 @@
 * Découverte (stash-prouvée) : `ktlintCheck` **rouge à HEAD** chez bakery (son CI
   n'exécute jamais `check`) → EPIC `MEM-LINT-GATE` ; les 10 expressions
   `DomainResolver` de `ConfigResolver` corrigées (`d9a9aa12`).
+* **Mesure isolée `XB-FP-7`** : run `41264633001`, **`5m28s`**, 21/21 verts, aucun
+  run concurrent (vérifié sur 6 dépôts) → KPI ≤ 5m30s tenu, **aucun gain mesurable**
+  du TestKit caché vs la référence `5m12s`. **EPIC XB-FP clos (US-0→US-7).**
 * CI vertes : bakery `41264081199`, graphify `41264087285`, slider `41264090679`.

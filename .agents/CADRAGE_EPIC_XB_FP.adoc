@@ -1,6 +1,6 @@
 = CADRAGE — EPIC transverse XB-FP : temps de tests & paradigme fonctionnel (arrow-kt)
 :date: 2026-10-31
-:statut: 🟢 EN COURS (US-0→US-6 ✅ — S-323 ; US-7 ✅ S-322, mesure isolée du TestKit caché à faire)
+:statut: ✅ TERMINÉ (US-0→US-7 — S-319 → S-323 ; wall-clock isolé `5m28s`, run `41264633001`)
 :porteur: MEMPHIS (workspace-bom) — EPIC transverse cross-borough
 :type: cadrage + revue de code (lecture seule) + plan de refactor
 
@@ -149,7 +149,7 @@ métier** ; conversion à la frontière.
 |===
 | KPI | Baseline | Cible
 
-| Wall-clock cross-borough | 6m05s-6m52s (21 jobs) | ≤ 5m30s
+| Wall-clock cross-borough | 6m05s-6m52s (21 jobs) | ≤ 5m30s — **atteint** : `5m12s` (S-320), `5m28s` (S-323, isolé)
 | Durée du plus long shard bakery | 3m30-4m | −15 %
 | Durée du job `bakery-coverage` | 50-82 s | −20 %
 | Tests lents (> 20 s) | 5 classes | 1 smoke par concern — **atteint S-323** (3 classes traitées : 10→3, 11→7, 7→3 builds ; `AsciidoctorJPin` = smoke assumé)
