@@ -1,84 +1,70 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-333 — dernière terminée : **332** (release consommateur : `agent-contracts 0.0.4`
-adopté par `planner` + `codebase`). Avant : **331** (XF-FP-2 clos), **330**
-(MEM-WARN-FREE clos), **329**, **328**, **327**.
+334 — dernière terminée : **333** (US d'upgrade des 34 P2 : warnings tiers
+**34 → 0**). Avant : **332** (release consommateur `agent-contracts 0.0.4`),
+**331** (XF-FP-2 clos), **330** (MEM-WARN-FREE clos).
 
-=== Mission Session 333 — ordre proposé
+=== Mission Session 334 — ordre proposé
 
-. **US d'upgrade des 34 P2** (warnings tiers) : `capsule` Cucumber 7.34
-   `@CucumberOptions` (16 runners → suite engine JUnit Platform) et `document`
-   AsciidoctorJ `Options.map()` (`For internal use only`). Chaque migration est un
-   refactor de **tests** : vérifier d'abord qu'elle est faisable sans affaiblir les
-   scénarios (sinon la consigner et la laisser).
 . **`LINT-ADOPT-13`** (academy, dashboard, api-key-pool, jhipster, magic-stick) :
-   **sans CI**, donc gate local seulement — décision pilote requise.
+   **sans CI**, donc gate local seulement — **décision pilote requise**.
 . **Sinon** : proposer un cadrage au pilote (Règle 1 — pas d'initiative hors
-   backlog). Candidats issus des lectures S-328 : `document` `DocumentTranslator`
-   (état mutable qui s'échappe, `clear()` de l'appelant), `slider`/`bakery`/`document`
-   adoption d'`arrow-resilience` (D12), accumulation `zipOrAccumulate` sur les
-   validateurs restants.
+   backlog). Candidats (lectures S-328) : `document` `DocumentTranslator` (état
+   mutable qui s'échappe, `clear()` de l'appelant) ; `slider`/`bakery`/`document`
+   adoption d'`arrow-resilience` (D12) ; `zipOrAccumulate` sur les validateurs restants.
 . Release consommateur si un artefact est publié (Règle 2 « toujours granted »).
 
-_Documents maîtres_ : `.agents/CADRAGE_EPIC_XF_FP_2.adoc` (clos),
-`.agents/CADRAGE_EPIC_MEM_WARN_FREE.adoc` (clos),
-`.agents/CADRAGE_EPIC_MEM_LINT_ADOPTION.adoc` (US-13 différée).
+_Documents maîtres_ : `.agents/CADRAGE_EPIC_MEM_WARN_FREE.adoc` (clos) ;
+`.agents/CADRAGE_EPIC_MEM_LINT_ADOPTION.adoc` (US-13 différée) ;
+`.agents/CADRAGE_EPIC_XF_FP_2.adoc` (clos).
 
 == État du code
 
 - Central : `agent-contracts **0.0.4**` + BOM/catalog **0.0.118** (bundle
-  `bceecd3f`, propagation repo1 **200** confirmée (BOM + catalogue)) ; import
-  `io.arrow-kt:arrow-stack:2.3.0`.
+  `bceecd3f`) ; import `io.arrow-kt:arrow-stack:2.3.0`.
 - Contrats N0 : **sans Arrow** (D2) ; Arrow en N1/N2 en `implementation`.
-- EPICs MEMPHIS : **XB-FP clos** (S-323), **MEM-LINT-GATE clos** (S-324),
-  **MEM-LINT-ADOPTION US-0→US-12 ✅** (10 boroughs ; reste US-13, sans CI, différé),
-  **XF-FP-2 ✅ TERMINÉ** (US-0→US-7 ; `agent-contracts 0.0.4` + BOM/catalog `0.0.118` publiés),
-  **MEM-WARN-FREE ✅ TERMINÉ** (WARN-0→13 : **478 → 34** warnings sur 13 dépôts).
-- Warning-free : 11 dépôts à **0** ; capsule 31 et document 3 = **P2 tiers consignés**
-  (Cucumber `@CucumberOptions`, AsciidoctorJ `Options.map()`), à traiter par une US
-  d'upgrade dédiée.
-- Gate lint : **12 dépôts** l'exécutent (bakery, graphify, video-kernel,
-  youtube-auth, planner, readme, hyperframes, codex, plantuml, document, slider,
-  capsule, codebase, N0 workspace-bom). Restent sans analyse statique : academy,
-  dashboard, api-key-pool, jhipster, magic-stick (+ vestiges).
-- CI workspace-bom : 21 jobs + gardes ; wall-clock **variance `5m12s…5m52s`**
-  (KPI ≤ 5m30s à la frontière, variance des shards TestKit).
-- Dernières CI : document `41321357878` ✅ 29m56s ; workspace-bom `41324949688` ✅ ;
-  plantuml `41317002477` ✅ 14m23s ; codex `41315948060` ✅ 4m06s.
+- **Warning-free : les 13 dépôts actifs sont à 0 warning.** Les 34 P2 tiers sont
+  soldés (S-333) : `document` `Options.map()` → valeur pure
+  `AsciidoctorConversionRequest` ; `capsule` 16 runners Cucumber → moteur suite
+  JUnit Platform (garde `capsule.ci.CucumberRunnerEngineTest`).
+- Gate lint : **12 dépôts**. Sans analyse statique : academy, dashboard, api-key-pool, jhipster, magic-stick (+ vestiges) = `LINT-ADOPT-13`.
+- CI workspace-bom : 21 jobs + gardes ; wall-clock **`5m12s…5m52s`** (KPI ≤ 5m30s à la frontière).
+- Dernières CI : document `41332495591` ✅ 29m56s ; capsule `41333347488` ✅ +
+  `41333347414` ✅ 25/25 ; plantuml `41317002477` ✅ ; codex `41315948060` ✅.
 
 == Doctrine XB-FP (clos — conservée pour mémoire)
 
-* **D2** N0 sans Arrow ; **D3** Arrow N1/N2 en `implementation` ; **D4** sealed
-  maison = frontière publique, Arrow interne.
-* **D9** ne pas ajouter de jobs, ni rééquilibrer les shards functional, ni
-  ré-activer le cache `setup-gradle`.
-* **D12** dépendance Arrow sans usage = **dette d'adoption** : l'utiliser à un
-  seam, jamais la retirer.
-* **D7** mesurer avant/après — la mesure du TestKit caché (`5m28s`) **ne démontre
-  pas** de gain : ne pas la présenter comme telle.
+* **D2/D3/D4** N0 sans Arrow ; Arrow N1/N2 en `implementation` ; sealed maison =
+  frontière publique, Arrow interne. **D12** dépendance Arrow sans usage = dette
+  d'adoption : l'utiliser à un seam, jamais la retirer.
+* **D9** ne pas ajouter de jobs, ni rééquilibrer les shards functional, ni ré-activer le cache `setup-gradle`.
+* **D7** mesurer avant/après — le TestKit caché (`5m28s`) **ne démontre pas** de gain.
 
 == Pièges (cumul)
 
 . *Version dérivée ≠ version publiée* ; garde de version bumpée dans le **même**
-   commit. `check` inclut ktlint ; chez bakery le CI l'exécute depuis S-324 (step
-   `Lint (ktlint)` du job `unit`).
-. *Contrats N0 = builds standalone* (pattern 0124).
+   commit. `check` inclut ktlint. *Contrats N0 = builds standalone* (pattern 0124).
 . *Catalogue Gradle* : un plugin inclus depuis la **racine** utilise le catalogue
    **racine**.
 . *Local = Build, Tests = CI* ; une CI concurrente (autre dépôt) fausse le
    wall-clock — vérifier les `startedAt`.
+. *Warnings* : `-q` les masque ; `--rerun-tasks` seul restaure le build cache →
+   `--rerun-tasks --no-build-cache`. Un `@Suppress` préexistant = warning caché.
+   Mesure avant/après : `git worktree add` sur le commit parent (zéro pollution).
 . *Cache GitHub scopé au dépôt* ; `setup-gradle cache-disabled` ; clé avec
    `github.job` ; arrêter Ollama + `chown` avant le post-step.
 . *Toolchain* : `jvmToolchain(25)` (jamais `VERSION_25.ordinal` = 24) ; foojay **0.10.0**.
-. *ktlint* : `include(...)`/`setSource(...)` sont ignorés par ktlint-gradle 12.2.0.
-   `ktlintFormat` est sûr **seulement** si tous les autres fichiers sont déjà
-   conformes : le prouver par `git status` = exactement les fichiers signalés par
-   `ktlintCheck` (fait S-324 : 19/19, zéro collatéral).
+. *ktlint* : `include(...)`/`setSource(...)` sont ignorés par ktlint-gradle 12.2.0 ;
+   `ktlintFormat` n'est sûr que si tous les autres fichiers sont conformes.
+. *Gardes qui nomment un motif interdit* : elles se **détectent elles-mêmes** →
+   exclure le fichier de garde de son propre scan.
+. *Cucumber 7.34* : `RunWith`/`CucumberOptions` **et** le marqueur
+   `io.cucumber.junit.platform.engine.Cucumber` sont dépréciés → `@Suite` +
+   `@IncludeEngines("cucumber")` + `@SelectClasspathResource`.
 
 == Règles
 
 - Voir `AGENT.adoc` — commit/push/publish autorisés (Règle 2 « toujours granted »).
 - **Règle 6** : ne jamais lancer ni modifier des tests sans autorisation explicite.
-- Publication Central : `./gradlew publishAggregationToCentralPortal`.
-- Zéro Python.
+- Publication Central : `./gradlew publishAggregationToCentralPortal`. Zéro Python.

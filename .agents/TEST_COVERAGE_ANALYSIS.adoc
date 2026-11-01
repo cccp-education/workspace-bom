@@ -1,6 +1,23 @@
 = TEST_COVERAGE_ANALYSIS — workspace-bom (MEMPHIS)
 :date: 2026-11-01
-:session: 331
+:session: 333
+
+== Session 333 (2026-11-01) — US d'upgrade des 34 P2 (aucune assertion affaiblie)
+
+* **document** `DocumentConverterTest` : 3 tests réécrits sur la valeur pure
+  `AsciidoctorConversionRequest` (SafeMode fourni/défaut/SECURE) ; **+3 tests**
+  (backend, `standalone`, `sourcemap`, `outputFile`, attributs du thème par format ;
+  smoke `buildOptions`). Les champs nouvellement assertés n'étaient pas couverts.
+  RED prouvé par compilation (`Unresolved reference 'conversionRequest'`).
+* **capsule** `CucumberRunnerEngineTest` (nouveau, 2 tests) : garde de la chaîne BDD —
+  aucune API JUnit 4 Cucumber, moteur platform déclaré par chaque runner, et
+  **anti test fantôme** (chaque `.feature` sélectionné existe réellement).
+* Migration de **16 runners** vers le moteur suite (mêmes features/glue/rapports) :
+  les scénarios sont identiques, seule l'API de découverte change.
+* **34 warnings tiers → 0** (mesure worktree `--rerun-tasks --no-build-cache`).
+* Preuve = CI document `41332495591` ✅ ; capsule `Test` `41333347488` ✅ +
+  `Full Tests` `41333347414` ✅ 25/25 (dont `cucumberTestViralRender`, runner migré).
+
 
 == Session 331 (2026-11-01) — XF-FP2-6/7 (contrat N0 typé + fold)
 

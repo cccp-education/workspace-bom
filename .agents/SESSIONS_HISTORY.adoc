@@ -419,3 +419,39 @@ Repin `0.0.3 → 0.0.4` de `planner-plugin/build.gradle.kts` et de
 explicite). Compiles + `ktlintCheck` VERTS, 0 warning ; CI planner `41327481771` ✅,
 codebase `CI` `41327484201` ✅ 3m45s + `OCR` `41327484006` ✅. Aucun code applicatif
 modifié. Rapport `.agents/sessions/332-repin-agent-contracts-0.0.4.adoc`.
+
+== Session 333 (2026-11-01) — US d'upgrade des 34 P2 : warnings tiers à zéro
+
+Les **34 warnings P2 tiers** restants de `MEM-WARN-FREE` sont soldés.
+**WARN-14 `document`** : `Options.map()` est `@Deprecated` en AsciidoctorJ 3
+(« For internal use only ») et `Options` n'expose aucun accesseur typé → la
+description de conversion devient une **valeur pure**
+`AsciidoctorConversionRequest` (`backend`, `safeMode`, `standalone`, `sourcemap`,
+`outputFile`, `attributes`), construite par `DocumentConverter.conversionRequest`,
+tandis que `buildOptions` devient un **adaptateur** trivial vers `org.asciidoctor.Options`
+(iso-comportement, mêmes appels). Baby-step TDD : RED prouvé par compilation
+(`Unresolved reference 'conversionRequest'`), 3 tests migrés + **3 tests additifs**
+(backend/standalone/sourcemap/outputFile/attributs) ⇒ assertions **plus fortes**.
+Commit `50301eb`.
+**WARN-15 `capsule`** : **16** runners migrés de l'API JUnit 4 dépréciée
+(`@RunWith(Cucumber::class)` + `@CucumberOptions`) vers le **moteur suite JUnit
+Platform** (`@Suite` + `@IncludeEngines("cucumber")` + `@SelectClasspathResource`
++ `@ConfigurationParameter`) — pattern déjà en production dans **47** runners du
+même module, donc faisabilité prouvée avant migration ; features, glue, noms de
+classes et rapports HTML inchangés (`build.gradle.kts` et `full-tests.yml` non
+touchés). Découverte : `io.cucumber.junit.platform.engine.Cucumber` (16e runner,
+`CapsulePr2Coverage`) est **aussi** déprécié en 7.34 mais absent de l'inventaire
+S-329 (il n'apparaît qu'une fois les 15 autres corrigés). Nouvelle garde
+`capsule.ci.CucumberRunnerEngineTest` : (1) aucune API legacy, (2) moteur platform
+déclaré, (3) **anti test fantôme** — chaque `.feature` sélectionné existe.
+Pièges : la garde se détecte elle-même si elle nomme les motifs interdits ;
+43/47 runners n'ont pas `FEATURES_PROPERTY_NAME` (assertion « sous-ensemble »
+aurait été rouge). Commits `693d19b` (migration) + `6dd56c3` (garde).
+**Mesure** (worktrees jetables sur les commits parents, `--rerun-tasks
+--no-build-cache`) : document **3 → 0**, capsule **31 → 0**, total **34 → 0**.
+Gates : compiles VERTES **0 warning**, `ktlintCheck` VERTS ; CI document
+`41332495591` ✅ (~30 min), capsule `Test` `41333347488` ✅ et `Full Tests`
+`41333347414` ✅ **25/25** (dont `cucumberTestViralRender`, runner migré → preuve
+d'exécution du nouveau moteur). Zéro `@Suppress`, zéro `-nowarn`, zéro test
+affaibli, aucune API publique changée, zéro bump, zéro publication. Rapport
+`.agents/sessions/333-warn-p2-upgrade.adoc`.

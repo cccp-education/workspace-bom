@@ -1,0 +1,147 @@
+= Session 333 — US d'upgrade des 34 P2 : warnings tiers à zéro (document + capsule)
+:date: 2026-11-01
+:borough: MEMPHIS (workspace-bom) — EPIC transverse MEM-WARN-FREE (suite)
+:type: refactor de tests + seam pur (aucune API publique changée, zéro publication)
+:ci: document `41332495591`, capsule `Test` `41333347488` + `Full Tests` `41333347414`
+
+== 1. Mission
+
+`PROMPT_REPRISE` S-333, mission 1 : traiter les **34 warnings P2** restants de
+`MEM-WARN-FREE`, tous **tiers** — `capsule` Cucumber `@CucumberOptions` (31) et
+`document` AsciidoctorJ `Options.map()` (3). Politique du cadrage : migrer
+**seulement** si iso-comportement et sans affaiblir les scénarios ; sinon consigner.
+
+Mesure exacte « avant / après » par **worktree jetable** sur le commit parent,
+recompilé avec `--rerun-tasks --no-build-cache` (piège S-329/S-330 : `--rerun-tasks`
+seul restaure le build cache et masque les diagnostics ; `-q` masque aussi) :
+
+[cols="3,1,1", options="header"]
+|===
+| Dépôt (cible) | Avant | Après
+| `document` (`compileTestKotlin`) | **3** | **0**
+| `capsule` (`compileTestKotlin`) | **31** | **0**
+| **Total P2** | **34** | **0**
+|===
+
+== 2. WARN-14 — `document` : seam pur `AsciidoctorConversionRequest`
+
+*Constat* : les 3 warnings venaient de `DocumentConverterTest` (3 assertions
+`SafeMode.safeMode(options.map()[Options.SAFE] as Int)`) — `Options.map()` est
+`@Deprecated` en AsciidoctorJ `asciidoctorj-api 3.0.1` (« For internal use only »).
+`Options` n'expose **aucun** accesseur typé (`javap` : seulement des setters et
+`map()`), donc lire l'`Options` construit n'est plus un contrat stable.
+
+*Correction (DDD/FP — la frontière tierce devient explicite)* : la description
+d'une conversion devient une **valeur pure** :
+
+[source,kotlin]
+----
+internal data class AsciidoctorConversionRequest(
+    val backend: String,
+    val safeMode: SafeMode,
+    val standalone: Boolean = true,
+    val sourcemap: Boolean = true,
+    val outputFile: File? = null,
+    val attributes: Map<String, String> = emptyMap(),
+)
+----
+
+`DocumentConverter.conversionRequest(...)` la construit ; `buildOptions(...)`
+devient un **adaptateur** trivial vers `org.asciidoctor.Options` (mêmes appels,
+iso-comportement) :
+
+| Avant | Après |
+| `.backend(backend)` | `.backend(request.backend)` |
+| `.safe(safeMode)` | `.safe(request.safeMode)` |
+| `.standalone(true)` | `.standalone(request.standalone)` |
+| `.option("sourcemap", "true")` | `.option("sourcemap", request.sourcemap.toString())` |
+| `format != null && !theme.isEmpty()` | `request.attributes.isNotEmpty()` (même prédicat : `toAttributes` retourne `emptyMap()` sans thème) |
+
+*Baby-step TDD* : tests d'abord → **RED prouvé par compilation**
+(`Unresolved reference 'conversionRequest'`), puis GREEN. Les 3 tests historiques
+sont réécrits sur la requête (SafeMode fourni / défaut UNSAFE / SECURE) et **3
+tests additifs** renforcent le contrat (backend, `standalone`, `sourcemap`,
+`outputFile`, attributs du thème par format ; smoke `buildOptions` non nul) —
+les assertions nouvelles portent sur des champs jamais testés auparavant.
+
+*Gates* : `compileKotlin` + `compileTestKotlin` VERTS **0 warning** (recompilation
+forcée), `ktlintCheck` VERT. Commit `50301eb`.
+
+== 3. WARN-15 — `capsule` : les 16 runners Cucumber au moteur suite JUnit Platform
+
+*Constat* : 15 runners « dédiés » (pattern S-082) utilisaient l'API **JUnit 4**
+`@RunWith(Cucumber::class)` + `@CucumberOptions` (dépréciée en Cucumber 7.34).
+Un 16e (`CapsulePr2CoverageCucumberRunner`) utilisait
+`io.cucumber.junit.platform.engine.Cucumber`, **également déprécié** en 7.34 —
+il n'était pas dans l'inventaire S-329 (31 warnings) mais apparaît dès que les 15
+premiers sont migrés (preuve par recompilation forcée).
+
+*Faisabilité vérifiée avant migration* : le module contient déjà **47 runners
+`@Suite`** (shards CI + runners dédiés récents) — le pattern cible est donc
+**prouvé en production** dans le même build, pas une hypothèse. La convention
+`education.cccp.build.cucumber` place `src/test/features` sur le classpath de
+test (`testSourceSet.resources.srcDir(featuresDir)`) et ajoute
+`junit-platform-suite`, ce qui rend `@SelectClasspathResource` opérant.
+
+*Migration (16 fichiers, iso-comportement)* :
+
+| Legacy JUnit 4 | Platform suite |
+| `@RunWith(Cucumber::class)` | `@Suite` + `@IncludeEngines("cucumber")` |
+| `features = ["…/x.feature"]` | `@SelectClasspathResource("features/x.feature")` + `FEATURES_PROPERTY_NAME` |
+| `glue = ["capsule.scenarios"]` | `@ConfigurationParameter(GLUE_PROPERTY_NAME, …)` |
+| `plugin = ["pretty", "html:…"]` | `@ConfigurationParameter(PLUGIN_PROPERTY_NAME, "pretty, html:…")` |
+| `monochrome = true` | (sans objet : pas de TTY en CI ; les 47 runners existants l'omettent) |
+
+Les noms de classes, les chemins de features et les rapports HTML sont **inchangés**,
+donc `build.gradle.kts` (`CucumberTaskSpec.runnerClass`) et `full-tests.yml` ne
+bougent pas. `cucumberTestViralRender` (migré) est **exécuté en CI** dans
+`Full Tests` — preuve d'exécution réelle du nouveau moteur, pas seulement de
+compilation.
+
+*Garde anti-régression* (`capsule.ci.CucumberRunnerEngineTest`, 2 tests, parsing
+de sources pur — même forme que `CapsuleCucumberShardCoverageTest`) :
+
+. aucun fichier de `src/test/kotlin` ne contient `io.cucumber.junit.Cucumber`,
+   `@CucumberOptions` ni `@RunWith(` ;
+. tout `*CucumberRunner.kt` déclare le moteur platform (`@IncludeEngines("cucumber")`
+   ou le marqueur platform) ;
+. **anti test fantôme** : tout runner sélectionne au moins un `.feature` (sauf
+   sélection du répertoire entier) et **chaque** fichier sélectionné existe sous
+   `src/test/features/` (un chemin fautif découvrirait 0 scénario silencieusement).
+
+*Preuves* : RED par construction — `git grep "@CucumberOptions" HEAD` = **15**
+fichiers (et `@RunWith` = 15) avant migration, **0** après ; recompilation forcée
+**0 warning** ; `ktlintCheck` VERT. Commits `693d19b` (migration) + `6dd56c3` (garde).
+
+*Pièges rencontrés* :
+
+. le marqueur platform `io.cucumber.junit.platform.engine.Cucumber` est **aussi**
+   déprécié en 7.34 — l'inventaire S-329 l'avait manqué (il ne produit qu'un
+   warning, et seulement une fois les 15 autres corrigés) ;
+. une garde qui **nomme** les motifs interdits se **détecte elle-même** (le
+   littéral `@CucumberOptions` dans le test) → exclusion explicite du fichier de garde ;
+. **ne pas supposer** que tous les runners déclarent `FEATURES_PROPERTY_NAME` :
+   43 des 47 runners existants n'utilisent que `@SelectClasspathResource` ; la garde
+   a été corrigée pour n'exiger la propriété que lorsqu'elle est déclarée
+   (l'assertion « sous-ensemble » aurait été rouge en CI).
+
+== 4. Gates (Local = Build, Tests = CI)
+
+[cols="2,3,2", options="header"]
+|===
+| Dépôt | Local | CI
+| `document` | `compileKotlin`/`compileTestKotlin` `--rerun-tasks --no-build-cache` VERT, **0 warning**, `ktlintCheck` VERT | `Test` `41332495591` ✅ (~30 min)
+| `capsule` | idem, **0 warning**, `ktlintCheck` VERT | `Test` (PR gate) `41333347488` ✅ ; `Full Tests` `41333347414` ✅ **25/25** jobs
+|===
+
+Zéro `@Suppress`, zéro `-nowarn`, zéro test affaibli (assertions **ajoutées**),
+aucune API publique changée, aucune version bumpée, aucune publication.
+
+== 5. Reste / proposition au pilote
+
+* `LINT-ADOPT-13` (academy, dashboard, api-key-pool, jhipster, magic-stick) :
+  **décision pilote requise** (sans CI, le gate ne serait pas exécuté).
+* Candidats de cadrage (lus en S-328, hors backlog ouvert) : `document`
+  `DocumentTranslator` (état mutable qui s'échappe, `clear()` de l'appelant) ;
+  adoption `arrow-resilience` (D12) chez `slider`/`bakery`/`document` ;
+  `zipOrAccumulate` sur les validateurs restants.

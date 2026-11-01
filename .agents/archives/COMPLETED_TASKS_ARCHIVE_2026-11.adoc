@@ -147,3 +147,21 @@
 * Repin des 2 seuls consommateurs (`planner`, `codebase`) ; `0.0.3 -> 0.0.4`
   prouvé par `dependencyInsight`.
 * CI planner `41327481771` ✅, codebase `41327484201` ✅ + OCR ✅.
+
+== S-333 — US d'upgrade des 34 P2 : warnings tiers à zéro ✅
+
+* **WARN-14 `document`** : `AsciidoctorConversionRequest` (valeur pure) +
+  `conversionRequest(...)` ; `buildOptions` devient un adaptateur (iso-comportement).
+  `Options.map()` (déprécié AsciidoctorJ 3, « internal use only ») n'est plus lu
+  par les tests. 3 tests migrés + 3 tests additifs, RED par compilation (`50301eb`).
+* **WARN-15 `capsule`** : **16** runners Cucumber migrés au moteur suite JUnit
+  Platform (`@Suite` + `@IncludeEngines` + `@SelectClasspathResource`), pattern déjà
+  utilisé par 47 runners du même module. Découverte : le marqueur platform
+  `io.cucumber.junit.platform.engine.Cucumber` est **aussi** déprécié (hors
+  inventaire S-329). Garde `CucumberRunnerEngineTest` (interdiction de l'API
+  legacy + anti test fantôme sur les `.feature`). `693d19b`, `6dd56c3`.
+* **34 → 0** warnings (mesure worktree `--rerun-tasks --no-build-cache` :
+  document 3→0, capsule 31→0).
+* CI document `41332495591` ✅ ; capsule `Test` `41333347488` ✅ +
+  `Full Tests` `41333347414` ✅ 25/25.
+* Zéro `@Suppress`, zéro test affaibli, zéro publication.

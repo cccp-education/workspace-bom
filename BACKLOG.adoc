@@ -5,7 +5,8 @@
 :sectnums:
 
 _Dernière mise à jour (antérieure) : 2026-10-25 (S-307 — **BOM/catalog 0.0.101 : `document-plugin 0.0.25` + `bakery-plugin 0.0.28`**, revue cheroliv.com ; publication Central `d6e5bf37`, propagation repo1 200, CI verte `67b0d8c`. Précédent S-306 : BOM/catalog 0.0.100 bakery 0.0.27, bundle `936b54a1`, CI verte `c6dc0e1`. Précédent S-299 : CI cross-borough < 5 min.)_
-_Dernière mise à jour : 2026-11-01 (S-332 — **release consommateur `agent-contracts 0.0.4`** : propagation repo1 confirmée (BOM/catalog `0.0.118` POM + `.toml` **200**), les **2 seuls** dépôts qui pinnent le contrat sont repinnés (`planner` `build.gradle.kts`, `codebase` `libs.versions.toml`) ; `dependencyInsight` prouve `0.0.3 -> 0.0.4` malgré la contrainte BOM ; compiles + ktlint VERTS (0 warning), CI planner `41327481771` ✅ et codebase `41327484201` ✅ 3m45s + OCR ✅. Aucun code applicatif modifié. Précédent S-331 : XF-FP-2 clos (N0 typé + fold `PivotModel`).)_
+_Dernière mise à jour : 2026-11-01 (S-333 — **US d'upgrade des 34 P2 : warnings tiers 34 → 0**. **WARN-14 `document`** : `Options.map()` (déprécié AsciidoctorJ 3) → valeur pure `AsciidoctorConversionRequest`, `buildOptions` en adaptateur (3 tests migrés + 3 additifs, RED par compilation, `50301eb`). **WARN-15 `capsule`** : **16** runners Cucumber → moteur suite JUnit Platform (pattern déjà en production dans 47 runners ; le marqueur platform `io.cucumber.junit.platform.engine.Cucumber` était **aussi** déprécié, hors inventaire S-329) + garde `capsule.ci.CucumberRunnerEngineTest` (API legacy interdite, anti test fantôme sur les `.feature`), `693d19b`+`6dd56c3`. Mesure worktree `--rerun-tasks --no-build-cache` : document 3→0, capsule 31→0. CI document `41332495591` ✅, capsule `Test` `41333347488` ✅ + `Full Tests` `41333347414` ✅ 25/25. Précédent S-332 : release consommateur `agent-contracts 0.0.4`.)_
+_Dernière mise à jour (antérieure) : 2026-11-01 (S-332 — **release consommateur `agent-contracts 0.0.4`** : propagation repo1 confirmée (BOM/catalog `0.0.118` POM + `.toml` **200**), les **2 seuls** dépôts qui pinnent le contrat sont repinnés (`planner` `build.gradle.kts`, `codebase` `libs.versions.toml`) ; `dependencyInsight` prouve `0.0.3 -> 0.0.4` malgré la contrainte BOM ; compiles + ktlint VERTS (0 warning), CI planner `41327481771` ✅ et codebase `41327484201` ✅ 3m45s + OCR ✅. Aucun code applicatif modifié. Précédent S-331 : XF-FP-2 clos (N0 typé + fold `PivotModel`).)_
 _Dernière mise à jour (antérieure) : 2026-11-01 (S-331 — **EPIC XF-FP-2 TERMINÉ (US-0→US-7)**. **XF-FP2-6** : N0 `AgentTool.validate` `Result<Unit>` → scellé `ValidationOutcome`/`ValidationProblem` (kotlin-stdlib only), les 4 contrôles de `GradleTaskTool` **s'accumulent**, RED prouvé par compilation ; `agent-contracts 0.0.4` publié (bundle `b47de75d`, repo1 **200**) + BOM/catalog `0.0.118` (bundle `bceecd3f`, propagation en polling). **XF-FP2-7** : `document` `PivotBlock.fold` internal exhaustif sans `else`, **91 → 24** `is` legacy (5 fichiers migrés, 5 commits, CI `41321357878` ✅ 29m56s). Précédent S-330 : MEM-WARN-FREE clos.)_
 _Dernière mise à jour (antérieure) : 2026-11-01 (S-330 — **EPIC MEM-WARN-FREE TERMINÉ (WARN-0→WARN-13)** : **478 warnings → 34** sur **13 dépôts**, zéro `@Suppress` ajouté. S-330 : planner 6→0, readme 0 (déjà propre, vérifié par sonde), hyperframes 2→0 (**P0** : `data class` à constructeur privé dont le `copy()` généré exposait le constructeur → classe régulière), codex 31→0 (15 `Json` hissés, 4 opt-ins par déclaration, 5 noms Windows-hostiles), plantuml 34→0, video-kernel+youtube-auth 3→0 (**2 `@Suppress` préexistants retirés**), N0 (9 builds) 2→0. Les 34 restants = 2 familles **tierces** consignées (Cucumber `@CucumberOptions` ×31, AsciidoctorJ `Options.map()` ×3). Pièges ajoutés : `-q` masque les warnings ; `@Suppress` préexistant = warning caché. 7 CI vertes.)_ 
 _Dernière mise à jour (antérieure) : 2026-11-01 (S-329 — **XF-FP-2 US-4/US-5 ✅** (capsule `FishAudioTtsEngine` en `Schedule` + backoff jitté, `arrow-resilience` au catalogue local, piège `recurs(n)` = n retries ; codebase `RagVectorStore` en `resourceScope { install }` avec échec de `close()` **capturé**) **+ nouvel EPIC `MEM-WARN-FREE` : 400 warnings → 34 sur 6 dépôts** (bakery 107→0 dont suppression de l'overload déprécié `DomainResolver.resolve(MutableList)`, graphify 7→0, capsule 200→31 P2 Cucumber, codebase 39→0, slider 16→0, document 31→3 P2 AsciidoctorJ), **6 CI vertes**, zéro `@Suppress` ajouté ; **piège** : `--rerun-tasks` seul masque les warnings via le build cache → `--no-build-cache`. Précédent S-328 : XF-FP-2 ouvert + 3 US.)_
@@ -430,14 +431,19 @@ et masque les diagnostics → `--rerun-tasks --no-build-cache` obligatoire.
 | WARN-11 | `plantuml` 34 → 0 | ✅ S-330 | `66a120f`/`4cb6a45`/`b464f85`, CI `41317002477` ✅ 14m23s
 | WARN-12 | `video-kernel` + `youtube-auth` 3 → 0 (2 `@Suppress` préexistants retirés) | ✅ S-330 | `5e7478e`, CI `41316775132` ✅ 1m06s
 | WARN-13 | N0 `workspace-bom` (9 builds) 2 → 0 | ✅ S-330 | commit N0 + CI workspace-bom
+| WARN-14 | `document` 3 → **0** (AsciidoctorJ `Options.map()`) : valeur pure `AsciidoctorConversionRequest` + `conversionRequest(...)`, `buildOptions` = adaptateur ; **+3 tests** (assertions plus fortes) | ✅ S-333 | `50301eb`, CI `41332495591` ✅ ~30 min
+| WARN-15 | `capsule` **31 → 0** : **16** runners Cucumber → moteur suite JUnit Platform (`@Suite`/`@IncludeEngines`, pattern déjà utilisé par 47 runners) + garde `CucumberRunnerEngineTest` | ✅ S-333 | `693d19b` + `6dd56c3`, CI `41333347488` ✅ + `41333347414` ✅ 25/25
 |===
 
-**EPIC MEM-WARN-FREE TERMINÉ (WARN-0→WARN-13)** : **478 warnings → 34** sur 13 dépôts,
-zéro `@Suppress` ajouté, zéro `-nowarn`. Les 34 restants = 2 familles **tierces**
-(Cucumber `@CucumberOptions` ×31, AsciidoctorJ `Options.map()` ×3), consignées pour une
-US d'upgrade. Pièges ajoutés : `-q` masque les warnings ; `@Suppress` préexistant =
-warning caché ; `data class` à constructeur privé → `copy()` exposant (P0).
-Rapport `.agents/sessions/330-mem-warn-free-closed.adoc`.
+**EPIC MEM-WARN-FREE TERMINÉ (WARN-0→WARN-15)** : **478 warnings → 0** sur **13
+dépôts** (les 34 P2 tiers soldés en S-333), zéro `@Suppress` ajouté, zéro `-nowarn`.
+Pièges ajoutés : `-q` masque les warnings ; `@Suppress` préexistant = warning caché ;
+`data class` à constructeur privé → `copy()` exposant (P0) ; **un marqueur tierce
+peut être déprécié sans être dans l'inventaire** (Cucumber
+`io.cucumber.junit.platform.engine.Cucumber`, masqué par les 31 `@CucumberOptions`) ;
+mesure avant/après par **worktree** sur le commit parent.
+Rapports `.agents/sessions/330-mem-warn-free-closed.adoc` (WARN-0→13) et
+`.agents/sessions/333-warn-p2-upgrade.adoc` (WARN-14/15).
 
 _Livré S-329 (WARN-0→WARN-6)_ : **400 warnings → 34** sur 6 dépôts, **6 CI vertes**,
 zéro `@Suppress` ajouté. Faits saillants : overload déprécié supprimé, assertions
