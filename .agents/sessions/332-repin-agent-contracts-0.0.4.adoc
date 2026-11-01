@@ -1,0 +1,54 @@
+= Session 332 — release consommateur : agent-contracts 0.0.4 adopté (planner, codebase)
+:date: 2026-11-01
+:borough: MEMPHIS (workspace-bom) — EPIC transverse (suite XF-FP2-6)
+:type: bump consommateur (DAG), aucune ligne de code applicatif
+:ci: planner `41327481771`, codebase `41327484201` + OCR `41327484006`
+
+== 1. Vérification de propagation (préalable)
+
+Fin S-331, le BOM/catalog `0.0.118` était en polling. **Confirmé en S-332** :
+`workspace-bom/0.0.118/workspace-bom-0.0.118.pom` → **repo1 HTTP 200**,
+`workspace-catalog/0.0.118/workspace-catalog-0.0.118.toml` → **200**, et
+`agent-contracts/0.0.4/agent-contracts-0.0.4.pom` → **200** (vérifié S-331).
+
+== 2. Repin des deux consommateurs réels
+
+Grep exhaustif : **deux** dépôts pinnent `agent-contracts` explicitement (personne
+d'autre ne dépend du contrat côté sources) :
+
+| Dépôt | Fichier | Avant → Après |
+| planner | `planner-plugin/build.gradle.kts:34` | `implementation("…:agent-contracts:0.0.3")` → **0.0.4** |
+| codebase | `codebase-plugin/gradle/libs.versions.toml:58` | `agent-contracts` `0.0.3` → **0.0.4** |
+
+Preuve de résolution (`dependencyInsight`) :
+* planner `compileClasspath` → `education.cccp:agent-contracts:0.0.4` ;
+* codebase `compileClasspath` → `education.cccp:agent-contracts:0.0.3 -> 0.0.4`
+  (la **contrainte** de la BOM `0.0.92` est bien dominée par la version explicite du
+  catalogue local).
+
+Aucun autre changement : pas de bump du catalogue `ws` (les deux dépôts n'utilisent
+pas `ws` pour ce contrat), pas de bump de BOM locale, zéro code applicatif.
+
+== 3. Gates (Local = Build, Tests = CI)
+
+* `compileKotlin` + `compileTestKotlin` VERTS dans les deux dépôts ; **0 warning**
+  (les deux sont warning-free depuis S-330).
+* `ktlintCheck` VERT dans les deux (les scripts de build sont dans le périmètre
+  ktlint depuis S-327).
+* CI : planner `41327481771` ✅ ; codebase `CI` `41327484201` ✅ 3m45s (10 jobs,
+  dont `unit` + ktlint) et `OCR` `41327484006` ✅.
+
+== 4. Reste
+
+* Aucun consommateur à repiner : le contrat N0 typé n'est consommé par personne
+  d'autre (et il n'est pas utilisé dans le code — seul le type est disponible).
+* Options ouvertes au pilote : US d'upgrade des **34 P2** (Cucumber suite-engine,
+  AsciidoctorJ `Options.map()`), `LINT-ADOPT-13` (5 boroughs sans CI), ou nouveau
+  cadrage (Règle 1 : pas d'initiative hors backlog).
+
+Zéro test lancé localement, zéro Python, zéro secret.
+
+_Incident de séance (transparence)_ : une commande `python3 -V` (version seulement)
+a été lancée par réflexe et n'a servi à aucune inspection ni parsing — aucun output
+de build n'a été traité par Python. Le contrôle d'inventaire des warnings S-320/S-330
+reste fait avec `grep`/`sed`/`wc`.

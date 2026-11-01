@@ -1,21 +1,25 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-332 — dernière terminée : **331** (**XF-FP-2 TERMINÉ** : N0 `ValidationOutcome`
-publié + fold `PivotModel`). Avant : **330** (MEM-WARN-FREE clos), **329**
-(XF-FP-2 US-4/5 + warnings), **328** (XF-FP-2 ouvert), **327** (lint 10 boroughs).
+333 — dernière terminée : **332** (release consommateur : `agent-contracts 0.0.4`
+adopté par `planner` + `codebase`). Avant : **331** (XF-FP-2 clos), **330**
+(MEM-WARN-FREE clos), **329**, **328**, **327**.
 
-=== Mission Session 332 — ordre proposé
+=== Mission Session 333 — ordre proposé
 
-. **Vérifier la propagation** `workspace-bom`/`workspace-catalog 0.0.118` sur repo1
-   (l'artefact `agent-contracts 0.0.4` est déjà à 200 ; le BOM était en polling en
-   fin de S-331). Si 200 : noter dans l'INDEX.
-. **Release consommateur** : repiner les catalogues des boroughs consommateurs sur
-   `0.0.118` (`planner`, `codebase`, …) — Règle 2 « toujours granted », ordre DAG.
-3. **Optionnel** : US d'upgrade des **34 P2** (Cucumber suite-engine, AsciidoctorJ
-   `Options.map()`), ou `LINT-ADOPT-13` (boroughs sans CI), au choix pilote.
-. Aucun EPIC actionnable restant hors ces options : proposer un cadrage au pilote
-   plutôt que d'improviser (Règle 1).
+. **US d'upgrade des 34 P2** (warnings tiers) : `capsule` Cucumber 7.34
+   `@CucumberOptions` (16 runners → suite engine JUnit Platform) et `document`
+   AsciidoctorJ `Options.map()` (`For internal use only`). Chaque migration est un
+   refactor de **tests** : vérifier d'abord qu'elle est faisable sans affaiblir les
+   scénarios (sinon la consigner et la laisser).
+. **`LINT-ADOPT-13`** (academy, dashboard, api-key-pool, jhipster, magic-stick) :
+   **sans CI**, donc gate local seulement — décision pilote requise.
+. **Sinon** : proposer un cadrage au pilote (Règle 1 — pas d'initiative hors
+   backlog). Candidats issus des lectures S-328 : `document` `DocumentTranslator`
+   (état mutable qui s'échappe, `clear()` de l'appelant), `slider`/`bakery`/`document`
+   adoption d'`arrow-resilience` (D12), accumulation `zipOrAccumulate` sur les
+   validateurs restants.
+. Release consommateur si un artefact est publié (Règle 2 « toujours granted »).
 
 _Documents maîtres_ : `.agents/CADRAGE_EPIC_XF_FP_2.adoc` (clos),
 `.agents/CADRAGE_EPIC_MEM_WARN_FREE.adoc` (clos),

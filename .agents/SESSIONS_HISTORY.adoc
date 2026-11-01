@@ -408,3 +408,14 @@ puis BOM/catalog `0.0.118` (bundle `bceecd3f`, propagation en polling), garde
 (`1029d60`, `0e34519`, `e672c4b`, `db9ec9d`, `fbacbda`), CI `41321357878` ✅ 29m56s.
 **EPIC XF-FP-2 clos (US-0→US-7).** Rapport
 `.agents/sessions/331-xf-fp2-n0-typed-fold-pivot.adoc`.
+
+== Session 332 (2026-11-01) — release consommateur : agent-contracts 0.0.4 adopté
+
+Propagation repo1 **confirmée** (BOM/catalog `0.0.118` POM + `.toml` → 200).
+Grep exhaustif : **deux** dépôts seulement pinnent `agent-contracts` explicitement.
+Repin `0.0.3 → 0.0.4` de `planner-plugin/build.gradle.kts` et de
+`codebase-plugin/gradle/libs.versions.toml` ; `dependencyInsight` prouve
+`0.0.3 -> 0.0.4` (la contrainte de la BOM `0.0.92` est dominée par la version
+explicite). Compiles + `ktlintCheck` VERTS, 0 warning ; CI planner `41327481771` ✅,
+codebase `CI` `41327484201` ✅ 3m45s + `OCR` `41327484006` ✅. Aucun code applicatif
+modifié. Rapport `.agents/sessions/332-repin-agent-contracts-0.0.4.adoc`.

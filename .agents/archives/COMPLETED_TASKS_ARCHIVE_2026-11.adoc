@@ -140,3 +140,10 @@
   `0.0.118` (`bceecd3f`, polling).
 * `document` : `PivotBlockFold` exhaustif sans `else`, 91 → 24 `is` legacy,
   5 commits, CI 29m56s. **EPIC clos.**
+
+== S-332 — release consommateur `agent-contracts 0.0.4` ✅
+
+* Propagation repo1 confirmée (`workspace-bom`/`catalog 0.0.118` → 200).
+* Repin des 2 seuls consommateurs (`planner`, `codebase`) ; `0.0.3 -> 0.0.4`
+  prouvé par `dependencyInsight`.
+* CI planner `41327481771` ✅, codebase `41327484201` ✅ + OCR ✅.
