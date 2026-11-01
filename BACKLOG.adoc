@@ -5,7 +5,8 @@
 :sectnums:
 
 _Dernière mise à jour (antérieure) : 2026-10-25 (S-307 — **BOM/catalog 0.0.101 : `document-plugin 0.0.25` + `bakery-plugin 0.0.28`**, revue cheroliv.com ; publication Central `d6e5bf37`, propagation repo1 200, CI verte `67b0d8c`. Précédent S-306 : BOM/catalog 0.0.100 bakery 0.0.27, bundle `936b54a1`, CI verte `c6dc0e1`. Précédent S-299 : CI cross-borough < 5 min.)_
-_Dernière mise à jour : 2026-11-01 (S-325 — **EPIC `MEM-LINT-ADOPTION` ouvert + pilote `graphify` ✅** : audit — la convention `build.lint` n'est appliquée que par bakery et conventions-gradle, ≈ **2 900 fichiers Kotlin** sans aucune analyse statique sur 22 boroughs ; cadrage `.agents/CADRAGE_EPIC_MEM_LINT_ADOPTION.adoc` (7 décisions, 14 US, 1 borough = 1 session). **Pilote** : `graphify-plugin` + `.editorconfig` tracké + **647 violations** corrigées (39 fichiers, preuve de non-collatéral) + wildcard imports + garde publication rendue **whitespace-insensitive** (piège S-244 F34 reproduit) ; gate **gratuit** (`build` → `check`, 4 tâches ktlint), CI `41268477861` ✅ 2m00s. Précédent S-324 : MEM-LINT-GATE (bakery) clos.)_
+_Dernière mise à jour : 2026-11-01 (S-326 — **`LINT-ADOPT-2` ✅ : `video-kernel` + `youtube-auth`** — les 2 builds standalone du dépôt adoptent `build.lint` + `.editorconfig` tracké ; **312 violations** corrigées (62 fichiers, 200 kernel / 112 auth), `FIELD_PATTERN` → `fieldPattern` ; gate **gratuit** (`check` contient 3+4 tâches ktlint, CI `./gradlew build`), CI `41269513021` ✅ 1m10s. **Défaut réel corrigé** : `jvmToolchain(JavaVersion.VERSION_25.ordinal)` demandait le JDK **24** → `jvmToolchain(25)` (le noyau N1 était compilé pour 24). Précédent S-325 : MEM-LINT-ADOPTION ouvert + pilote graphify (647 violations).)_
+_Dernière mise à jour (antérieure) : 2026-11-01 (S-325 — **EPIC `MEM-LINT-ADOPTION` ouvert + pilote `graphify` ✅** : audit — la convention `build.lint` n'est appliquée que par bakery et conventions-gradle, ≈ **2 900 fichiers Kotlin** sans aucune analyse statique sur 22 boroughs ; cadrage `.agents/CADRAGE_EPIC_MEM_LINT_ADOPTION.adoc` (7 décisions, 14 US, 1 borough = 1 session). **Pilote** : `graphify-plugin` + `.editorconfig` tracké + **647 violations** corrigées (39 fichiers, preuve de non-collatéral) + wildcard imports + garde publication rendue **whitespace-insensitive** (piège S-244 F34 reproduit) ; gate **gratuit** (`build` → `check`, 4 tâches ktlint), CI `41268477861` ✅ 2m00s. Précédent S-324 : MEM-LINT-GATE (bakery) clos.)_
 _Dernière mise à jour (antérieure) : 2026-11-01 (S-324 — **MEM-LINT-GATE TERMINÉ (LINT-1/2/3)** : **32 violations ktlint / 19 fichiers** résolues chez bakery (7 `src/main`, 25 `src/test` ; `ktlintFormat` a touché exactement les fichiers signalés — zéro collatéral, formatting-only, `b6852ba3`) ; le job `unit` du workflow `Test` exécute désormais `./gradlew ktlintCheck` (step `Lint (ktlint)`, ≈ 10 s, **aucun job ajouté**) et `BakeryCucumberShardCoverageTest` garde le gate (workflow contient `./gradlew ktlintCheck`, baseline sans `<file>` ; RED prouvé par construction) (`1bd46024`). CI bakery `41267145721` ✅ (4m02s). Précédent S-323 : XB-FP clos (US-0→US-7) + mesure isolée `5m28s`.)_
 _Dernière mise à jour (antérieure) : 2026-11-01 (S-323 — **XB-FP TERMINÉ (US-0→US-7)** : `XB-FP-6` — les trois classes fonctionnelles lentes deviennent pures + **un** smoke TestKit par concern : bakery `LocalizeSeoHead` (**10 → 3 builds**) via l'objet pur `OgImageLanguage` (7 UT, RED par compilation) + 2 scénarios BDD ; graphify `Incremental` (**11 → 7**) par fusion sans perte d'assertion ; slider `GenerateDeckPipeline` (**7 → 3**). ≈ 88 s → ≈ 40 s (−55 %). **Mesure isolée `XB-FP-7` : `5m28s`** (run `41264633001`, 21/21, aucun concurrent) → KPI ≤ 5m30s tenu, gain TestKit caché non démontré. CI vertes bakery `41264081199`, graphify `41264087285`, slider `41264090679`. Découverte : `ktlintCheck` **rouge à HEAD** (le CI bakery ne lance jamais `check`) → nouvel EPIC `MEM-LINT-GATE`. Précédent S-322 : seam plantuml + tests purs slider + source set `sharedTest`.)_
 _Dernière mise à jour (antérieure) : 2026-11-01 (S-322 — **XB-FP : seam plantuml ✅ (`999a15d`), tests purs slider ✅ (`09c1ea7` : matrice 24 clés × 10 langues + 1 smoke), découplage source set `sharedTest` ✅ (`04c018aa` : shards BDD sans `compileFunctionalTestKotlin`)**. XB-FP-5 et XB-FP-7 clos ; XB-FP-6 partiel (reste bakery/graphify/slider-GenerateDeckPipeline) ; mesure isolée TestKit à faire. Précédent S-321 : TestKit home hors build + caché.)
@@ -295,7 +296,7 @@ toute garde qui lit un script de build est **whitespace-insensitive**.
 
 | LINT-ADOPT-0 | Cadrage + audit (22 boroughs, 2 populations, 7 décisions) | `workspace-bom/.agents` | ✅ S-325
 | LINT-ADOPT-1 | **Pilote `graphify`** — convention + `.editorconfig` + **647 violations** corrigées (39 fichiers) + wildcard imports + garde publication whitespace-insensitive ; gate gratuit (`build` → `check`) | `graphify-gradle` | ✅ S-325 (`a54b218`, CI `41268477861`, 2m00s)
-| LINT-ADOPT-2 | `video-kernel` (68 `.kt`, CI `build`) | `video-kernel-gradle` | 🟡 À FAIRE
+| LINT-ADOPT-2 | `video-kernel` (52 `.kt` + **16** `youtube-auth` du même dépôt, CI `build`) | `video-kernel-gradle` | ✅ S-326 (`7dec72e` — **312 violations** / 62 fichiers ; gate gratuit, 3+4 tâches ktlint dans `check` ; CI `41269513021` 1m10s ; **défaut réel** : `VERSION_25.ordinal` = JVM **24** → `jvmToolchain(25)`)
 | LINT-ADOPT-3 | `planner` (54, CI `:planner-plugin:build`) | `planner-gradle` | 🟡 À FAIRE
 | LINT-ADOPT-4 | `readme` (21, CI `clean check`) | `readme-gradle` | 🟡 À FAIRE
 | LINT-ADOPT-5 | `hyperframes` (109, CI `check`) | `hyperframes-gradle` | 🟡 À FAIRE
@@ -318,6 +319,15 @@ gratuit**, aucun workflow modifié. Piège reproduit et corrigé : `GraphifyPlug
 parsait `version = …` ligne à ligne, cassé par le reflow ktlint (famille S-244 F34)
 → garde whitespace-insensitive. Rapport
 `.agents/sessions/325-mem-lint-adoption-graphify.adoc`.
+
+_Livré S-326 (LINT-ADOPT-2)_ : `video-kernel-gradle` (2 builds standalone) adopte
+la convention + `.editorconfig` tracké ; **312 violations** corrigées (62 fichiers,
+200 kernel / 112 auth) ; `FIELD_PATTERN` renommé `fieldPattern` (non auto-fixable) ;
+gate **gratuit** (3+4 tâches ktlint dans `check`, CI `./gradlew build` par job),
+CI `41269513021` ✅ 1m10s. **Défaut réel révélé** : `kotlin.jvmToolchain(JavaVersion.VERSION_25.ordinal)`
+demandait le JDK **24** (ordinal décalé) — le noyau N1 était compilé pour 24 ;
+corrigé en `jvmToolchain(25)`. Rapport
+`.agents/sessions/326-lint-adopt-2-video-kernel.adoc`.
 
 '''
 == EPIC PUB — Publication Maven Central

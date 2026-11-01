@@ -299,3 +299,18 @@ ktlint cassait la garde ligne-à-ligne (famille S-244 F34). Gate **gratuit** :
 `check --dry-run` contient 4 tâches ktlint et le CI lance `./gradlew build` —
 aucun workflow modifié. CI `41268477861` ✅ (2m00s). Commit `a54b218`. Rapport
 `.agents/sessions/325-mem-lint-adoption-graphify.adoc`.
+
+== Session 326 (2026-11-01) — LINT-ADOPT-2 : video-kernel + youtube-auth
+
+Reprise immédiate de S-325 (« enchaine »). `video-kernel-gradle` (2 builds
+standalone : 52 `.kt` kernel + 16 auth) adopte `education.cccp.build.lint` 0.0.7
+et un `.editorconfig` tracké ; **312 violations** corrigées (62 fichiers : 200
+kernel / 112 auth) par `ktlintFormat` ; `FIELD_PATTERN` renommé `fieldPattern`
+(`function-naming`, non auto-fixable). Gate **gratuit** : `check --dry-run`
+contient 3 tâches ktlint (kernel) et 4 (auth), le workflow lance `./gradlew build`
+par job → CI `41269513021` ✅ (1m10s, 2/2).
+**Défaut réel révélé** : `kotlin.jvmToolchain(JavaVersion.VERSION_25.ordinal)`
+valait **24** (l'énumération `JavaVersion` commence à `VERSION_1_1`) — le noyau N1
+était compilé pour JVM 24 alors que le workspace cible 25 ; corrigé en
+`jvmToolchain(25)`. Commit `7dec72e`. Rapport
+`.agents/sessions/326-lint-adopt-2-video-kernel.adoc`.

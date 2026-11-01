@@ -1,6 +1,6 @@
 = CADRAGE — EPIC transverse MEM-LINT-ADOPTION : analyse statique pour tous les boroughs
 :date: 2026-11-01
-:statut: 🟢 EN COURS (pilote `graphify` ✅ S-325 ; 12 boroughs à faire)
+:statut: 🟢 EN COURS (pilotes `graphify` ✅ S-325 et `video-kernel` + `youtube-auth` ✅ S-326 ; 11 boroughs à faire)
 :porteur: MEMPHIS (workspace-bom) — EPIC transverse cross-borough
 :type: cadrage + audit (lecture seule) + plan d'adoption
 
@@ -97,7 +97,7 @@ style. Deux sous-populations :
 
 | LINT-ADOPT-0 | Cadrage + audit (ce document) | `workspace-bom/.agents` | ✅ S-325
 | LINT-ADOPT-1 | **Pilote `graphify`** — convention + `.editorconfig` + format (647 violations) + garde du publication test | `graphify-gradle` | ✅ S-325 (`a54b218`, CI `41268477861`)
-| LINT-ADOPT-2 | `video-kernel` (68 `.kt`, CI `build`) | `video-kernel-gradle` | 🟡 À FAIRE
+| LINT-ADOPT-2 | `video-kernel` (52 `.kt` + **16** `youtube-auth` dans le même dépôt, CI `build` par job) | `video-kernel-gradle` | ✅ S-326 (`7dec72e`, **312 violations**, 62 fichiers ; CI `41269513021`, 1m10s ; défaut réel : `VERSION_25.ordinal` = JVM 24 → `jvmToolchain(25)`)
 | LINT-ADOPT-3 | `planner` (54, CI `:planner-plugin:build`) | `planner-gradle` | 🟡 À FAIRE
 | LINT-ADOPT-4 | `readme` (21, CI `clean check`) | `readme-gradle` | 🟡 À FAIRE
 | LINT-ADOPT-5 | `hyperframes` (109, CI `check`) | `hyperframes-gradle` | 🟡 À FAIRE

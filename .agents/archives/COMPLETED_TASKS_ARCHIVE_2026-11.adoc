@@ -86,3 +86,10 @@
   **647 violations** corrigées (39 fichiers, non-collatéral prouvé) + wildcard
   imports expansés + garde publication whitespace-insensitive (S-244 F34).
 * Gate **gratuit** (`build` → `check`, 4 tâches ktlint) ; CI `41268477861` ✅ 2m00s.
+
+== S-326 — LINT-ADOPT-2 : video-kernel + youtube-auth ✅
+
+* Convention `build.lint` + `.editorconfig` tracké sur les 2 builds du dépôt.
+* **312 violations** corrigées (62 fichiers), `FIELD_PATTERN` → `fieldPattern`.
+* **Défaut réel** : `VERSION_25.ordinal` demandait JVM **24** → `jvmToolchain(25)`.
+* Gate gratuit (`build` → `check`, 3+4 tâches ktlint) ; CI `41269513021` ✅ 1m10s.

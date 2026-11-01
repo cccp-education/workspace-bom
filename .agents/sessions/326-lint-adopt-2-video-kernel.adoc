@@ -1,0 +1,68 @@
+= Session 326 — MEM-LINT-ADOPTION : LINT-ADOPT-2 (`video-kernel` + `youtube-auth`)
+:date: 2026-11-01
+:borough: MEMPHIS (workspace-bom) — EPIC transverse
+:type: adoption lint (formatting-only + 2 défauts réels)
+:ci: video-kernel `41269513021`
+
+== Mission
+
+Reprise immédiate de S-325 (« enchaine ») : `LINT-ADOPT-2` — `video-kernel`
+(68 `.kt` comptés côté audit, en réalité **52** kernel + **16** auth dans le même
+dépôt `video-kernel-gradle`). Les deux builds sont standalone et le workflow a
+**un job par build**, chacun lançant `./gradlew build` → gate gratuit attendu.
+
+== 1. Mesure (RED)
+
+Convention `education.cccp.build.lint` 0.0.7 + `.editorconfig` tracké
+(`root = true`) ajoutés aux **deux** builds ; `ktlintCheck` :
+
+[cols="2,2,2,2", options="header"]
+|===
+| Build | main | test / functional | Total
+
+| `video-kernel-plugin` | 91 (+2 kotlin scripts) | 107 | **200**
+| `youtube-auth-plugin` | 66 (+7 scripts) | 30 test + 9 functional | **112**
+|===
+
+Règles dominantes : `function-signature` 92, `multiline-expression-wrapping` 64,
+`no-empty-first-line-in-class-body` 57, `argument-list-wrapping` 23,
+`chain-method-continuation` 27, `class-signature` 13, `import-ordering` 9.
+**Une seule** violation non auto-corrigeable : `function-naming` sur
+`private fun FIELD_PATTERN(key)` (nom de fonction en majuscules, confondu avec une
+constante).
+
+== 2. GREEN
+
+* `ktlintFormat` sur les deux builds : **312 violations** corrigées, **62 fichiers**
+  (le formateur est idempotent — un fichier modifié est un fichier non conforme,
+  donc présent dans les rapports RED ; aucun fichier conforme n'est réécrit).
+* `FIELD_PATTERN` → `fieldPattern` (renommage privé, appel mis à jour) : la règle
+  `function-naming` n'est pas auto-corrigeable.
+* `ktlintCheck` **VERT** (4 tâches kernel, 7 tâches auth), `compileKotlin`
+  `compileTestKotlin` `compileFunctionalTestKotlin` VERTS sur les deux builds.
+* **Gate gratuit confirmé** : `check --dry-run` contient **3** tâches ktlint
+  (kernel) et **4** (auth) ; le workflow lance `./gradlew build` pour chaque job.
+
+== 3. Défaut réel révélé par l'adoption
+
+`video-kernel-plugin/build.gradle.kts` : `kotlin.jvmToolchain(JavaVersion.VERSION_25.ordinal)`.
+L'ordinal de `VERSION_25` vaut **24** (l'énumération commence à `VERSION_1_1`,
+donc décale de 1) : le noyau N1 était **compilé pour JVM 24** alors que tout le
+workspace cible 25 (le poste local a un JDK 24 installé via SDKMAN, ce qui masquait
+le problème ; le CI le téléchargeait via foojay). Corrigé en `jvmToolchain(25)`
+(piège déjà inscrit au PROMPT_REPRISE depuis S-317). Build local vert avec le JDK 25.
+
+== 4. CI (preuve)
+
+| Dépôt | Commit | Run | Résultat
+| video-kernel-gradle | `7dec72e` | `41269513021` | ✅ `1m10s` — jobs `video-kernel (library)` + `youtube-auth (plugin)` verts (build → check → ktlint)
+
+Zéro test lancé localement, zéro secret, zéro Python.
+
+== 5. Reste
+
+- `LINT-ADOPT-3` : `planner` (54 `.kt`, CI `:planner-plugin:build`) — prochaine.
+- Puis `readme` (21), `hyperframes` (109), `codex` (152), `plantuml` (319),
+  `document` (390), `workspace-bom` N0 (10 sous-builds).
+- Boroughs à CI test-only (`slider`, `capsule`, `codebase`) : convention **+**
+  step `Lint (ktlint)` (pattern S-324).

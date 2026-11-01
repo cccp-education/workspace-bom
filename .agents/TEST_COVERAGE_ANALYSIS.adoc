@@ -1,6 +1,19 @@
 = TEST_COVERAGE_ANALYSIS — workspace-bom (MEMPHIS)
 :date: 2026-11-01
-:session: 325
+:session: 326
+
+== Session 326 (2026-11-01) — LINT-ADOPT-2 : video-kernel + youtube-auth
+
+* **312 violations** de style corrigées (62 fichiers : 200 kernel / 112 auth),
+  formatting-only ; aucun test supprimé, aucune assertion modifiée.
+* `FIELD_PATTERN` → `fieldPattern` (règle `function-naming`, non auto-fixable) —
+  fonction privée, appel mis à jour.
+* **Défaut réel** corrigé : `kotlin.jvmToolchain(JavaVersion.VERSION_25.ordinal)`
+  demandait le JDK **24** ; `jvmToolchain(25)` (les tests tournent enfin sur la
+  même JVM que le reste du workspace).
+* Gate exécuté **sans nouveau job** : `check --dry-run` = 3 tâches ktlint (kernel)
+  et 4 (auth) ; CI `41269513021` ✅ (1m10s, 2 jobs).
+
 
 == Session 325 (2026-11-01) — MEM-LINT-ADOPTION : pilote graphify (garde durcie)
 
