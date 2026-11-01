@@ -1,0 +1,95 @@
+= Session 337 — EPIC `XF-FP-3` terminé (US-2/US-3) + release `document-plugin 0.0.28`
+:date: 2026-11-01
+:borough: MEMPHIS (workspace-bom) — EPIC `XF-FP-3`, exécuté dans `document` + `PUB-3.13`
+:type: refactor DDD/FP + release DAG (N0 → N2)
+:ci: document `41355439684` ✅ (code de la session) ; puis `4135776xxxx`/bakery/workspace-bom
+
+== 1. Mission
+
+Plan acté en S-335/336 : livrer `XF-FP3-2` + `XF-FP3-3` **ensemble** (une seule release),
+puis `document-plugin 0.0.28`. Règle appliquée : **la CI verte du code précède la
+publication** (run `41355439684` ✅ 37 min sur `7e50e1d` avant tout bump).
+
+== 2. `XF-FP3-3` — capacité `TracedArticleTranslator` (fin du downcast)
+
+*Constat* : depuis `XF-FP3-1`, `BatchDocumentTranslator` testait
+`documentTranslator is DocumentTranslator` — un couplage à l'implémentation
+concrète (DIP violé) pour accéder aux diagnostics.
+*Livré* :
+
+[source,kotlin]
+----
+public interface ArticleTranslator { fun translate(...): String }
+
+public interface TracedArticleTranslator : ArticleTranslator {
+    fun translateOutcome(asciidoc: String, sourceLanguage: String, targetLanguage: String): DocumentTranslation
+}
+----
+
+`DocumentTranslator : TracedArticleTranslator` ; `TranslationTrace` et
+`DocumentTranslation` deviennent **publics** (type de retour de la capacité) ;
+`TreeTranslationAdapter` reste un simple `ArticleTranslator` (il ne produit pas de
+diagnostic par bloc) ; `BatchDocumentTranslator` fait un `when (is
+TracedArticleTranslator)` — plus aucune référence au type concret.
+*Test* `BatchDocumentTranslatorTraceTest` (2) : un faux `TracedArticleTranslator`
+qui **n'est pas** un `DocumentTranslator` alimente le rapport ; un traducteur sans
+la capacité n'écrit aucun rapport. **RED prouvé par compilation**
+(`Unresolved reference 'TracedArticleTranslator'`).
+
+== 3. `XF-FP3-2` — les diagnostics du livre ne sont plus jetés
+
+*Constat* : `BookTranslator` créait son propre `DocumentTranslator` et **jetait** la
+trace de chaque page ; un livre traduit pouvait contenir un tableau cassé sans
+aucune trace.
+*Livré* :
+
+. `BookTranslator.translate(..., onPageTrace: (BookSection, TranslationTrace) -> Unit = { _, _ -> })`
+   — **seam** (callback) : le traducteur reste **sans état**, l'appelant possède son
+   accumulateur. `translateBody` passe par `translateBlocksOutcome` (l'API retournée
+   de `XF-FP3-1`) et remonte la trace **une fois par page**.
+. `BookValidationReports` (objet pur) : écrit `book-<lang>-table-validation-report.json`
+   et/ou `book-<lang>-plantuml-validation-report.json` **seulement si** la trace est
+   non vide (Ink Economy Law : pas de fichier = « rien à signaler »), et **par
+   langue** (un run multi-langue n'écrase pas le rapport `fr` avec le `en`).
+   Réutilise les schémas JSON existants (`TableValidationReport`,
+   `PlantUmlValidationReport`) — un seul contrat pour les consommateurs.
+. `BookTranslationRunner` accumule `Map<ref, trace>` (dédoublonnée par `ref`) puis
+   écrit les rapports à côté du livre.
+. **`TranslatedBook` mémoïse `bodyResolver` par `ref`** : un livre illustré est
+   assemblé **deux fois** (découverte des scans, puis `:imagesdir:` relatif) et
+   l'ancienne version **re-traduisait toutes les pages** (2× le coût LLM, et deux
+   traductions potentiellement différentes pour le même contenu !). La mémoïsation
+   garantit « une traduction par page » et rend la collecte de traces exacte.
+*Tests* `BookValidationReportsTest` (3) : rapport tableau par langue, rapport
+PlantUML par langue, trace propre → **aucun fichier**. **RED prouvé par
+compilation** (`Unresolved reference 'BookValidationReports'`).
+
+== 4. Release DAG `document-plugin 0.0.28`
+
+[cols="3,2,3", options="header"]
+|===
+| Maillon | Version | Preuve
+
+| MEMPHIS catalogue/BOM | **0.0.120** (`document-plugin = "0.0.28"`) | bundle `1e10ce63-fc72-4ce0-b6c8-132a532f4309` ; repo1 POM + `.toml` **200**
+| document | **0.0.28** | bundle `30a380b8-4f13-4c2f-8e84-70b33497cffa` ; repo1 POM **200** (≈ 9 min) ; POM importe `workspace-bom:0.0.120`
+| bakery (consumer) | `workspaceVersion = 0.0.120` | `dependencyInsight` → `document-plugin:0.0.28 (by constraint)`
+|===
+
+Gardes alignées dans le même commit que chaque bump (`PlatformCatalogAlignmentTest`
+workspace-bom `0.0.120` ; `WorkspaceCatalogStructureTest` document `0.0.28`) ;
+`document` : pins `ws`/platform `0.0.119 → 0.0.120`, toml `0.0.27 → 0.0.28`.
+
+== 5. Gates
+
+* Local : `compileKotlin`/`compileTestKotlin` `--rerun-tasks --no-build-cache`
+  **0 warning**, `ktlintCheck` VERTS (document, agent-contracts, bakery).
+* CI **avant publication** : document `41355439684` ✅ 37 min (code `7e50e1d`).
+* CI de release : document + bakery + workspace-bom (commits de bump, code identique).
+* Zéro `@Suppress`, aucune assertion affaiblie ; `DocumentTranslation`/`TranslationTrace`
+  deviennent publics (élargissement, pas rupture).
+
+== 6. Reste
+
+* `XF-FP-3` **TERMINÉ (3/3 US)**.
+* Prochain delta `document` = **0.0.29**.
+* Piste toujours ouverte : audit des codes de sortie des autres étapes CI du workspace.

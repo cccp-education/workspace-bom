@@ -1,6 +1,20 @@
 = TEST_COVERAGE_ANALYSIS — workspace-bom (MEMPHIS)
 :date: 2026-11-01
-:session: 336
+:session: 337
+
+== Session 337 (2026-11-01) — XF-FP3-2/3 : 5 tests neufs, RED par compilation ×2
+
+* **`BatchDocumentTranslatorTraceTest`** (2, `document`) : un faux
+  `TracedArticleTranslator` qui **n'est pas** un `DocumentTranslator` alimente
+  `table-validation-report.json` (preuve du découplage) ; un traducteur sans la
+  capacité n'écrit aucun rapport. RED : `Unresolved reference 'TracedArticleTranslator'`.
+* **`BookValidationReportsTest`** (3) : rapport tableau par langue, rapport PlantUML
+  par langue, trace propre → **aucun fichier** (Ink Economy). RED :
+  `Unresolved reference 'BookValidationReports'`.
+* Aucun test supprimé ni affaibli ; `BookTranslatorTest`/`BookTranslateContentTest`
+  passent inchangés (le nouveau paramètre `onPageTrace` a une valeur par défaut).
+* Preuve = CI document `41355439684` ✅ (37 min) **avant** la publication `0.0.28`.
+
 
 == Session 336 (2026-11-01) — LINT-ADOPT-13 (formatting ; 1 assertion renforcée)
 

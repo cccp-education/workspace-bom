@@ -203,3 +203,15 @@
 * dashboard / api-key-pool / jhipster : **3 `lint.yml` minimaux** (sans masquage) —
   CI `41351988639`/`41351986527`/`41351987207`.
 * `magic-stick` CADUQUE (0 Kotlin). 1 warning réel corrigé (assertion renforcée).
+
+== S-337 — XF-FP-3 TERMINÉ (3/3) + document-plugin 0.0.28 ✅
+
+* **XF-FP3-3** : capacité `TracedArticleTranslator` (fin du downcast `is
+  DocumentTranslator`), `TranslationTrace`/`DocumentTranslation` publics, 2 tests.
+* **XF-FP3-2** : `BookValidationReports` (rapports par langue, seulement si findings) +
+  seam `onPageTrace` sans état + `TranslatedBook` **mémoïsé** (fin de la double
+  traduction des livres illustrés), 3 tests.
+* RED par compilation ×2 ; CI document `41355439684` ✅ avant publication.
+* **DAG** : BOM/catalog `0.0.120` (`1e10ce63`) → `document-plugin 0.0.28` (`30a380b8`)
+  → `bakery 0.0.120` (`document-plugin:0.0.28 by constraint`).
+* Prochain delta document = `0.0.29`.

@@ -1,37 +1,37 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-337 — dernière terminée : **336** (`LINT-ADOPT-13` ✅ : EPIC `MEM-LINT-ADOPTION`
-**TERMINÉ**, 1 748 violations → 0, 3 `lint.yml` minimaux). Avant : **335**
-(P0 `MEM-CI-GATE` + `PUB-3.13` `document-plugin 0.0.27`), **334** (`XF-FP3-1`).
+338 — dernière terminée : **337** (EPIC `XF-FP-3` **TERMINÉ** 3/3 + release
+`document-plugin 0.0.28`). Avant : **336** (`LINT-ADOPT-13` clos), **335**
+(P0 `MEM-CI-GATE` + `0.0.27`), **334** (`XF-FP3-1`).
 
-=== Mission Session 337 — ordre proposé
+=== Mission Session 338 — ordre proposé
 
-. **`XF-FP3-2` + `XF-FP3-3`** livrés **ensemble** (même borough, une seule release) :
-   `BookTranslator` expose la trace (rapport `book-validation-report.json`) et
-   `BatchDocumentTranslator` passe par une capacité explicite `TracedArticleTranslator`
-   (fin du downcast `is DocumentTranslator`). **RED par compilation**, puis tests.
-. **`PUB-3.13-bis`** — `document-plugin **0.0.28**` : DAG catalogue/BOM → plugin → `repo1`
-   → `bakery`. Règle 2 « toujours granted ».
-. Sinon : auditer les **codes de sortie** des autres étapes CI du workspace (piste S-335 :
-   un `bash -c` multi-lignes qui finit par un `echo` masque l'échec).
+. **Audit des codes de sortie des étapes CI** (piste S-335) : inventorier tous les
+   `run: |`/`bash -c` multi-lignes du workspace ; un script dont la **dernière
+   commande** n'est pas le gate (ou qui n'a pas `set -e`) masque l'échec. Livrer une
+   garde (modèle `N0ContractsGateTest`) là où c'est structurel.
+. **Sinon** : proposer un cadrage au pilote (Règle 1 — aucun EPIC ouvert : `XF-FP-3`,
+   `MEM-LINT-ADOPTION`, `MEM-CI-GATE`, `XF-FP-2`, `MEM-WARN-FREE` sont clos).
+   Candidats : `document 0.0.29` (si delta source), adoption `arrow-resilience`
+   restante (D12), `zipOrAccumulate` des validateurs restants.
 
 _Documents maîtres_ : `.agents/CADRAGE_EPIC_MEM_WARN_FREE.adoc` (clos) ;
 `.agents/CADRAGE_EPIC_MEM_LINT_ADOPTION.adoc` (clos) ;
-`.agents/CADRAGE_EPIC_XF_FP_2.adoc` (clos) ; `BACKLOG.adoc` § `XF-FP-3`.
+`.agents/CADRAGE_EPIC_XF_FP_2.adoc` (clos) ; `BACKLOG.adoc` (§ `XF-FP-3` clos).
 
 == État du code
 
-- Central : `agent-contracts **0.0.4**`, `document-plugin **0.0.27**`, BOM/catalog
-  **0.0.119** (bundle `b9bc83e1`) ; `bakery` `workspaceVersion = 0.0.119`.
+- Central : `agent-contracts **0.0.4**`, `document-plugin **0.0.28**`, BOM/catalog
+  **0.0.120** (bundle `1e10ce63`) ; `bakery` `workspaceVersion = 0.0.120`.
   Import `io.arrow-kt:arrow-stack:2.3.0`. Contrats N0 **sans Arrow** (D2).
 - **Gate N0 bloquant** (S-335 : `set -eo pipefail` + `N0ContractsGateTest`) ;
   **warning-free 13 dépôts** ; **gate lint 16 dépôts** (S-336), `magic-stick` caduc.
-- CI workspace-bom : 21 jobs, **`5m12s…5m52s`**.
-- Dernières CI : academy `41351978322`, dashboard `41351988639`, api-key-pool
-  `41351986527`, jhipster `41351987207`, workspace-bom `41344806846`, document
-  `41346588405`, bakery `41346591172` — toutes ✅.
-- `document-plugin 0.0.27` est publié : **tout delta source part en 0.0.28**.
+  CI workspace-bom : 21 jobs, **`5m12s…5m52s`**.
+- Dernières CI : document `41355439684` ✅ 37 min (code S-337, **avant** publication),
+  workspace-bom `41358609653` ✅ ; academy `41351978322`, dashboard `41351988639`,
+  api-key-pool `41351986527`, jhipster `41351987207` — toutes ✅.
+- `document-plugin 0.0.28` est publié : **tout delta source part en 0.0.29**.
 
 == Doctrine XB-FP (clos — conservée pour mémoire)
 

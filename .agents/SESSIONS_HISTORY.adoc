@@ -545,3 +545,35 @@ une commande, `bash -e`, **sans** `continue-on-error` ni `echo` final (leçon S-
 Compiles VERTS, `ktlintCheck` = 0 partout, zéro `@Suppress`, zero baseline, formatting-only.
 **EPIC `MEM-LINT-ADOPTION` TERMINÉ** : 16 dépôts sous gate ktlint. Rapports
 `.agents/sessions/336-lint-adopt-13.adoc`.
+
+== Session 337 (2026-11-01) — EPIC XF-FP-3 terminé + release document-plugin 0.0.28
+
+Plan : livrer `XF-FP3-2` + `XF-FP3-3` **ensemble** (une seule release), la CI verte
+précédant la publication.
+**XF-FP3-3** (`ccf5b47`) : capacité `TracedArticleTranslator` (`ArticleTranslator` +
+`translateOutcome(): DocumentTranslation`). `BatchDocumentTranslator` fait désormais
+`when (is TracedArticleTranslator)` — plus aucune référence au type concret (le downcast
+`is DocumentTranslator` disparaît) ; `TranslationTrace`/`DocumentTranslation` deviennent
+**publics** (type de retour de la capacité) ; `TreeTranslationAdapter` reste un simple
+`ArticleTranslator`. Test `BatchDocumentTranslatorTraceTest` (2) avec un faux tracé qui
+n'est **pas** un `DocumentTranslator` ; RED prouvé par compilation.
+**XF-FP3-2** (`7e50e1d`) : le livre ne jette plus ses diagnostics. Seam
+`BookTranslator.translate(..., onPageTrace: (BookSection, TranslationTrace) -> Unit)`
+(le traducteur reste **sans état**, l'appelant possède son accumulateur) ;
+`BookValidationReports` écrit `book-<lang>-table-validation-report.json` et
+`book-<lang>-plantuml-validation-report.json` **seulement si** findings (Ink Economy) et
+**par langue** (pas d'écrasement en multi-langue), en réutilisant les schémas JSON
+existants ; `BookTranslationRunner` accumule `Map<ref, trace>`. **Découverte** :
+`TranslatedBook` **re-traduisait toutes les pages** d'un livre illustré (l'assemblage
+est fait deux fois : découverte des scans puis `:imagesdir:`) → resolver **mémoïsé par
+`ref`** : une traduction par page (gain LLM réel + collecte exacte). Tests
+`BookValidationReportsTest` (3) ; RED prouvé par compilation.
+**Release DAG `document-plugin 0.0.28`** : MEMPHIS BOM/catalog **0.0.120**
+(`document-plugin = "0.0.28"`, bundle `1e10ce63`, repo1 200) → `document-plugin 0.0.28`
+(bundle `30a380b8`, repo1 200 ≈ 9 min) → `bakery` `workspaceVersion = 0.0.120`
+(`dependencyInsight` → `document-plugin:0.0.28 by constraint`). Gardes alignées dans le
+même commit que chaque bump.
+Gates : compiles `--rerun-tasks --no-build-cache` **0 warning**, `ktlintCheck` VERTS ;
+CI document `41355439684` ✅ **37 min sur le code** avant publication.
+**EPIC `XF-FP-3` TERMINÉ (3/3 US)** ; prochain delta `document` = `0.0.29`.
+Rapport `.agents/sessions/337-xf-fp3-2-3-and-0.0.28.adoc`.
