@@ -314,3 +314,23 @@ S-219, `.agents/CADRAGE_EPIC_PLT_DIAGRAM_OWNERSHIP.adoc`).
 * **Backlog** : `PUB-3.01` → 0.0.116, artefacts agent 0.0.3 / codebase 0.0.2 /
   llm-pool 0.0.2.
 * CI workspace-bom verte `41253257460` (21 jobs, 6m52s).
+
+== S-319 — EPIC transverse XB-FP : cadrage + cache CI + pilote arrow ✅
+
+* **Revue de code** (2 audits lecture seule) : 10 constats « temps de tests »
+  (coût fixe par job, 15 compilations rejouées, artefacts Gradle hors cache,
+  shards BDD compilant `functionalTest`, 179 builds TestKit et test-kit home non
+  caché, Kover trop large, `~/.m2` inutile + 21 écrivains) et 7 constats « Arrow »
+  (dépendances mortes dans `codebase`/`readme`, `arrow-fx` inutilisé, zéro
+  `Raise`/`NonEmptyList`/`Validated`/`Resource`/`IO`).
+* **Cadrage** `.agents/CADRAGE_EPIC_XB_FP.adoc` : loi **N0 sans Arrow**, 12
+  décisions, 7 US, KPIs, risques. Enregistré dans `BACKLOG.adoc` et la Roadmap
+  de l'INDEX.
+* **XB-FP-1** (partiel) : cache commun enrichi des artefacts Gradle
+  (`generated-gradle-jars`, `kotlin-dsl`, `dependencies-accessors`), `~/.m2`
+  retiré, 7 écrivains au lieu de 21. Mesure isolée reportée (run pollué par une
+  CI concurrente).
+* **XB-FP-2** : pilote arrow sur `slider.DeckContextValidator` —
+  accumulation via `Either<NonEmptyList<String>, String>`, `fold` vers le
+  `ValidationResult` public inchangé, +3 tests. Commit `a4daf82`, CI verte
+  `41256091035`.

@@ -1,76 +1,64 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-319 — dernières terminées : **317** (cache CI commun + builds N0 en CI + garde de
-pins + BOM/catalog **0.0.116**) et **318** (mesure du cache chaud, bornage du
-wall-clock, repins dashboard/readme/graphify, résidus `vibecoding-contracts`).
+320 — dernières terminées : **317** (cache CI commun + N0 en CI + garde de pins +
+BOM `0.0.116`), **318** (mesure, repins, résidus), **319** (EPIC transverse **XB-FP** :
+cadrage temps de tests + arrow-kt, cache CI, pilote slider).
 
-=== Mission Session 319 — ordre proposé
+=== Mission Session 320 — ordre proposé
 
-. **Repin d'un consommateur par session** (maintenance cross-borough), en
-   commençant par `hyperframes` (catalogue `0.0.115`) puis `plantuml`/`runner`
-   (`0.0.111`). Repins déjà faits S-318 : dashboard, readme, graphify
-   (`0.0.116`). Pour chacun : bump du pin `workspace-catalog` (+ garde littérale
-   si présente), `compileKotlin`/`compileTestKotlin` local, push, **attendre la
-   CI du borough**. La garde `verifyCrossBoroughPins` est le filet.
-. **`codebase` (Queens)** : retirer l'entrée morte `vibecoding-contracts` de son
-   toml (le contrat vit désormais dans son arbre source).
-. **Wall-clock CI** : arbitrer un workflow séparé pour `n0-contracts` ou réduire
-   la durée des shards bakery (plancher mesuré ≈ shard 3m30-4m + coverage 1m45).
-. **Backlog** : vérifier l'absence de marqueur périmé (tous les EPICs du BACKLOG
-   sont clos) et n'ajouter que des items issus d'un constat réel.
+. **`XB-FP-1` — mesure isolée** (le run S-319 partageait le pool avec la CI slider) :
+   relancer `test.yml` seul, comparer wall-clock, durée du job `n0-contracts`
+   (`xargs -P 5` vs 4 vCPU) et confirmer que les artefacts Gradle
+   (`generated-gradle-jars`/`kotlin-dsl`) sont restaurés (log + `ls`).
+. **`XB-FP-5` — hygiène Arrow** : `codebase` (225 fichiers) et `readme` (9) déclarent
+   Arrow sans l'utiliser → adopter à un seam réel **ou** retirer ; retirer
+   `arrow-fx-coroutines` des bundles bakery/slider s'il reste inutilisé.
+   (1 session par borough, commit + CI du borough.)
+. **`XB-FP-3` — bakery** : `ConfigResolver` + `DomainResolver` →
+   `Either<NonEmptyList<ConfigResolutionError>, ResolvedConfigs>` + `zipOrAccumulate`.
+. **`XB-FP-4` — planner** : `IntentionPlanner`/`LifecycleAdapter` →
+   `Either<PlanningError, Plan>`, retry sans `var`, `Option`/null seulement au bord.
+. **`XB-FP-6`/`-7`** : tests lents → domaine pur ; source set partagé + TestKit caché.
 
-_Hors scope_ : upload YouTube réel (capsule/hyperframes) — **gelé S-037**.
+_Document maître_ : `workspace-bom/.agents/CADRAGE_EPIC_XB_FP.adoc` (12 décisions,
+7 US, KPIs). Suivi : `BACKLOG.adoc` § `EPIC XB-FP` + table Roadmap de l'INDEX.
 
-== S-318 — ce qui a été livré
-
-* **Mesure** : cache froid 8m07s (24 jobs) → chaud 7m06s → **6m05s** (21 jobs,
-  LLM fondu dans la garde + N0 `-P 3`) → **6m52s** (`-P 5`, variance shards).
-  Plancher = shard bakery + coverage + un tour de file (pool ~20).
-* **3 bugs de cache corrigés** : clé collisionnée hors matrice (`strategy.job-index`
-  toujours 0 → `github.job` ajouté), SIGPIPE du smoke Ollama (`head` + `pipefail`),
-  store de modèles écrit en root après le `pull` (`chown` avant le post-step).
-* **Repins** : dashboard / readme / graphify sur `0.0.116`. `readme` : garde
-  réalignée + **version publiée injectée par Gradle** (patron D5-RACE) +
-  self-version locale `0.0.1 → 0.0.2`. `graphify` : garde réalignée (`0.0.46`).
-  CI vertes : readme `41253844657`, graphify `41252923287`.
-* **Résidus `vibecoding-contracts`** supprimés (contrat migré dans codebase S-084 ;
-  artefact `0.0.1` toujours publié et contraint par le BOM).
-* **Backlog** : `PUB-3.01` et lignes d'artefacts réalignés sur `0.0.116` / 0.0.3 /
-  0.0.2.
-* Incident transitoire (non imputable) : un shard bakery rouge sur des résolutions
-  TestKit vers `repo.maven.apache.org` (CDN), vert au run suivant.
-
-Rapport `.agents/sessions/318-backlog-cache-measure-repins.adoc`.
+_Hors scope_ : upload YouTube réel — **gelé S-037**.
 
 == État du code
 
-- Central : BOM + catalog **0.0.116** (propagation repo1 vérifiée).
-- Contrats N0 : agent 0.0.3, codebase 0.0.2, i18n 0.0.5, llm-pool 0.0.2,
-  opencode-session 0.0.2, pipeline 0.0.2, runtime 0.0.1, ocr 0.0.1,
-  plantuml 0.0.1, vibecoding 0.0.1 (artefact seul, plus de sources ici).
-- CI : 21 jobs, ~6-7 min ; guards `verifyCiMatrixCoverage` + `verifyCrossBoroughPins`.
-- `n0-contracts` : 1 job, 9 builds (10 artefacts moins `vibecoding`), `xargs -P 5`.
+- Central : BOM + catalog **0.0.116** (propagation vérifiée).
+- CI workspace-bom : 21 jobs, cache commun (modules, wrapper, **artefacts Gradle**),
+  7 écrivains ; `n0-contracts` = 1 job `xargs -P 5` ; guards
+  `verifyCiMatrixCoverage` + `verifyCrossBoroughPins`.
+- `slider` : `DeckContextValidator` en `Either<NonEmptyList<String>, String>` interne
+  avec accumulation (commit `a4daf82`, CI verte).
+- Contrats N0 : **sans Arrow** (invariant XB-FP D2) — sealed maison conservés.
 
-== Pièges à retenir (cumul)
+== Décisions XB-FP à ne pas perdre
 
-. *Version dérivée ≠ version publiée*.
-. *Catch-22 D8 (anti-ghost)* : publier le producteur avant qu'un catalogue l'exige.
-. *Gardes épinglent les versions* — bump toml + garde dans le même commit.
+* **D2** — N0 sans Arrow ; **D3** — Arrow N1/N2 en `implementation` ;
+  **D4** — sealed maison = frontière, Arrow interne.
+* **D7** — mesurer avant/après (Local = Build, Tests = CI).
+* **D9** — pas de nouveau job (pool ~20), pas de rééquilibrage des shards
+  functional, pas de cache `setup-gradle`.
+
+== Pièges (cumul)
+
+. *Version dérivée ≠ version publiée* ; *Catch-22 D8* ; gardes dans le même commit.
 . *Contrats N0 = builds standalone* (pattern 0124).
-. *nmcp collision* : vérifier repo1 avant de re-publier.
-. *Polling repo1* : ~2-10 min après « deployment is publishing » (AUTOMATIC).
-. *(S-281) MEMPHIS-first* : attendre la propagation Central du BOM avant de repin.
-. *(S-317) Cache GitHub = scopé au dépôt* ; `setup-gradle cache-disabled`.
-. *(S-317) Toolchain* : `jvmToolchain(25)`, jamais `VERSION_25.ordinal` (= 24) ;
-   foojay-resolver-convention **0.10.0**.
-. *(S-318) Clé de cache* : inclure `github.job` (hors matrice, `job-index` = 0).
-. *(S-318) Store Ollama* : arrêter le conteneur + `chown` **avant** le post-step de
-   cache, sinon `tar` échoue et le modèle est re-téléchargé.
+. *nmcp* : vérifier repo1 avant re-publication ; propagation 2-10 min.
+. *Local = Build, Tests = CI* — jamais de suite locale.
+. *Cache GitHub scopé au dépôt* ; `setup-gradle cache-disabled` ; clé avec
+   `github.job` (hors matrice `job-index` = 0).
+. *Ollama* : arrêter le conteneur + `chown` avant le post-step de cache.
+. *Toolchain* : `jvmToolchain(25)` (jamais `VERSION_25.ordinal` = 24) ; foojay **0.10.0**.
+. *Mesure CI* : ne pas conclure sur un run ; une CI concurrente (autre dépôt) fausse
+   le wall-clock (pool partagé) — vérifier les `startedAt` avant d'incriminer un job.
 
 == Règles
 
-- Voir `AGENT.adoc` — commit/push/publish autorisés (décision pilote 2026-09-17,
-  Règle 2 « accord toujours granted » 2026-10-31).
+- Voir `AGENT.adoc` — commit/push/publish autorisés (Règle 2 « toujours granted »).
 - Publication Central : `./gradlew publishAggregationToCentralPortal` (agrégatif).
 - Zéro Python.

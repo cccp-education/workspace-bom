@@ -1,6 +1,6 @@
 = CADRAGE — EPIC transverse XB-FP : temps de tests & paradigme fonctionnel (arrow-kt)
 :date: 2026-10-31
-:statut: 🟡 EN COURS (US-0 cadrage ✅ — S-319)
+:statut: 🟢 EN COURS (US-0 ✅, US-1 ✅, US-2 ✅ — S-319 ; US-3→US-7 à faire)
 :porteur: MEMPHIS (workspace-bom) — EPIC transverse cross-borough
 :type: cadrage + revue de code (lecture seule) + plan de refactor
 
@@ -116,8 +116,8 @@ métier** ; conversion à la frontière.
 | US | Description | Cible | Statut
 
 | XB-FP-0 | **Cadrage** — revue de code (temps de tests + paradigme), constats, décisions, garde-fous N0, KPIs. Ce document. | `workspace-bom/.agents/` | ✅ S-319
-| XB-FP-1 | **Cache CI : artefacts Gradle + écrivains restreints** — ajouter `~/.gradle/caches/*/generated-gradle-jars`, `kotlin-dsl`, `dependencies-accessors` ; retirer `~/.m2/repository` ; `save-common-cache` seulement sur 1 job par famille (4 `check` + `unit` + garde + N0). | `workspace-bom/.github/actions` + `test.yml` | 🟡 À FAIRE (S-319 partiel)
-| XB-FP-2 | **Pilote arrow** — `DeckContextValidator` : `Either<NonEmptyList<String>, String>` interne, accumulation, `fold` à la frontière, `ValidationResult` public inchangé. | `slider-gradle` | 🟡 À FAIRE (S-319)
+| XB-FP-1 | **Cache CI : artefacts Gradle + écrivains restreints** — ajouter `~/.gradle/caches/*/generated-gradle-jars`, `kotlin-dsl`, `dependencies-accessors` ; retirer `~/.m2/repository` ; `save-common-cache` seulement sur 1 job par famille (4 `check` + `unit` + garde + N0). | `workspace-bom/.github/actions` + `test.yml` | ✅ S-319 (mesure isolée à refaire)
+| XB-FP-2 | **Pilote arrow** — `DeckContextValidator` : `Either<NonEmptyList<String>, String>` interne, accumulation, `fold` à la frontière, `ValidationResult` public inchangé. | `slider-gradle` | ✅ S-319 (commit `a4daf82`, CI verte `41256091035`)
 | XB-FP-3 | **Bakery — accumulation de configuration** — `ConfigResolver` + `DomainResolver` : `Either<NonEmptyList<ConfigResolutionError>, ResolvedConfigs>`, `zipOrAccumulate`, suppression de l'accumulateur mutable et des casts positionnels. | `bakery-gradle` | 🟡 À FAIRE
 | XB-FP-4 | **Planner — erreurs + retry** — `IntentionPlanner`/`LifecycleAdapter` : `Either<PlanningError, Plan>`, capture d'exception, retry sans `var lastError` ; `Option`/null seulement au bord. | `planner-gradle` | 🟡 À FAIRE
 | XB-FP-5 | **Hygiène dépendances Arrow** — `codebase`/`readme` : adopter à un seam réel ou retirer ; `arrow-fx` retiré des bundles inutilisés. | `codebase-gradle`, `readme-gradle` | 🟡 À FAIRE

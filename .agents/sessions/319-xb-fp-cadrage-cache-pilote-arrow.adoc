@@ -1,0 +1,104 @@
+= Session 319 — EPIC transverse XB-FP : cadrage (temps de tests + arrow-kt) + pilote
+:date: 2026-11-01
+:borough: MEMPHIS (workspace-bom) — EPIC transverse
+:type: cadrage + revue de code (lecture seule) + refactor (slider) + CI
+
+== Mission
+
+Demande pilote : « fais une code review pour optimiser le temps des tests et
+refactoriser les implémentations pour suivre des paradigmes fonctionnels comme
+avec la lib arrow-kt » puis « ceci correspond à une EPIC transverse qui vivra
+documenté et tracé dans le dossier agentique de workspace-bom ».
+
+Livré : **EPIC `XB-FP`** cadrée et enregistrée, `XB-FP-1` (cache CI) et
+`XB-FP-2` (pilote arrow sur slider).
+
+== 1. Revue de code (lecture seule, 2 audits)
+
+=== 1.1 Temps de tests — 10 constats
+
+. Le corps des tests n'explique pas la durée d'un job (5-42 s de scénarios pour ~200 s).
+. **Coût fixe par job** : setup 16-23 s + daemon 8-15 s + configuration 21-42 s +
+  compile 5-30 s + un « gap » constant ≈ 30 s avant `Test`.
+. **15 compilations rejouées** (une par shard) ; les artefacts Gradle
+  (`generated-gradle-jars` 185 Mo, `kotlin-dsl` 86 Mo, `dependencies-accessors`)
+  sont régénérés à chaque job et **absents du cache commun**.
+. Les shards BDD **compilent `src/functionalTest`** (30 fichiers / 7 100 lignes) pour
+  2 symboles partagés.
+. **179 builds Gradle imbriqués** (TestKit) ; le test-kit home vit dans
+  `build/tmp/<task>/work` (953 Mo-2,5 Go) et n'est **jamais caché** → 118 jars
+  re-résolus par job.
+. **Contention TestKit** : un test-kit home par tâche partagé par 3 forks → verrous ;
+  cause la plus plausible de la variance ×5 des durées par classe.
+. **Kover instrumente tout le classpath** (aucun `include=`), `showStandardStreams`
+  actif sur les shards functional.
+. Cache commun : `~/.m2` (1,7 Go, jamais alimenté) + **21 écrivains** (budget 10 Go).
+. `unit` lance `test` puis `nodeTest` (2 `--no-daemon` = 2 configurations).
+. **À ne pas refaire** : rééquilibrage des shards functional (2 mesures non
+   concluantes), plus de 21 jobs (file > pool), cache `setup-gradle` (falsifié).
+
+=== 1.2 Paradigme fonctionnel — 7 constats
+
+* `codebase` (225 fichiers) et `readme` (9) déclarent Arrow **sans l'utiliser** ;
+  `arrow-fx-coroutines` inutilisé chez bakery/slider.
+* `bakery` et `slider` utilisent `Either`, mais **zéro** `Raise`, `NonEmptyList`,
+  `Validated`, `Resource`, `IO` : ni accumulation, ni bracketing.
+* Candidats prioritaires : `slider.pipeline.DeckContextValidator` (validateur à
+  sortie unique), `bakery.ConfigResolver` (accumulateur mutable + casts
+  positionnels) + `DomainResolver`, `planner.IntentionPlanner` (`var lastError`,
+  retry, `throw`), `slider.SlidePublisher` (4 vérifications scellées + nettoyage),
+  `codebase.QualityRetryCircuit`, `codebase.OcrTask`, `codebase.store.RagVectorStore`
+  (`try/finally`, `!!`, `runBlocking`).
+* **Loi N0 confirmée** : 9 contrats N0 en `kotlin-stdlib` only (seule exception
+  documentée `agent-contracts` + koog). Arrow en N0 ferait fuiter une dépendance
+  tierce via `api` → **N0 sans Arrow**, sealed maison conservés.
+
+== 2. EPIC XB-FP (document + backlog + roadmap)
+
+* `.agents/CADRAGE_EPIC_XB_FP.adoc` — objet, constats, 12 décisions (D1→D12),
+  7 US (~26 pts), KPIs, risques, ordre d'exécution.
+* `BACKLOG.adoc` — section `🟡 EPIC XB-FP` avec la table US (statuts suivis).
+* `.agents/INDEX.adoc` — ligne `XB-FP` dans la table Roadmap (+ rattrapage des
+  lignes `MEM-CI-SHARD`, `MEM-CI-CONSISTENCY`, `PLT-DIAGRAM-OWNERSHIP`).
+
+== 3. XB-FP-1 — cache CI (partiel)
+
+* `.github/actions/setup-common-cache` / `save-common-cache` : ajout de
+  `~/.gradle/caches/*/generated-gradle-jars`, `*/kotlin-dsl`,
+  `*/dependencies-accessors` (artefacts régénérés à chaque configuration) ;
+  retrait de `~/.m2/repository` (jamais alimenté en CI).
+* `test.yml` : sauvegarde restreinte à **un écrivain par famille de dépendances**
+  (4 entrées `check` + `bakery · unit` + garde + N0) au lieu de 21 ; le job de
+  couverture ne sauvegarde plus (mêmes dépendances que `unit`).
+* CI verte `41256096163` (21 jobs). **Mesure non concluante** : le run a partagé le
+  pool de runners avec la CI `slider` (11 jobs) lancée en parallèle → jobs démarrés
+  jusqu'à 2m40 en retard, wall-clock 8m40s. La mesure isolée reste à faire (S-320).
+* Effet de bord observé : à `-P 5` le job N0 a duré 5m18s **sous contention** (contre
+  ~3m20s seul) — la borne de parallélisme est le nombre de vCPU (4), la mesure
+  isolée doit confirmer.
+
+== 4. XB-FP-2 — pilote arrow (slider) ✅
+
+`slider-gradle/slider-plugin`, commit `a4daf82`, **CI verte `41256091035`**.
+
+* `DeckContextValidator` : les 8 vérifications deviennent des **fonctions pures
+  indépendantes** rendant `List<String>` (vide = ok), **concaténées** — plus
+  d'accumulateur mutable, plus de court-circuit sur la première erreur.
+* Résultat interne `Either<NonEmptyList<String>, String>` (`arrow-core` déjà
+  présent) ; `validate()` **fold** vers le `ValidationResult` historique (message
+  joint par `"; "`) → **API publique inchangée**, Arrow interne (D3/D4).
+* `Either.catch` capture l'échec de parsing ; les erreurs irrécupérables (JSON
+  blanc / malformé / non-objet) restent en court-circuit (légitime).
+* 3 tests ajoutés : tous les champs manquants signalés ensemble, `name` **et**
+  `email` signalés ensemble, `validateEither` porte une `NonEmptyList`.
+* Aucun changement N0, aucun changement de dépendance, aucun test lent ajouté
+  (17 tests en 0,018 s + 3).
+
+== 5. État et suites
+
+* Gates locales (Local = Build) : `compileKotlin`/`compileTestKotlin` VERT (slider,
+  workspace-bom), `verifyCiMatrixCoverage` VERT, YAML des 4 actions/workflow VERT.
+* CI : workspace-bom `41256096163` verte ; slider `41256091035` verte.
+* **S-320** : mesurer XB-FP-1 en run isolé (wall-clock, durée du job N0, hit du
+  cache artefacts) ; puis `XB-FP-5` (hygiène Arrow : codebase/readme dead deps,
+  `arrow-fx`), avant `XB-FP-3` (bakery accumulation) et `XB-FP-4` (planner).
