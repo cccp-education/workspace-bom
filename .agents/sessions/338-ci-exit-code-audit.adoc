@@ -89,6 +89,25 @@ Décisions de modèle (pourquoi un audit textuel et pas un parseur YAML) :
 * Tests ajoutés : **16 unit** (`CiShellAuditTest`) + **3** (`CiExitCodeGuardTest`)
   + **5 scénarios BDD** = 24.
 
+=== Incident — working tree partagé (course entre sessions)
+
+Le run `41365307801` (docs) a échoué sur `WorkspaceCatalogStructureTest › document
+plugin version matches bakery consumer pin` (`expected 0.0.28 but was 0.0.29`).
+Cause : une **session parallèle** préparait une vague de releases (`workspace-bom
+0.0.121`, `document-plugin 0.0.29`, `plantuml-plugin 0.0.16`) dans le **même arbre
+de travail** ; le `git add -A` de la clôture a embarqué ces éditions en vol dans le
+commit `88331bb` (message « docs »), alors que la vague n'est **pas publiée** (la
+garde catalogue est littérale : `document-plugin == "0.0.28"`).
+
+Correctif : restauration chirurgicale des **2 fichiers** (`gradle/libs.versions.toml`,
+`PlatformCatalogAlignmentTest.kt`) à l'état `88331bb^` — la vague de la session
+parallèle reste récupérable dans l'historique (`88331bb`) et sera rejouée par elle
+dans l'ordre DAG (publication → pin consommateur → catalogue). **Leçon** : dans un
+arbre partagé, `git add -A` est interdit en clôture ; on stage des **chemins
+explicites**.
+
+* Preuve finale : CI **`41365307801`** rouge (cause externe) → revert → re-run.
+
 === Correctif imposé par la CI (run `41363590010` rouge)
 
 Le premier run de clôture a **échoué** : `CiShellGatesCucumberRunner › The historical
