@@ -273,3 +273,14 @@
 * **`edster`** (`a143fb7`) : errexit sur 2 steps ; `/.github/` **gitignoré** dans
   le clone → seul le template tracké `__codebase__` est corrigé (pas de CI GitHub).
 * Reste `2.3` (`office` deploy ×4, risque) et `2.5` (portage + exemption R2).
+
+== S-341 — MEM-CI-GATE-2 TERMINÉ : office deploy + décision 2.5 ✅
+
+* **2.3 `office`** (`31d00ebc`) : `set -eo pipefail` sur les 4 steps de déploiement
+  (`cccp`, `magic-stick`, `talaria`, `i18n-site`) — blocs lus en entier, les
+  dégradations S-049 restent des gardes `if`/`continue`. `ls | head -5` redirigé
+  (SIGPIPE). Finding supplémentaire : `curl … | sh` retourne le statut de `sh`.
+* **2.5** (`39301e3`) : **pas de port** ; audit unique exécutable à la demande
+  (`./gradlew ciShellGatesReport -PciRoot=<workspace>`) + exemption fine de R2
+  (`# ci-shell:allow-swallow`), 2 tests unitaires.
+* **Résultat : 68 fichiers CI, 0 finding** — l'audit S-338 est soldé (16 → 0).

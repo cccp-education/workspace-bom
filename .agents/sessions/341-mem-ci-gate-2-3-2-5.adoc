@@ -1,0 +1,95 @@
+= Session 341 — MEM-CI-GATE-2 : `office` deploy (2.3) + décision & outillage (2.5)
+:date: 2026-11-02
+:borough: MEMPHIS (workspace-bom) — exécution dans `office` + `agent-contracts`
+:type: correctif CI cross-borough + outillage de vérification (test-only)
+:ci: workspace-bom run du push ; `office` n'a pas de CI push-triggered sur ces workflows
+
+== 1. Mission
+
+Dernier reliquat de `MEM-CI-GATE-2`, avec **autorisation pilote** :
+
+. `2.3` — les 4 steps de déploiement `office` (P2, **risque de comportement**) ;
+. `2.5` — décision de portage de l'audit + exemption fine de R2.
+
+== 2. `2.3` — `office` (commit `31d00ebc`)
+
+Chaque bloc a été **lu en entier avant** d'ajouter `errexit`, pour ne pas casser
+les dégradations documentées (elles sont des gardes explicites `if`/`continue`,
+jamais des échecs tolérés) :
+
+[cols="3,2,4", options="header"]
+|===
+| Step | Commandes | Ce qui était masqué
+
+| `deploy-cccp-education` | 3 | écriture `site.yml`, `cd engine` → `publishSite` final
+| `deploy-magic-stick` | 3 | idem
+| `deploy-talaria` | 11 | écriture config + **2 injections `node` de secrets** (un échec publiait un placeholder)
+| `deploy-i18n-site` | 53 | `cp`/`rm`/`bake` par langue — un échec publiait un arbre à moitié assemblé
+|===
+
+Deux précautions :
+
+* `deploy-i18n-site` : `ls … | head -5` rejouait le piège **SIGPIPE** (S-318/S-339) —
+  sous `pipefail`, `head` ferme le tube et `ls` sort en 141 → déploiement sain en
+  échec. Corrigé par redirection (`> "$RUNNER_TEMP/lang-files.txt"`) puis `head`.
+* Le script conserve ses **2 dégradations voulues** (S-049) : `i18n/<lang>`
+  absent et variante non déployable → `continue` explicite, aucun échec toléré.
+
+**Finding supplémentaire découvert par le nouvel outil** (§3) :
+`translate-i18n-content.yml:63` — `curl -fsSL … | sh` retourne le statut de `sh`
+qui lit une entrée vide et **sort 0** quand le téléchargement échoue → Ollama
+jamais installé, silencieusement. Corrigé par `set -euo pipefail` (et la règle
+« zéro Python » rend le `curl | sh` inévitable ici, mais il est désormais sûr).
+
+== 3. `2.5` — décision : pas de port, un seul audit exécutable
+
+*Constat* : `office` n'a **pas** de build JVM testable (racine `group = "com.cheroliv"`,
+aucune tâche de test) ; `capsule`/`magic-stick` ont leur propre CI. Répliquer
+`CiShellAudit` dans chaque dépôt serait un **split-brain** (2ᵉ implémentation) et un
+coût d'infrastructure disproportionné pour un linter de workflow.
+
+*Décision (autorité pilote)* :
+
+. **Une seule implémentation**, dans `agent-contracts` (domaine pur testé).
+. **Exemption fine de R2** : un échec toléré **par item** (boucle de résilience)
+   n'est pas un gate masqué, mais la commande seule ne permet pas de trancher →
+   marqueur explicite `# ci-shell:allow-swallow` sur la commande (revu en diff).
+   Deux tests unitaires épinglent avec/sans marqueur.
+. **Exécution à la demande sur tout le workspace** : tâche Gradle
+   `ciShellGatesReport` (JavaExec sur le domaine testé, zéro duplication) :
+
+[source,bash]
+----
+cd agent-contracts
+./gradlew ciShellGatesReport -PciRoot=/home/cheroliv/workspace
+# ciShellGates: 68 fichier(s) CI audité(s) sous /home/cheroliv/workspace
+# ciShellGates: 0 finding(s)
+----
+
+. La garde `CiExitCodeGuardTest` reste dans `check` (dépôt seul, prouvé en CI) ;
+   le rapport workspace reste **hors** `check` (il exige les dépôts voisins).
+
+== 4. État final de `MEM-CI-GATE-2`
+
+[cols="1,3,2", options="header"]
+|===
+| US | État | Preuve
+
+| 2.1 `magic-stick` | ✅ S-339 (`32e9459`) | CI `41367422803` ✅
+| 2.2 `office` traduction ×2 | ✅ S-339 (`a8ed5a95`) | statique
+| 2.3 `office` deploy ×4 + Ollama | ✅ S-341 (`31d00ebc`) | statique + **audit 0 finding**
+| 2.4 `capsule` ×4, `bakery`, `edster` | ✅ S-340 | capsule `41372348607` ✅ 25/25, bakery ✅ ×2
+| 2.5 portage + exemption R2 | ✅ S-341 (`39301e3`) — **décision : pas de port**, audit exécutable + marqueur | 2 tests unitaires, `ciShellGatesReport` : **0 finding / 68 fichiers**
+|===
+
+**L'audit S-338 est soldé : 16 findings → 0 sur les 68 fichiers CI du workspace.**
+
+== 5. Invariants
+
+* 5 fichiers de workflow `office` + 3 fichiers de test/1 tâche `agent-contracts`
+  (aucun code publié touché : `agent-contracts 0.0.4` inchangé).
+* Zéro secret, zéro test local lancé (le rapport est une tâche de **build**),
+  zéro publication, zéro bump.
+* Les workflows `office` ne sont pas push-triggered pour le déploiement : la preuve
+  d'exécution sera le prochain déploiement réel ; en cas de régression, il échoue
+  **avant** de publier (c'est l'objet du correctif).
