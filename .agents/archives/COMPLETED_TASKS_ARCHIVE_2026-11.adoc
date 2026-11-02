@@ -261,3 +261,15 @@
   bumpé le catalogue **sans** la garde littérale → `main` rouge. Correctif
   `fix(catalog)` (1 ligne, test-only) → **CI `41370746526` ✅ 21/21**. Règle : toute
   release `document` met à jour `WorkspaceCatalogStructureTest` dans le même commit.
+
+== S-340 — MEM-CI-GATE-2.4 : errexit sur les steps d'installation ✅
+
+* **`capsule`** (`545f3cb`) : `set -euo pipefail` sur les 4 blocs « Install
+  ffmpeg + espeak » (3 `full-tests.yml`, 1 `cucumber-full.yml`) ; **CI
+  `41372348607` ✅ 25/25**, step install **SUCCESS 25 fois** (dispatch manuel,
+  `.github/**` en `paths-ignore`).
+* **`bakery`** (`34258b7e`) : errexit sur `website.yml` — `Test` `41372235984` ✅
+  + `Publish website` `41372236161` ✅.
+* **`edster`** (`a143fb7`) : errexit sur 2 steps ; `/.github/` **gitignoré** dans
+  le clone → seul le template tracké `__codebase__` est corrigé (pas de CI GitHub).
+* Reste `2.3` (`office` deploy ×4, risque) et `2.5` (portage + exemption R2).

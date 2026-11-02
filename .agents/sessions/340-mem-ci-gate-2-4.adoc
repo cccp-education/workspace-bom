@@ -1,0 +1,72 @@
+= Session 340 — MEM-CI-GATE-2 : `errexit` sur les steps d'installation (vague 2.4)
+:date: 2026-11-02
+:borough: MEMPHIS (workspace-bom) — exécution dans `capsule`, `bakery`, `edster`
+:type: correctif CI cross-borough (workflow-only, aucun code applicatif)
+:ci: capsule `41372348607` ✅ 25/25 ; bakery `Test` `41372235984` ✅ + `Publish website` `41372236161` ✅
+
+== 1. Mission
+
+Deuxième vague de `MEM-CI-GATE-2` (BACKLOG) : `2.4` — `set -euo pipefail` sur les
+4 steps d'installation de `capsule-gradle` et les steps restants (`edster` ×4,
+`bakery` website). Chaque dépôt = un correctif minimal + la preuve CI **de son**
+dépôt (aucun test local, aucun code applicatif touché).
+
+== 2. `capsule` (commit `545f3cb`) — 4 steps
+
+3 blocs dans `full-tests.yml` (matrices BDD / functional / integration) + 1 dans
+`cucumber-full.yml` : `sudo apt-get update` puis `sudo apt-get install -y ffmpeg
+espeak espeak-data`. Sans errexit, seul l'`install` décidait : un `update` en échec
+(ou un dépôt indisponible) était masqué.
+
+* `set -euo pipefail` ajouté aux 4 blocs ; YAML valide (`ruby -ryaml`) ; audit R1 vide.
+* **Preuve** : le workflow ignore `.github/**` en `paths-ignore` (un changement
+  workflow-only ne déclenche rien — c'est documenté dans le fichier, qui expose
+  `workflow_dispatch` pour cela). Dispatch manuel → **run `41372348607` ✅ 25/25
+  jobs**, et le step « Install ffmpeg + espeak » est **SUCCESS 25 fois**.
+
+== 3. `bakery` (commit `34258b7e`) — website
+
+`website.yml` : garde `SITE_YML` → `printf > site.yml` → `./gradlew publishSite`.
+L'écriture pouvait échouer (permissions/disque) sans que le step échoue.
+`set -euo pipefail` ajouté.
+
+* Preuve : push → **`Test` `41372235984` ✅**, **`Publish website` `41372236161` ✅**
+  (le déploiement réel a tourné avec errexit).
+
+== 4. `edster` (commit `a143fb7`) — template versionné uniquement
+
+Deux blocs : `chmod +x gradlew` + `npm run ci:backend:test` ; deux dérivations de
+tag + `./gradlew jib …`. `set -euo pipefail` sur les deux.
+
+* **Découverte** : dans ce clone, **`/.github/` est gitignoré**
+  (`.git/info/exclude:36`) — le finding `edster/.github/workflows/main.yml` de
+  l'audit S-338 portait donc sur une **copie locale non versionnée**. Seul
+  `__codebase__/.github/workflows/main.yml` (template JHipster, tracké) est dans
+  le dépôt : c'est lui qui a été corrigé (et il est identique à la copie locale).
+* `edster` n'a **aucun workflow sur GitHub** (le `.github/` local est exclu) : pas
+  de preuve CI possible — preuve statique (YAML + audit) et le hook `lint-staged`
+  du dépôt a rejoué `prettier` sur le fichier.
+
+== 5. État de `MEM-CI-GATE-2`
+
+[cols="1,3,2", options="header"]
+|===
+| US | État | Preuve
+
+| 2.1 `magic-stick` | ✅ S-339 (`32e9459`) | CI `41367422803` ✅
+| 2.2 `office` traduction ×2 | ✅ S-339 (`a8ed5a95`) | statique (`workflow_call`)
+| 2.4 `capsule` ×4, `bakery`, `edster` | ✅ S-340 | capsule `41372348607` ✅ 25/25, bakery ✅ ×2, edster statique
+| 2.3 `office` deploy ×4 | 🟡 P2 **risque** : un déploiement peut dépendre d'un échec toléré — vérifier site par site | —
+| 2.5 Portage `CiShellAudit` + exemption fine de R2 | 🟡 P2 (décision pilote) | —
+|===
+
+Après 2.1/2.2/2.4, l'audit S-338 ne laisse plus que **`office`** : 4 steps de
+déploiement (P2) — les 2 steps de traduction sont corrigés.
+
+== 6. Invariants
+
+* Workflow-only : 2 fichiers `capsule`, 1 `bakery`, 1 template `edster`.
+* Zéro code applicatif, zéro secret, zéro test local, zéro publication, zéro bump.
+* `TEST_COVERAGE_ANALYSIS` non modifié (aucun test ajouté/retiré).
+* `office` : 4 deploy restants — **hors périmètre** de cette session (risque de
+  comportement, à valider par site).
