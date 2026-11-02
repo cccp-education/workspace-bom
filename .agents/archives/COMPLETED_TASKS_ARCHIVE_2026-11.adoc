@@ -254,3 +254,6 @@
   `magic-stick`, `office` = `workflow_call` (prochaine invocation réelle).
 * Reste `2.3` (office deploy ×4, P2), `2.4` (capsule/edster/bakery, P2/P3),
   `2.5` (portage `CiShellAudit` + exemption R2).
+* **Preuve CI** : `magic-stick` run **`41367422803` ✅** — step « Mock test A/B +
+  persistence » **SUCCESS** (errexit actif, `gradle tasks` redirigé, gate
+  `grep -q`, script mock vert).

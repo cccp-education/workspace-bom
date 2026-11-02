@@ -2,7 +2,7 @@
 :date: 2026-11-02
 :borough: MEMPHIS (workspace-bom) — exécution dans `magic-stick` + `office`
 :type: correctif CI cross-borough (workflow-only, aucun code applicatif)
-:ci: magic-stick `build.yml` (run du push) ; `office` n'a pas de run push-triggered sur ce workflow
+:ci: magic-stick `41367422803` ✅ (step « Mock test A/B + persistence » SUCCESS) ; `office` = pas de run push-triggered (`workflow_call`)
 
 == 1. Mission
 
@@ -29,7 +29,7 @@ Méthode : un finding = un correctif minimal, preuve statique (YAML + règles
 * Effet de bord bénéfique : `… && echo` ne pouvait pas échouer non plus (la liste
   `&&` retournait 1, sans errexit le step continuait) → le probe est réparé.
 * Preuve : YAML valide (`ruby -ryaml`), `CiShellAudit` (miroir awk) : finding R1
-  disparu ; CI `build.yml` déclenchée sur push (run à confirmer en clôture).
+  disparu ; **CI `41367422803` ✅ — le step « Mock test A/B + persistence » est SUCCESS** (errexit actif, sortie gradle redirigée, gate `grep -q`, script mock vert).
 
 == 3. `CI-GATE-2.2` — office (commit `a8ed5a95`)
 

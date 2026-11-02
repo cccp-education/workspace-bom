@@ -29,7 +29,7 @@ _Documents maîtres_ : `BACKLOG.adoc` (§ `MEM-CI-GATE-2`) ;
   publiée en ordre DAG). Prochain delta `document` = **0.0.30**.
 - **Gates verts** : N0 (`set -eo pipefail` + `N0ContractsGateTest`, 10 builds) ;
   **CI du dépôt sans faux vert** (`CiShellAudit` + `CiExitCodeGuardTest`,
-  `@ci-shell-gates`) ; `magic-stick` mock step et `office` traduction sous errexit.
+  `@ci-shell-gates`) ; `magic-stick` mock step (**CI `41367422803` ✅**) et `office` traduction sous errexit.
 - CI workspace-bom : 21 jobs, **`5m12s…5m52s`** ; `agent-contracts check` exécute
   `test` + `cucumberTest` + `versionCatalogCucumberTest` + `ciShellGatesCucumberTest`.
 - `office` n'a **aucun** run push-triggered pour `translate-i18n-content.yml` :
