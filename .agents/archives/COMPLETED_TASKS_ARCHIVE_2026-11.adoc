@@ -257,3 +257,7 @@
 * **Preuve CI** : `magic-stick` run **`41367422803` ✅** — step « Mock test A/B +
   persistence » **SUCCESS** (errexit actif, `gradle tasks` redirigé, gate
   `grep -q`, script mock vert).
+* **Incident de clôture** : la vague parallèle `fba5f2a` (`document 0.0.29`) avait
+  bumpé le catalogue **sans** la garde littérale → `main` rouge. Correctif
+  `fix(catalog)` (1 ligne, test-only) → **CI `41370746526` ✅ 21/21**. Règle : toute
+  release `document` met à jour `WorkspaceCatalogStructureTest` dans le même commit.

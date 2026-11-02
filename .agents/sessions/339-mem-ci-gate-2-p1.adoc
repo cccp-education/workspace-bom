@@ -68,9 +68,25 @@ Méthode : un finding = un correctif minimal, preuve statique (YAML + règles
 | 2.5 | Portage de `CiShellAudit` (module utilitaire partagé, **pas** N0) + règle d'exemption fine de R2 | P2 (décision pilote)
 |===
 
-== 6. Invariants
+== 6. Incident de clôture — garde littérale de release (`6bbab6f` → `f…`)
 
-* Zéro code applicatif modifié : uniquement 2 fichiers de workflow (un par dépôt).
+Le premier push de docs a déclenché la CI `41370060302`, **rouge** sur
+`WorkspaceCatalogStructureTest › document plugin version matches bakery consumer pin`
+(`expected 0.0.28 but was 0.0.29`). Cause : la **vague de release parallèle**
+(`fba5f2a`, `document 0.0.29`) a bumpé le catalogue **sans** mettre à jour la garde
+littérale (bakery n'étant pas cloné dans la CI de `workspace-bom`, la version
+publiée ne peut pas être lue depuis son pin : la garde est un **marqueur manuel**).
+`main` était donc rouge depuis `fba5f2a` (vert à `41366521315`, juste avant).
+
+Correctif `fix(catalog)` : littéral `0.0.28 → 0.0.29` (1 ligne, test-only).
+**Règle de release** : toute publication `document` met à jour
+`WorkspaceCatalogStructureTest` **dans le même commit** que le bump de catalogue.
+Preuve : **CI `41370746526` ✅ 21/21**.
+
+== 7. Invariants
+
+* Zéro code applicatif modifié : 2 fichiers de workflow (un par dépôt) + 1 littéral
+  de garde de release (test-only).
 * Zéro secret, zéro test local, zéro publication, zéro bump.
 * `workspace-bom` : la vague parallèle (`workspace-bom/catalog 0.0.121`,
   `document 0.0.29`, `plantuml 0.0.16`) a été publiée dans l'ordre DAG par sa
