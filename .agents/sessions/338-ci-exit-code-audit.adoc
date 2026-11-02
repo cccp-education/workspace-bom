@@ -2,7 +2,7 @@
 :date: 2026-11-02
 :borough: MEMPHIS (workspace-bom) — garde exécutée dans `agent-contracts`
 :type: test design DDD/TDD/BDD + audit transverse (gouvernance CI)
-:ci: run du push de clôture (prochaine preuve)
+:ci: workspace-bom `41364710329` ✅ (21/21 jobs) — deux runs rouges corrigés en cours de clôture
 
 == 1. Mission
 
@@ -110,6 +110,17 @@ Correctif (fichier test-only, **aucun** changement de production) :
   `errexit` — sans quoi la garde pouvait être verte sur un parseur aveugle
   (leçon : la preuve anti-vide doit porter sur le **parseur**, pas seulement sur
   le glob).
+
+Deuxième run (run `41364183166`) : rouge sur `:test`, `a gate neutralised by a
+fallback is flagged` — le finding portait la ligne YAML (`- run: ./gradlew check
+|| true`) au lieu de la commande shell. Correctif `shellOf()` (strippe le préfixe
+`- run: ` **avant** d'appliquer R1/R2, lignes de continuation inchangées).
+
+**Run final `41364710329` ✅ 21/21 jobs** (N0 inclus) : `:test` +
+`cucumberTest` + `versionCatalogCucumberTest` + `ciShellGatesCucumberTest` verts.
+La boucle rouge → diagnostic → correctif → re-push est la procédure EAGER
+(« une invalidation imposée par un run CI rouge se corrige en local par
+compilation, puis re-push ») ; zéro test lancé localement.
 
 == 5. Suivi — `MEM-CI-GATE-2` (créé au BACKLOG)
 

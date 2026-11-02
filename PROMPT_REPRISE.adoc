@@ -31,7 +31,7 @@ _Documents maîtres_ : `BACKLOG.adoc` (§ `MEM-CI-GATE-2`) ;
   `@ci-shell-gates`) ; warning-free 13 dépôts ; lint 16 dépôts (`magic-stick` caduc).
 - CI workspace-bom : 21 jobs, **`5m12s…5m52s`**. `agent-contracts check` exécute
   `test` + `cucumberTest` + `versionCatalogCucumberTest` + `ciShellGatesCucumberTest`.
-- Dernières CI : document `41355439684` ✅ (code S-337, avant publication).
+- Dernières CI : workspace-bom `41364710329` ✅ 21/21 (S-338) ; document `41355439684` ✅ (S-337, avant pub).
 
 == Doctrine XB-FP (clos — conservée pour mémoire)
 

@@ -2,20 +2,23 @@
 :date: 2026-11-02
 :session: 338
 
-== Session 338 (2026-11-02) — audit des codes de sortie CI : 22 tests neufs (test-only)
+== Session 338 (2026-11-02) — audit des codes de sortie CI : 24 tests neufs (test-only)
 
-* **`CiShellAuditTest`** (15 unit, `contracts.ci`) — le domaine pur de l'audit :
+* **`CiShellAuditTest`** (16 unit, `contracts.ci`) — le domaine pur de l'audit :
   repli des continuations `\` (une seule commande), commentaires/mots-clés shell
-  filtrés, `run: >` non audité, errexit reconnu dans **ses 5 orthographes**,
+  filtrés, `run: >` non audité, **forme item de séquence** (`- run: |`) parsée,
+  errexit reconnu dans **ses 5 orthographes**,
   **R1** (bloc multi-commandes + gate sans errexit, dont la **réplique exacte du
   script S-335** — characterisation : la commande rapportée est l'`echo` terminal),
   **R2** (`|| true` sur un gate, y compris **à travers une continuation** ; cleanup
   `docker`/`chown` non flaggé ; step `continue-on-error: true` **exempté** ; step
   commenté ignoré). RED : 34 `Unresolved reference` (`ShellFinding`, `CiShellAudit`).
-* **`CiExitCodeGuardTest`** (2, régression) — la **vraie** CI du dépôt : 0 finding
-  sur `.github/workflows` + `.github/actions`, plus la preuve **anti-vide** (le glob
-  voit `test.yml` et au moins une action composite) : un glob vide ne peut pas
-  produire un faux vert.
+* **`CiExitCodeGuardTest`** (3, régression) — la **vraie** CI du dépôt : 0 finding
+  sur `.github/workflows` + `.github/actions`, preuve **anti-vide** (le glob voit
+  `test.yml` et au moins une action composite) **et** preuve de parseur (le
+  `test.yml` réel produit des blocs, dont un avec `errexit`) : ni un glob vide ni
+  un parseur aveugle ne peuvent produire un faux vert (défaut trouvé par le run
+  rouge `41363590010`).
 * **BDD `ac_7_ci_shell_gates.feature`** (5 scénarios `@ci-shell-gates`, runner dédié
   `CiShellGatesCucumberRunner`, tâche `ciShellGatesCucumberTest` câblée à `check`) :
   faux vert historique détecté, même script sûr avec `set -eo pipefail`, gate masqué
