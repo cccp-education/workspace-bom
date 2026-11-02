@@ -106,7 +106,10 @@ dans l'ordre DAG (publication → pin consommateur → catalogue). **Leçon** : 
 arbre partagé, `git add -A` est interdit en clôture ; on stage des **chemins
 explicites**.
 
-* Preuve finale : CI **`41365307801`** rouge (cause externe) → revert → re-run.
+* Preuve finale : run `41365307801` rouge (cause **externe** : vague de releases
+  d'une session parallèle) → revert `c0e6702` → **`41365916624` ✅ 21/21**. Le code
+  de la session (`3aac97c`) avait déjà sa preuve verte (`41364710329` ✅ 21/21) ;
+  les commits suivants sont **docs + revert**, sans changement de code.
 
 === Correctif imposé par la CI (run `41363590010` rouge)
 

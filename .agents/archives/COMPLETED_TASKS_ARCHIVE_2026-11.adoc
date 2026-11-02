@@ -236,7 +236,7 @@
   source set `test` grandit). Prochain delta `document` : `0.0.29`.
 * **Suivi** `MEM-CI-GATE-2` : 3 P1 (`magic-stick` `bash -n` masqués, `office`
   `translate-i18n` ×2) + 4 P2 (`office` deploy ×4) + P3.
-* **CI `41364710329` ✅ 21/21 jobs** (N0 inclus). Deux runs rouges corrigés en
+* **CI `41364710329` ✅ 21/21 (code) puis `41365916624` ✅ 21/21 (après revert de l'arbre partagé) jobs** (N0 inclus). Deux runs rouges corrigés en
   clôture : (1) `- run: |` (item de séquence) n'était pas parsé — la BDD l'a
   révélé ; (2) le finding portait la ligne YAML au lieu de la commande shell
   (`shellOf()`). Garde anti-vide **durcie** : elle doit prouver le **parseur**
