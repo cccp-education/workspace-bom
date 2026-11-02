@@ -68,6 +68,19 @@ object CiShellAudit {
         )
 
     private val SWALLOW = Regex("""\|\|[ \t]*(true|echo)\b""")
+
+    /**
+     * Explicit, reviewable opt-in for a **tolerated** per-item failure.
+     *
+     * A loop that keeps going when one item fails (`./gradlew … || echo "WARNING …"`)
+     * is resilience, not a swallowed gate — but the audit cannot tell them apart
+     * from the command alone. The marker must be written on the command:
+     *
+     * ```
+     * ./gradlew -q translateDocument … || echo "WARNING …" # ci-shell:allow-swallow
+     * ```
+     */
+    private val ALLOW_SWALLOW = Regex("""ci-shell:allow-swallow""")
     private val ERREXIT_LONG = Regex("""(^|[\s;&|])set[ \t]+-o[ \t]+errexit\b""")
     private val ERREXIT_SHORT = Regex("""(^|[\s;&|])set[ \t]+-([a-zA-Z]+)""")
 
@@ -138,6 +151,7 @@ object CiShellAudit {
                 .map { (number, line) -> number to shellOf(line) }
                 .filter { (number, command) -> number !in intentional && GATE.containsMatchIn(command) }
                 .filter { (_, command) -> SWALLOW.containsMatchIn(command) }
+                .filterNot { (_, command) -> ALLOW_SWALLOW.containsMatchIn(command) }
                 .map { (number, command) -> ShellFinding.SwallowedGate(source, number, command) }
         return missingErrexit + swallowed
     }

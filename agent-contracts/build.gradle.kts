@@ -123,6 +123,20 @@ val ciShellGatesCucumberTest =
         outputs.upToDateWhen { false }
     }
 
+// ── MEM-CI-GATE-2.5 (S-341) — audit à la demande de TOUT le workspace ──
+// Pas de copie de l'audit dans les dépôts consommateurs (zéro split-brain) :
+// une seule implémentation, exécutée à la clôture de session sur les dépôts
+// voisins. `-PciRoot=<abs>` ; défaut = le dépôt workspace-bom.
+val ciShellGatesReport =
+    tasks.register<JavaExec>("ciShellGatesReport") {
+        description = "Audits the CI shell exit codes of a workspace (MEM-CI-GATE-2.5)"
+        group = "verification"
+        classpath = sourceSets.test.get().runtimeClasspath
+        mainClass.set("contracts.ci.CiShellAuditMain")
+        args(project.findProperty("ciRoot")?.toString() ?: "..")
+        outputs.upToDateWhen { false }
+    }
+
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
     testLogging {

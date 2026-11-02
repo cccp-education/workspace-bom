@@ -221,6 +221,46 @@ class CiShellAuditTest {
     }
 
     @Test
+    fun `a tolerated per-item failure is exempted by the explicit marker`() {
+        val text =
+            """
+            jobs:
+              gate:
+                steps:
+                  - name: Translate every article
+                    run: |
+                      for ARTICLE in *.adoc; do
+                        ./gradlew -q translateDocument \
+                          -Pdocument.translateSource="${'$'}ARTICLE" \
+                          || echo "WARNING: translation failed, continuing" # ci-shell:allow-swallow
+                      done
+            """.trimIndent()
+
+        assertThat(CiShellAudit.findings(text, "workflow.yml")).isEmpty()
+    }
+
+    @Test
+    fun `the same tolerated failure without the marker is still flagged`() {
+        val text =
+            """
+            jobs:
+              gate:
+                steps:
+                  - name: Translate every article
+                    run: |
+                      for ARTICLE in *.adoc; do
+                        ./gradlew -q translateDocument \
+                          -Pdocument.translateSource="${'$'}ARTICLE" \
+                          || echo "WARNING: translation failed, continuing"
+                      done
+            """.trimIndent()
+
+        val finding = CiShellAudit.findings(text, "workflow.yml").filterIsInstance<ShellFinding.SwallowedGate>().single()
+
+        assertThat(finding.command).contains("translateDocument")
+    }
+
+    @Test
     fun `a commented-out step is never audited`() {
         val text =
             """
