@@ -93,3 +93,21 @@ cd agent-contracts
 * Les workflows `office` ne sont pas push-triggered pour le déploiement : la preuve
   d'exécution sera le prochain déploiement réel ; en cas de régression, il échoue
   **avant** de publier (c'est l'objet du correctif).
+
+== 6. Incident de clôture — garde littérale de release, 2ᵉ fois (corrigé définitivement)
+
+Au moment de la clôture, la session parallèle a publié `document-plugin 0.0.30`
+(catalogue `0.0.122`) **sans** mettre à jour le littéral
+`WorkspaceCatalogStructureTest` (`0.0.29`) → `main` **rouge** (`41376926697`),
+exactement comme en S-339. La règle écrite ne suffit pas : le littéral **n'a pas
+de source de vérité** (bakery ne pine plus `document`, consommation *versionless*
+via le BOM, D5).
+
+**Correctif structurel** : le test est remplacé par un invariant hors-ligne
+(présence + semver plain) et un commentaire qui explique l'absence de pin
+consommateur ; la protection cross-borough reste `verifyCrossBoroughPins` (pin
+**plus récent** interdit ; un consommateur en retard est accepté par D5).
+Le test obsolète est tracé `MEM-CAT-GUARD-CLEANUP` (BACKLOG).
+
+Leçon : **un garde littéral sans source de vérité est un faux rouge récurrent** —
+le dériver d'une source réelle, ou le supprimer.

@@ -419,3 +419,21 @@ publication Maven Central TODO session 017.
 - Les interfaces sont testées via des fakes (implémentations anonymes) — pattern DDD contrat
 - Cucumber BDD documente le comportement attendu en langage naturel pour les boroughs N2 consommateurs
 - Pas de Testcontainers nécessaire (pas de pgvector, pas de git, pas de réseau)
+
+== Session 341 (2026-11-02) — audit workspace : 2 tests neufs, 1 test obsolète remplacé
+
+* **Exemption fine de R2** (2 tests, `CiShellAuditTest`, `contracts.ci`) :
+  un échec **toléré par item** (`./gradlew … || echo "WARNING …"`) est exempté par
+  le marqueur explicite `# ci-shell:allow-swallow` (test « exempted »), et **reste
+  signalé** sans le marqueur (test « still flagged ») — la tolérance doit être
+  écrite, pas devinée.
+* **`CiShellAuditMain`** (nouveau, test source set) : audit à la demande de tout le
+  workspace (`./gradlew ciShellGatesReport -PciRoot=<workspace>`, JavaExec, hors
+  `check`). Mesure de session : **68 fichiers CI, 0 finding**.
+* **`WorkspaceCatalogStructureTest`** : le test « document plugin version matches
+  bakery consumer pin » (littéral `0.0.28`/`0.0.29`) est **remplacé** — bakery ne
+  pine plus `document` (consommation versionless via le BOM, D5) : le littéral
+  n'avait aucune source de vérité et a cassé `main` **deux fois** le même jour
+  (S-339, S-341). Le nouveau test vérifie un invariant hors-ligne (présence +
+  semver) ; la protection cross-borough reste `verifyCrossBoroughPins`.
+* Preuve = CI du push (`agent-contracts check` : `test` + 3 suites Cucumber).

@@ -2,7 +2,6 @@ package contracts.catalog
 
 import org.junit.jupiter.api.Test
 import java.io.File
-import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 /**
@@ -78,11 +77,20 @@ class WorkspaceCatalogStructureTest {
     }
 
     @Test
-    fun `document plugin version matches bakery consumer pin`() {
-        assertEquals(
-            "0.0.29",
-            tomlVersions["document-plugin"],
-            "document-plugin = version publiée Central (consommée par bakery)",
+    fun `document plugin is consumed versionless through the BOM (no consumer pin)`() {
+        // MEM-CAT-2 — this test used to compare `document-plugin` against a LITERAL
+        // ("0.0.28", then "0.0.29"). It broke `main` twice on release days (S-339,
+        // S-341) because the literal has **no source of truth**: bakery no longer
+        // pins `document` at all — it consumes it versionless through the
+        // workspace BOM (doctrine D5, lazy adoption). The real cross-borough
+        // protection is `verifyCrossBoroughPins` (no consumer pin newer than the
+        // published catalogue); a stale consumer is an accepted state, not a bug.
+        // What remains true and checkable offline: the catalog carries a semver.
+        val version = tomlVersions["document-plugin"]
+        assertTrue(!version.isNullOrBlank(), "document-plugin must be declared in the catalog")
+        assertTrue(
+            Regex("""^\d+\.\d+\.\d+$""").matches(version),
+            "document-plugin must be a plain release version (was: $version)",
         )
     }
 

@@ -316,6 +316,22 @@ qui ne peut pas échouer est un faux vert** — il faut tester le gate lui-même
 Rapport `.agents/sessions/335-n0-gate-p0-and-document-release.adoc`.
 
 '''
+== ✅ MEM-CAT-GUARD-CLEANUP — supprimer un garde littéral sans source de vérité (TERMINÉ S-341)
+
+_Origine_ : `WorkspaceCatalogStructureTest › document plugin version matches bakery
+consumer pin` comparait le catalogue à un **littéral** (`0.0.28`, puis `0.0.29`).
+Il a rendu `main` **rouge deux fois le même jour** (S-339, S-341) après une
+publication `document`, parce que le littéral **n'a pas de source de vérité** :
+`bakery-gradle` ne pine plus `document` du tout — il le consomme *versionless* via
+le BOM (doctrine **D5**, adoption paresseuse). La protection cross-borough réelle
+est `verifyCrossBoroughPins` (aucun pin consommateur **plus récent** que le
+catalogue publié) ; un consommateur en retard est un état accepté.
+
+*Livré S-341* : le test vérifie désormais un invariant **hors-ligne** (présence +
+semver plain) et documente pourquoi il n'y a plus de pin consommateur à comparer.
+Le littéral de release disparaît → plus de faux rouge au prochain `document`.
+
+'''
 == ✅ EPIC MEM-CI-GATE-2 — fermer les faux verts des autres surfaces CI (TERMINÉ S-338 → S-341)
 
 _Origine_ : l'audit S-338 (suite de S-335) a inventorié **68 fichiers CI** du
