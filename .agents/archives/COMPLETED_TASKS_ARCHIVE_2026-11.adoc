@@ -241,3 +241,16 @@
   révélé ; (2) le finding portait la ligne YAML au lieu de la commande shell
   (`shellOf()`). Garde anti-vide **durcie** : elle doit prouver le **parseur**
   (blocs réels non vides, un avec `errexit`), pas seulement le glob.
+
+== S-339 — MEM-CI-GATE-2, vague P1 : 3 faux verts fermés ✅
+
+* **2.1 `magic-stick`** (`32e9459`) : `set -euo pipefail` sur le step mock A/B ;
+  **SIGPIPE évité** (`gradle tasks --all` redirigé vers `$RUNNER_TEMP`, sinon 141
+  sous `pipefail` — bug S-318) ; la sonde `grep -q` devient un gate autonome.
+* **2.2 `office`** (`a8ed5a95`) : `set -eo pipefail` sur les 2 steps de
+  `translate-i18n-content.yml` (12 et 43 commandes masquées par un rapport
+  terminal) ; résilience **par article** conservée (exemption fine de R2 → `2.5`).
+* Preuves : YAML valide (`ruby -ryaml`) + audit R1 vide ; CI push-triggered pour
+  `magic-stick`, `office` = `workflow_call` (prochaine invocation réelle).
+* Reste `2.3` (office deploy ×4, P2), `2.4` (capsule/edster/bakery, P2/P3),
+  `2.5` (portage `CiShellAudit` + exemption R2).

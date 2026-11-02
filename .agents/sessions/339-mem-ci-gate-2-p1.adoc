@@ -1,0 +1,77 @@
+= Session 339 — MEM-CI-GATE-2 : les faux verts des autres surfaces CI (P1)
+:date: 2026-11-02
+:borough: MEMPHIS (workspace-bom) — exécution dans `magic-stick` + `office`
+:type: correctif CI cross-borough (workflow-only, aucun code applicatif)
+:ci: magic-stick `build.yml` (run du push) ; `office` n'a pas de run push-triggered sur ce workflow
+
+== 1. Mission
+
+Première vague de `MEM-CI-GATE-2` (BACKLOG), les 3 findings **P1** de l'audit S-338 :
+
+. `magic-stick/.github/workflows/build.yml:83` — les deux `bash -n` (contrôle de
+  syntaxe) ne pouvaient pas échouer le job (dernière commande = script mock) ;
+. `office/.github/workflows/translate-i18n-content.yml:71` — 12 commandes, la
+  dernière étant un **rapport** (`cat … | python3 … print`) ;
+. `office/.github/workflows/translate-i18n-content.yml:91` — 43 commandes, la
+  dernière étant `echo "… complete"`.
+
+Méthode : un finding = un correctif minimal, preuve statique (YAML + règles
+`CiShellAudit`) puis **preuve CI du dépôt** quand elle existe.
+
+== 2. `CI-GATE-2.1` — magic-stick (commit `32e9459`)
+
+* `set -euo pipefail` en tête du step « Mock test A/B + persistence » : les deux
+  `bash -n` et le script mock peuvent désormais échouer le job.
+* **Piège évité** : la sonde `./gradlew tasks --all | grep -q isoTestAB` aurait
+  produit un **SIGPIPE** sur gradle (141) sous `pipefail` — exactement le bug de
+  cache CI de S-318 (`ollama run … | head -5`). La sortie est redirigée vers
+  `$RUNNER_TEMP/tasks.txt` puis `grep -q` devient un **gate à part entière**.
+* Effet de bord bénéfique : `… && echo` ne pouvait pas échouer non plus (la liste
+  `&&` retournait 1, sans errexit le step continuait) → le probe est réparé.
+* Preuve : YAML valide (`ruby -ryaml`), `CiShellAudit` (miroir awk) : finding R1
+  disparu ; CI `build.yml` déclenchée sur push (run à confirmer en clôture).
+
+== 3. `CI-GATE-2.2` — office (commit `a8ed5a95`)
+
+* `set -eo pipefail` sur les 2 steps (pas de `-u` : le script manipule des
+  variables d'`inputs` et de secrets dont l'absence doit rester une chaîne vide).
+* La **résilience par article** reste intentionnelle : la boucle garde son
+  `./gradlew … || echo "WARNING … continuing"` — un échec LLM par article ne doit
+  pas interrompre la campagne. C'est un cas à **exempter** dans R2 (voir §5).
+* Preuve statique : YAML valide + audit R1 vide sur le fichier. `office` n'expose
+  **aucun run push-triggered** pour ce `workflow_call` (le caller
+  `translate-cheroliv-com.yml` est `workflow_dispatch`) : la preuve d'exécution
+  sera la prochaine invocation réelle — documenté, pas contourné.
+
+== 4. Découvertes
+
+. **SIGPIPE** : `cmd | grep -q` sous `pipefail` est un faux rouge dès que `grep`
+   sort au premier match. Règle pratique : rediriger (`> file`) puis `grep -q file`.
+. **R2 a un faux positif structurel** : une boucle qui tolère un échec **par
+   item** (`… || echo "WARNING"`) est du code de résilience, pas un gate masqué.
+   Le champ `command` de `ShellFinding` ne suffit pas à distinguer les deux :
+   l'exemption par step (`continue-on-error`) est trop grossière. À traiter en
+   `CI-GATE-2.5` (décision de portage) — options : marqueur explicite
+   (`# ci-gate:allow-swallow`) ou détection de boucle.
+. **Un commentaire peut déclencher un garde textuel** : ma propre explication
+   contenait `|| echo` ; elle a été reformulée. Le domaine ignore les commentaires
+   (lignes `#`), mais la leçon S-238 reste : ne pas nommer le motif interdit.
+
+== 5. Reste — `MEM-CI-GATE-2`
+
+[cols="1,3,2", options="header"]
+|===
+| US | Reste | Priorité
+
+| 2.3 | `set -euo pipefail` sur les 4 steps de déploiement `office` (`cp`/`rm` masqués) — **risque** : un déploiement peut dépendre d'un échec toléré, à tester par site | P2
+| 2.4 | `capsule` (4 steps `apt-get update` + `install`), `edster` ×4, `bakery` website | P2/P3
+| 2.5 | Portage de `CiShellAudit` (module utilitaire partagé, **pas** N0) + règle d'exemption fine de R2 | P2 (décision pilote)
+|===
+
+== 6. Invariants
+
+* Zéro code applicatif modifié : uniquement 2 fichiers de workflow (un par dépôt).
+* Zéro secret, zéro test local, zéro publication, zéro bump.
+* `workspace-bom` : la vague parallèle (`workspace-bom/catalog 0.0.121`,
+  `document 0.0.29`, `plantuml 0.0.16`) a été publiée dans l'ordre DAG par sa
+  session (`fba5f2a`) après le revert `c0e6702` de S-338 — aucun conflit.
