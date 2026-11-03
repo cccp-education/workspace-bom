@@ -47,6 +47,8 @@ jobs:
       # exactly the point: the 4 check entries, 15 bakery shards, coverage job,
       # N0 contracts job and the Ollama job all read the same entry instead of
       # each downloading its own copy of the same jars.
+      - name: Verify Gradle wrapper version
+        uses: cccp-education/conventions-gradle/.github/actions/verify-gradle-wrapper@main
       - name: Restore the repository-wide common cache
         uses: ./.github/actions/setup-common-cache
 
