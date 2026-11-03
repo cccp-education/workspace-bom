@@ -1,11 +1,12 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-342 — dernière terminée : **341** (**`MEM-CI-GATE-2` TERMINÉ** — 2.3 `office`
-deploy + 2.5 décision/exemption ; audit soldé **16 findings → 0**). Avant :
-**340** (2.4 install), **339** (2.1/2.2), **338** (audit + garde).
+343 — dernière terminée : **342** (**release BOM/catalog 0.0.123 puis 0.0.124** —
+`bakery-plugin 0.0.31` (bundle `d99cea06`) puis `0.0.32` (`wasm:null`), runner
+`0.0.123`/`0.0.124`, site déployé `41587758121`. Avant : **341** `MEM-CI-GATE-2`
+TERMINÉ, 340/339/338 CI).
 
-=== Mission Session 342 — ordre proposé
+=== Mission Session 343 — ordre proposé
 
 . **Aucun EPIC ouvert.** Lancer `ciShellGatesReport` (nouveau réflexe de clôture,
    cf. §Clôture) puis proposer un cadrage au pilote (Règle 1). Candidats :
@@ -20,8 +21,8 @@ _Documents maîtres_ : `BACKLOG.adoc` (§ `MEM-CI-GATE-2` clos) ;
 
 == État du code
 
-- Central : `agent-contracts **0.0.4**`, `document-plugin **0.0.29**`,
-  `plantuml-plugin 0.0.16`, BOM/catalog **0.0.121**. Prochain delta `document` = **0.0.30**.
+- Central : `agent-contracts **0.0.4**`, `document-plugin **0.0.30**`,
+  `plantuml-plugin 0.0.16`, `bakery-plugin **0.0.32**`, BOM/catalog **0.0.124**.
 - **Audit CI du workspace : 0 finding / 68 fichiers** (`ciShellGatesReport -PciRoot=<workspace>`) ;
   exemption explicite `# ci-shell:allow-swallow` (échec toléré **par item**).
 - **Gates verts** : N0 (`set -eo pipefail` + `N0ContractsGateTest`, 10 builds) ;

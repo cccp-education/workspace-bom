@@ -1,0 +1,31 @@
+= Session 342 — BOM/catalog 0.0.123/0.0.124 : bakery 0.0.31/0.0.32
+:date: 2026-11-03
+:statut: TERMINÉ
+
+== Contexte
+
+La session BKY-SEARCH (bakery S-267) a livré le domaine/guard Pagefind, l'adapter
+headless et `validateSearchIndex`. Le déploiement réel a révélé deux correctifs :
+`wasm: null` pour une langue sans module (`bn`) et l'import de l'adapter résolu
+contre `document.baseURI`. MEMPHIS porte le catalogue/BOM et publie le premier.
+
+== Livré
+
+* BOM/catalog **0.0.123** : `bakery-plugin 0.0.31`, CI `41565219232` ✅,
+  bundle Central `d99cea06`.
+* BOM/catalog **0.0.124** : `bakery-plugin 0.0.32` (`wasm:null` toléré), CI
+  `41573638290` ✅.
+* `PlatformCatalogAlignmentTest` : littéraux `0.0.123`/`0.0.31` puis
+  `0.0.124`/`0.0.32`, message de garde aligné.
+* Consommateurs : `bakery-plugin 0.0.31` (bundle `c821b0ad`) puis `0.0.32` ;
+  `runner-gradle` pins `0.0.123` (`25ecd64`) et `0.0.124` (`5220065`) ; site
+  cheroliv déployé `41587758121` (matrice, 10m20s).
+
+== Validation
+
+Aucun test métier ajouté ou modifié. Les deux releases sont passées par
+`runAllTests` (21 jobs) et la garde catalogue. Aucun secret, aucun Python.
+
+== Reste
+
+Aucun. Le prochain delta `document` éventuel suivra le DAG BOM → document → bakery.
