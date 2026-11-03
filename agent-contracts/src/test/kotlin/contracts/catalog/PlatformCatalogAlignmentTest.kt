@@ -68,9 +68,9 @@ class PlatformCatalogAlignmentTest {
         assertEquals("0.0.1", tomlVersions["ocr-contracts"], "ocr-contracts")
         assertEquals("0.0.1", tomlVersions["plantuml-contracts"], "plantuml-contracts (PLT-DIAGRAM-OWNERSHIP US-1, 10e contrat N0)")
         assertEquals(
-            "0.0.9",
+            "0.0.10",
             tomlVersions["conventions-plugin"],
-            "conventions-plugin 0.0.9 (CNV-13.1 : identité POM paramétrable ; adoptée CNV-13.3)",
+            "conventions-plugin 0.0.10 (CNV-13.3 : version Gradle 9.8.2 centralisée + guard verifyGradleWrapper)",
         )
     }
 
