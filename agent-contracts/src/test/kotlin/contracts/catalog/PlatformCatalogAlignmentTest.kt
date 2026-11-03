@@ -32,7 +32,7 @@ class PlatformCatalogAlignmentTest {
     @Test
     fun `toml version workspace-bom matches platform version`() {
         assertEquals(
-            "0.0.124",
+            "0.0.125",
             tomlVersions["workspace-bom"],
             "workspace-bom dans le toml (tri-split C2 supprimé)",
         )
@@ -68,9 +68,9 @@ class PlatformCatalogAlignmentTest {
         assertEquals("0.0.1", tomlVersions["ocr-contracts"], "ocr-contracts")
         assertEquals("0.0.1", tomlVersions["plantuml-contracts"], "plantuml-contracts (PLT-DIAGRAM-OWNERSHIP US-1, 10e contrat N0)")
         assertEquals(
-            "0.0.7",
+            "0.0.9",
             tomlVersions["conventions-plugin"],
-            "conventions-plugin (Central 0.0.7, P2/P3 review S-019 : anti-drift BOM + opt-in cucumber + sondes BDD réelles)",
+            "conventions-plugin 0.0.9 (CNV-13.1 : identité POM paramétrable ; adoptée CNV-13.3)",
         )
     }
 
@@ -86,9 +86,9 @@ class PlatformCatalogAlignmentTest {
     @Test
     fun `toml bakery plugin version is aligned on the latest N2 release`() {
         assertEquals(
-            "0.0.32",
+            "0.0.33",
             tomlVersions["bakery-plugin"],
-            "bakery-plugin 0.0.32 (BKY-SEARCH : guard Pagefind, wasm nullable)",
+            "bakery-plugin 0.0.33 (release consommateur S-342)",
         )
     }
 
