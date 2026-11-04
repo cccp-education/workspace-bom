@@ -2,29 +2,19 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import java.time.Duration
 
 plugins {
-    signing
-    `java-library`
-    `maven-publish`
-    alias(libs.plugins.kotlin.jvm)
-    id("education.cccp.build.lint") version "0.0.11"
+    id("education.cccp.build.library") version "0.0.12"
+    id("education.cccp.build.publishing") version "0.0.12"
+    id("education.cccp.build.lint") version "0.0.12"
 }
 
 group = "education.cccp"
 version = "0.0.4"
-kotlin.jvmToolchain(25)
-
-repositories {
-    mavenCentral()
-}
 
 dependencies {
     api(libs.koog.agents)
     api(libs.kotlinx.serialization.json)
 
-    testImplementation(kotlin("test-junit5"))
-    testRuntimeOnly(libs.junit.platform.launcher)
     testImplementation(libs.logback.classic)
-    testImplementation(libs.assertj)
     testImplementation(libs.bundles.cucumber)
 }
 
@@ -137,75 +127,28 @@ val ciShellGatesReport =
         outputs.upToDateWhen { false }
     }
 
-tasks.withType<Test>().configureEach {
-    useJUnitPlatform()
-    testLogging {
-        events("passed", "skipped", "failed")
-        showStandardStreams = true
-        exceptionFormat = FULL
-    }
-}
-
-java {
-    withJavadocJar()
-    withSourcesJar()
+tasks.named("check") {
+    dependsOn(cucumberTest, versionCatalogCucumberTest, ciShellGatesCucumberTest)
 }
 
 publishing {
     publications {
         create<MavenPublication>("maven") {
             from(components["java"])
-            pom {
-                name.set("Agent Contracts")
-                description.set("N0 shared library — cross-borough agent contracts for koog orchestration")
-                url.set("https://github.com/cccp-education/workspace-bom")
-                licenses {
-                    license {
-                        name.set("Apache 2.0")
-                        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
-                    }
-                }
-                developers {
-                    developer {
-                        id.set("cccp-education")
-                        name.set("CCCP Education")
-                        email.set("cccp.edu@gmail.com")
-                    }
-                }
-                scm {
-                    connection.set("https://github.com/cccp-education/workspace-bom.git")
-                    developerConnection.set("https://github.com/cccp-education/workspace-bom.git")
-                    url.set("https://github.com/cccp-education/workspace-bom")
-                }
-                // RELOCATION : gardé comme échappatoire future.
-                // Activable avec -Prem relocationGroup="<futur-namespace>"
-                project.findProperty("relocationGroup")?.let { targetGroup ->
-                    withXml {
-                        val pom = asElement()
-                        val doc = pom.ownerDocument
-                        val distMgmt = doc.createElement("distributionManagement")
-                        val relocation = doc.createElement("relocation")
-                        relocation.appendChild(doc.createElement("groupId")).also { it.textContent = targetGroup.toString() }
-                        relocation.appendChild(doc.createElement("artifactId")).also { it.textContent = project.name }
-                        distMgmt.appendChild(relocation)
-                        pom.appendChild(distMgmt)
-                    }
-                }
-            }
         }
     }
-    repositories {
-        mavenCentral()
-    }
 }
 
-signing {
-    if (System.getenv("CI") != "true" && !version.toString().endsWith("-SNAPSHOT")) {
-        sign(publishing.publications)
+publishingConventions {
+    publicationType = "LIBRARY"
+    website = "https://github.com/cccp-education/workspace-bom"
+    vcsUrl = "https://github.com/cccp-education/workspace-bom"
+    developerEmail = "cccp.edu@gmail.com"
+    pomName = "Agent Contracts"
+    pomDescription = "N0 shared library — cross-borough agent contracts for koog orchestration"
+    val relocationGroup = project.findProperty("relocationGroup")?.toString()
+    if (relocationGroup != null) {
+        relocationGroupId = relocationGroup
+        relocationArtifactId = project.name
     }
-    useGpgCmd()
-}
-
-tasks.named("check") {
-    dependsOn(cucumberTest, versionCatalogCucumberTest, ciShellGatesCucumberTest)
 }

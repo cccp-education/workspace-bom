@@ -68,9 +68,9 @@ class PlatformCatalogAlignmentTest {
         assertEquals("0.0.1", tomlVersions["ocr-contracts"], "ocr-contracts")
         assertEquals("0.0.1", tomlVersions["plantuml-contracts"], "plantuml-contracts (PLT-DIAGRAM-OWNERSHIP US-1, 10e contrat N0)")
         assertEquals(
-            "0.0.11",
+            "0.0.12",
             tomlVersions["conventions-plugin"],
-            "conventions-plugin 0.0.11 (CNV-13.5 : options kover + audit d'adoption cross-borough)",
+            "conventions-plugin 0.0.12 (CNV-14 : convention library N0 + pom name/description)",
         )
     }
 
