@@ -504,7 +504,13 @@ jobs:
               # contracts.catalog.N0ContractsGateTest.
               set -eo pipefail
               echo "::group::{} check"
-              ( cd "{}" && ./gradlew check --no-daemon --console=plain )
+              # 5 concurrent builds share one GRADLE_USER_HOME: the daemon
+              # registry file lock races ("Timeout waiting to connect to the
+              # Gradle daemon" / "Cannot start managing file contention")
+              # even with --no-daemon. Isolate the registry per build while
+              # keeping the shared dependency caches.
+              ( cd "{}" && ./gradlew check --no-daemon --console=plain \
+                  -Dorg.gradle.daemon.registry.base="$RUNNER_TEMP/daemon-registry-{}" )
               echo "::endgroup::"
             '
 
