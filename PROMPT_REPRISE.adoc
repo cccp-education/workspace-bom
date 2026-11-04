@@ -1,19 +1,26 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-343 — dernière terminée : **342** (**release BOM/catalog 0.0.123 puis 0.0.124** —
+344 — dernière terminée : **343** (**adoption CNV-14.3** — les 9 contrats N0
+passent à `education.cccp.build.library` `0.0.12` + `publishing` + `lint`,
+−596/+142 lignes ; catalogue source `conventions-plugin = "0.0.12"` ; 3 tests
+fantômes Cucumber câblés ; CI `41888846264` ✅. Audit : 113 pins `0.0.11` à
+rollouter). Avant : **342** (**release BOM/catalog 0.0.123 puis 0.0.124** —
 `bakery-plugin 0.0.31` (bundle `d99cea06`) puis `0.0.32` (`wasm:null`), runner
 `0.0.123`/`0.0.124`, site déployé `41587758121`. Avant : **341** `MEM-CI-GATE-2`
 TERMINÉ, 340/339/338 CI).
 
-=== Mission Session 343 — ordre proposé
+=== Mission Session 344 — ordre proposé
 
-. **Aucun EPIC ouvert.** Lancer `ciShellGatesReport` (nouveau réflexe de clôture,
-   cf. §Clôture) puis proposer un cadrage au pilote (Règle 1). Candidats :
-   `document 0.0.30` si delta source ; D12 « adopter Arrow aux seams réels »
-   (validateurs `zipOrAccumulate` restants) ; sinon un nouvel EPIC transverse.
-. **Si delta source `document`** : release `0.0.30` (DAG BOM → document → bakery)
-   + mise à jour du littéral `WorkspaceCatalogStructureTest` **dans le même commit**.
+. **CNV-14.2/14.5 (suite)** : publier **BOM/catalog `0.0.126`** — le catalogue
+   source porte déjà `conventions-plugin = "0.0.12"` (S-343) — puis planifier le
+   **rollout public `0.0.12`** (113 pins `0.0.11`, ~28 dépôts) ; enfin
+   `auditConventionsAdoption -Pstrict=true` doit repasser au vert.
+. **Aucun EPIC ouvert côté MEMPHIS.** Lancer `ciShellGatesReport` (réflexe de
+   clôture) puis proposer un cadrage au pilote (Règle 1). Candidats :
+   `document 0.0.30` si delta source ; D12 « adopter Arrow aux seams réels ».
+. **Si delta source `document`** : release (DAG BOM → document → bakery) + mise
+   à jour du littéral `WorkspaceCatalogStructureTest` **dans le même commit**.
 
 _Documents maîtres_ : `BACKLOG.adoc` (§ `MEM-CI-GATE-2` clos) ;
 `.agents/sessions/341-mem-ci-gate-2-3-2-5.adoc` ;

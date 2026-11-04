@@ -616,3 +616,34 @@ Gates : compiles `--rerun-tasks --no-build-cache` **0 warning**, `ktlintCheck` V
 CI document `41355439684` ✅ **37 min sur le code** avant publication.
 **EPIC `XF-FP-3` TERMINÉ (3/3 US)** ; prochain delta `document` = `0.0.29`.
 Rapport `.agents/sessions/337-xf-fp3-2-3-and-0.0.28.adoc`.
+
+'''
+
+== Session 343 — 2026-11-04
+Type:: cross-borough / adoption
+Code:: CNV-14.3 (conventions-gradle)
+Titre:: Convention `library` adoptée par les 9 contrats N0
+Score:: 10/10
+Duree:: session transverse
+
+**Contexte** : convention `education.cccp.build.library` publiée `0.0.12`
+(conventions S-029/S-030, Central `b1623b20`, Portal).
+
+**Livré** : les 9 contrats N0 adoptent `library` + `publishing` + `lint`
+`0.0.12` (`agent`, `codebase`, `i18n`, `llm-pool`, `ocr`,
+`opencode-session`, `pipeline`, `plantuml`, `runtime`), **−596 / +142
+lignes**. POM via `publishingConventions { pomName; pomDescription; … }`
+(US-14.4), SCM standardisé. Catalogue source `conventions-plugin = "0.0.12"`
++ garde `PlatformCatalogAlignmentTest` réalignée.
+
+**Bug latent corrigé** : `opencode-session`, `pipeline` et `runtime`
+déclaraient un `cucumberTest` **non câblé à `check`** (test fantôme) ; wiring
+ajouté, les 3 suites BDD tournent désormais.
+
+**Gates** : local `assemble ktlintCheck compileTestKotlin` 9/9 ; POM 9/9
+vérifiés ; **CI `41888846264` ✅** (N0 vert, opencode Cucumber vert). Audit
+non strict : 113 `0.0.11 < 0.0.12` attendus (rollout à faire), 0 finding sur
+les 9 N0.
+
+**Suivant** : BOM/catalog `0.0.126` (catalogue `0.0.12`) ; rollout public
+`0.0.12` (113 pins) puis audit strict.

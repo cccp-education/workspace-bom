@@ -1,0 +1,55 @@
+= Session 343 — Adoption CNV-14 : convention `library` dans les 9 contrats N0
+:toc: left
+:toclevels: 3
+:icons: font
+
+:session: 343
+:date: 2026-11-04
+:type: cross-borough / adoption
+:epic: CNV-14.3 (conventions-gradle, pilotée depuis ABIDJAN)
+
+== Contexte
+
+La convention `education.cccp.build.library` a été livrée par la session
+conventions S-029/S-030 (`0.0.12`, Central bundle `b1623b20`, Portal publié).
+Elle remplace la duplication des 9 contrats N0 : `java-library` + kotlin,
+toolchain, repositories, jars sources/javadoc, deps JUnit + `workspace-bom`,
+gardes wrapper/audit — **sans** `java-gradle-plugin` ni publishing.
+
+== Modifications
+
+* **9 builds N0** adoptent `library` + `publishing` + `lint` `0.0.12` :
+  `agent-`, `codebase-`, `i18n-`, `llm-pool-`, `ocr-`,
+  `opencode-session-`, `pipeline-`, `plantuml-`, `runtime-contracts`.
+  Suppression des blocs dupliqués `plugins`, `kotlin.jvmToolchain`,
+  `repositories`, `tasks.withType<Test>`, `java { }`, POM (licenses/
+  developers/scm), `signing`. **−596 / +142 lignes**.
+* **POM** : `publishingConventions { pomName; pomDescription; website;
+  vcsUrl; developerEmail }` (US-14.4) — les noms/descriptions sont préservés,
+  le SCM est standardisé (`scm:git:git://…`, `scm:git:ssh://…`).
+* **Catalogue** : `gradle/libs.versions.toml` `conventions-plugin = "0.0.12"` ;
+  garde `PlatformCatalogAlignmentTest` réalignée.
+* **Bug latent corrigé (test fantôme S-269)** : `opencode-session-contracts`,
+  `pipeline-contracts` et `runtime-contracts` déclaraient un `cucumberTest`
+  mais ne le câblaient **pas** à `check` — leurs features n'étaient jamais
+  exécutées en CI. `tasks.named("check") { dependsOn(cucumberTest) }` ajouté ;
+  les 3 suites tournent désormais (CI `41888846264`).
+
+== Gates
+
+* Local (Local = Build) : `assemble ktlintCheck compileTestKotlin` **9/9 OK** ;
+  les 9 POM générés portent le bon `name` / `description` / `email` / SCM.
+* **CI workspace-bom `41888846264` ✅** (job `N0 · contracts` vert, opencode
+  Cucumber exécuté et vert). Aucun test lancé en local.
+* **Audit** (non strict, attendu) : 113 findings `pinned 0.0.11 < published
+  0.0.12` sur les autres consommateurs — **rollout 0.0.12 à planifier**.
+  Les 9 contrats N0 ne produisent plus de finding.
+
+== Suivant
+
+* MEMPHIS : release **BOM/catalog 0.0.126** (catalogue pinnant
+  `conventions-plugin = "0.0.12"`).
+* Rollout public `0.0.12` : 113 pins / ~28 dépôts, puis
+  `auditConventionsAdoption -Pstrict=true` doit repasser au vert.
+* Optionnel : aligner le BOM de test injecté par conventions (`0.0.125`) sur
+  la nouvelle release BOM quand elle sera disponible.
