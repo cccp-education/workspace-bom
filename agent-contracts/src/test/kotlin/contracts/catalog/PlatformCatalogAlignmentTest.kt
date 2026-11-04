@@ -32,7 +32,7 @@ class PlatformCatalogAlignmentTest {
     @Test
     fun `toml version workspace-bom matches platform version`() {
         assertEquals(
-            "0.0.126",
+            "0.0.127",
             tomlVersions["workspace-bom"],
             "workspace-bom dans le toml (tri-split C2 supprimé)",
         )
@@ -68,9 +68,9 @@ class PlatformCatalogAlignmentTest {
         assertEquals("0.0.1", tomlVersions["ocr-contracts"], "ocr-contracts")
         assertEquals("0.0.1", tomlVersions["plantuml-contracts"], "plantuml-contracts (PLT-DIAGRAM-OWNERSHIP US-1, 10e contrat N0)")
         assertEquals(
-            "0.0.12",
+            "0.0.13",
             tomlVersions["conventions-plugin"],
-            "conventions-plugin 0.0.12 (CNV-14 : convention library N0 + pom name/description)",
+            "conventions-plugin 0.0.13 (CNV-15 : auto-publication N0 + detekt policy + BOM 0.0.126)",
         )
     }
 

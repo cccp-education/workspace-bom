@@ -1,7 +1,7 @@
 plugins {
-    id("education.cccp.build.library") version "0.0.12"
-    id("education.cccp.build.publishing") version "0.0.12"
-    id("education.cccp.build.lint") version "0.0.12"
+    id("education.cccp.build.library") version "0.0.13"
+    id("education.cccp.build.publishing") version "0.0.13"
+    id("education.cccp.build.lint") version "0.0.13"
 }
 
 group = "education.cccp"
@@ -11,16 +11,9 @@ dependencies {
     implementation(kotlin("stdlib"))
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            from(components["java"])
-        }
-    }
-}
-
 publishingConventions {
     publicationType = "LIBRARY"
+    createMavenPublication = true
     website = "https://github.com/cccp-education/workspace-bom"
     vcsUrl = "https://github.com/cccp-education/workspace-bom"
     developerEmail = "cccp.education@gmail.com"

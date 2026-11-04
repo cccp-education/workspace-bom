@@ -2,9 +2,9 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import java.time.Duration
 
 plugins {
-    id("education.cccp.build.library") version "0.0.12"
-    id("education.cccp.build.publishing") version "0.0.12"
-    id("education.cccp.build.lint") version "0.0.12"
+    id("education.cccp.build.library") version "0.0.13"
+    id("education.cccp.build.publishing") version "0.0.13"
+    id("education.cccp.build.lint") version "0.0.13"
 }
 
 group = "education.cccp"
@@ -131,16 +131,9 @@ tasks.named("check") {
     dependsOn(cucumberTest, versionCatalogCucumberTest, ciShellGatesCucumberTest)
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            from(components["java"])
-        }
-    }
-}
-
 publishingConventions {
     publicationType = "LIBRARY"
+    createMavenPublication = true
     website = "https://github.com/cccp-education/workspace-bom"
     vcsUrl = "https://github.com/cccp-education/workspace-bom"
     developerEmail = "cccp.edu@gmail.com"
