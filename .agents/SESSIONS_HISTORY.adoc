@@ -668,3 +668,22 @@ VERTS ; CI `41904522564` ✅ ; Central bundle
 S-031), audit strict 0 finding.
 
 Rapport `.agents/sessions/344-bom-0.0.126-conventions-0.0.12.adoc`.
+
+'''
+
+== Session 345 — 2026-11-04
+Type:: adoption / release
+Code:: CNV-15.1 (conventions S-033) + CNV-15.3
+Titre:: Auto-publication N0 + BOM/catalog `0.0.127`
+Score:: 10/10
+Duree:: session transverse
+
+**Livré** : 9 contrats N0 en `createMavenPublication = true`, bloc
+`publishing { }` supprimé (**−104/+41 l.**, `cfbbf8c`), pins `0.0.13` ;
+catalogue `conventions-plugin = "0.0.13"` + garde ; `workspace-bom = "0.0.127"`.
+Validation locale `assemble`/`ktlintCheck`/`compileTestKotlin` +
+`generatePomFileForMavenPublication` 9/9 ; CI `41924833092` ✅.
+**Central** bundle `d07a994f-6525-4ae3-b785-802589e3da1d` ; propagation repo1
+**200** ×2 ; constraint `conventions-plugin:0.0.13`.
+
+Rapport `.agents/sessions/345-cnv-15-auto-publication-bom-0.0.127.adoc`.

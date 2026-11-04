@@ -1,0 +1,52 @@
+= Session 345 — CNV-15.1/15.3 côté MEMPHIS : auto-publication N0 + BOM/catalog `0.0.127`
+:toc: left
+:toclevels: 3
+:icons: font
+
+:session: 345
+:date: 2026-11-04
+:type: adoption / release
+:epic: CNV-15.1 (conventions S-033) + CNV-15.3 (catalogue MEMPHIS)
+
+== Contexte
+
+La convention `education.cccp.build.publishing` `0.0.13` apporte
+`createMavenPublication` (opt-in) : la publication `maven` est créée depuis
+`components["java"]` si le consommateur n'en déclare aucune. Le BOM/catalog
+publié `0.0.126` portait encore conventions `0.0.12` ; il fallait une release
+pour propager `0.0.13`.
+
+== Livré
+
+* **9 contrats N0** : `createMavenPublication = true` + suppression du bloc
+  `publishing { publications { create<MavenPublication>("maven") { … } } }`
+  → **−104 / +41 lignes** (commit `cfbbf8c`).
+* Pins `education.cccp.build.*` `0.0.12 → 0.0.13` dans les 9 modules.
+* Catalogue source `conventions-plugin = "0.0.13"` + garde
+  `PlatformCatalogAlignmentTest` réalignée.
+* `workspace-bom = "0.0.127"` + littéral de garde aligné.
+* Validation locale : `assemble`/`ktlintCheck`/`compileTestKotlin` +
+  `generatePomFileForMavenPublication` **9/9 OK** (POM auto-créé, noms
+  préservés) ; `assemble` racine VERT.
+* CI workspace-bom **`41924833092` ✅** (commit `cfbbf8c`).
+* **Central** : bundle **`d07a994f-6525-4ae3-b785-802589e3da1d`**
+  (AUTOMATIC) ; propagation repo1 **200** pour `workspace-bom` et
+  `workspace-catalog` `0.0.127` ; POM contraint
+  `education.cccp.build:conventions-plugin:0.0.13`.
+
+== État
+
+[cols="2,3"]
+|===
+| Élément | État
+| 9 contrats N0 | ✅ auto-publication, zéro bloc `publishing { }` manuel
+| Catalogue `conventions-plugin` | ✅ `0.0.13`
+| BOM/catalog `0.0.127` | ✅ Central (repo1 200 ×2)
+| Rollout conventions `0.0.13` | ✅ 133 builds (conventions S-033), audit strict 0
+|===
+
+== Suivant
+
+* Aucun travail MEMPHIS ouvert lié à CNV-15.
+* Veille : `ciShellGatesReport`, detekt JVM 25 (limitation), CI privées
+  (facturation Actions).
