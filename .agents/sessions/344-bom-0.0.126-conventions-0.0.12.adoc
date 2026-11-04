@@ -1,0 +1,49 @@
+= Session 344 — BOM/catalog `0.0.126` (catalogue `conventions-plugin 0.0.12`)
+:toc: left
+:toclevels: 3
+:icons: font
+
+:session: 344
+:date: 2026-11-04
+:type: release
+:epic: CNV-14.2 (catalogue MEMPHIS)
+
+== Contexte
+
+Le catalogue source porte `conventions-plugin = "0.0.12"` depuis la session
+343 (adoption des 9 contrats N0). La release `conventions-plugin 0.0.12` est
+sur Central (bundle `b1623b20`) et le Plugin Portal. Le BOM/catalog publié
+`0.0.125` portait encore `0.0.11` ; il fallait une nouvelle release pour
+propager le pin.
+
+== Livré
+
+* `gradle/libs.versions.toml` : `workspace-bom = "0.0.125"` → **`"0.0.126"`**
+  (source unique — `build.gradle.kts` dérive la version du toml).
+* Garde `PlatformCatalogAlignmentTest` réalignée `0.0.125` → `0.0.126`.
+* Compile + `ktlintCheck` VERT (`agent-contracts`).
+* CI workspace-bom **`41904522564` ✅**.
+* **Publication Central** : bundle
+  `964c3bf7-c3ba-4271-b63b-201254e1b480` (AUTOMATIC).
+* **Propagation repo1 confirmée** : `workspace-bom/0.0.126` **200** et
+  `workspace-catalog/0.0.126` **200** ; le POM contraint
+  `education.cccp.build:conventions-plugin:0.0.12`.
+
+== État
+
+[cols="2,3"]
+|===
+| Élément | État
+| BOM/catalog `0.0.126` | ✅ Central (repo1 200 ×2)
+| `conventions-plugin` contraint | ✅ `0.0.12`
+| 133 consommateurs | ✅ rollout `0.0.12` (conventions S-031), audit strict 0 finding
+|===
+
+== Suivant
+
+* Aucun travail MEMPHIS ouvert lié à CNV-14.
+* Optionnel (décision pilote) : aligner le BOM de test injecté par
+  conventions (`WorkspaceBom.FALLBACK_VERSION` = `0.0.125`) sur `0.0.126` →
+  release `conventions-plugin 0.0.13` + rollout. Non bloquant.
+* Veille habituelle : `ciShellGatesReport`, detekt JVM 25 (limitation),
+  CI privées (facturation GitHub Actions).

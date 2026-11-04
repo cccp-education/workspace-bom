@@ -647,3 +647,24 @@ les 9 N0.
 
 **Suivant** : BOM/catalog `0.0.126` (catalogue `0.0.12`) ; rollout public
 `0.0.12` (113 pins) puis audit strict.
+
+'''
+
+== Session 344 — 2026-11-04
+Type:: release
+Code:: CNV-14.2 (catalogue MEMPHIS)
+Titre:: BOM/catalog `0.0.126` — catalogue `conventions-plugin 0.0.12`
+Score:: 10/10
+Duree:: session courte
+
+**Livré** : `workspace-bom = "0.0.126"` (toml, source unique) + garde
+`PlatformCatalogAlignmentTest` réalignée ; `compileTestKotlin` + `ktlintCheck`
+VERTS ; CI `41904522564` ✅ ; Central bundle
+`964c3bf7-c3ba-4271-b63b-201254e1b480` (AUTOMATIC) ; propagation repo1
+**200** pour `workspace-bom` et `workspace-catalog` ; POM contraint
+`education.cccp.build:conventions-plugin:0.0.12`.
+
+**CNV-14 clos** : les 133 consommateurs sont rolloutés `0.0.12` (conventions
+S-031), audit strict 0 finding.
+
+Rapport `.agents/sessions/344-bom-0.0.126-conventions-0.0.12.adoc`.
