@@ -1,0 +1,46 @@
+= Session 346 — BOM/catalog `0.0.128` (catalogue `conventions-plugin 0.0.14`)
+:toc: left
+:toclevels: 3
+:icons: font
+
+:session: 346
+:date: 2026-11-04
+:type: release
+:epic: Suivi S-035 (alignement BOM de test)
+
+== Contexte
+
+La session conventions S-035 a aligné le BOM de test injecté sur la release
+`0.0.127` et publié `conventions-plugin 0.0.14`. Le BOM/catalog publié
+`0.0.127` portait encore conventions `0.0.13` ; une release catalogue était
+nécessaire.
+
+== Livré
+
+* `gradle/libs.versions.toml` : `workspace-bom = "0.0.127"` → **`"0.0.128"`**
+  et `conventions-plugin = "0.0.13"` → **`"0.0.14"`** ;
+* garde `PlatformCatalogAlignmentTest` réalignée (`0.0.128` + `0.0.14`) ;
+* les 9 contrats N0 sont passés à `education.cccp.build.* 0.0.14` ;
+* validation locale : `assemble` racine VERT, 9 N0 (`assemble`/`ktlintCheck`/
+  `compileTestKotlin`/`generatePomFileForMavenPublication`) VERTES ;
+* CI workspace-bom **`41943127906` ✅** (commit `3c4bf53`) ;
+* **Central** : bundle **`e8b67127-9ca5-4c7a-b00f-ba9306411724`**
+  (AUTOMATIC) ; propagation repo1 **200** pour `workspace-bom` et
+  `workspace-catalog` `0.0.128` ; POM contraint
+  `education.cccp.build:conventions-plugin:0.0.14`.
+
+== État
+
+[cols="2,3"]
+|===
+| Élément | État
+| Catalogue `conventions-plugin` | ✅ `0.0.14`
+| BOM/catalog `0.0.128` | ✅ Central (repo1 200 ×2)
+| 9 contrats N0 | ✅ `0.0.14`
+| Rollout conventions `0.0.14` | ✅ 140 pins / 26 dépôts (conventions S-035), audit strict 0
+|===
+
+== Suivant
+
+Aucun travail MEMPHIS ouvert. Veille : `ciShellGatesReport`, detekt JVM 25
+(limitation), CI privées (facturation Actions).
