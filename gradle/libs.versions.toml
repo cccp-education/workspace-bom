@@ -38,7 +38,7 @@ mockito-jupiter = "5.23.0"
 assertj = "3.25.3"
 
 # ── Gradle tooling ────────────────────────────────────────────────────────────
-plugin-publish = "2.1.0"
+plugin-publish = "2.2.1"
 kover = "0.9.8"
 gradle-tooling = "9.7.1"
 node-gradle = "7.1.0"
