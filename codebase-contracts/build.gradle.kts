@@ -1,7 +1,7 @@
 plugins {
-    id("education.cccp.build.library") version "0.0.13"
-    id("education.cccp.build.publishing") version "0.0.13"
-    id("education.cccp.build.lint") version "0.0.13"
+    id("education.cccp.build.library") version "0.0.14"
+    id("education.cccp.build.publishing") version "0.0.14"
+    id("education.cccp.build.lint") version "0.0.14"
 }
 
 group = "education.cccp"

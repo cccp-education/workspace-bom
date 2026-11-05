@@ -1,6 +1,6 @@
 [versions]
 # ── Workspace BOM shared versions ─────────────────────────────────────────────
-workspace-bom = "0.0.127"
+workspace-bom = "0.0.128"
 
 # ── Kotlin ────────────────────────────────────────────────────────────────────
 kotlin = "2.4.10"
@@ -59,7 +59,7 @@ graphify-plugin = "0.0.5"
 dashboard-plugin = "0.0.2"
 api-key-pool-plugin = "0.0.2"
 codebase-plugin = "0.0.18"
-conventions-plugin = "0.0.13"
+conventions-plugin = "0.0.14"
 
 # ── Shared libraries (education.cccp, N1) ─────────────────────────────────────
 video-kernel = "0.7.0"
