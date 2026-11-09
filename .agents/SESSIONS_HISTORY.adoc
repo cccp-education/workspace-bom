@@ -706,3 +706,9 @@ Duree:: session courte
 constraint `conventions-plugin:0.0.14`.
 
 Rapport `.agents/sessions/346-bom-0.0.128-conventions-0.0.14.adoc`.
+
+== Session 348 — JitPack mirror (CNV-16) — 2026-11-09
+
+Publication JitPack de workspace-bom, workspace-catalog et des 9 contrats (0.0.128). JitPack : 0.0.128 — 11 artefacts HTTP 200. Shim `useModule` pour
+`education.cccp.build.*` (tag JitPack `0.0.15`). Rapport
+`.agents/sessions/348-jitpack-mirror.adoc`.
