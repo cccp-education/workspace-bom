@@ -1,0 +1,22 @@
+# CNV-16 — JitPack build recipe (N0 workspace-bom + 9 contract modules).
+# JitPack builds from a public tag; no upload and no credential.
+before_install:
+  # JitPack defaults to JDK 8; the workspace requires Java 25.
+  - sdk install java 25.0.5.0+8-tem
+  - sdk use java 25.0.5.0+8-tem
+install:
+  # Publish the BOM, the catalog and the 9 contract modules to ~/.m2,
+  # where JitPack harvests them. `publishToMavenLocal` does not run tests.
+  - ./gradlew publishToMavenLocal
+  - ./gradlew -p agent-contracts publishToMavenLocal
+  - ./gradlew -p codebase-contracts publishToMavenLocal
+  - ./gradlew -p i18n-contracts publishToMavenLocal
+  - ./gradlew -p llm-pool-contracts publishToMavenLocal
+  - ./gradlew -p ocr-contracts publishToMavenLocal
+  - ./gradlew -p opencode-session-contracts publishToMavenLocal
+  - ./gradlew -p pipeline-contracts publishToMavenLocal
+  - ./gradlew -p plantuml-contracts publishToMavenLocal
+  - ./gradlew -p runtime-contracts publishToMavenLocal
+env:
+  # No GPG key on JitPack; the build script already skips signing when CI=true.
+  CI: "true"
