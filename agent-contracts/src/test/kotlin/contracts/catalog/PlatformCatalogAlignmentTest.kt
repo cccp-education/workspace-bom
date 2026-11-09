@@ -32,7 +32,7 @@ class PlatformCatalogAlignmentTest {
     @Test
     fun `toml version workspace-bom matches platform version`() {
         assertEquals(
-            "0.0.128",
+            "0.0.129",
             tomlVersions["workspace-bom"],
             "workspace-bom dans le toml (tri-split C2 supprimé)",
         )
@@ -86,9 +86,9 @@ class PlatformCatalogAlignmentTest {
     @Test
     fun `toml bakery plugin version is aligned on the latest N2 release`() {
         assertEquals(
-            "0.0.33",
+            "0.0.36",
             tomlVersions["bakery-plugin"],
-            "bakery-plugin 0.0.33 (release consommateur S-342)",
+            "bakery-plugin 0.0.36 (release consommateur BKY-CI-MIRROR)",
         )
     }
 
