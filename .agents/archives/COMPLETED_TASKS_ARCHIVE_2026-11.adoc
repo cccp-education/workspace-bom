@@ -1,5 +1,18 @@
 = Archive des tâches terminées — 2026-11
 
+== S-347 — release `0.0.129` / plantuml `0.0.17` tentée, bloquée quota Sonatype ✅ (revert)
+
+* Bump `workspace-bom = 0.0.129` + `plantuml-plugin = 0.0.17` + garde
+  `PlatformCatalogAlignmentTest` dans le même commit (`433f1c9`).
+* `assemble` racine + `agent-contracts:compileTestKotlin` VERT ; **CI
+  `42541458784` ✅ 21/21**.
+* `publishAggregationToCentralPortal` **refusé** : « monthly release count
+  limit. Grace period ended 2026-11-05. Usage resets **2026-12-01** » —
+  `workspace-bom`/`catalog 0.0.129` et plantuml `0.0.17` restent **404** repo1.
+* Portal non viable : groupe `education.cccp.plantuml` en revue manuelle.
+* **Revert `b1c9910`** → `main` à l'état publié `0.0.128`/`0.0.16`. Aucun
+  travail MEMPHIS ouvert ; DAG rejouable au 2026-12-01.
+
 == S-320 — XB-FP : adoption Arrow aux seams + Arrow 2.3.0 + BOM officiel ✅
 
 * **Correction de cap** : Arrow est l'outil d'**adoption**, pas une dette. Les

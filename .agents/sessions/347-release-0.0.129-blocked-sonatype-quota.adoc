@@ -1,0 +1,70 @@
+= Session 347 — Release `0.0.129` (plantuml 0.0.17) tentée, bloquée quota Sonatype
+:toc: left
+:toclevels: 3
+:icons: font
+
+:session: 347
+:date: 2026-11-09
+:type: release (tentée) + revert
+:epic: Suivi release plantuml-plugin `0.0.17`
+
+== Contexte
+
+Propager `plantuml-plugin 0.0.17` (PLT-OUT-1→4, plantuml S-250) aux
+consommateurs via le DAG MEMPHIS : le catalogue doit d'abord déclarer la version
+avant que plantuml ne la publie (la version du plugin est dérivée de
+`ws.versions.plantuml.plugin`).
+
+== Livré puis reverté
+
+* `gradle/libs.versions.toml` : `workspace-bom = "0.0.128"` → **`"0.0.129"`** et
+  `plantuml-plugin = "0.0.16"` → **`"0.0.17"`** ;
+* garde `PlatformCatalogAlignmentTest` réalignée (`0.0.129`) **dans le même
+  commit** (leçon S-341) ;
+* validation locale : `assemble` racine VERT + `agent-contracts:compileTestKotlin`
+  VERT ;
+* commit `433f1c9` poussé ; **CI workspace-bom `42541458784` ✅ 21/21 jobs**
+  (dont `N0 · contracts` 10 builds et les 21 shards bakery).
+
+== Blocage — quota Sonatype
+
+`./gradlew publishAggregationToCentralPortal --no-daemon` :
+
+[source]
+----
+Nmcp: deployment has failed:
+{"common":["Publishing blocked: your organization has reached its monthly
+release count limit. Grace period ended 2026-11-05. Usage resets 2026-12-01.
+View usage: https://central.sonatype.com/publishing/usage?org=cccp.education"]}
+----
+
+* **Aucun artefact publié** : `workspace-bom 0.0.129`, `workspace-catalog
+  0.0.129` et `plantuml-plugin 0.0.17` restent **404** sur repo1 (vérifié).
+* Contournement Portal impossible : le groupe `education.cccp.plantuml` est en
+  **revue manuelle** (m2 marker `0.0.16` = 404, page 400) ; seul Central sert
+  les consommateurs.
+
+== Décision
+
+* **Revert** `b1c9910` (poussé) : `main` revient à l'état **publié**
+  `0.0.128` / plantuml `0.0.16` — aucune version fantôme dans le catalogue.
+* La release est **bloquée par un quota externe** jusqu'au **2026-12-01** (la
+  date de fin de la politique publication Portal/Central, décision pilote
+  2026-11-05). La CI sur le revert est vérifiée ; aucun travail MEMPHIS ouvert.
+
+== État
+
+[cols="2,3"]
+|===
+| Élément | État
+| Catalogue `workspace-bom` | ✅ `0.0.128` (publié, réverté)
+| `plantuml-plugin` catalogue | ✅ `0.0.16` (publié)
+| Release `0.0.129` / plantuml `0.0.17` | ⛔ préparée, **bloquée quota** (reset 2026-12-01)
+| Portal groupe plantuml | 🟡 revue manuelle (m2 marker 404)
+|===
+
+== Suivant
+
+Dès le **2026-12-01** : rejouer le DAG (`0.0.129` + `plantuml-plugin 0.0.17`
+→ Central, puis plantuml `0.0.17`). Aucun autre travail MEMPHIS ouvert (veille
+`ciShellGatesReport`, detekt JVM 25, CI privées).
