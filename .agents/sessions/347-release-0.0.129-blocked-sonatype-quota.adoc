@@ -50,7 +50,9 @@ View usage: https://central.sonatype.com/publishing/usage?org=cccp.education"]}
   `0.0.128` / plantuml `0.0.16` — aucune version fantôme dans le catalogue.
 * La release est **bloquée par un quota externe** jusqu'au **2026-12-01** (la
   date de fin de la politique publication Portal/Central, décision pilote
-  2026-11-05). La CI sur le revert est vérifiée ; aucun travail MEMPHIS ouvert.
+  2026-11-05). La CI sur le revert est vérifiée : **`42542306739` ✅ 21/21**
+  (commit `ebc1bc4`, revert + docs) ; le run `42542153290` a été annulé
+  (superseded par le push docs). Aucun travail MEMPHIS ouvert.
 
 == État
 
