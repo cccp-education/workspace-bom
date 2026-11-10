@@ -5,6 +5,8 @@
 
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
+_Derniere mise a jour_ : 2026-11-10 (session S-**349** — **catalog `bakery-plugin 0.0.38`** (draft `workspace-bom 0.0.129`, Central bloqué 2026-12-01) ; `PlatformCatalogAlignmentTest` alignée ; JitPack `bakery 0.0.36/0.0.37/0.0.38` + shim `runner-gradle`. CI `42668331780`/`82ff181`. Rapport `.agents/sessions/349-bakery-0.0.38-catalog-jitpack.adoc`.)
+
 _Derniere mise a jour_ : 2026-11-09 (session S-**347** — **release `0.0.129` / plantuml `0.0.17` TENTÉE, BLOQUÉE quota Sonatype** : bump toml + garde, `assemble`/compile N0 VERT, CI `42541458784` ✅ 21/21 ; `publishAggregationToCentralPortal` refusé « monthly release count limit … resets **2026-12-01** » ; **revert `b1c9910`** → `main` reste à l'état publié `0.0.128` / plantuml `0.0.16` ; Portal non viable (groupe en revue manuelle). Rapport `.agents/sessions/347-release-0.0.129-blocked-sonatype-quota.adoc`.)
 _Derniere mise a jour (antérieure)_ : 2026-11-04 (session S-**346** — **BOM/catalog `0.0.128`** : catalogue `conventions-plugin = "0.0.14"`, 9 N0 `0.0.14`, Central `e8b67127`, propagation repo1 **200** ×2, CI `41943127906` ✅. Rapport `.agents/sessions/346-bom-0.0.128-conventions-0.0.14.adoc`.)
 _Derniere mise a jour (antérieure)_ : 2026-11-04 (session S-**345** — **CNV-15.1/15.3** : les 9 contrats N0 passent en auto-publication `0.0.13` (−104/+41 l.), catalogue `conventions-plugin = "0.0.13"`, **BOM/catalog `0.0.127`** Central `d07a994f`, propagation repo1 **200** ×2, CI `41924833092` ✅. Rapport `.agents/sessions/345-cnv-15-auto-publication-bom-0.0.127.adoc`.)

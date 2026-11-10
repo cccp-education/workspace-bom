@@ -297,3 +297,10 @@
   (`./gradlew ciShellGatesReport -PciRoot=<workspace>`) + exemption fine de R2
   (`# ci-shell:allow-swallow`), 2 tests unitaires.
 * **Résultat : 68 fichiers CI, 0 finding** — l'audit S-338 est soldé (16 → 0).
+
+== Session 349 — catalog bakery 0.0.38 (2026-11-10)
+
+* `bakery-plugin 0.0.38` dans le catalog (draft `workspace-bom 0.0.129`,
+  Central bloqué 2026-12-01) ; `PlatformCatalogAlignmentTest` alignée.
+* JitPack `bakery 0.0.36/0.0.37/0.0.38` ; `runner-gradle` résout 0.0.38.
+* Rapport `.agents/sessions/349-bakery-0.0.38-catalog-jitpack.adoc`.

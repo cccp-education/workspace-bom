@@ -712,3 +712,10 @@ Rapport `.agents/sessions/346-bom-0.0.128-conventions-0.0.14.adoc`.
 Publication JitPack de workspace-bom, workspace-catalog et des 9 contrats (0.0.128). JitPack : 0.0.128 — 11 artefacts HTTP 200. Shim `useModule` pour
 `education.cccp.build.*` (tag JitPack `0.0.15`). Rapport
 `.agents/sessions/348-jitpack-mirror.adoc`.
+
+== Session 349 — catalog bakery 0.0.38 (JitPack) — 2026-11-10
+
+`bakery-plugin 0.0.38` dans le catalog (draft `workspace-bom 0.0.129`, Central
+bloqué jusqu'au 2026-12-01) ; `PlatformCatalogAlignmentTest` alignée. JitPack
+sert `bakery 0.0.36/0.0.37/0.0.38` ; `runner-gradle` résout 0.0.38 via
+`useModule`. Rapport `.agents/sessions/349-bakery-0.0.38-catalog-jitpack.adoc`.

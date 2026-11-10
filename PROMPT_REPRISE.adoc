@@ -1,20 +1,15 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-348 — dernière terminée : **347** (**release `0.0.129` / plantuml `0.0.17`
-TENTÉE puis BLOQUÉE quota Sonatype** : bump toml + garde, `assemble`/compile
-N0 VERT, CI `42541458784` ✅ 21/21 ; `publishAggregationToCentralPortal` refusé
-« monthly release count limit … resets **2026-12-01** » ; **revert `b1c9910`**
-→ `main` reste à l'état publié `0.0.128` / plantuml `0.0.16`). Avant : **346**
-(**BOM/catalog `0.0.128`** — catalogue `conventions-plugin = "0.0.14"`, 9 N0
-`0.0.14`, Central `e8b67127`, CI `41943127906` ✅). Avant : **345**
-(**CNV-15.1/15.3** — auto-publication N0 `0.0.13`, **BOM/catalog `0.0.127`**
-Central `d07a994f`). Avant : **344** (**release BOM/catalog `0.0.126`** —
-catalogue `conventions-plugin = "0.0.12"`, Central bundle `964c3bf7`). Avant :
-**343** (adoption CNV-14.3), **342** (0.0.123/0.0.124), **341**
-(`MEM-CI-GATE-2` TERMINÉ).
+349 — dernière terminée : **348** (JitPack mirror CNV-16). Session **349** :
+catalog `bakery-plugin 0.0.38` (draft `workspace-bom 0.0.129`, **Central bloqué
+2026-12-01** ; la voie JitPack sert `bakery 0.0.38` à `runner-gradle`). CI
+`42668331780` (0.0.36) puis `82ff181` (0.0.38). Rapport
+`.agents/sessions/349-bakery-0.0.38-catalog-jitpack.adoc`. Avant : **347**
+(release 0.0.129 bloquée quota), **346** (0.0.128), **345**, **344**, **343**,
+**342**, **341** (`MEM-CI-GATE-2` TERMINÉ).
 
-=== Mission Session 348 — bloquée jusqu'au 2026-12-01
+=== Mission Session 349 — bloquée jusqu'au 2026-12-01
 
 . **Aucune publication Central possible avant le 2026-12-01** (quota Sonatype
    de l'org `cccp.education`, grace ended 2026-11-05). Ne pas re-tenter : le
@@ -35,8 +30,9 @@ _Documents maîtres_ : `.agents/sessions/347-release-0.0.129-blocked-sonatype-qu
 == État du code
 
 - Central : `agent-contracts **0.0.4**`, `document-plugin **0.0.30**`,
-  `plantuml-plugin 0.0.16`, `bakery-plugin **0.0.32**`, BOM/catalog **0.0.128**.
-- **Release `0.0.129` préparée, non publiée** (quota, reset 2026-12-01).
+  `plantuml-plugin 0.0.16`, `bakery-plugin **0.0.33**`, BOM/catalog **0.0.128**.
+- **Draft `0.0.129`** (catalog `bakery-plugin **0.0.38**`), non publié (quota,
+  reset 2026-12-01). JitPack sert `bakery 0.0.38`.
 - **Audit CI du workspace : 0 finding / 68 fichiers** (`ciShellGatesReport -PciRoot=<workspace>`) ;
   exemption explicite `# ci-shell:allow-swallow` (échec toléré **par item**).
 - **Gates verts** : N0 (`set -eo pipefail` + `N0ContractsGateTest`, 10 builds) ;

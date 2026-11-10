@@ -1,0 +1,31 @@
+= Session 349 — catalog bakery 0.0.38 (draft 0.0.129, voie JitPack)
+:date: 2026-11-10
+:statut: Draft prêt ; Central bloqué (2026-12-01) ; bakery servi par JitPack 0.0.38
+
+== Demande pilote
+
+Clore la session après la mutualisation **BKY-CI-MIRROR** (bakery) ; la cible de
+publication est **JitPack** (ni Sonatype Central, ni Gradle Plugin Portal).
+
+== Modifications
+
+* `gradle/libs.versions.toml` : `workspace-bom 0.0.128 → 0.0.129`,
+  `bakery-plugin 0.0.33 → 0.0.36`, puis **0.0.38** (aligné sur le tag JitPack).
+* `agent-contracts/.../PlatformCatalogAlignmentTest` : garde `0.0.129` / `0.0.38`.
+* Commits : `ff87155` + `8816be1` (0.0.129 / 0.0.36, CI `42668331780` ✅ 21/21)
+  puis `82ff181` (0.0.38).
+
+== État
+
+* **Central** : quota org bloqué jusqu'au **2026-12-01** (vérifié :
+  `publishAggregationToCentralPortal` → « monthly release count limit »). Le
+  draft `0.0.129` reste sur `main` (CI verte) pour le reset.
+* **JitPack** : `bakery-plugin 0.0.36/0.0.37/0.0.38` publiés (tags) ;
+  `runner-gradle` résout `0.0.38` via `useModule`. Le catalog Central n'est pas
+  requis pour la voie JitPack.
+* Prochaine release Central : `0.0.129` avec `bakery-plugin 0.0.38` (déjà cohérent).
+
+== Prochaine session
+
+* 2026-12-01 : `publishAggregationToCentralPortal` (BOM/catalog 0.0.129).
+* Aucun EPIC ouvert côté MEMPHIS.
