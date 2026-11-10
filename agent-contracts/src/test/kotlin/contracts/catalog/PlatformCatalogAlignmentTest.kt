@@ -86,9 +86,9 @@ class PlatformCatalogAlignmentTest {
     @Test
     fun `toml bakery plugin version is aligned on the latest N2 release`() {
         assertEquals(
-            "0.0.36",
+            "0.0.38",
             tomlVersions["bakery-plugin"],
-            "bakery-plugin 0.0.36 (release consommateur BKY-CI-MIRROR)",
+            "bakery-plugin 0.0.38 (release consommateur BKY-CI-MIRROR, JitPack)",
         )
     }
 
