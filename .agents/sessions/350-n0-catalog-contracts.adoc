@@ -40,12 +40,15 @@ cross-borough. Consolidation vers un **contrat N0 MEMPHIS** unique.
   résolu, contrainte acceptée).
 * Tests = CI (job `n0-contracts`).
 
-== Gate restant
+== Publication JitPack (CNV-16)
 
-Publication distante : Central suspendu jusqu'au **2026-12-01** (politique
-pilote) ; JitPack relabelle le groupe → les consommateurs `education.cccp:*`
-ne peuvent pas encore résoudre `catalog-contracts` en CI. Adoption graphify
-compilée localement ; aucun push.
+Commit `08a2c96` + tag **`v0.0.130`** poussés (`main` + tag). JitPack a construit
+le workspace-bom et ses 11 contrats : **`catalog-contracts-0.0.130` HTTP 200**
+(POM + jar), build log `BUILD SUCCESSFUL`. CI workspace-bom `runAllTests`
+**verte** (`43328195597`) — le job `n0-contracts` exécute `check` sur les 11
+builds, `catalog-contracts` inclus. graphify consomme
+`com.github.cccp-education.workspace-bom:catalog-contracts:0.0.130` et sa CI est
+verte (`43328720865`).
 
 == Gouvernance
 
