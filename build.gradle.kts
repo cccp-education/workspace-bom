@@ -133,6 +133,7 @@ dependencies {
         api(libs.runtime.contracts)
         api(libs.ocr.contracts)
         api(libs.plantuml.contracts)
+        api(libs.catalog.contracts)
 
         // ── Internal education.cccp plugins (N2) — pilotés par le BOM ───────
         api(libs.bakery.plugin)
@@ -397,6 +398,7 @@ val crossBoroughPinFamilies = mapOf(
     "runtime-contracts" to "runtime-contracts",
     "ocr-contracts" to "ocr-contracts",
     "plantuml-contracts" to "plantuml-contracts",
+    "catalog-contracts" to "catalog-contracts",
     "i18n-contracts" to "i18n-contracts",
     "agent-contracts" to "agent-contracts",
     "codebase-contracts" to "codebase-contracts",

@@ -1,0 +1,56 @@
+= Session 350 — N0 `catalog-contracts` (VersionCatalogToml partagé)
+:toc:
+
+:_date_: 2026-11-13
+:_borough_: MEMPHIS (workspace-bom, N0)
+:_session_precedente_: 349
+:_statut_: ✅ module livré (`catalog-contracts 0.0.1`, `publishToMavenLocal` VERT) — publication distante gatée
+
+'''
+
+== Contexte
+
+Candidat transverse issu du backlog graphify : le lecteur section-scopé de
+catalogue Gradle (`VersionCatalogToml`) vivait dans le source set `test` de
+graphify et était destiné à ~20 gardes d'hygiène de publication (D5)
+cross-borough. Consolidation vers un **contrat N0 MEMPHIS** unique.
+
+== Livré
+
+* **Nouveau module standalone** `catalog-contracts/` (pattern 0124 des contrats
+  N0 : `settings.gradle.kts` + wrapper + `gradle/libs.versions.toml` +
+  `build.gradle.kts` `education.cccp.build.library/publishing/lint`).
+* **Contrat pur** `contracts.catalog.VersionCatalogToml` (Kotlin stdlib seule) :
+  - `versionOf(content, key)` et `versionOf(content, keys)` ;
+  - scoping strict : seul `[versions]` définit une version (`[libraries]` et
+    `[plugins]` sont ignorés — c'est le piège réel) ;
+  - commentaires ligne/fin de ligne et espaces tolérés ; entrée absente → `null`.
+* **10 tests unit** déplacés verbatim (recherche/scoping/commentaires).
+* **Câblage catalogue/BOM** : `[versions] catalog-contracts = "0.0.1"`,
+  `[libraries] education.cccp:catalog-contracts`, contrainte `api(libs.catalog.contracts)`,
+  map de vérification du BOM.
+* **Distribution** : `jitpack.yml` (install `-p catalog-contracts`) + job CI
+  `n0-contracts` (**11 builds**, 5 concurrents).
+
+== Preuve
+
+* `./gradlew compileKotlin compileTestKotlin publishToMavenLocal` →
+  **BUILD SUCCESSFUL** (`education.cccp:catalog-contracts:0.0.1` en `~/.m2`).
+* `./gradlew help` (BOM) → **BUILD SUCCESSFUL** (accesseur `libs.catalog.contracts`
+  résolu, contrainte acceptée).
+* Tests = CI (job `n0-contracts`).
+
+== Gate restant
+
+Publication distante : Central suspendu jusqu'au **2026-12-01** (politique
+pilote) ; JitPack relabelle le groupe → les consommateurs `education.cccp:*`
+ne peuvent pas encore résoudre `catalog-contracts` en CI. Adoption graphify
+compilée localement ; aucun push.
+
+== Gouvernance
+
+* `gradle/libs.versions.toml`, `build.gradle.kts`, `jitpack.yml`,
+  `.github/workflows/test.yml` mis à jour.
+* Rapport graphify : `.agents/sessions/031-gf-schema-5-bis-n0-catalog-contracts.adoc`.
+
+Zéro secret, zéro Python, zéro publication distante.

@@ -1,0 +1,9 @@
+[versions]
+catalog-contracts = "0.0.1"
+kotlin = "2.4.10"
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+
+[libraries]
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }

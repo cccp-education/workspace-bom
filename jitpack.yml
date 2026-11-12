@@ -17,6 +17,7 @@ install:
   - ./gradlew -p pipeline-contracts publishToMavenLocal
   - ./gradlew -p plantuml-contracts publishToMavenLocal
   - ./gradlew -p runtime-contracts publishToMavenLocal
+  - ./gradlew -p catalog-contracts publishToMavenLocal
 env:
   # No GPG key on JitPack; the build script already skips signing when CI=true.
   CI: "true"

@@ -468,7 +468,7 @@ jobs:
   # `ossrhUsername`/`ossrhPassword`, so a settings script that still calls
   # `error(...)` in `nmcpSettings.centralPortal` fails at *configuration* here.
   n0-contracts:
-    name: "N0 · contracts (10 builds, 5 concurrent)"
+    name: "N0 · contracts (11 builds, 5 concurrent)"
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -496,7 +496,7 @@ jobs:
           printf '%s\n' \
             agent-contracts codebase-contracts i18n-contracts llm-pool-contracts \
             ocr-contracts opencode-session-contracts pipeline-contracts \
-            plantuml-contracts runtime-contracts \
+            plantuml-contracts runtime-contracts catalog-contracts \
           | xargs -I{} -P 5 bash -c '
               # P0 (S-335): WITHOUT errexit the trailing `echo` makes this shell
               # exit 0 even when `./gradlew check` fails, so xargs sees success

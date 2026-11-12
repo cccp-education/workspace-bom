@@ -5,6 +5,7 @@
 
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
+_Derniere mise a jour_ : 2026-11-13 (session S-**350** — **N0 `catalog-contracts`** : module standalone `contracts.catalog.VersionCatalogToml` (10 tests) + entrée catalogue + contrainte BOM + `jitpack.yml` + job CI `n0-contracts` **11 builds** ; `compileTestKotlin` + `publishToMavenLocal` VERTS. **Publication distante gatée** : Central suspendu jusqu'au 2026-12-01, JitPack relabelle le groupe. Adoption graphify compilée (façade locale dépréciée). Rapport `.agents/sessions/350-n0-catalog-contracts.adoc`.)
 _Derniere mise a jour_ : 2026-11-10 (session S-**349** — **catalog `bakery-plugin 0.0.38`** (draft `workspace-bom 0.0.129`, Central bloqué 2026-12-01) ; `PlatformCatalogAlignmentTest` alignée ; JitPack `bakery 0.0.36/0.0.37/0.0.38` + shim `runner-gradle`. CI `42668331780`/`82ff181`. Rapport `.agents/sessions/349-bakery-0.0.38-catalog-jitpack.adoc`.)
 
 _Derniere mise a jour_ : 2026-11-09 (session S-**347** — **release `0.0.129` / plantuml `0.0.17` TENTÉE, BLOQUÉE quota Sonatype** : bump toml + garde, `assemble`/compile N0 VERT, CI `42541458784` ✅ 21/21 ; `publishAggregationToCentralPortal` refusé « monthly release count limit … resets **2026-12-01** » ; **revert `b1c9910`** → `main` reste à l'état publié `0.0.128` / plantuml `0.0.16` ; Portal non viable (groupe en revue manuelle). Rapport `.agents/sessions/347-release-0.0.129-blocked-sonatype-quota.adoc`.)
