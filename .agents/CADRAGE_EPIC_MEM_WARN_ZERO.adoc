@@ -1,0 +1,126 @@
+= CADRAGE — EPIC transverse MEM-WARN-ZERO : zéro warning de dépréciation des build scripts
+:date: 2026-11-13
+:statut: 🟡 OUVERT — cadrage (aucun code)
+:porteur: MEMPHIS (workspace-bom) — EPIC transverse cross-borough
+:type: hygiène de build (iso-comportement)
+:origine: warn CI `codex-gradle` (session 236) — `tasks.registering` déprécié Gradle 9.6
+
+== Objet
+
+`MEM-WARN-FREE` (S-329→S-333) a soldé les warnings de **compilation Kotlin**
+(478 → 0). Il reste une famille distincte, invisible de cet inventaire : les
+**dépréciations des *build scripts* Kotlin DSL** émises par Gradle lui-même
+(`w: file:///…/build.gradle.kts:<ligne> … is deprecated`).
+
+Symptôme déclencheur (CI `codex-gradle`, S-236) : `tasks.registering(Test::class)`
+avec délégué `by` émet **3 warnings par occurrence** (Gradle 9.6 → Gradle 10) :
+
+----
+w: …/build.gradle.kts:216:34: '…RegisteringDomainObjectDelegateProviderWithTypeAndAction…provideDelegate…' is deprecated.
+w: …:216:34: '…C.registering(type: KClass<U>, action: U.() -> Unit)…' is deprecated.
+w: …:216:34: '…ExistingDomainObjectDelegate…getValue…' is deprecated.
+----
+
+Ce bruit masque les vraies régressions de build (même logique que
+`MEM-WARN-FREE`), et **Gradle 10 cassera** ces API.
+
+== 1. Mesure statique (2026-11-13, `grep` sur `foundry/`)
+
+[cols="2,3,2,2", options="header"]
+|===
+| Famille | Motif déprécié | Occurrences | Dépôts
+
+| **F1 — délégués `registering`/`named`**
+| `val x by tasks.registering(T::class) { }` (et formes `registering(...)`/`by tasks.named`)
+| **26**
+| `codex` 11, `academy` 10, `conventions` 3, `plantuml` 2
+
+| **F2 — `buildDir`**
+| `buildDir` → `layout.buildDirectory`
+| **28**
+| `workspace-bom` 7, `training-catalogue-site` 6, `slider` 4, `conventions` 3, `plantuml-api` 2, `codebase` 2, `bakery` 2, `jhipster` (buildSrc) 1, `codex` 1
+
+| **F3 — `kotlinOptions`**
+| `kotlinOptions { }` → `compilerOptions { }` (Kotlin 2.x)
+| **3**
+| `edster-app` (privé) 3
+
+| **F4 — `resolvedConfiguration`** (à auditer)
+| résolution au *configuration time* (P3, pas une dépréciation d'API à ce jour)
+| 2
+| `codebase` 1, `bakery` 1
+
+|===
+
+*Hors périmètre* (mesuré, **non déprécié**) : `configurations.all` (11),
+`sourceSets.getByName` (65), `archiveBaseName` (0), `leftShift` (0),
+`project.exec` (0).
+
+Note : la mesure est **statique** (motifs). Chaque US commence par la mesure
+**dynamique** du dépôt (`./gradlew help --warning-mode=all`, ou le log CI) pour
+ne pas traiter un faux positif et attraper ce que le motif ne voit pas.
+
+== 2. Décisions
+
+. **D1 — Zéro `@Suppress` / `-nowarn` / baseline.** On migre vers l'API
+  documentée ; un warning non migrable est **consigné** (famille tierce) avec
+  sa raison, jamais masqué (doctrine `MEM-WARN-FREE`).
+. **D2 — `registering` → `register<T>(name) { }`.** Le délégué `by` disparaît
+  (`val task = tasks.register<Test>("…") { … }`). La variable reste utilisable
+  pour `configure`/`dependsOn` via `TaskProvider` (aucun changement de graphe).
+. **D3 — `buildDir` → `layout.buildDirectory`.** `buildDir = …` →
+  `layout.buildDirectory.set(…)` ; `File(buildDir, …)` →
+  `layout.buildDirectory.dir(…).get().asFile`.
+. **D4 — `kotlinOptions` → `compilerOptions`.** (dépôt privé `edster-app`,
+  hors périmètre public si le pilote ne l'ouvre pas → US conditionnelle).
+. **D5 — Gate = garde statique, pas un parse de log.** Une tâche
+  `verifyNoDeprecatedBuildScripts` (conventions-plugin, testée sur fixtures)
+  scanne les `.kts` frères pour les motifs F1/F2 et échoue avec un message
+  actionnable. Pas de `--warning-mode=all | grep` (fragile, dépend des versions
+  Gradle/Kotlin).
+. **D6 — 1 borough = 1 US.** Chaque US est iso-comportement, mesure avant/après
+  dans le log CI du commit, zéro changement de tâche/DSL public.
+. **D7 — Ordre par bruit.** `codex` d'abord (déclencheur, 33 lignes de warnings
+  CI), puis `academy`, `conventions`, `plantuml` (F1) ; F2 en second lot (dont
+  `workspace-bom`, `slider`, `codebase`, `bakery`).
+. **D8 — Hors périmètre assumé** : `configurations.all`, `sourceSets.getByName`,
+  `training-catalogue-site` (site, pas un plugin) si non Gradle 10-bloquant →
+  audit séparé si un warning réel apparaît.
+
+== 3. User Stories
+
+[cols="1,3,2,1", options="header"]
+|===
+| US | Livrable | Dépôt(s) | Effort
+
+| US-0 | Cadrage + mesure + décisions (ce document) | MEMPHIS | — ✅ S-352
+| US-1 | **F1 pilote** : 11 `registering` → `register<Test>` | `codex-gradle` | S
+| US-2 | F1 : 10 `registering` → `register<T>` | `academy-gradle` | S
+| US-3 | F1 : 3 `registering` → `register<T>` | `conventions-gradle` | XS
+| US-4 | F1 : 2 `registering` → `register<T>` | `plantuml-gradle` | XS
+| US-5 | **F2 lot A** : `buildDir` → `layout.buildDirectory` | `workspace-bom` (7), `conventions` (3), `codebase` (2), `bakery` (2), `codex` (1) | M
+| US-6 | **F2 lot B** : `buildDir` → `layout.buildDirectory` | `slider` (4), `plantuml-api` (2), `jhipster` buildSrc (1) | S
+| US-7 | **Gate** `verifyNoDeprecatedBuildScripts` (F1/F2) + fixtures + branchement `check` | `conventions-gradle` | M
+| US-8 | F3 `kotlinOptions` → `compilerOptions` (si le pilote ouvre le privé) | `edster-app` | XS
+| US-9 | F4 audit `resolvedConfiguration` (P3, documentaire) | MEMPHIS | XS
+|===
+
+*~8 pts utiles (hors US-8 conditionnelle).* Chaque US se clôt sur CI verte et
+mesure dynamique « warnings de dépréciation build-script = 0 » pour son dépôt.
+
+== 4. Risques
+
+[cols="1,3,2,2", options="header"]
+|===
+| ID | Risque | Impact | Mitigation
+
+| R-01 | Un `registering` capture une variable utilisée plus loin → `TaskProvider` au lieu de `Task` | Build cassé | Compilation + `tasks --dry-run` ; le type `TaskProvider` expose `configure {}`
+| R-02 | `buildDir` lu dans une closure exécutée tôt | Chemin nul | Migrer vers `layout.buildDirectory.get()` au point d'usage
+| R-03 | Le warning vient d'un **plugin tiers** (conventions) et pas du build script | Faux positif | Mesure dynamique ; si tiers → consigné, pas de `@Suppress`
+| R-04 | Gate statique qui rate une nouvelle forme (`named<T>`, `registering` importé) | Faux vert | Fixtures négatives dans le test de la garde (anti test fantôme, S-269)
+|===
+
+== 5. Périmètre de la session S-352
+
+* Ce cadrage, l'entrée `BACKLOG.adoc`, l'INDEX et le rapport de session.
+* **Zéro code produit, zéro publication.** `Local = Build, Tests = CI`.

@@ -585,6 +585,39 @@ tautologiques **renforcées**, déprécation maison réduite (slider), Gradle
 typée. Rapport `.agents/sessions/329-xf-fp2-suite-warnings.adoc`.
 
 '''
+== 🟡 EPIC MEM-WARN-ZERO — zéro warning de dépréciation des build scripts (OUVERT S-352)
+
+*Cadrage* : `.agents/CADRAGE_EPIC_MEM_WARN_ZERO.adoc`. *Porteur* : MEMPHIS.
+**Objet** : les dépréciations **Gradle/Kotlin DSL des build scripts** (`w: …
+build.gradle.kts:<ligne> … is deprecated`), distinctes des warnings de
+compilation soldés par `MEM-WARN-FREE`. Déclencheur : CI `codex-gradle` S-236
+(`tasks.registering` déprécié Gradle 9.6 → Gradle 10).
+**Politique** : `@Suppress`/`-nowarn`/baseline **interdits** ; mesure
+**dynamique** (`--warning-mode=all`/log CI) avant chaque US ; gate = garde
+**statique** (pas un parse de log).
+
+[cols="1,4,2,2", options="header"]
+|===
+| US | Dépôt / livrable | Mesure | Statut
+
+| US-0 | Cadrage + mesure + décisions | — | ✅ S-352
+| US-1 | `codex` — F1 `registering` → `register<Test>` (déclencheur) | 11 occurrences / 33 warnings CI | 🟡
+| US-2 | `academy` — F1 | 10 | 🟡
+| US-3 | `conventions` — F1 | 3 | 🟡
+| US-4 | `plantuml` — F1 | 2 | 🟡
+| US-5 | F2 lot A `buildDir` → `layout.buildDirectory` : `workspace-bom` 7, `conventions` 3, `codebase` 2, `bakery` 2, `codex` 1 | 15 | 🟡
+| US-6 | F2 lot B : `slider` 4, `plantuml-api` 2, `jhipster` buildSrc 1 | 7 | 🟡
+| US-7 | Gate `verifyNoDeprecatedBuildScripts` (F1/F2) + fixtures + `check` | — | 🟡
+| US-8 | F3 `kotlinOptions` → `compilerOptions` (privé `edster-app`, conditionnel) | 3 | 🟡 conditionnel
+| US-9 | F4 audit `resolvedConfiguration` (P3) | 2 | 🟡
+|===
+
+*Mesure statique 2026-11-13* : F1 = **26** (codex 11, academy 10, conventions 3,
+plantuml 2), F2 = **28** (9 fichiers), F3 = **3** (privé), F4 = 2.
+Hors périmètre mesuré non déprécié : `configurations.all` (11),
+`sourceSets.getByName` (65).
+
+'''
 == EPIC PUB — Publication Maven Central
 
 BOM + 5 libraries de contrats partagés (N0). Premier artefact publié (VAGUE 1). Toutes les autres vagues dépendent de ces artefacts.

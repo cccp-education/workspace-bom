@@ -1,18 +1,32 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-351 — dernière terminée : **350** (`catalog-contracts`). Session **351** :
-catalogue `0.0.133` avec les versions **déployées sur JitPack**
-(`hyperframes-plugin 0.0.16`, `capsule-plugin 0.0.21`, `conventions-plugin
-0.0.16`) ; `PlatformCatalogAlignmentTest` réalignée (gardes épinglées +
-renommage). Publié JitPack tag `v0.0.133` ; CI `runAllTests` verte
-`43351450714`. Rapport `.agents/sessions/351-catalog-0.0.133-jitpack-versions.adoc`.
+353 — dernière terminée : **352** (**EPIC transverse `MEM-WARN-ZERO` OUVERT** :
+chasse aux warnings de **dépréciation des build scripts** Gradle/Kotlin DSL,
+distincts de `MEM-WARN-FREE` ; mesure F1 `registering` 26, F2 `buildDir` 28,
+F3 `kotlinOptions` 3, F4 `resolvedConfiguration` 2 ; cadrage
+`.agents/CADRAGE_EPIC_MEM_WARN_ZERO.adoc`, rapport
+`.agents/sessions/352-epic-mem-warn-zero-cadrage.adoc`). Avant : **351**
+(catalogue 0.0.133) et **350** (`catalog-contracts`).
+
+=== Mission Session 353 — `MEM-WARN-ZERO` US-1 (`codex`)
+
+. **F1 pilote** : `codex-plugin/build.gradle.kts` — 11 ×
+   `val x by tasks.registering(Test::class) { }` → `val x =
+   tasks.register<Test>("x") { }` (33 warnings CI → 0), iso-comportement
+   (mêmes tâches, mêmes propriétés, mêmes `dependsOn`/`shouldRunAfter`).
+. Mesure **dynamique** avant/après dans le log CI (`--warning-mode=all` ou le
+   log du job), pas seulement statique.
+. CI verte obligatoire ; **aucune publication** de plugin.
+. Cadrage : `.agents/CADRAGE_EPIC_MEM_WARN_ZERO.adoc` (D1→D8).
 
 === Reste (inchangé)
 * Aucune publication **Central** possible avant le **2026-12-01** (quota
   Sonatype). La voie JitPack (tags) porte toutes les releases.
 * Angle mort connu : `verifyCrossBoroughPins` ne voit pas les pins préfixés `v`
   (`workspace-catalog:v0.0.133`).
+* Après US-1 : US-2 `academy` (10), US-3 `conventions` (3), US-4 `plantuml` (2),
+  US-5/US-6 `buildDir`, US-7 gate statique.
 
 === Mission Session 349 — bloquée jusqu'au 2026-12-01
 

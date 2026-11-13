@@ -1,0 +1,80 @@
+= Session 352 — EPIC `MEM-WARN-ZERO` ouvert (chasse aux warnings de dépréciation des build scripts)
+:toc:
+
+:_date_: 2026-11-13
+:_borough_: MEMPHIS (workspace-bom, N0) — EPIC transverse
+:_session_precedente_: 351 (catalogue 0.0.133, versions JitPack)
+:_statut_: 🟡 EPIC OUVERT — cadrage + mesure (aucun code)
+
+'''
+
+== Déclencheur
+
+Le warning CI de `codex-gradle` (session 236) :
+
+----
+w: …/codex-plugin/build.gradle.kts:216:34: '…provideDelegate…' is deprecated.
+w: …:216:34: '…C.registering(type: KClass<U>, action: U.() -> Unit)…' is deprecated.
+w: …:216:34: '…ExistingDomainObjectDelegate…getValue…' is deprecated.
+----
+
+Trois warnings **par occurrence** de `val x by tasks.registering(Test::class) { }`
+(Gradle 9.6 → Gradle 10), sur 11 tâches Cucumber. `MEM-WARN-FREE`
+(S-329→S-333) avait soldé les warnings de **compilation Kotlin** : cette
+famille-là (dépréciation des **build scripts** Kotlin DSL, émise par Gradle) est
+distincte et n'avait jamais été inventoriée.
+
+'''
+
+== Livré (gouvernance pure, zéro code)
+
+* `.agents/CADRAGE_EPIC_MEM_WARN_ZERO.adoc` — objet, mesure, 8 décisions,
+  10 US (~8 pts utiles), 4 risques.
+* `BACKLOG.adoc` — section `🟡 EPIC MEM-WARN-ZERO` (tableau US + statut).
+* `.agents/INDEX.adoc` — session 352 + prochaine session 353.
+* `PROMPT_REPRISE.adoc` — mission suivante.
+
+=== Mesure statique (2026-11-13)
+
+[cols="2,2,4", options="header"]
+|===
+| Famille | Occurrences | Dépôts
+
+| F1 `tasks.registering` / `by tasks.named`
+| **26**
+| `codex` 11, `academy` 10, `conventions` 3, `plantuml` 2
+| F2 `buildDir`
+| **28**
+| `workspace-bom` 7, `training-catalogue-site` 6, `slider` 4, `conventions` 3, `plantuml-api` 2, `codebase` 2, `bakery` 2, `jhipster` buildSrc 1, `codex` 1
+| F3 `kotlinOptions`
+| **3**
+| `edster-app` (privé)
+| F4 `resolvedConfiguration` (P3, audit)
+| **2**
+| `codebase` 1, `bakery` 1
+|===
+
+*Hors périmètre (mesuré non déprécié)* : `configurations.all` (11),
+`sourceSets.getByName` (65), `archiveBaseName`/`leftShift`/`project.exec` (0).
+
+'''
+
+== Décisions structurantes
+
+. **Zéro `@Suppress`/`-nowarn`/baseline** (doctrine `MEM-WARN-FREE`).
+. `registering` → `register<T>(name) { }` (le délégué `by` disparaît ; la
+   variable reste un `TaskProvider`).
+. `buildDir` → `layout.buildDirectory`.
+. **Gate statique** `verifyNoDeprecatedBuildScripts` (conventions-plugin,
+   fixtures négatives) — pas de parse de log (`--warning-mode=all | grep` est
+   fragile entre versions Gradle/Kotlin).
+. **1 borough = 1 US**, iso-comportement, mesure **dynamique** avant/après.
+. Ordre par bruit : `codex` (déclencheur) → `academy` → `conventions` →
+   `plantuml` (F1), puis F2.
+
+'''
+
+== Périmètre assumé
+
+Aucun fichier de code modifié dans cette session. `Local = Build, Tests = CI` ;
+la prochaine session attaque `US-1` (`codex`, 33 warnings → 0).
