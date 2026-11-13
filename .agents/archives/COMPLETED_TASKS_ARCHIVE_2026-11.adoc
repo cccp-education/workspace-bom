@@ -323,3 +323,4 @@
 * `ci/README.adoc` §5bis ; rapport
   `.agents/sessions/356-gbl-013-us9-portability-gate.adoc`.
 
+* Session 357 — EAGER : publication JitPack canal unique (AGENT/PROMPT_REPRISE alignés ; Central/Portal retirés) — 2026-11-14.
