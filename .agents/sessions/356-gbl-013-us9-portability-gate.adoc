@@ -32,6 +32,15 @@ verifyCiPortability: 20 portable, 1 exception(s), 7 bloquée(s), 28 unité(s)
 Exit `0` : aucune violation publique, aucune unité publique non migrée hors
 exception.
 
+== Correctif CI cross-borough (révélé par la gate)
+
+La matrice `runAllTests` exécutait `./gradlew check` à la racine de
+`dashboard-gradle`, devenue un consommateur 0124 sans tâche `check`. Correctif :
+`testableProjects["dashboard-gradle"] = "dashboard-plugin"` et l'entrée de
+matrice `dir: dashboard-plugin`. Le check exécute alors les 69 tests du build
+autonome ; `WorkspaceCrawlTest` (plein workspace) est skip-gardé dans le
+checkout isolé (session dashboard 225). Run `43524985246` **VERT**.
+
 == Gates
 
 Compiles + `ktlintCheck` VERTS (aucun test local). CI N0 (`ci/run.sh test`)
