@@ -92,26 +92,30 @@ object CiPortabilityAudit {
         text: String,
         source: String,
     ): List<PortabilityFinding.UnpinnedImage> =
-        IMAGE.findAll(text).mapNotNull { match ->
-            val reference = match.groupValues[1]
-            if (DIGEST.containsMatchIn(reference)) {
-                null
-            } else {
-                PortabilityFinding.UnpinnedImage(source, lineOf(text, match.range.first), reference)
-            }
-        }.toList()
+        IMAGE
+            .findAll(text)
+            .mapNotNull { match ->
+                val reference = match.groupValues[1]
+                if (DIGEST.containsMatchIn(reference)) {
+                    null
+                } else {
+                    PortabilityFinding.UnpinnedImage(source, lineOf(text, match.range.first), reference)
+                }
+            }.toList()
 
     private fun redundantToolchainSetup(
         text: String,
         source: String,
     ): List<PortabilityFinding.RedundantToolchainSetup> =
-        TOOLCHAIN_ACTION.findAll(text).map { match ->
-            PortabilityFinding.RedundantToolchainSetup(
-                source,
-                lineOf(text, match.range.first),
-                match.groupValues[1],
-            )
-        }.toList()
+        TOOLCHAIN_ACTION
+            .findAll(text)
+            .map { match ->
+                PortabilityFinding.RedundantToolchainSetup(
+                    source,
+                    lineOf(text, match.range.first),
+                    match.groupValues[1],
+                )
+            }.toList()
 
     private fun lineOf(
         text: String,

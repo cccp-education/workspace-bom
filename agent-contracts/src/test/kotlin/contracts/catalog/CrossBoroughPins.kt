@@ -85,8 +85,9 @@ object CrossBoroughPins {
         catalogFile: File,
     ): Result {
         val catalog = parseVersionTable(catalogFile)
-        val publishedBom = catalog["workspace-bom"]
-            ?: error("${catalogFile.name} has no `workspace-bom` version")
+        val publishedBom =
+            catalog["workspace-bom"]
+                ?: error("${catalogFile.name} has no `workspace-bom` version")
         if (!workspaceRoot.isDirectory) {
             return Result(emptyList(), 0, 0, 0, publishedBom)
         }
