@@ -1,6 +1,6 @@
 [versions]
 # ── Workspace BOM shared versions ─────────────────────────────────────────────
-workspace-bom = "0.0.133"
+workspace-bom = "0.0.134"
 
 # ── Kotlin ────────────────────────────────────────────────────────────────────
 kotlin = "2.4.10"
@@ -62,8 +62,8 @@ codebase-plugin = "0.0.18"
 conventions-plugin = "0.0.16"
 
 # ── Shared libraries (education.cccp, N1) ─────────────────────────────────────
-video-kernel = "0.7.0"
-youtube-auth-plugin = "0.0.2"
+video-kernel = "0.9.1"
+youtube-auth-plugin = "v0.0.4"
 
 # ── PDF/Extraction ────────────────────────────────────────────────────────────
 asciidoctorj = "3.0.1"
@@ -75,17 +75,17 @@ asciidoctorj-diagram = "3.2.1"
 asciidoctorj-diagram-plantuml = "1.2026.2"
 
 # ── Agent Contracts ───────────────────────────────────────────────────────────
-agent-contracts = "0.0.4"
-codebase-contracts = "0.0.2"
-llm-pool-contracts = "0.0.2"
-opencode-session-contracts = "0.0.2"
-vibecoding-contracts = "0.0.1"
-i18n-contracts = "0.0.5"
-pipeline-contracts = "0.0.2"
-runtime-contracts = "0.0.1"
-ocr-contracts = "0.0.1"
-plantuml-contracts = "0.0.1"
-catalog-contracts = "0.0.1"
+agent-contracts = "0.0.134"
+codebase-contracts = "0.0.134"
+llm-pool-contracts = "0.0.134"
+opencode-session-contracts = "0.0.134"
+vibecoding-contracts = "0.0.134"
+i18n-contracts = "0.0.134"
+pipeline-contracts = "0.0.134"
+runtime-contracts = "0.0.134"
+ocr-contracts = "0.0.134"
+plantuml-contracts = "0.0.134"
+catalog-contracts = "0.0.134"
 document-plugin = "0.0.30"
 
 # ── Docker / Infrastructure ───────────────────────────────────────────────────
@@ -283,34 +283,35 @@ playwright = { module = "com.microsoft.playwright:playwright", version.ref = "pl
 jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
 
 # ── Borough plugins (education.cccp) ──
-ocr-contracts = { module = "education.cccp:ocr-contracts", version.ref = "ocr-contracts" }
-plantuml-contracts = { module = "education.cccp:plantuml-contracts", version.ref = "plantuml-contracts" }
-catalog-contracts = { module = "education.cccp:catalog-contracts", version.ref = "catalog-contracts" }
-agent-contracts = { module = "education.cccp:agent-contracts", version.ref = "agent-contracts" }
-codebase-contracts = { module = "education.cccp:codebase-contracts", version.ref = "codebase-contracts" }
-llm-pool-contracts = { module = "education.cccp:llm-pool-contracts", version.ref = "llm-pool-contracts" }
-opencode-session-contracts = { module = "education.cccp:opencode-session-contracts", version.ref = "opencode-session-contracts" }
-vibecoding-contracts = { module = "education.cccp:vibecoding-contracts", version.ref = "vibecoding-contracts" }
-i18n-contracts = { module = "education.cccp:i18n-contracts", version.ref = "i18n-contracts" }
-pipeline-contracts = { module = "education.cccp:pipeline-contracts", version.ref = "pipeline-contracts" }
-runtime-contracts = { module = "education.cccp:runtime-contracts", version.ref = "runtime-contracts" }
-video-kernel = { module = "education.cccp:video-kernel", version.ref = "video-kernel" }
-youtube-auth-plugin = { module = "education.cccp:youtube-auth-plugin", version.ref = "youtube-auth-plugin" }
+ocr-contracts = { module = "com.github.cccp-education.workspace-bom:ocr-contracts", version.ref = "ocr-contracts" }
+plantuml-contracts = { module = "com.github.cccp-education.workspace-bom:plantuml-contracts", version.ref = "plantuml-contracts" }
+catalog-contracts = { module = "com.github.cccp-education.workspace-bom:catalog-contracts", version.ref = "catalog-contracts" }
+agent-contracts = { module = "com.github.cccp-education.workspace-bom:agent-contracts", version.ref = "agent-contracts" }
+codebase-contracts = { module = "com.github.cccp-education.workspace-bom:codebase-contracts", version.ref = "codebase-contracts" }
+llm-pool-contracts = { module = "com.github.cccp-education.workspace-bom:llm-pool-contracts", version.ref = "llm-pool-contracts" }
+opencode-session-contracts = { module = "com.github.cccp-education.workspace-bom:opencode-session-contracts", version.ref = "opencode-session-contracts" }
+vibecoding-contracts = { module = "com.github.cccp-education.workspace-bom:vibecoding-contracts", version.ref = "vibecoding-contracts" }
+i18n-contracts = { module = "com.github.cccp-education.workspace-bom:i18n-contracts", version.ref = "i18n-contracts" }
+pipeline-contracts = { module = "com.github.cccp-education.workspace-bom:pipeline-contracts", version.ref = "pipeline-contracts" }
+runtime-contracts = { module = "com.github.cccp-education.workspace-bom:runtime-contracts", version.ref = "runtime-contracts" }
+video-kernel = { module = "com.github.cccp-education:video-kernel-gradle", version.ref = "video-kernel" }
+youtube-auth-plugin = { module = "com.github.cccp-education.video-kernel-gradle:youtube-auth-plugin", version.ref = "youtube-auth-plugin" }
 mapstruct = { module = "org.mapstruct:mapstruct", version.ref = "mapstruct" }
-document-plugin = { module = "education.cccp:document-plugin", version.ref = "document-plugin" }
-bakery-plugin = { module = "education.cccp:bakery-plugin", version.ref = "bakery-plugin" }
-capsule-plugin = { module = "education.cccp:capsule-plugin", version.ref = "capsule-plugin" }
-codex-plugin = { module = "education.cccp:codex-plugin", version.ref = "codex-plugin" }
-planner-plugin = { module = "education.cccp:planner-plugin", version.ref = "planner-plugin" }
-slider-plugin = { module = "education.cccp:slider-plugin", version.ref = "slider-plugin" }
-plantuml-plugin = { module = "education.cccp:plantuml-plugin", version.ref = "plantuml-plugin" }
-readme-plugin = { module = "education.cccp:readme-plugin", version.ref = "readme-plugin" }
-hyperframes-plugin = { module = "education.cccp:hyperframes-plugin", version.ref = "hyperframes-plugin" }
-graphify-plugin = { module = "education.cccp:graphify-plugin", version.ref = "graphify-plugin" }
-dashboard-plugin = { module = "education.cccp:dashboard-plugin", version.ref = "dashboard-plugin" }
-api-key-pool-plugin = { module = "education.cccp:api-key-pool", version.ref = "api-key-pool-plugin" }
-codebase-plugin = { module = "education.cccp:codebase-plugin", version.ref = "codebase-plugin" }
-conventions-plugin = { module = "education.cccp.build:conventions-plugin", version.ref = "conventions-plugin" }
+
+document-plugin = { module = "com.github.cccp-education.document-gradle:document-plugin", version.ref = "document-plugin" }
+bakery-plugin = { module = "com.github.cccp-education.bakery-gradle:bakery-plugin", version.ref = "bakery-plugin" }
+capsule-plugin = { module = "com.github.cccp-education.capsule-gradle:capsule-plugin", version.ref = "capsule-plugin" }
+codex-plugin = { module = "com.github.cccp-education.codex-gradle:codex-plugin", version.ref = "codex-plugin" }
+planner-plugin = { module = "com.github.cccp-education.planner-gradle:planner-plugin", version.ref = "planner-plugin" }
+slider-plugin = { module = "com.github.cccp-education.slider-gradle:slider-plugin", version.ref = "slider-plugin" }
+plantuml-plugin = { module = "com.github.cccp-education.plantuml-gradle:plantuml-plugin", version.ref = "plantuml-plugin" }
+readme-plugin = { module = "com.github.cccp-education.readme-gradle:readme-plugin", version.ref = "readme-plugin" }
+hyperframes-plugin = { module = "com.github.cccp-education.hyperframes-gradle:hyperframes-plugin", version.ref = "hyperframes-plugin" }
+graphify-plugin = { module = "com.github.cccp-education.graphify-gradle:graphify-plugin", version.ref = "graphify-plugin" }
+dashboard-plugin = { module = "com.github.cccp-education.dashboard-gradle:dashboard-plugin", version.ref = "dashboard-plugin" }
+api-key-pool-plugin = { module = "com.github.cccp-education:api-key-pool-gradle", version.ref = "api-key-pool-plugin" }
+codebase-plugin = { module = "com.github.cccp-education.codebase-gradle:codebase-plugin", version.ref = "codebase-plugin" }
+conventions-plugin = { module = "com.github.cccp-education.conventions-gradle:conventions-plugin", version.ref = "conventions-plugin" }
 
 [bundles]
 cucumber = [

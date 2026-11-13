@@ -1,23 +1,28 @@
-# CNV-16 — JitPack build recipe (N0 workspace-bom + 9 contract modules).
+# CNV-17 — JitPack canal unique (N0 workspace-bom + 11 contract modules).
 # JitPack builds from a public tag; no upload and no credential.
+# `-Pversion="${VERSION#v}"` forces the artifact version to the tag version so
+# the served coordinate is always `X.Y.Z` (no `v` prefix, see D2 of CNV-17).
 before_install:
   # JitPack defaults to JDK 8; the workspace requires Java 25.
-  - sdk install java 25.0.5.0+8-tem
-  - sdk use java 25.0.5.0+8-tem
+  - sdk install java 25-open || (sleep 10 && sdk install java 25-open)
+  - sdk use java 25-open
+  - java -version 2>&1 | grep -q 'version "25'
 install:
-  # Publish the BOM, the catalog and the 9 contract modules to ~/.m2,
+  # Publish the BOM, the catalog and the 11 contract modules to ~/.m2,
   # where JitPack harvests them. `publishToMavenLocal` does not run tests.
-  - ./gradlew publishToMavenLocal
-  - ./gradlew -p agent-contracts publishToMavenLocal
-  - ./gradlew -p codebase-contracts publishToMavenLocal
-  - ./gradlew -p i18n-contracts publishToMavenLocal
-  - ./gradlew -p llm-pool-contracts publishToMavenLocal
-  - ./gradlew -p ocr-contracts publishToMavenLocal
-  - ./gradlew -p opencode-session-contracts publishToMavenLocal
-  - ./gradlew -p pipeline-contracts publishToMavenLocal
-  - ./gradlew -p plantuml-contracts publishToMavenLocal
-  - ./gradlew -p runtime-contracts publishToMavenLocal
-  - ./gradlew -p catalog-contracts publishToMavenLocal
+  # Order matters: runtime-contracts resolves siblings from mavenLocal.
+  - ./gradlew publishToMavenLocal -Pversion="${VERSION#v}"
+  - ./gradlew -p agent-contracts publishToMavenLocal -Pversion="${VERSION#v}"
+  - ./gradlew -p codebase-contracts publishToMavenLocal -Pversion="${VERSION#v}"
+  - ./gradlew -p i18n-contracts publishToMavenLocal -Pversion="${VERSION#v}"
+  - ./gradlew -p llm-pool-contracts publishToMavenLocal -Pversion="${VERSION#v}"
+  - ./gradlew -p ocr-contracts publishToMavenLocal -Pversion="${VERSION#v}"
+  - ./gradlew -p opencode-session-contracts publishToMavenLocal -Pversion="${VERSION#v}"
+  - ./gradlew -p pipeline-contracts publishToMavenLocal -Pversion="${VERSION#v}"
+  - ./gradlew -p plantuml-contracts publishToMavenLocal -Pversion="${VERSION#v}"
+  - ./gradlew -p vibecoding-contracts publishToMavenLocal -Pversion="${VERSION#v}"
+  - ./gradlew -p runtime-contracts publishToMavenLocal -Pversion="${VERSION#v}"
+  - ./gradlew -p catalog-contracts publishToMavenLocal -Pversion="${VERSION#v}"
 env:
   # No GPG key on JitPack; the build script already skips signing when CI=true.
   CI: "true"
