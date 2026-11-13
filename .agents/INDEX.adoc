@@ -5,6 +5,7 @@
 
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
+_Derniere mise a jour_ : 2026-11-13 (session S-**351** — **catalogue `workspace-bom 0.0.133`** (versions **déployées sur JitPack**) : `hyperframes-plugin 0.0.16`, `capsule-plugin 0.0.21`, `conventions-plugin 0.0.16` ; `PlatformCatalogAlignmentTest` réalignée (2 gardes épinglées + renommage « published artifacts »). Publié JitPack tag `v0.0.133` (le premier `v0.0.132` avait une CI rouge sur ces gardes ; TOML identique, tag neuf). CI `runAllTests` verte `43351450714`. Rapport `.agents/sessions/351-catalog-0.0.133-jitpack-versions.adoc`.)
 _Derniere mise a jour_ : 2026-11-13 (session S-**350** — **N0 `catalog-contracts`** : module standalone `contracts.catalog.VersionCatalogToml` (10 tests) + entrée catalogue + contrainte BOM + `jitpack.yml` + job CI `n0-contracts` **11 builds** ; **publié JitPack `v0.0.130`** (`catalog-contracts:0.0.130` HTTP 200), CI `runAllTests` verte `43328195597`. Adoption graphify → CI verte `43328720865`. Rapport `.agents/sessions/350-n0-catalog-contracts.adoc`.)
 _Derniere mise a jour_ : 2026-11-10 (session S-**349** — **catalog `bakery-plugin 0.0.38`** (draft `workspace-bom 0.0.129`, Central bloqué 2026-12-01) ; `PlatformCatalogAlignmentTest` alignée ; JitPack `bakery 0.0.36/0.0.37/0.0.38` + shim `runner-gradle`. CI `42668331780`/`82ff181`. Rapport `.agents/sessions/349-bakery-0.0.38-catalog-jitpack.adoc`.)
 

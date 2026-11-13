@@ -1,0 +1,64 @@
+= Session 351 — catalogue `workspace-bom 0.0.133` (versions JitPack) + gardes réalignées
+:toc:
+
+:_date_: 2026-11-13
+:_borough_: MEMPHIS (workspace-bom, N0)
+:_session_precedente_: 350 (`catalog-contracts` N0, JitPack 0.0.130)
+:_statut_: ✅ catalogue `0.0.133` publié JitPack, CI `runAllTests` verte
+
+'''
+
+== Contexte
+
+Session transverse pilotée depuis Watts (`HF-SPEAKER-NOTES`). Consigne pilote :
+**les versions des build scripts sont celles déployées sur JitPack**. Le
+catalogue est la source de version des N2 : il doit déclarer les versions
+réellement servies par JitPack, et non les dernières versions Maven Central
+(Central suspendu jusqu'au 2026-12-01).
+
+'''
+
+== Livré
+
+* `gradle/libs.versions.toml` :
+  - `workspace-bom = "0.0.133"` (version auto-référente du projet, source de
+    `version = libs.versions.workspace.bom.get()`) ;
+  - `hyperframes-plugin = "0.0.15" → "0.0.16"` (release S-059) ;
+  - `capsule-plugin = "0.0.15" → "0.0.21"` (déployé JitPack `v0.0.21`) ;
+  - `conventions-plugin = "0.0.14" → "0.0.16"` (déployé JitPack, tag `0.0.16`).
+* `agent-contracts` — `PlatformCatalogAlignmentTest` : deux gardes **épinglées**
+  réalignées (`workspace-bom == 0.0.133`, `conventions-plugin == 0.0.16`) et le
+  test renommé (`… aligned with published artifacts`, plus « central » — la
+  cible est JitPack).
+* Publication JitPack : tag `v0.0.133` (commit `2c68557`), build `ok`,
+  `workspace-catalog:v0.0.133` HTTP 200 — le catalogue sert
+  `hyperframes-plugin 0.0.16`, `capsule-plugin 0.0.21`, `conventions-plugin
+  0.0.16`, `workspace-bom 0.0.133`.
+
+'''
+
+== Incident et correctif (transparence)
+
+Le premier catalogue **`0.0.132`** (commit `96e0b6b`, tag `v0.0.132`, build
+JitPack `ok`) avait une CI `runAllTests` **rouge** : deux assertions de
+`PlatformCatalogAlignmentTest` étaient épinglées sur l'état précédent
+(`0.0.131`, `conventions-plugin 0.0.14`). Le TOML publié étant identique, un
+**tag neuf** `v0.0.133` a été créé sur le commit corrigé (`2c68557`, CI
+`43351450714` verte) plutôt que de déplacer `v0.0.132` (jamais de tag déplacé).
+`v0.0.133` est la version consommée par hyperframes.
+
+'''
+
+== Dette / note
+
+* **Plateforme BOM** : un consommateur ne peut pas importer le BOM **JitPack**
+  comme `platform(...)` — la réécriture POM de JitPack transforme
+  `<dependencyManagement>` en `<dependencies>` et aucun `.module` n'est servi.
+  Hyperframes conserve donc la plateforme Central `0.0.115` (dernière publiée) ;
+  ce n'est pas une incohérence de version mais une limite du canal.
+* **Pin `v0.0.133`** : la garde cross-borough `verifyCrossBoroughPins` ne voit
+  pas les pins préfixés `v` (regex `workspace-(bom|catalog):[0-9]…`) — angle
+  mort connu, à corriger si un jour JitPack sert aussi la forme sans `v`.
+* `capsule-plugin 0.0.21` / `conventions-plugin 0.0.16` ne sont **pas** sur
+  Central : un consommateur Central-only ne les résout pas — cohérent avec la
+  politique JitPack jusqu'au reset.

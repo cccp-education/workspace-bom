@@ -1,13 +1,18 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
 == Session en cours
-349 — dernière terminée : **348** (JitPack mirror CNV-16). Session **349** :
-catalog `bakery-plugin 0.0.38` (draft `workspace-bom 0.0.129`, **Central bloqué
-2026-12-01** ; la voie JitPack sert `bakery 0.0.38` à `runner-gradle`). CI
-`42668331780` (0.0.36) puis `82ff181` (0.0.38). Rapport
-`.agents/sessions/349-bakery-0.0.38-catalog-jitpack.adoc`. Avant : **347**
-(release 0.0.129 bloquée quota), **346** (0.0.128), **345**, **344**, **343**,
-**342**, **341** (`MEM-CI-GATE-2` TERMINÉ).
+351 — dernière terminée : **350** (`catalog-contracts`). Session **351** :
+catalogue `0.0.133` avec les versions **déployées sur JitPack**
+(`hyperframes-plugin 0.0.16`, `capsule-plugin 0.0.21`, `conventions-plugin
+0.0.16`) ; `PlatformCatalogAlignmentTest` réalignée (gardes épinglées +
+renommage). Publié JitPack tag `v0.0.133` ; CI `runAllTests` verte
+`43351450714`. Rapport `.agents/sessions/351-catalog-0.0.133-jitpack-versions.adoc`.
+
+=== Reste (inchangé)
+* Aucune publication **Central** possible avant le **2026-12-01** (quota
+  Sonatype). La voie JitPack (tags) porte toutes les releases.
+* Angle mort connu : `verifyCrossBoroughPins` ne voit pas les pins préfixés `v`
+  (`workspace-catalog:v0.0.133`).
 
 === Mission Session 349 — bloquée jusqu'au 2026-12-01
 

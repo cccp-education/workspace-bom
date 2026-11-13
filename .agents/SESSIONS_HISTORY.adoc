@@ -719,3 +719,15 @@ Publication JitPack de workspace-bom, workspace-catalog et des 9 contrats (0.0.1
 bloqué jusqu'au 2026-12-01) ; `PlatformCatalogAlignmentTest` alignée. JitPack
 sert `bakery 0.0.36/0.0.37/0.0.38` ; `runner-gradle` résout 0.0.38 via
 `useModule`. Rapport `.agents/sessions/349-bakery-0.0.38-catalog-jitpack.adoc`.
+
+== Session 351 — catalogue 0.0.133 (versions JitPack) — 2026-11-13
+
+Catalogue aligné sur les artefacts **déployés sur JitPack** :
+`hyperframes-plugin 0.0.16`, `capsule-plugin 0.0.21`, `conventions-plugin
+0.0.16`, `workspace-bom 0.0.133`. `PlatformCatalogAlignmentTest` : deux gardes
+épinglées réalignées + renommage `… published artifacts` (la cible n'est plus
+Central). Publié JitPack **tag `v0.0.133`** (commit `2c68557`, CI `43351450714`
+verte) ; le premier `v0.0.132` avait une CI rouge sur ces gardes (TOML identique,
+tag neuf, aucun tag déplacé). Limite documentée : le BOM JitPack n'est pas
+importable comme `platform(...)` (POM réécrit en `<dependencies>`, pas de
+`.module`). Rapport `.agents/sessions/351-catalog-0.0.133-jitpack-versions.adoc`.
