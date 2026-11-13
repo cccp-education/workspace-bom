@@ -1,0 +1,38 @@
+= Session 356 — GBL-013 US-9 : gate finale de portabilité (job-scoped)
+:date: 2026-11-14
+:borough: MEMPHIS (workspace-bom)
+
+== Livré
+
+* `CiPortabilityJobsAudit` (source set `test`, pur) : découpe la section `jobs:`
+  et applique R3/R4/R5 **uniquement aux jobs qui délèguent à `ci/run.sh`**.
+  Les jobs hôte (shards, e2e, coverage, `unit-ollama`) sont ignorés — leur
+  `actions/setup-java` n'est pas un finding. Nouveau finding
+  `PortabilityFinding.MissingRuntime` (job `ci/run.sh` sans `container:`).
+* `CiPortabilityMain` : rapport on-demand sur le workspace
+  (`verifyCiPortabilityReport -PciRoot=…`) ; classification
+  `PORTABLE` / `VIOLATION` / `EXCEPTION` / `NOT_MIGRATED` / `BLOCKED`.
+  Une unité publique doit être portable ou exception déclarée (`magic-stick`) ;
+  les unités privées et `office` sont **bloquées** (image privée/secrets) et ne
+  rendent pas la gate publique rouge. Exit 1 sur violation publique.
+* Tâche Gradle `verifyCiPortabilityReport` (pattern S-341) + 7 tests
+  `CiPortabilityJobsAuditTest` ; `ci/README.adoc` §5bis.
+
+== Preuve (run local du rapport, pas un test)
+
+----
+verifyCiPortability: 28 unité(s) CI sous /home/cheroliv/workspace
+  ✅ PORTABLE 20 unités publiques
+  ⚠️ EXCEPTION magic-stick — image spécialisée (ISO live-build/QEMU)
+  ⛔ BLOCKED edster, payment-scaffold, quizz-benchmark, training-catalogue-site,
+     training, waiter, office — image privée/secrets absents
+verifyCiPortability: 20 portable, 1 exception(s), 7 bloquée(s), 28 unité(s)
+----
+
+Exit `0` : aucune violation publique, aucune unité publique non migrée hors
+exception.
+
+== Gates
+
+Compiles + `ktlintCheck` VERTS (aucun test local). CI N0 (`ci/run.sh test`)
+exécute les 7 tests. Zéro publication, zéro bump.

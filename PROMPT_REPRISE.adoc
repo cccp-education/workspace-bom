@@ -1,5 +1,15 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
+== Session 356 terminée — GBL-013 US-9 : gate finale de portabilité
+
+Gate **job-scoped** : `CiPortabilityJobsAudit` applique R3/R4/R5 uniquement aux
+jobs qui délèguent à `ci/run.sh` (les shards/e2e/coverage/`unit-ollama` restent
+hôte, leur `setup-java` n'est pas un finding) ; `MissingRuntime` pour un job
+`ci/run.sh` sans container. `CiPortabilityMain` + tâche on-demand
+`verifyCiPortabilityReport` : **28 unités — 20 portable, magic-stick exception,
+7 bloquées (6 privées + office)** ; exit 0, aucune violation publique. 7 tests,
+`ci/README.adoc` §5bis. Rapport `.agents/sessions/356-gbl-013-us9-portability-gate.adoc`.
+
 == Session 354 terminée — CNV-17 N0 JitPack
 
 Catalogue en coordonnées JitPack, versions contrats unifiées `0.0.136`,
@@ -9,23 +19,18 @@ CI `runAllTests` verte `43472826589`. Rapport
 `.agents/sessions/354-cnv-17-jitpack-channel.adoc`.
 
 == Session en cours
-355 — dernière terminée : **354** (**CNV-17 N0**) ; avant : **353** (**`MEM-WARN-ZERO` F1 SOLDÉE**) : les 26
-délégués `by tasks.registering` supprimés, 0 warning `build.gradle.kts` en CI —
-`codex` 11 (S-237), `academy` 10 (S-029), `conventions` 3 (S-044), `plantuml` 2
-(S-251), iso-comportement. Avant : **352** (EPIC ouvert + mesure), **351**
-(catalogue 0.0.133).
+356 — dernière terminée : **356** (**GBL-013 US-9**) ; avant : **355**
+(GBL-013 US-1/US-3), **354** (CNV-17 N0), **353** (`MEM-WARN-ZERO` F1).
 
-=== Mission Session 355 — `MEM-WARN-ZERO` US-5 (`buildDir`, lot A)
+=== Reste GBL-013 (après US-9)
+* **US-6 workflows** : bloqué par le canal privé (`cheroliv/ccp-ci-base` privé,
+  secrets Docker Hub absents) — les actions sont déjà mutualisées (bakery
+  `0.0.39`).
+* **US-7 privé** : même blocage (poser `DOCKERHUB_*` ou rendre l'image publique).
+* **US-8** : caduque par défaut.
+* Déclaration finale de l'EPIC : possible quand les prérequis pilote ci-dessus
+  sont levés.
 
-. Remplacer `buildDir` par `layout.buildDirectory` : `workspace-bom` (7),
-   `conventions` (3), `codebase` (2), `bakery` (2), `codex` (1) — 15 occurrences.
-   Patron : `buildDir = x` → `layout.buildDirectory.set(x)` ;
-   `File(buildDir, "y")` → `layout.buildDirectory.dir("y").get().asFile`.
-. Mesure dynamique avant/après (log CI, `--warning-mode=all` si besoin) ; CI
-   verte par dépôt ; iso-comportement (mêmes chemins).
-. Ensuite US-6 (lot B : `slider` 4, `plantuml-api` 2, `jhipster` buildSrc 1) et
-   US-7 (gate statique `verifyNoDeprecatedBuildScripts` dans conventions).
-. Cadrage : `.agents/CADRAGE_EPIC_MEM_WARN_ZERO.adoc` (D1→D8).
 
 === Reste (inchangé)
 * Aucune publication **Central** possible avant le **2026-12-01** (quota

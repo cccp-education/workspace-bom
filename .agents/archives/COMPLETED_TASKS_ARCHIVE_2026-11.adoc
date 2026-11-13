@@ -313,3 +313,13 @@
 * Reste : `buildDir` (US-5/6), `kotlinOptions` (US-8 conditionnel), gate (US-7).
 
 * GBL-013 — portabilité CI (session close) : voir `.agents/sessions/` (rapport dédié).
+
+== S-356 — GBL-013 US-9 : gate finale job-scoped ✅
+
+* `CiPortabilityJobsAudit` : R3/R4/R5 sur les seuls jobs `ci/run.sh` ; jobs
+  hôte ignorés ; `MissingRuntime` ; 7 tests.
+* `CiPortabilityMain` + `verifyCiPortabilityReport -PciRoot=…` : 28 unités,
+  20 portable, magic-stick exception, 7 bloquées privé/office ; exit 0.
+* `ci/README.adoc` §5bis ; rapport
+  `.agents/sessions/356-gbl-013-us9-portability-gate.adoc`.
+

@@ -762,3 +762,8 @@ frères avant le batch parallèle. Build JitPack `v0.0.136` : **11 modules HTTP
 == Session 355 — GBL-013 : contrat CI, pilote N0 et fix des pins v — 2026-11-14
 
 US-1 (ci/README + CiPortabilityAudit R3/R4/R5 + 9 tests), US-3a (ci/run.sh), US-3b (job N0 dans cccp-ci-base@sha256:4722…, run 43487685010 VERT). MEM-CI-CONSISTENCY : CrossBoroughPins (v/V normalisé, workspace-* v?), CrossBoroughPinsMain, tâche on-demand verifyCrossBoroughPinsReport (51 catalogues/133 scripts, 0 violation). Rapport `.agents/sessions/355-gbl-013-ci-portability.adoc`.
+
+== Session 356 — GBL-013 US-9 : gate finale job-scoped — 2026-11-14
+
+`CiPortabilityJobsAudit` (R3/R4/R5 uniquement sur les jobs `ci/run.sh`, jobs hôte ignorés, nouveau `MissingRuntime`) + `CiPortabilityMain` (rapport 28 unités : 20 portable, magic-stick exception, 7 bloquées privé/office) + `verifyCiPortabilityReport` + 7 tests. Exit 0, aucune violation publique. Rapport `.agents/sessions/356-gbl-013-us9-portability-gate.adoc`.
+
