@@ -32,9 +32,9 @@ class PlatformCatalogAlignmentTest {
     @Test
     fun `toml version workspace-bom matches platform version`() {
         assertEquals(
-            "0.0.131",
+            "0.0.133",
             tomlVersions["workspace-bom"],
-            "workspace-bom dans le toml (tri-split C2 supprimé)",
+            "workspace-bom dans le toml (tri-split C2 supprimé ; JitPack S-059)",
         )
         assertTrue(
             platformScript.contains("version = libs.versions.workspace.bom.get()"),
@@ -56,7 +56,7 @@ class PlatformCatalogAlignmentTest {
     }
 
     @Test
-    fun `toml agent contracts versions aligned with published central`() {
+    fun `toml agent contracts versions aligned with published artifacts`() {
         assertEquals("0.0.4", tomlVersions["agent-contracts"], "agent-contracts (XF-FP2-6, Central S-331)")
         assertEquals("0.0.2", tomlVersions["codebase-contracts"], "codebase-contracts")
         assertEquals("0.0.5", tomlVersions["i18n-contracts"], "i18n-contracts")
@@ -68,9 +68,9 @@ class PlatformCatalogAlignmentTest {
         assertEquals("0.0.1", tomlVersions["ocr-contracts"], "ocr-contracts")
         assertEquals("0.0.1", tomlVersions["plantuml-contracts"], "plantuml-contracts (PLT-DIAGRAM-OWNERSHIP US-1, 10e contrat N0)")
         assertEquals(
-            "0.0.14",
+            "0.0.16",
             tomlVersions["conventions-plugin"],
-            "conventions-plugin 0.0.14 (alignement BOM de test 0.0.127)",
+            "conventions-plugin 0.0.16 (déployé JitPack, CNV-16 ; plus sur Central jusqu'au 2026-12-01)",
         )
     }
 
