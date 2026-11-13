@@ -121,5 +121,7 @@ to the borough repositories and the cross-borough matrix. The script exits `2`
 with an explicit message for an unsupported job, never `0`.
 
 The adapter migration (job `container:` pinned on the published digest) is US-3b:
-it is gated on the first successful `ci-image` run, because a placeholder digest
-would be a false pin (rule R4).
+the `n0-contracts` job runs inside `cccp-ci-base` via `ci/run.sh test` (run
+`43487685010`, green). The `matrix-coverage` job keeps the Ollama setup on the
+host: the base image has no Docker CLI/daemon, and the Ollama job is separate by
+design (S-278 → S-280).

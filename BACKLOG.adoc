@@ -1454,10 +1454,10 @@ _Ce dépôt est **porteur du contrat** (`contracts.ci`, source set `test`) et du
 | ✅ S-226 (compileTestKotlin VERT)
 
 | GBL-013-3
-| Pilote : `ci/run.sh` (fast/test/publish) + preuve locale ; adapter `container:`
-  épinglé sur le digest gaté sur le 1er run `ci-image`
+| Pilote : `ci/run.sh` (fast/test/publish) + job N0 exécuté dans l'image
+  (`container:` épinglé sur le digest public)
 | 3
-| 🟡 US-3a ✅ S-226 (`fast` VERT, job inconnu exit 2) — US-3b gatée digest
+| ✅ S-226 — N0 job exécuté dans `cccpeducation/cccp-ci-base@sha256:4722c1bc…` via `ci/run.sh test`, run `43487685010` **VERT** (job N0 + run global). Gate `N0ContractsGateTest` adapté (le garde encodait l'ancien script inline → valide désormais la délégation `ci/` + l'errexit du bloc parallèle). `matrix-coverage`/Ollama reste sur l'hôte (pas de CLI Docker dans l'image).
 
 | GBL-013-9
 | Gate finale : `verifyCiPortability` sur les 28 unités + CI verte par vague +
