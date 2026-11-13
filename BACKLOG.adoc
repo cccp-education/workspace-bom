@@ -171,6 +171,17 @@ masque toute la dette aval (cf. S-269 Queens, S-243 bakery).
 | US-5 | **Garde « catalogue non stale »** — la version `codebase` (et N1) doit être publiée **ET** contenir les API utilisées (cas planner `plannerport`) | guard | ✅ TERMINÉ (S-317) — même garde `verifyCrossBoroughPins` (relation inverse : le catalogue ne peut pas être en retard sur un pin consommé) ; gaps corrigés : `vibecoding-contracts 0.0.1` publiée mais absente du catalogue/BOM (ajoutée), `PlatformCatalogAlignmentTest` dérivé (i18n 0.0.4, bakery 0.0.29) car les N0 n'étaient jamais testés en CI → job `n0-contracts`
 |===
 
+*S-226 (post-clôture) — angle mort `v` soldé* : la garde quitte
+`build.gradle.kts` pour `agent-contracts` (`verifyCrossBoroughPinsReport`, pattern
+S-341), algorithme pur `contracts.catalog.CrossBoroughPins` testé
+(`CrossBoroughPinsTest`). Deux corrections : (1) `versionRank` normalise le
+préfixe `v`/`V` (`v0.0.4` n'est plus « newer » que `0.0.4`) ; (2) le motif
+`workspace-(bom|catalog):` accepte `v?` (`workspace-catalog:v0.0.133` n'est plus
+invisible). Vérifié sur le workspace réel : **51 catalogues / 133 build scripts,
+0 violation** (catalogue `0.0.136`). La garde n'est plus dans `check` (elle exige
+les frères, absents d'un checkout CI isolé) ; exécution à la demande :
+`./gradlew -p agent-contracts verifyCrossBoroughPinsReport`.
+
 _Livré S-284 (US-1)_ : JDK 25 + retarget bakery → `runAllTests` **vert** (run `38241612161`,
 10m0s, 5 boroughs). Correctifs siblings de la même fenêtre : slider S-073 (US-3 partiel),
 dashboard S-217 (US-4 partiel), planner S-080 (US-5 partiel).
@@ -1424,3 +1435,34 @@ le seuil de factorisation est atteint.
 *Condition d'ouverture* : au moins deux boroughs consommateurs ont un besoin réel et un
 format de rapport divergent à unifier. Sinon, chaque borough garde ses types locaux
 (Économie d'Encre).
+
+== EPIC GBL-013 — Portabilité de la CI (transverse) — S-226
+
+_Cadrage racine : `.agents/CADRAGE_EPIC_GBL_013_PORTABILITE_CI.adoc` (jardin secret)._
+_Contrat : image de runtime unique (`cccp-ci-base`) + `ci/run.sh <job>` + adapter
+GitHub Actions fin ; porte **P1→P4** ; aucun `.gitlab-ci.yml` par défaut._
+_Ce dépôt est **porteur du contrat** (`contracts.ci`, source set `test`) et du pilote._
+
+|===
+| US | Contenu | Pts | Statut
+
+| GBL-013-1
+| Contrat `ci/` (`ci/README.adoc` définissant `ci/run.sh <job>`) + règles
+  **R3/R4/R5** dans `contracts.ci` (source set `test`, zéro publication) +
+  `CiPortabilityAudit` (9 tests). `ci/run.sh` de référence : US-3
+| 5
+| ✅ S-226 (compileTestKotlin VERT)
+
+| GBL-013-3
+| Pilote : `ci/run.sh` (fast/test/publish) + preuve locale ; adapter `container:`
+  épinglé sur le digest gaté sur le 1er run `ci-image`
+| 3
+| 🟡 US-3a ✅ S-226 (`fast` VERT, job inconnu exit 2) — US-3b gatée digest
+
+| GBL-013-9
+| Gate finale : `verifyCiPortability` sur les 28 unités + CI verte par vague +
+  consignation des digests
+| 3
+| 🟡 À FAIRE
+|===
+

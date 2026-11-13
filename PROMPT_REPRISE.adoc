@@ -22,8 +22,10 @@ délégués `by tasks.registering` supprimés, 0 warning `build.gradle.kts` en C
 === Reste (inchangé)
 * Aucune publication **Central** possible avant le **2026-12-01** (quota
   Sonatype). La voie JitPack (tags) porte toutes les releases.
-* Angle mort connu : `verifyCrossBoroughPins` ne voit pas les pins préfixés `v`
-  (`workspace-catalog:v0.0.133`).
+* ✅ Angle mort soldé S-226 : la garde est devenue
+  `verifyCrossBoroughPinsReport` (`agent-contracts`, on-demand, pattern S-341) ;
+  préfixe `v`/`V` normalisé et `workspace-catalog:v…` reconnu. Tests
+  `contracts.catalog.CrossBoroughPinsTest`.
 
 === Mission Session 349 — bloquée jusqu'au 2026-12-01
 

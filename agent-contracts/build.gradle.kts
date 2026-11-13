@@ -127,6 +127,23 @@ val ciShellGatesReport =
         outputs.upToDateWhen { false }
     }
 
+// ── MEM-CI-CONSISTENCY (S-226) — cross-borough pins, on-demand (pattern S-341) ──
+// One implementation, unit-tested; run at session closure over the sibling
+// builds. `-PpinsRoot=<abs>` (default `../..` = foundry/public) and
+// `-PpinsCatalog=<abs>` (default `../gradle/libs.versions.toml`).
+val verifyCrossBoroughPinsReport =
+    tasks.register<JavaExec>("verifyCrossBoroughPinsReport") {
+        description = "Verifies cross-borough pins against the published catalogue (MEM-CI-CONSISTENCY)"
+        group = "verification"
+        classpath = sourceSets.test.get().runtimeClasspath
+        mainClass.set("contracts.catalog.CrossBoroughPinsMain")
+        args(
+            project.findProperty("pinsRoot")?.toString() ?: "../..",
+            project.findProperty("pinsCatalog")?.toString() ?: "../gradle/libs.versions.toml",
+        )
+        outputs.upToDateWhen { false }
+    }
+
 tasks.named("check") {
     dependsOn(cucumberTest, versionCatalogCucumberTest, ciShellGatesCucumberTest)
 }
