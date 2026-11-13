@@ -156,6 +156,12 @@ object CiShellAudit {
         return missingErrexit + swallowed
     }
 
+    /**
+     * `true` when [command] invokes a shell gate (a command whose failure must
+     * fail the step). Shared with [CiPortabilityAudit] (rule R3).
+     */
+    internal fun isGate(command: String): Boolean = GATE.containsMatchIn(command)
+
     /** The shell command of a line, stripping the YAML step prefix (`- run: …`). */
     private fun shellOf(line: String): String = RUN_INLINE.find(line)?.groupValues?.get(1) ?: line
 

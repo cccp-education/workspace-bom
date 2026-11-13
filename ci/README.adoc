@@ -1,0 +1,125 @@
+= CI contract — `ci/run.sh <job>`
+:toc: left
+:toclevels: 2
+:sectnums:
+:icons: font
+
+[abstract]
+--
+Portability contract of the workspace CI (EPIC `GBL-013`). The *domain* is the
+Gradle task and the `ci/` script; the *adapter* is the pipeline YAML; the
+*runtime* is the image. A second runner (GitLab, self-hosted, local Docker)
+replays the same job without rewriting the pipeline.
+--
+
+== 1. Purpose
+
+A pipeline file is an adapter. It contains no business logic: it checks out the
+repository, selects a runtime image, and delegates to `ci/run.sh <job>`. The
+contract is the **exit code** of that script.
+
+== 2. Job vocabulary
+
+[cols="1,4", options="header"]
+|===
+| Job | Meaning
+
+| `fast` | Compilation, lint and validation that must stay under a few minutes.
+| `test` | Unit tests.
+| `bdd` | Behaviour tests, optionally sharded through `SHARD`.
+| `functional` | Functional / TestKit tests, optionally sharded through `SHARD`.
+| `e2e` | End-to-end tests (browser, rendering, external binaries).
+| `coverage` | Coverage aggregation and threshold.
+| `publish` | Artifact publication (`PUBLISH_TARGET`).
+|===
+
+A new job name is an additive change to this document, never an implicit
+behaviour hidden in a YAML file.
+
+== 3. The script
+
+[source,shell]
+----
+#!/usr/bin/env bash
+set -euo pipefail
+----
+
+* The **exit code** is the only contract. A successful run exits `0`; any failure
+  exits non-zero.
+* No `|| true`, no `|| echo`, no `continue-on-error` that neutralises a gate.
+  A tolerated per-item failure is explicit: `# ci-shell:allow-swallow`.
+* The script never ends with a report command (`echo`): the last command decides
+  the exit code and must be the gate itself.
+* Inputs are environment variables (`SHARD`, `VERSION`, `PUBLISH_TARGET`), never
+  positional parsing of the pipeline file.
+* Shell and Gradle only. No Python.
+
+== 4. The adapter
+
+* GitHub Actions: `uses:` for the unavoidable third-party actions, and
+  `ci/run.sh <job>` for everything else.
+* No multi-command `run: |` block that invokes a gate outside `ci/` (rule R3).
+* The runtime image is pinned by digest, never by a moving tag (rule R4).
+* The toolchain is provided by the image: no `actions/setup-java`,
+  `actions/setup-node` or `actions/setup-python` (rule R5).
+
+== 5. Portability gate
+
+[cols="1,4", options="header"]
+|===
+| # | Condition
+
+| P1 | Static — R3/R4/R5 clean (`contracts.ci.CiPortabilityAudit`).
+| P2 | The job is green **in the CI of the commit** (never a local test run).
+| P3 | The same `ci/run.sh <job>` replays from a generic Docker runner (in CI).
+| P4 | No secret in the image or the scripts, no `\|\| true`, no Python.
+|===
+
+== 6. Runtime image
+
+[cols="1,3", options="header"]
+|===
+| Channel | Reference
+
+| Public boroughs | `docker.io/cccpeducation/cccp-ci-base@sha256:<digest>`
+| Private / office | `docker.io/cheroliv/cccp-ci-base@sha256:<digest>`
+|===
+
+The image contains JDK 25, Node 22, the Playwright/Chromium system dependencies,
+ffmpeg, espeak-ng, git, curl, jq, unzip and shellcheck. It never contains Ollama
+(neither binary nor models: the dedicated `unit-ollama` job keeps its own cached
+image and model), secrets, or a Gradle wrapper (the wrapper stays versioned per
+repository and verified by `verify-gradle-wrapper`).
+
+Testcontainers uses the host Docker daemon through the mounted socket: the image
+does not replace Docker and embeds no daemon.
+
+== 7. Non-goals
+
+* No `.gitlab-ci.yml` by default. A dead adapter drifts silently and produces a
+  false green; the GitLab adapter is opened only on a real second runner.
+* The provider-specific optimisations (cache, matrix, artifacts, sharding) stay in
+  the adapter: they are not the portable part.
+
+== 8. Repository mapping — workspace-bom (US-3)
+
+[cols="1,4", options="header"]
+|===
+| Job | Implementation
+
+| `fast` | `verifyCiMatrixCoverage` (the static matrix guard, mirroring the CI
+  `matrix-coverage` job). Cross-borough pins are a separate, workspace-local
+  on-demand check (`./gradlew -p agent-contracts verifyCrossBoroughPinsReport`):
+  it reads sibling repositories that a standalone CI checkout does not have.
+| `test` | N0 contracts: publish the `i18n`/`opencode-session` siblings locally,
+  then `check` the 10 contracts in parallel (`N0_CONCURRENCY`, default 5).
+| `publish` | `publishToMavenLocal`.
+|===
+
+`bdd`, `functional`, `e2e` and `coverage` are **not** local jobs here: they belong
+to the borough repositories and the cross-borough matrix. The script exits `2`
+with an explicit message for an unsupported job, never `0`.
+
+The adapter migration (job `container:` pinned on the published digest) is US-3b:
+it is gated on the first successful `ci-image` run, because a placeholder digest
+would be a false pin (rule R4).
