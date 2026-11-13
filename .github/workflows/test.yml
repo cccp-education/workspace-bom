@@ -153,7 +153,7 @@ jobs:
           - name: "Check · dashboard"
             kind: check
             borough: dashboard-gradle
-            dir: .
+            dir: dashboard-plugin
             task: check
             node: false
           - name: "Check · planner"

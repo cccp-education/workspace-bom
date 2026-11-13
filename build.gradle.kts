@@ -168,13 +168,13 @@ dependencies {
 // (com.cheroliv.jhipster.persistence vs education.cccp.jhipster.persistence) — dette préexistante.
 // NB : plantuml-gradle exclu — racine applique le plugin sans version ni alias (résolution
 // impossible) — dette préexistante, le plugin lui-même a son propre check.
-// Value = build directory relative to the borough root. bakery-gradle is a
-// pattern-0124 consumer root (no `check` task); its build is the standalone
-// `bakery-plugin/` sub-build, so the check runs there.
+// Value = build directory relative to the borough root. bakery-gradle and
+// dashboard-gradle are pattern-0124 consumer roots (no `check` task); their
+// build is the standalone plugin sub-build, so the check runs there.
 val testableProjects = mapOf(
     "api-key-pool-gradle" to ".",
     "bakery-gradle" to "bakery-plugin",
-    "dashboard-gradle" to ".",
+    "dashboard-gradle" to "dashboard-plugin",
     "planner-gradle" to ".",
     "slider-gradle" to "."
 )
