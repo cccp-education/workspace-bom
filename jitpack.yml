@@ -20,7 +20,6 @@ install:
   - ./gradlew -p opencode-session-contracts publishToMavenLocal -Pversion="${VERSION#v}"
   - ./gradlew -p pipeline-contracts publishToMavenLocal -Pversion="${VERSION#v}"
   - ./gradlew -p plantuml-contracts publishToMavenLocal -Pversion="${VERSION#v}"
-  - ./gradlew -p vibecoding-contracts publishToMavenLocal -Pversion="${VERSION#v}"
   - ./gradlew -p runtime-contracts publishToMavenLocal -Pversion="${VERSION#v}"
   - ./gradlew -p catalog-contracts publishToMavenLocal -Pversion="${VERSION#v}"
 env:

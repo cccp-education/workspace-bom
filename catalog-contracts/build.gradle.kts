@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "education.cccp"
-version = "0.0.1"
+version = providers.gradleProperty("version").getOrElse("0.0.1")
 
 dependencies {
     implementation(kotlin("stdlib"))

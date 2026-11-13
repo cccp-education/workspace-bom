@@ -3,8 +3,8 @@ kotlin = "2.4.10"
 junit-platform = "1.14.3"
 assertj = "3.25.3"
 cucumber = "7.34.3"
-opencode-session-contracts = "0.0.134"
-i18n-contracts = "0.0.134"
+opencode-session-contracts = "0.0.135"
+i18n-contracts = "0.0.135"
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

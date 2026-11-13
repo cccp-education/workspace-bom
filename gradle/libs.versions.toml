@@ -1,6 +1,6 @@
 [versions]
 # ── Workspace BOM shared versions ─────────────────────────────────────────────
-workspace-bom = "0.0.134"
+workspace-bom = "0.0.135"
 
 # ── Kotlin ────────────────────────────────────────────────────────────────────
 kotlin = "2.4.10"
@@ -75,17 +75,16 @@ asciidoctorj-diagram = "3.2.1"
 asciidoctorj-diagram-plantuml = "1.2026.2"
 
 # ── Agent Contracts ───────────────────────────────────────────────────────────
-agent-contracts = "0.0.134"
-codebase-contracts = "0.0.134"
-llm-pool-contracts = "0.0.134"
-opencode-session-contracts = "0.0.134"
-vibecoding-contracts = "0.0.134"
-i18n-contracts = "0.0.134"
-pipeline-contracts = "0.0.134"
-runtime-contracts = "0.0.134"
-ocr-contracts = "0.0.134"
-plantuml-contracts = "0.0.134"
-catalog-contracts = "0.0.134"
+agent-contracts = "0.0.135"
+codebase-contracts = "0.0.135"
+llm-pool-contracts = "0.0.135"
+opencode-session-contracts = "0.0.135"
+i18n-contracts = "0.0.135"
+pipeline-contracts = "0.0.135"
+runtime-contracts = "0.0.135"
+ocr-contracts = "0.0.135"
+plantuml-contracts = "0.0.135"
+catalog-contracts = "0.0.135"
 document-plugin = "0.0.30"
 
 # ── Docker / Infrastructure ───────────────────────────────────────────────────
@@ -290,7 +289,6 @@ agent-contracts = { module = "com.github.cccp-education.workspace-bom:agent-cont
 codebase-contracts = { module = "com.github.cccp-education.workspace-bom:codebase-contracts", version.ref = "codebase-contracts" }
 llm-pool-contracts = { module = "com.github.cccp-education.workspace-bom:llm-pool-contracts", version.ref = "llm-pool-contracts" }
 opencode-session-contracts = { module = "com.github.cccp-education.workspace-bom:opencode-session-contracts", version.ref = "opencode-session-contracts" }
-vibecoding-contracts = { module = "com.github.cccp-education.workspace-bom:vibecoding-contracts", version.ref = "vibecoding-contracts" }
 i18n-contracts = { module = "com.github.cccp-education.workspace-bom:i18n-contracts", version.ref = "i18n-contracts" }
 pipeline-contracts = { module = "com.github.cccp-education.workspace-bom:pipeline-contracts", version.ref = "pipeline-contracts" }
 runtime-contracts = { module = "com.github.cccp-education.workspace-bom:runtime-contracts", version.ref = "runtime-contracts" }

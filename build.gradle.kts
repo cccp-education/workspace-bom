@@ -127,7 +127,6 @@ dependencies {
         api(libs.codebase.contracts)
         api(libs.llm.pool.contracts)
         api(libs.opencode.session.contracts)
-        api(libs.vibecoding.contracts)
         api(libs.i18n.contracts)
         api(libs.pipeline.contracts)
         api(libs.runtime.contracts)
@@ -405,7 +404,6 @@ val crossBoroughPinFamilies = mapOf(
     "llm-pool-contracts" to "llm-pool-contracts",
     "opencode-session-contracts" to "opencode-session-contracts",
     "pipeline-contracts" to "pipeline-contracts",
-    "vibecoding-contracts" to "vibecoding-contracts",
 )
 
 fun parseVersionTable(file: java.io.File): Map<String, String> {
