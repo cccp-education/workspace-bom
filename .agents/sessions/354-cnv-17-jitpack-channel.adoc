@@ -1,0 +1,62 @@
+= Session 354 — CNV-17 JitPack : N0 `workspace-bom 0.0.136`
+:session: 354
+:date: 2026-11-14
+:epic: CNV-17 (JITPACK-PRIMARY)
+:statut: ✅ TERMINÉ (N0)
+
+== Mission
+
+Décision pilote S-045 : JitPack devient le **canal unique** des artefacts
+publics (`foundry/private/**` et `office/**` exclus). Pour N0, publier BOM +
+catalogue + contrats sous coordonnées JitPack et unifier les versions.
+
+== Livré
+
+=== 1. Catalogue `gradle/libs.versions.toml`
+
+* `[libraries]` réécrit en coordonnées JitPack :
+  `com.github.cccp-education.workspace-bom:<contrat>` pour les 10 contrats,
+  `com.github.cccp-education[.<repo>]:<plugin>` pour les N2,
+  `com.github.cccp-education:video-kernel-gradle` et
+  `com.github.cccp-education.video-kernel-gradle:youtube-auth-plugin`.
+* Versions des contrats **unifiées** à `0.0.136` (D5 : JitPack relabelle tous
+  les modules à la version du tag ; les versions par contrat n'existent pas).
+* `workspace-bom = "0.0.136"`, `video-kernel = "0.9.1"`,
+  `youtube-auth-plugin = "v0.0.4"` (provisoire, US-3b), `conventions-plugin =
+  "0.0.17"`.
+* `vibecoding-contracts` retiré du catalogue et du BOM (vestige non versionné :
+  absent du clone JitPack). D11 tranché = retrait.
+
+=== 2. Build / tests
+
+* Chaque contrat lit `providers.gradleProperty("version")` → `-Pversion` pilote
+  la version publiée (`jitpack.yml` : `-Pversion="${VERSION#v}"`).
+* `runtime-contracts` résout ses frères au groupe **local** `education.cccp`
+  depuis `mavenLocal` (JitPack réécrit le POM publié vers
+  `com.github.cccp-education.workspace-bom`, vérifié).
+* `PlatformCatalogAlignmentTest` et `WorkspaceCatalogStructureTest` réalignés
+  sur JitPack (coordonnées + versions unifiées + retrait vibecoding).
+
+=== 3. CI
+
+* Job `n0-contracts` : publication locale de
+  `i18n-contracts`/`opencode-session-contracts` **avant** le batch parallèle
+  (`runtime-contracts` en dépend).
+* Build JitPack `v0.0.136` : **11 modules HTTP 200** (BOM, catalogue, 10
+  contrats), `dependencyManagement` + `.module` présents.
+* CI `runAllTests` **verte** (run `43472826589`) après revert de la
+  consommation bakery (voisin).
+
+== Fichiers
+
+* `gradle/libs.versions.toml`, `runtime-contracts/gradle/libs.versions.toml`,
+  `jitpack.yml`, `build.gradle.kts` (contraintes), les 10
+  `<contrat>/build.gradle.kts` (version depuis `-Pversion`), `.github/workflows/test.yml`,
+  `agent-contracts/src/test/kotlin/contracts/catalog/*.kt`.
+
+== Suite
+
+* **US-3b** : unifier `video-kernel`/`youtube-auth` sur une version de dépôt.
+* **US-3c** (côté bakery/plantuml) : re-releaser `plantuml 0.0.17` depuis HEAD.
+* Aligner l'entrée `conventions-plugin` du catalogue N0 au prochain release
+  (`0.0.17` déjà local, `0.0.16` dans le 0.0.136 publié).

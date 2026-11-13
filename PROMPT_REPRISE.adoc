@@ -1,13 +1,21 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
+== Session 354 terminée — CNV-17 N0 JitPack
+
+Catalogue en coordonnées JitPack, versions contrats unifiées `0.0.136`,
+`vibecoding-contracts` retiré, `runtime-contracts` résolu, `jitpack.yml`
+`-Pversion="${VERSION#v}"`. Build JitPack `v0.0.136` = **11 modules HTTP 200** ;
+CI `runAllTests` verte `43472826589`. Rapport
+`.agents/sessions/354-cnv-17-jitpack-channel.adoc`.
+
 == Session en cours
-354 — dernière terminée : **353** (**`MEM-WARN-ZERO` F1 SOLDÉE**) : les 26
+355 — dernière terminée : **354** (**CNV-17 N0**) ; avant : **353** (**`MEM-WARN-ZERO` F1 SOLDÉE**) : les 26
 délégués `by tasks.registering` supprimés, 0 warning `build.gradle.kts` en CI —
 `codex` 11 (S-237), `academy` 10 (S-029), `conventions` 3 (S-044), `plantuml` 2
 (S-251), iso-comportement. Avant : **352** (EPIC ouvert + mesure), **351**
 (catalogue 0.0.133).
 
-=== Mission Session 354 — `MEM-WARN-ZERO` US-5 (`buildDir`, lot A)
+=== Mission Session 355 — `MEM-WARN-ZERO` US-5 (`buildDir`, lot A)
 
 . Remplacer `buildDir` par `layout.buildDirectory` : `workspace-bom` (7),
    `conventions` (3), `codebase` (2), `bakery` (2), `codex` (1) — 15 occurrences.

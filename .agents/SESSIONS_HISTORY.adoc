@@ -747,3 +747,14 @@ F2 `buildDir` 28, F3 `kotlinOptions` 3 (privé), F4 `resolvedConfiguration` 2.
 `43357288198`), `conventions` 3 (S-044, CI `43357877552`), `plantuml` 2 (S-252,
 CI `43357880558`). Iso-comportement. Reste F2 `buildDir`, F3, gate US-7. Rapport
 `.agents/sessions/353-mem-warn-zero-f1-sold.adoc`.
+
+== Session 354 — CNV-17 N0 JitPack (`workspace-bom 0.0.136`) — 2026-11-14
+
+Catalogue réécrit en coordonnées JitPack, versions des contrats unifiées à
+`0.0.136` (D5), `vibecoding-contracts` retiré (vestige non versionné),
+`runtime-contracts` résolu depuis `mavenLocal`/JitPack, `jitpack.yml` avec
+`-Pversion="${VERSION#v}"`, gardes `PlatformCatalogAlignmentTest` /
+`WorkspaceCatalogStructureTest` réalignées, job CI `n0-contracts` publiant les
+frères avant le batch parallèle. Build JitPack `v0.0.136` : **11 modules HTTP
+200** ; CI `runAllTests` verte `43472826589`. Rapport
+`.agents/sessions/354-cnv-17-jitpack-channel.adoc`.
