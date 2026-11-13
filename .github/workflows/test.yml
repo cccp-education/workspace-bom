@@ -489,6 +489,18 @@ jobs:
         with:
           cache-disabled: true
 
+      - name: Publish the runtime-contracts siblings locally
+        shell: bash
+        run: |
+          set -euo pipefail
+          # CNV-17 — runtime-contracts depends on two sibling contracts at the
+          # workspace-bom tag version. The parallel `check` batch would race
+          # (the siblings are not in ~/.m2 yet), so publish them locally first.
+          VERSION=$(sed -n 's/^workspace-bom = "\([^"]*\)"/\1/p' gradle/libs.versions.toml | head -1)
+          for m in i18n-contracts opencode-session-contracts; do
+            ( cd "$m" && ./gradlew publishToMavenLocal --no-daemon --console=plain -Pversion="$VERSION" )
+          done
+
       - name: Run the N0 contract checks
         shell: bash
         run: |
