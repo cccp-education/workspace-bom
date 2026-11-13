@@ -767,3 +767,9 @@ US-1 (ci/README + CiPortabilityAudit R3/R4/R5 + 9 tests), US-3a (ci/run.sh), US-
 
 `CiPortabilityJobsAudit` (R3/R4/R5 uniquement sur les jobs `ci/run.sh`, jobs hôte ignorés, nouveau `MissingRuntime`) + `CiPortabilityMain` (rapport 28 unités : 20 portable, magic-stick exception, 7 bloquées privé/office) + `verifyCiPortabilityReport` + 7 tests. Exit 0, aucune violation publique. Rapport `.agents/sessions/356-gbl-013-us9-portability-gate.adoc`.
 
+
+== Session 357 — EAGER : publication JitPack canal unique — 2026-11-14
+
+Alignement EAGER : JitPack canal unique ; Maven Central/Sonatype et
+Gradle Plugin Portal **retirés**. Aucun code, aucun test, aucune
+publication. Rapport `.agents/sessions/357-eager-publication-jitpack-only.adoc`.

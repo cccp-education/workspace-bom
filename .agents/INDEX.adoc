@@ -449,3 +449,9 @@ Publication JitPack de workspace-bom, workspace-catalog et des 9 contrats (0.0.1
 
 == Session 355 — GBL-013 (clôture) — 2026-11-14
 Contrat ci/, pilote N0 dans l'image, fix pins v ; run 43487685010.
+
+== Session 357 — EAGER : publication JitPack canal unique (2026-11-14)
+
+Alignement EAGER (AGENT/PROMPT_REPRISE) : JitPack canal unique ;
+Central/Portal retirés. Zéro code. Rapport
+`.agents/sessions/357-eager-publication-jitpack-only.adoc`.
