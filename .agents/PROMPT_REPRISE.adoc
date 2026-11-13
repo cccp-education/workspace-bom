@@ -7,3 +7,8 @@ de session.
 mis à jour à chaque clôture).
 *Cadrages* : `.agents/CADRAGE_EPIC_XB_FP.adoc` (EPIC transverse XB-FP),
 `BACKLOG.adoc` (EPIC `MEM-LINT-GATE`).
+
+== GBL-013 (clôture) — 2026-11-14
+Portabilité CI livrée : image \`cccp-ci-base\`, \`ci/run.sh\`, adapter fin.
+Rapport \`.agents/sessions/355-gbl-013-ci-portability.adoc\`. Reste : US-5→US-9 (cadrage racine
+\`.agents/CADRAGE_EPIC_GBL_013_PORTABILITE_CI.adoc\`).

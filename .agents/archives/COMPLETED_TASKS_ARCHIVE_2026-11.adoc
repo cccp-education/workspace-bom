@@ -311,3 +311,5 @@
 * F1 soldée : `codex` 11, `academy` 10, `conventions` 3, `plantuml` 2 — 0 warning
   `build.gradle.kts`, 4 CI vertes.
 * Reste : `buildDir` (US-5/6), `kotlinOptions` (US-8 conditionnel), gate (US-7).
+
+* GBL-013 — portabilité CI (session close) : voir `.agents/sessions/` (rapport dédié).

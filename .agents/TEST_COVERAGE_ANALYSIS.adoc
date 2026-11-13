@@ -446,3 +446,9 @@ publication Maven Central TODO session 017.
   (S-339, S-341). Le nouveau test vérifie un invariant hors-ligne (présence +
   semver) ; la protection cross-borough reste `verifyCrossBoroughPins`.
 * Preuve = CI du push (`agent-contracts check` : `test` + 3 suites Cucumber).
+
+== GBL-013 (S-355) — delta tests
+
+* `contracts.ci.CiPortabilityAuditTest` — 9 tests (R3 logique hors ci/, R4 image non épinglée, R5 setup toolchain, cas nominal migré).
+* `contracts.catalog.CrossBoroughPinsTest` — 8 tests (préfixe v/V, égalité, réellement plus récent, SNAPSHOT fail-closed, parsing scopé, fixture faux positif vs vraie violation).
+* `N0ContractsGateTest` réécrit sur le contrat `ci/run.sh` (3 tests).

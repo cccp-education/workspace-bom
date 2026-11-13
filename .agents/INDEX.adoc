@@ -445,3 +445,6 @@ _Note_ : Cet index est maintenu automatiquement par l'agent en fin de session.
 == Session 348 — JitPack mirror (CNV-16)
 
 Publication JitPack de workspace-bom, workspace-catalog et des 9 contrats (0.0.128). JitPack : 0.0.128 — 11 artefacts HTTP 200.
+
+== Session 355 — GBL-013 (clôture) — 2026-11-14
+Contrat ci/, pilote N0 dans l'image, fix pins v ; run 43487685010.

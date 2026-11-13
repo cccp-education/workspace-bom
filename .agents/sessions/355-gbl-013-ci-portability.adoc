@@ -1,0 +1,36 @@
+= Session 355 — GBL-013 : contrat CI, pilote N0 et fix des pins `v`
+:date: 2026-11-14
+:borough: MEMPHIS (workspace-bom)
+
+== Livré
+
+* **GBL-013 US-1** — `ci/README.adoc` (contrat `ci/run.sh <job>`),
+  `CiPortabilityAudit` (R3 logique hors `ci/`, R4 image non épinglée, R5 setup
+  toolchain redondant), `CiPortabilityAuditTest` (9 tests) ; `CiShellAudit.isGate`
+  exposé.
+* **US-3a** — `ci/run.sh` (`fast`/`test`/`publish` ; job inconnu = exit 2) ;
+  `fast` VERT.
+* **US-3b** — job `n0-contracts` exécuté dans
+  `cccpeducation/cccp-ci-base@sha256:4722c1bc…` via `ci/run.sh test`. Run
+  `43487685010` VERT (job N0 + run global).
+* **MEM-CI-CONSISTENCY** — `CrossBoroughPins` (normalise `v`/`V`, motif
+  `workspace-*` avec `v?`), `CrossBoroughPinsMain`, tâche on-demand
+  `verifyCrossBoroughPinsReport` (pattern S-341). `N0ContractsGateTest` réécrit
+  sur le contrat `ci/`.
+
+== Preuves
+
+* `compileTestKotlin` VERT ; `verifyCrossBoroughPinsReport` : 51 catalogues /
+  133 build scripts, **0 violation** (catalogue 0.0.136).
+* Run `43487685010` VERT ; style ktlint corrigé (`fd7cf96`).
+
+== Constats
+
+* Un garde qui encode l'ancien adapter (`N0ContractsGateTest`) échoue au refactor :
+  il doit valider le **contrat**, pas l'implémentation d'hier.
+* Le cache GHA de l'image est écrit une fois (`scope=cccp-ci-base`) et relu par
+  les push.
+
+== Suivant
+
+US-5 (vague 2), US-6 (office), US-7 (privé), US-9 (gate finale).
