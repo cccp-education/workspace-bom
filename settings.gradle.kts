@@ -43,3 +43,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "workspace-bom"
+
+dependencyResolutionManagement.repositories.maven("https://jitpack.io")

@@ -44,3 +44,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "codebase-contracts"
+
+dependencyResolutionManagement.repositories.maven("https://jitpack.io")

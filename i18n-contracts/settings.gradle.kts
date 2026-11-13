@@ -44,3 +44,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "i18n-contracts"
+
+dependencyResolutionManagement.repositories.maven("https://jitpack.io")

@@ -44,3 +44,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "catalog-contracts"
+
+dependencyResolutionManagement.repositories.maven("https://jitpack.io")

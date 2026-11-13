@@ -44,3 +44,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "pipeline-contracts"
+
+dependencyResolutionManagement.repositories.maven("https://jitpack.io")

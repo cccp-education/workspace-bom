@@ -44,3 +44,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "llm-pool-contracts"
+
+dependencyResolutionManagement.repositories.maven("https://jitpack.io")

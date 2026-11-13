@@ -34,20 +34,22 @@ class WorkspaceCatalogStructureTest {
 
     @Test
     fun `all education cccp plugins have resolvable coordinates in catalog`() {
+        // CNV-17 — JitPack est le canal unique : les coordonnées du catalogue
+        // sont `com.github.cccp-education[.<repo>]:<artifact>`.
         val plugins =
             mapOf(
-                "bakery-plugin" to "education.cccp:bakery-plugin",
-                "capsule-plugin" to "education.cccp:capsule-plugin",
-                "codex-plugin" to "education.cccp:codex-plugin",
-                "planner-plugin" to "education.cccp:planner-plugin",
-                "slider-plugin" to "education.cccp:slider-plugin",
-                "plantuml-plugin" to "education.cccp:plantuml-plugin",
-                "readme-plugin" to "education.cccp:readme-plugin",
-                "hyperframes-plugin" to "education.cccp:hyperframes-plugin",
-                "youtube-auth-plugin" to "education.cccp:youtube-auth-plugin",
-                "graphify-plugin" to "education.cccp:graphify-plugin",
-                "codebase-plugin" to "education.cccp:codebase-plugin",
-                "conventions-plugin" to "education.cccp.build:conventions-plugin",
+                "bakery-plugin" to "com.github.cccp-education.bakery-gradle:bakery-plugin",
+                "capsule-plugin" to "com.github.cccp-education.capsule-gradle:capsule-plugin",
+                "codex-plugin" to "com.github.cccp-education.codex-gradle:codex-plugin",
+                "planner-plugin" to "com.github.cccp-education.planner-gradle:planner-plugin",
+                "slider-plugin" to "com.github.cccp-education.slider-gradle:slider-plugin",
+                "plantuml-plugin" to "com.github.cccp-education.plantuml-gradle:plantuml-plugin",
+                "readme-plugin" to "com.github.cccp-education.readme-gradle:readme-plugin",
+                "hyperframes-plugin" to "com.github.cccp-education.hyperframes-gradle:hyperframes-plugin",
+                "youtube-auth-plugin" to "com.github.cccp-education.video-kernel-gradle:youtube-auth-plugin",
+                "graphify-plugin" to "com.github.cccp-education.graphify-gradle:graphify-plugin",
+                "codebase-plugin" to "com.github.cccp-education.codebase-gradle:codebase-plugin",
+                "conventions-plugin" to "com.github.cccp-education.conventions-gradle:conventions-plugin",
             )
         plugins.forEach { (versionKey, coordinates) ->
             val declared = parseLibraries().any { it.contains(coordinates) }
@@ -58,21 +60,19 @@ class WorkspaceCatalogStructureTest {
     }
 
     @Test
-    fun `ghost entries are not in catalog (D8 - only resolvable from Central)`() {
+    fun `ghost entries are not in catalog (single JitPack channel)`() {
         val libraries = parseLibraries().joinToString("\n")
-        // capsule-plugin was published to Central in BKY-LANG-22-10 (S-225), so it
-        // is no longer a ghost entry — it is now legitimately in the catalog.
         assertTrue(
-            libraries.contains("education.cccp:capsule-plugin"),
-            "capsule-plugin publié Central (S-225) — doit être résolvable via le catalogue",
+            libraries.contains("com.github.cccp-education.capsule-gradle:capsule-plugin"),
+            "capsule-plugin doit être résolvable via le canal JitPack",
         )
         assertTrue(
             !libraries.contains("jhipster"),
-            "jhipster jamais publié Central — entrée fantôme interdite (D8)",
+            "jhipster jamais publié — entrée fantôme interdite",
         )
         assertTrue(
             !libraries.contains("training-plugin"),
-            "training-plugin jamais publié Central — entrée fantôme interdite (D8)",
+            "training-plugin jamais publié — entrée fantôme interdite",
         )
     }
 

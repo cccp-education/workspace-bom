@@ -44,3 +44,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "ocr-contracts"
+
+dependencyResolutionManagement.repositories.maven("https://jitpack.io")

@@ -44,3 +44,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "opencode-session-contracts"
+
+dependencyResolutionManagement.repositories.maven("https://jitpack.io")

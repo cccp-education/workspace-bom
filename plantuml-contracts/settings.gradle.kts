@@ -44,3 +44,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "plantuml-contracts"
+
+dependencyResolutionManagement.repositories.maven("https://jitpack.io")

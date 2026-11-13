@@ -32,9 +32,9 @@ class PlatformCatalogAlignmentTest {
     @Test
     fun `toml version workspace-bom matches platform version`() {
         assertEquals(
-            "0.0.133",
+            "0.0.136",
             tomlVersions["workspace-bom"],
-            "workspace-bom dans le toml (tri-split C2 supprimé ; JitPack S-059)",
+            "workspace-bom = version du tag JitPack (CNV-17)",
         )
         assertTrue(
             platformScript.contains("version = libs.versions.workspace.bom.get()"),
@@ -57,20 +57,30 @@ class PlatformCatalogAlignmentTest {
 
     @Test
     fun `toml agent contracts versions aligned with published artifacts`() {
-        assertEquals("0.0.4", tomlVersions["agent-contracts"], "agent-contracts (XF-FP2-6, Central S-331)")
-        assertEquals("0.0.2", tomlVersions["codebase-contracts"], "codebase-contracts")
-        assertEquals("0.0.5", tomlVersions["i18n-contracts"], "i18n-contracts")
-        assertEquals("0.0.2", tomlVersions["llm-pool-contracts"], "llm-pool-contracts")
-        assertEquals("0.0.1", tomlVersions["vibecoding-contracts"], "vibecoding-contracts (N0 publié 0.0.1)")
-        assertEquals("0.0.2", tomlVersions["opencode-session-contracts"], "opencode-session-contracts")
-        assertEquals("0.0.2", tomlVersions["pipeline-contracts"], "pipeline-contracts")
-        assertEquals("0.0.1", tomlVersions["runtime-contracts"], "runtime-contracts")
-        assertEquals("0.0.1", tomlVersions["ocr-contracts"], "ocr-contracts")
-        assertEquals("0.0.1", tomlVersions["plantuml-contracts"], "plantuml-contracts (PLT-DIAGRAM-OWNERSHIP US-1, 10e contrat N0)")
+        // CNV-17 (D5) — JitPack relabelle tous les modules à la version du tag :
+        // les versions par contrat sont abolies, tous les contrats portent la
+        // version du tag `workspace-bom`.
+        listOf(
+            "agent-contracts",
+            "codebase-contracts",
+            "i18n-contracts",
+            "llm-pool-contracts",
+            "opencode-session-contracts",
+            "pipeline-contracts",
+            "runtime-contracts",
+            "ocr-contracts",
+            "plantuml-contracts",
+        ).forEach { key ->
+            assertEquals(
+                "0.0.136",
+                tomlVersions[key],
+                "$key doit porter la version du tag workspace-bom (CNV-17 D5)",
+            )
+        }
         assertEquals(
-            "0.0.16",
+            "0.0.17",
             tomlVersions["conventions-plugin"],
-            "conventions-plugin 0.0.16 (déployé JitPack, CNV-16 ; plus sur Central jusqu'au 2026-12-01)",
+            "conventions-plugin 0.0.17 (JitPack, CNV-17)",
         )
     }
 
