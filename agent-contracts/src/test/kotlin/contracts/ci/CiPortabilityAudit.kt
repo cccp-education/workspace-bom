@@ -32,6 +32,13 @@ sealed interface PortabilityFinding {
         override val line: Int,
         override val evidence: String,
     ) : PortabilityFinding
+
+    /** R4bis — a `ci/run.sh` job does not declare a runtime container. */
+    data class MissingRuntime(
+        override val source: String,
+        override val line: Int,
+        override val evidence: String,
+    ) : PortabilityFinding
 }
 
 /**

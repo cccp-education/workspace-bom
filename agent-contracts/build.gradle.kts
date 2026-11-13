@@ -144,6 +144,19 @@ val verifyCrossBoroughPinsReport =
         outputs.upToDateWhen { false }
     }
 
+// ── GBL-013 US-9 — final CI portability gate, on-demand (pattern S-341) ──────
+// Job-scoped: host shards/e2e/coverage keep their setup and are never flagged.
+// `-PciRoot=<abs>` (default `../..` = workspace root).
+val verifyCiPortabilityReport =
+    tasks.register<JavaExec>("verifyCiPortabilityReport") {
+        description = "Audits the CI portability of every workspace unit (GBL-013 US-9)"
+        group = "verification"
+        classpath = sourceSets.test.get().runtimeClasspath
+        mainClass.set("contracts.ci.CiPortabilityMain")
+        args(project.findProperty("ciRoot")?.toString() ?: "../..")
+        outputs.upToDateWhen { false }
+    }
+
 tasks.named("check") {
     dependsOn(cucumberTest, versionCatalogCucumberTest, ciShellGatesCucumberTest)
 }

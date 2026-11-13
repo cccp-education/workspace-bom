@@ -75,6 +75,26 @@ set -euo pipefail
 | P4 | No secret in the image or the scripts, no `\|\| true`, no Python.
 |===
 
+== 5bis. Workspace gate — job-scoped (GBL-013 US-9)
+
+`CiPortabilityAudit` is textual; `CiPortabilityJobsAudit` splits the `jobs:` section
+and applies R3/R4/R5 **only to the jobs that delegate to `ci/run.sh`**. A job
+without `ci/run.sh` is a host job (shards, e2e, coverage, `unit-ollama`) and is
+deliberately ignored, so `actions/setup-java` there is not a finding.
+
+The final report is on-demand (it reads sibling repositories):
+
+[source,shell]
+----
+./gradlew -p agent-contracts verifyCiPortabilityReport -PciRoot=/abs/path/to/workspace
+----
+
+Public units must be **portable** or declared as an exception (`magic-stick`,
+specialised ISO image). Private units and the `office` hub are reported as
+**blocked** (private runtime image, missing Docker Hub secrets) and never make
+the public gate red. Exit code `1` on a public violation or an undeclared
+non-migrated public unit.
+
 == 6. Runtime image
 
 [cols="1,3", options="header"]
