@@ -452,3 +452,13 @@ publication Maven Central TODO session 017.
 * `contracts.ci.CiPortabilityAuditTest` — 9 tests (R3 logique hors ci/, R4 image non épinglée, R5 setup toolchain, cas nominal migré).
 * `contracts.catalog.CrossBoroughPinsTest` — 8 tests (préfixe v/V, égalité, réellement plus récent, SNAPSHOT fail-closed, parsing scopé, fixture faux positif vs vraie violation).
 * `N0ContractsGateTest` réécrit sur le contrat `ci/run.sh` (3 tests).
+
+== GBL-013 US-9 (S-356) — delta tests
+
+* `contracts.ci.CiPortabilityJobsAuditTest` — **7 tests** : job portable, job hôte
+  ignoré (setup-java toléré), `MissingRuntime`, image non épinglée, setup
+  redondant dans un job contrat, logique hors `ci/` dans un job contrat,
+  coexistence hôte/contrat.
+* `CiPortabilityJobsAudit` + `CiPortabilityMain` (source set `test`, zéro
+  publication). Total agent-contracts : 7 tests ajoutés.
+
