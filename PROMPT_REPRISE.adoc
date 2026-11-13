@@ -35,30 +35,18 @@ délégués `by tasks.registering` supprimés, 0 warning `build.gradle.kts` en C
   préfixe `v`/`V` normalisé et `workspace-catalog:v…` reconnu. Tests
   `contracts.catalog.CrossBoroughPinsTest`.
 
-=== Mission Session 349 — bloquée jusqu'au 2026-12-01
+_Note : la publication Central (bloquée par le quota jusqu'au 2026-12-01) est
+remplacée par JitPack comme canal unique (CNV-17, S-045) ; le drapeau
+`CCCP_PUBLISH_TARGET=central|portal` reste le rollback._
 
-. **Aucune publication Central possible avant le 2026-12-01** (quota Sonatype
-   de l'org `cccp.education`, grace ended 2026-11-05). Ne pas re-tenter : le
-   refus est déterministe.
-. **Dès le 2026-12-01** : rejouer le DAG de release préparé —
-   `workspace-bom = 0.0.129`, `plantuml-plugin = 0.0.17`, garde
-   `PlatformCatalogAlignmentTest` `0.0.129`, CI verte, puis
-   `publishAggregationToCentralPortal --no-daemon` (repo1 200 ×2).
-. Ensuite plantuml S-251 : re-pin catalogue/BOM `0.0.129`, toml
-   `plantuml = 0.0.17`, publication (Central et/ou Portal selon décision
-   pilote post-2026-12-01).
-. **Aucun EPIC ouvert côté MEMPHIS.** Veille : `ciShellGatesReport`, detekt
-   JVM 25, CI privées.
+== État du code (JitPack, CNV-17)
 
-_Documents maîtres_ : `.agents/sessions/347-release-0.0.129-blocked-sonatype-quota.adoc` ;
-`BACKLOG.adoc` ; `.agents/INDEX.adoc`.
-
-== État du code
-
-- Central : `agent-contracts **0.0.4**`, `document-plugin **0.0.30**`,
-  `plantuml-plugin 0.0.16`, `bakery-plugin **0.0.33**`, BOM/catalog **0.0.128**.
-- **Draft `0.0.129`** (catalog `bakery-plugin **0.0.38**`), non publié (quota,
-  reset 2026-12-01). JitPack sert `bakery 0.0.38`.
+- N0 `workspace-bom **0.0.136**` : BOM + catalogue + 10 contrats (11 modules
+  HTTP 200) ; versions contrat unifiées à la version du tag.
+- N1 `codebase-plugin 0.0.18`, `video-kernel 0.9.1` ; N2 `bakery 0.0.38`,
+  `capsule 0.0.21`, `document 0.0.30`, `conventions-plugin 0.0.17`.
+- Central/Portal désactivés pour les publics (rollback `CCCP_PUBLISH_TARGET`).
+- CI workspace-bom : 21 jobs, `runAllTests` verte (N0 11 builds + cross-borough).
 - **Audit CI du workspace : 0 finding / 68 fichiers** (`ciShellGatesReport -PciRoot=<workspace>`) ;
   exemption explicite `# ci-shell:allow-swallow` (échec toléré **par item**).
 - **Gates verts** : N0 (`set -eo pipefail` + `N0ContractsGateTest`, 10 builds) ;
