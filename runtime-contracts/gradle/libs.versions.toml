@@ -3,8 +3,8 @@ kotlin = "2.4.10"
 junit-platform = "1.14.3"
 assertj = "3.25.3"
 cucumber = "7.34.3"
-opencode-session-contracts = "0.0.135"
-i18n-contracts = "0.0.135"
+opencode-session-contracts = "0.0.136"
+i18n-contracts = "0.0.136"
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
@@ -18,8 +18,8 @@ cucumber-java = { module = "io.cucumber:cucumber-java", version.ref = "cucumber"
 cucumber-junit-platform-engine = { module = "io.cucumber:cucumber-junit-platform-engine", version.ref = "cucumber" }
 cucumber-picocontainer = { module = "io.cucumber:cucumber-picocontainer", version.ref = "cucumber" }
 assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
-opencode-session-contracts = { module = "com.github.cccp-education.workspace-bom:opencode-session-contracts", version.ref = "opencode-session-contracts" }
-i18n-contracts = { module = "com.github.cccp-education.workspace-bom:i18n-contracts", version.ref = "i18n-contracts" }
+opencode-session-contracts = { module = "education.cccp:opencode-session-contracts", version.ref = "opencode-session-contracts" }
+i18n-contracts = { module = "education.cccp:i18n-contracts", version.ref = "i18n-contracts" }
 
 [bundles]
 cucumber = [

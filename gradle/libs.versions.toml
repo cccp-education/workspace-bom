@@ -1,6 +1,6 @@
 [versions]
 # ── Workspace BOM shared versions ─────────────────────────────────────────────
-workspace-bom = "0.0.135"
+workspace-bom = "0.0.136"
 
 # ── Kotlin ────────────────────────────────────────────────────────────────────
 kotlin = "2.4.10"
@@ -75,16 +75,16 @@ asciidoctorj-diagram = "3.2.1"
 asciidoctorj-diagram-plantuml = "1.2026.2"
 
 # ── Agent Contracts ───────────────────────────────────────────────────────────
-agent-contracts = "0.0.135"
-codebase-contracts = "0.0.135"
-llm-pool-contracts = "0.0.135"
-opencode-session-contracts = "0.0.135"
-i18n-contracts = "0.0.135"
-pipeline-contracts = "0.0.135"
-runtime-contracts = "0.0.135"
-ocr-contracts = "0.0.135"
-plantuml-contracts = "0.0.135"
-catalog-contracts = "0.0.135"
+agent-contracts = "0.0.136"
+codebase-contracts = "0.0.136"
+llm-pool-contracts = "0.0.136"
+opencode-session-contracts = "0.0.136"
+i18n-contracts = "0.0.136"
+pipeline-contracts = "0.0.136"
+runtime-contracts = "0.0.136"
+ocr-contracts = "0.0.136"
+plantuml-contracts = "0.0.136"
+catalog-contracts = "0.0.136"
 document-plugin = "0.0.30"
 
 # ── Docker / Infrastructure ───────────────────────────────────────────────────
