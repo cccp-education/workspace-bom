@@ -471,6 +471,8 @@ jobs:
     name: "N0 · contracts (11 builds, 5 concurrent)"
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    container:
+      image: cccpeducation/cccp-ci-base@sha256:4722c1bcc71c0343c05257842b774715fc2574ff79182599a29fe8c1361cbeb3
     steps:
       - name: Checkout workspace-bom
         uses: actions/checkout@v4
@@ -478,53 +480,13 @@ jobs:
       - name: Restore the repository-wide common cache
         uses: ./.github/actions/setup-common-cache
 
-      - name: Set up JDK 25
-        uses: actions/setup-java@v4
-        with:
-          java-version: '25'
-          distribution: 'temurin'
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          cache-disabled: true
-
-      - name: Publish the runtime-contracts siblings locally
-        shell: bash
-        run: |
-          set -euo pipefail
-          # CNV-17 — runtime-contracts depends on two sibling contracts at the
-          # workspace-bom tag version. The parallel `check` batch would race
-          # (the siblings are not in ~/.m2 yet), so publish them locally first.
-          VERSION=$(sed -n 's/^workspace-bom = "\([^"]*\)"/\1/p' gradle/libs.versions.toml | head -1)
-          for m in i18n-contracts opencode-session-contracts; do
-            ( cd "$m" && ./gradlew publishToMavenLocal --no-daemon --console=plain -Pversion="$VERSION" )
-          done
-
+      # GBL-013 US-3b — the adapter carries no logic: the runtime image provides
+      # JDK 25 (no setup-java), and the whole N0 sequence (publish the runtime
+      # siblings, then check the 10 contracts with an isolated daemon registry)
+      # is the `test` job of `ci/run.sh`.
       - name: Run the N0 contract checks
         shell: bash
-        run: |
-          set -euo pipefail
-          printf '%s\n' \
-            agent-contracts codebase-contracts i18n-contracts llm-pool-contracts \
-            ocr-contracts opencode-session-contracts pipeline-contracts \
-            plantuml-contracts runtime-contracts catalog-contracts \
-          | xargs -I{} -P 5 bash -c '
-              # P0 (S-335): WITHOUT errexit the trailing `echo` makes this shell
-              # exit 0 even when `./gradlew check` fails, so xargs sees success
-              # and the N0 gate is a FALSE GREEN. Guarded by
-              # contracts.catalog.N0ContractsGateTest.
-              set -eo pipefail
-              echo "::group::{} check"
-              # 5 concurrent builds share one GRADLE_USER_HOME: the daemon
-              # registry file lock races ("Timeout waiting to connect to the
-              # Gradle daemon" / "Cannot start managing file contention")
-              # even with --no-daemon. Isolate the registry per build while
-              # keeping the shared dependency caches.
-              ( cd "{}" && ./gradlew check --no-daemon --console=plain \
-                  -Dorg.gradle.daemon.registry.base="$RUNNER_TEMP/daemon-registry-{}" )
-              echo "::endgroup::"
-            '
+        run: ci/run.sh test
 
       - name: Save the repository-wide common cache
         if: always()
