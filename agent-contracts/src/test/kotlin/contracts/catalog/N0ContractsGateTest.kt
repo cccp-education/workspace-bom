@@ -6,24 +6,25 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 /**
- * MEM-CI-GATE (P0, S-335) — the N0 contract gate must be able to **fail**.
+ * MEM-CI-GATE (P0, S-335) / GBL-013 US-3b — the N0 contract gate must be able to fail.
  *
- * The `n0-contracts` job runs the 9 contracts through `xargs … bash -c '<script>'`.
- * The script used to end with `echo "::endgroup::"`, so its exit status was always
- * `0` even when `./gradlew check` failed: `xargs` (and therefore the step, and the
- * job) reported **success** while `agent-contracts:test` was red — a false green
- * that hid a broken catalog guard for two sessions.
+ * The `n0-contracts` job delegates to `ci/run.sh test`: the adapter carries no
+ * logic. The parallel contract builds live in `check_n0_contracts`; each
+ * invocation must run with `errexit`, otherwise a trailing command makes the
+ * exit status `0` even when `./gradlew check` fails, and `xargs` reports success
+ * while `agent-contracts:test` is red — the S-335 false green.
  *
- * The guard is purely textual (the workflow is the contract): it asserts every
- * parallel invocation runs with `errexit`, and that the job never swallows a
- * failure with `|| true`.
+ * Purely textual (the workflow and the script are the contract).
  */
 class N0ContractsGateTest {
-    private val workflow: File =
+    private val repoRoot: File =
         sequenceOf(File(".."), File("."))
-            .map { it.resolve(".github/workflows/test.yml") }
-            .firstOrNull { it.exists() }
-            ?: error(".github/workflows/test.yml introuvable depuis ${File(".").absolutePath}")
+            .map { it.absoluteFile.normalize() }
+            .firstOrNull { it.resolve("ci/run.sh").exists() }
+            ?: error("ci/run.sh introuvable depuis ${File(".").absolutePath}")
+
+    private val workflow: File = repoRoot.resolve(".github/workflows/test.yml")
+    private val contract: File = repoRoot.resolve("ci/run.sh")
 
     private fun n0Job(): String {
         val lines = workflow.readText().lines()
@@ -36,22 +37,36 @@ class N0ContractsGateTest {
         return lines.subList(start, end).joinToString("\n")
     }
 
-    private fun parallelScript(): String =
-        Regex("""bash -c '([\s\S]*?)'""")
-            .find(n0Job())
-            ?.groupValues
-            ?.get(1)
-            ?: error("script `bash -c '…'` introuvable dans le job n0-contracts")
+    private fun parallelBlock(): String {
+        val script = contract.readText()
+        val start = script.indexOf("check_n0_contracts()")
+        check(start >= 0) { "fonction `check_n0_contracts` introuvable dans ${contract.path}" }
+        val end = script.indexOf("\n}", start).let { if (it < 0) script.length else it }
+        return script.substring(start, end)
+    }
+
+    @Test
+    fun `the adapter delegates the N0 gate to the ci contract`() {
+        val job = n0Job()
+
+        assertTrue(job.contains("ci/run.sh test"), "le job N0 doit déléguer à `ci/run.sh test`")
+        assertFalse(
+            job.contains("bash -c"),
+            "le job N0 ne doit plus porter le script parallèle inline (contrat `ci/`)",
+        )
+    }
 
     @Test
     fun `every parallel contract build runs with errexit`() {
-        val script = parallelScript()
+        val block = parallelBlock()
 
-        assertTrue(script.contains("./gradlew check"), "le gate doit lancer `./gradlew check`")
+        assertTrue(block.contains("xargs"), "les contrats N0 doivent rester exécutés en parallèle")
+        assertTrue(block.contains("./gradlew check"), "le gate doit lancer `./gradlew check`")
         assertTrue(
-            Regex("""(^|\n)\s*set\s+-[a-z]*e""").containsMatchIn(script),
-            "le sous-shell parallèle doit activer errexit (`set -e`), sinon le `echo \"::endgroup::\"` " +
-                "final rend le code de sortie nul et MASQUE un `./gradlew check` en échec (P0 S-335). Script:\n$script",
+            Regex("""(^|\n)\s*set\s+-[a-z]*e""").containsMatchIn(block),
+            "le sous-shell parallèle doit activer errexit (`set -e`), sinon la commande finale " +
+                "rend le code de sortie nul et MASQUE un `./gradlew check` en échec (P0 S-335). " +
+                "Bloc:\n$block",
         )
     }
 
@@ -60,6 +75,10 @@ class N0ContractsGateTest {
         assertFalse(
             n0Job().contains("|| true"),
             "le gate N0 ne doit jamais neutraliser un échec (`|| true`)",
+        )
+        assertFalse(
+            parallelBlock().contains("|| true"),
+            "le bloc parallèle ne doit jamais neutraliser un échec (`|| true`)",
         )
     }
 }
