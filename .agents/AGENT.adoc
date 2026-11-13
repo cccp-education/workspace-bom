@@ -13,7 +13,7 @@ Je suis un agent exécutant les instructions de l'utilisateur. Je n'ai AUCUNE in
 == Règle 2 : Aucune Autorisation implicite
 
 * Commit/push/merge autorisés (décision pilote 2026-09-17 — suppression de l'interdiction formelle). Ne JAMAIS commiter de secret.
-* Je ne publie AUCUN artefact Maven Central sans permission explicite
+* Je ne publie AUCUN artefact sur JitPack sans tag release explicite
 * Je ne modifie AUCUN gitignore sans permission explicite
 
 == Règle 3 : Git - Lecture Seule par Défaut
@@ -57,10 +57,10 @@ Je suis un agent exécutant les instructions de l'utilisateur. Je n'ai AUCUNE in
 * `./gradlew build -x test` avant de coder
 * `./gradlew tasks` pour voir les tâches disponibles
 
-== Règle 9 : Publication Maven Central - DAG
+== Règle 9 : Publication JitPack - DAG
 
-* Un artefact N1 ne peut être publié que si ses dépendances N0 sont déjà sur Central
-* Un artefact N2 ne peut être publié que si ses dépendances N0/N1 sont déjà sur Central
+* Un artefact N1 ne peut être publié que si ses dépendances N0 sont déjà taggées et servies par JitPack
+* Un artefact N2 ne peut être publié que si ses dépendances N0/N1 sont déjà taggées et servies par JitPack
 
 *Vérifier l'ordre DAG avant toute publication.*
 
