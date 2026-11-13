@@ -731,3 +731,19 @@ verte) ; le premier `v0.0.132` avait une CI rouge sur ces gardes (TOML identique
 tag neuf, aucun tag déplacé). Limite documentée : le BOM JitPack n'est pas
 importable comme `platform(...)` (POM réécrit en `<dependencies>`, pas de
 `.module`). Rapport `.agents/sessions/351-catalog-0.0.133-jitpack-versions.adoc`.
+
+== Session 352 — EPIC `MEM-WARN-ZERO` ouvert (cadrage) — 2026-11-13
+
+Chasse aux warnings de **dépréciation des build scripts** (Gradle 9.6 → 10),
+distincts de `MEM-WARN-FREE` (compilation Kotlin). Mesure : F1 `registering` 26,
+F2 `buildDir` 28, F3 `kotlinOptions` 3 (privé), F4 `resolvedConfiguration` 2.
+10 US, politique zéro `@Suppress`, gate statique. Rapport
+`.agents/sessions/352-epic-mem-warn-zero-cadrage.adoc`.
+
+== Session 353 — `MEM-WARN-ZERO` F1 soldée (US-1→US-4, cross-borough) — 2026-11-13
+
+26 délégués `by tasks.registering` supprimés : `codex` 11 (S-237, CI
+`43356231857` avec 0 warning `build.gradle.kts`), `academy` 10 (S-029, CI
+`43357288198`), `conventions` 3 (S-044, CI `43357877552`), `plantuml` 2 (S-252,
+CI `43357880558`). Iso-comportement. Reste F2 `buildDir`, F3, gate US-7. Rapport
+`.agents/sessions/353-mem-warn-zero-f1-sold.adoc`.

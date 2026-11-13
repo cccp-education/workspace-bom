@@ -304,3 +304,10 @@
   Central bloqué 2026-12-01) ; `PlatformCatalogAlignmentTest` alignée.
 * JitPack `bakery 0.0.36/0.0.37/0.0.38` ; `runner-gradle` résout 0.0.38.
 * Rapport `.agents/sessions/349-bakery-0.0.38-catalog-jitpack.adoc`.
+
+== S-352/353 — EPIC `MEM-WARN-ZERO` ouvert + F1 soldée ✅
+
+* EPIC transverse (build-script deprecations) cadrée : F1 26, F2 28, F3 3, F4 2.
+* F1 soldée : `codex` 11, `academy` 10, `conventions` 3, `plantuml` 2 — 0 warning
+  `build.gradle.kts`, 4 CI vertes.
+* Reste : `buildDir` (US-5/6), `kotlinOptions` (US-8 conditionnel), gate (US-7).
