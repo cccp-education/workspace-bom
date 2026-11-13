@@ -601,10 +601,10 @@ compilation soldés par `MEM-WARN-FREE`. Déclencheur : CI `codex-gradle` S-236
 | US | Dépôt / livrable | Mesure | Statut
 
 | US-0 | Cadrage + mesure + décisions | — | ✅ S-352
-| US-1 | `codex` — F1 `registering` → `register<Test>` (déclencheur) | 11 occurrences / 33 warnings CI | 🟡
-| US-2 | `academy` — F1 | 10 | 🟡
-| US-3 | `conventions` — F1 | 3 | 🟡
-| US-4 | `plantuml` — F1 | 2 | 🟡
+| US-1 | `codex` — F1 `registering` → `register<Test>` (déclencheur) | 11 occurrences / 33 warnings CI | ✅ S-237 · CI `43356231857` (0 warning `build.gradle.kts`)
+| US-2 | `academy` — F1 | 10 | ✅ S-029 · CI `43357288198`
+| US-3 | `conventions` — F1 | 3 | ✅ S-044 · CI `43357877552`
+| US-4 | `plantuml` — F1 | 2 | ✅ S-251 · CI `43357880558`
 | US-5 | F2 lot A `buildDir` → `layout.buildDirectory` : `workspace-bom` 7, `conventions` 3, `codebase` 2, `bakery` 2, `codex` 1 | 15 | 🟡
 | US-6 | F2 lot B : `slider` 4, `plantuml-api` 2, `jhipster` buildSrc 1 | 7 | 🟡
 | US-7 | Gate `verifyNoDeprecatedBuildScripts` (F1/F2) + fixtures + `check` | — | 🟡

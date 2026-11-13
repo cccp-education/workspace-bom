@@ -1,0 +1,51 @@
+= Session 353 — `MEM-WARN-ZERO` F1 soldée (US-1→US-4, cross-borough)
+:toc:
+
+:_date_: 2026-11-13
+:_borough_: MEMPHIS (workspace-bom) — EPIC transverse, exécution dans 4 boroughs
+:_session_precedente_: 352 (cadrage `MEM-WARN-ZERO`)
+:_statut_: ✅ F1 = 0 (`tasks.registering`), 4 CI vertes
+
+'''
+
+== Livré (4 dépôts, sessions locales)
+
+[cols="2,3,2,2", options="header"]
+|===
+| Dépôt | Changement | Session | CI
+
+| `codex-gradle`
+| 11 × `val x by tasks.registering(Test::class)` → `tasks.register<Test>("x") { }`
+| S-237
+| ✅ `43356231857` — **0** warning `build.gradle.kts` dans le log
+| `academy-gradle`
+| 10 × délégué → `val x = tasks.register<Test>("x") { }` (variables **référencées** par `tasks.check { dependsOn(...) }` : `TaskProvider` conservé)
+| S-029
+| ✅ `43357288198`
+| `conventions-gradle`
+| 3 × délégué → `val x = tasks.register("x") { }` (`resources.srcDir(provider)` inchangé)
+| S-044
+| ✅ `43357877552`
+| `plantuml-gradle`
+| 2 × délégué → `val x = tasks.register("x") { }` (`dependsOn(provider)` inchangé)
+| S-251
+| ✅ `43357880558`
+|===
+
+*Mesure* : `grep -c "by tasks.registering"` = **0** sur les 4 scripts ; le log CI
+de `codex` (déclencheur, 33 warnings avant) n'a plus **aucun** `is deprecated`
+sur `build.gradle.kts` (les 4 hits restants sont `setup-java` + `punycode`, hors
+périmètre). `ktlintFormat` n'a touché que `build.gradle.kts` là où il a servi
+(`git diff --stat` par dépôt).
+
+'''
+
+== Reste `MEM-WARN-ZERO`
+
+* **US-5** `buildDir` → `layout.buildDirectory` (lot A : `workspace-bom` 7,
+  `conventions` 3, `codebase` 2, `bakery` 2, `codex` 1).
+* **US-6** lot B : `slider` 4, `plantuml-api` 2, `jhipster` buildSrc 1.
+* **US-7** gate statique `verifyNoDeprecatedBuildScripts` (conventions, fixtures
+  négatives) — la seule façon de garantir « zéro nouvelle dépréciation » sans
+  parser les logs.
+* F3 `kotlinOptions` (privé `edster-app`, conditionnel), F4 audit.
