@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "education.cccp"
-version = bom.versions.workspace.bom.get()
+version = libs.versions.workspace.bom.get()
 
 javaPlatform {
     allowDependencies()
@@ -104,7 +104,7 @@ dependencies {
         api(bom.asciidoctorj)
         api(bom.asciidoctorj.diagram)
         api(bom.asciidoctorj.diagram.plantuml)
-        api(bom.asciidoctorj.epub3)
+        api(libs.asciidoctorj.epub3)
 
         // ── PDF/Extraction ──────────────────────────────────────────────────
         api(bom.pdfbox)
