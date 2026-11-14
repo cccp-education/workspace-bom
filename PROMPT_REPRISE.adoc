@@ -1,100 +1,48 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
-== Session 356 terminée — GBL-013 US-9 : gate finale de portabilité
+== Session 358 terminée — GBL-014-3a : catalogue Central projeté
 
-Gate **job-scoped** : `CiPortabilityJobsAudit` applique R3/R4/R5 uniquement aux
-jobs qui délèguent à `ci/run.sh` (les shards/e2e/coverage/`unit-ollama` restent
-hôte, leur `setup-java` n'est pas un finding) ; `MissingRuntime` pour un job
-`ci/run.sh` sans container. `CiPortabilityMain` + tâche on-demand
-`verifyCiPortabilityReport` : **28 unités — 20 portable, magic-stick exception,
-7 bloquées (6 privées + office)** ; exit 0, aucune violation publique. 7 tests,
-`ci/README.adoc` §5bis. Rapport `.agents/sessions/356-gbl-013-us9-portability-gate.adoc`.
+`gradle/central/libs.versions.toml` est **généré** depuis le catalogue JitPack
+(mêmes `[versions]`, mêmes alias, coordonnées `education.cccp.*` /
+`education.cccp.build.*` ; `v` retiré quand JitPack l'exige). Règle de projection
+dans `build.gradle.kts` : contrats, plugins, `video-kernel-gradle` →
+`video-kernel`, `api-key-pool-gradle` → `api-key-pool`.
 
-== Session 354 terminée — CNV-17 N0 JitPack
+* `generateCentralCatalogue` (groupe `catalogue`) matérialise le fichier.
+* `verifyCatalogueChannels` (groupe `verification`, **câblé à `check`**) :
+  drift source→projection, catalogue JitPack sans coordonnée Central, catalogue
+  Central sans coordonnée JitPack, `[versions]` identiques.
+* **CI `43651793466` VERTE** (commit `842b402`).
+* Aucun test modifié, aucun secret, aucune publication.
 
-Catalogue en coordonnées JitPack, versions contrats unifiées `0.0.136`,
-`vibecoding-contracts` retiré, `runtime-contracts` résolu, `jitpack.yml`
-`-Pversion="${VERSION#v}"`. Build JitPack `v0.0.136` = **11 modules HTTP 200** ;
-CI `runAllTests` verte `43472826589`. Rapport
-`.agents/sessions/354-cnv-17-jitpack-channel.adoc`.
+== Dette — GBL-014-3b (BOM Central)
 
-== Session en cours
-356 — dernière terminée : **356** (**GBL-013 US-9**) ; avant : **355**
-(GBL-013 US-1/US-3), **354** (CNV-17 N0), **353** (`MEM-WARN-ZERO` F1).
+Le BOM `java-platform` reste bâti sur le catalogue `libs` par défaut (JitPack).
+`create("libs") { from(...) }` dans `settings` **échoue** (`Multiple 'from'
+invocations`) car le catalogue est auto-chargé. Deux options :
 
-=== Reste GBL-013 (après US-9)
-* **US-6 workflows** : bloqué par le canal privé (`cheroliv/ccp-ci-base` privé,
-  secrets Docker Hub absents) — les actions sont déjà mutualisées (bakery
-  `0.0.39`).
-* **US-7 privé** : même blocage (poser `DOCKERHUB_*` ou rendre l'image publique).
-* **US-8** : caduque par défaut.
-* Déclaration finale de l'EPIC : possible quand les prérequis pilote ci-dessus
-  sont levés.
+1. renommer les fichiers (`gradle/jitpack/…` + `gradle/central/…`) et créer
+   `libs` explicitement — mais **15+ références** (tests `agent-contracts`,
+   `ci/run.sh`, docs, tests cross-borough) pointent `gradle/libs.versions.toml` ;
+2. un sous-build `central/` autonome (pattern `conventions-plugin`).
 
+`conventions-plugin` reste pinné `0.0.17` : `PlatformCatalogAlignmentTest`
+l'exige (le bump `0.0.18` + test = US-5, permission explicite requise par
+`.agents/AGENT.adoc`).
 
-=== Reste (inchangé)
-* **Central et Portal retirés** (CNV-17) : JitPack (tags `vX.Y.Z`) est le canal
-  unique et porte toutes les releases.
-* ✅ Angle mort soldé S-226 : la garde est devenue
-  `verifyCrossBoroughPinsReport` (`agent-contracts`, on-demand, pattern S-341) ;
-  préfixe `v`/`V` normalisé et `workspace-catalog:v…` reconnu. Tests
-  `contracts.catalog.CrossBoroughPinsTest`.
+== Prochaine session 359
 
-_Note : la publication Central (bloquée par le quota jusqu'au 2026-12-01) est
-remplacée par JitPack comme canal unique (CNV-17, S-045) ; le drapeau
-`CCCP_PUBLISH_TARGET=central|portal` reste le rollback._
+1. **GBL-014-3b** — BOM Central : trancher l'option (sous-build `central/` ou
+   migration des 15+ références), projeter les **contraintes** du BOM (pas
+   seulement le catalogue), preuve POM Central (`education.cccp`) + garde.
+2. **GBL-014-5** — `ci/run.sh` passe `-Pchannel`, shims `0.0.18`, alignement
+   des 20 consommateurs.
+3. **US-7** — publication Central après le reset **2026-12-01** (DAG N0→N1→N2).
 
-== État du code (JitPack, CNV-17)
+== Règles dures
 
-- N0 `workspace-bom **0.0.136**` : BOM + catalogue + 10 contrats (11 modules
-  HTTP 200) ; versions contrat unifiées à la version du tag.
-- N1 `codebase-plugin 0.0.18`, `video-kernel 0.9.1` ; N2 `bakery 0.0.38`,
-  `capsule 0.0.21`, `document 0.0.30`, `conventions-plugin 0.0.17`.
-- Central/Portal désactivés pour les publics (rollback `CCCP_PUBLISH_TARGET`).
-- CI workspace-bom : 21 jobs, `runAllTests` verte (N0 11 builds + cross-borough).
-- **Audit CI du workspace : 0 finding / 68 fichiers** (`ciShellGatesReport -PciRoot=<workspace>`) ;
-  exemption explicite `# ci-shell:allow-swallow` (échec toléré **par item**).
-- **Gates verts** : N0 (`set -eo pipefail` + `N0ContractsGateTest`, 10 builds) ;
-  `CiExitCodeGuardTest` (dépôt, dans `check`) ; errexit sur N0/magic-stick/office
-  (traduction + deploy)/capsule install ×4/bakery website/edster template.
-- CI workspace-bom : 21 jobs, **`5m12s…5m52s`** ; `agent-contracts check` exécute
-  `test` + `cucumberTest` + `versionCatalogCucumberTest` + `ciShellGatesCucumberTest`
-  (**pas** `ciShellGatesReport` : il exige les dépôts voisins).
-- **Release** : toute publication `document` met à jour le littéral `WorkspaceCatalogStructureTest` dans le **même** commit que le bump.
-
-== Doctrine XB-FP (clos)
-**D2/D3/D4** N0 sans Arrow, Arrow N1/N2 `implementation` ; **D12** adopter aux
-seams jamais retirer ; **D7** mesurer ; **D9** pas de job CI sans mesure.
-
-== Pièges (cumul)
-
-. *Un gate qui ne peut pas échouer est un faux vert* (S-335, S-338, S-339) : la
-   dernière commande d'un `run: |` décide — `errexit` obligatoire dès 2 commandes.
-. *`cmd | grep -q`* et *`ls | head`* sous `pipefail` = faux rouge (SIGPIPE 141) →
-   rediriger (`> "$RUNNER_TEMP/f"`) puis `grep -q f` / `head -5 f`.
-. *`curl … | sh`* retourne le statut de `sh` (**0** sur entrée vide) : une
-   installation peut être silencieusement sautée → `set -euo pipefail`.
-. *Workflow-only* : `capsule` met `.github/**` en `paths-ignore` → valider par
-   `gh workflow run <wf>.yml --ref main`. Un `.github/` peut être **gitignoré**
-   (`edster` : seul `__codebase__` est tracké).
-. *Version dérivée ≠ version publiée* ; garde bumpée dans le **même** commit. `check`
-   inclut ktlint. *Contrats N0 = builds standalone* (pattern 0124). *Catalogue Gradle* :
-   un plugin inclus depuis la **racine** utilise le catalogue **racine**.
-. *Local = Build, Tests = CI* ; une CI concurrente (autre dépôt) fausse le
-   wall-clock — vérifier les `startedAt`. **Arbre partagé** : `git add -A` embarque
-   les éditions en vol d'une autre session → stager des **chemins explicites**.
-. *ktlint* : `include`/`setSource` ignorés par ktlint-gradle ; `ktlintFormat` sûr
-   seulement si `git status` = exactement les fichiers signalés. *Toolchain* :
-   `jvmToolchain(25)` ; foojay 0.10.0.
-. *Gardes qui nomment un motif interdit* : elles se **détectent elles-mêmes** →
-   composer les littéraux (vaut aussi pour un **commentaire** YAML, S-339).
-. *Un runner Cucumber non enregistré est un test fantôme* — vérifier
-   `tasks --all` + `--dry-run check`. *`run: >`* = scalaire replié, pas un bloc.
-
-== Clôture
-
-7 étapes du hook (rapport, PROMPT_REPRISE ≤70 l., INDEX, SESSIONS_HISTORY,
-TEST_COVERAGE si tests, archive du mois, **BACKLOG + TODO synchronisés**) + snapshot
-racine (`configuration/vision-archive/$DATE/`, symlink `latest/`) + commit/push.
-**+ audit CI du workspace** : `./gradlew ciShellGatesReport -PciRoot=<workspace>`
-doit rendre **0 finding** (toute tolérance explicite est marquée).
+* Un canal = un catalogue ; zéro coordonnée de l'autre canal.
+* BOM Central = `platform` réel ; BOM JitPack ≠ `platform`.
+* Local = Build, Tests = CI ; preuve = run CI du commit poussé.
+* **Ne pas modifier les tests** sans permission explicite (`.agents/AGENT.adoc`).
+* Aucune branche `jitpack`/`central` permanente ; tag `vX.Y.Z` unique.

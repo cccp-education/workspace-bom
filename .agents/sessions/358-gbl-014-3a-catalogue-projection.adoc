@@ -1,0 +1,76 @@
+= Session 358 — GBL-014-3a : projection du catalogue Central + garde no-mix
+:date: 2026-11-14
+:scope: workspace-bom — catalogue JitPack → catalogue Central projeté
+:statut: ✅ 3a LIVRÉE — CI `43651793466` VERTE ; 3b (BOM Central) reportée
+
+== Contexte
+
+GBL-014 (canal dual) exige **deux catalogues/BOM** dérivés d'une **seule
+source de versions**. Constat mesuré : `gradle/libs.versions.toml` est en
+coordonnées **JitPack** (`com.github.cccp-education.*`) ; le BOM `java-platform`
+et la publication `workspace-catalog` consomment ce fichier. Un catalogue
+Central doit porter `education.cccp.*` / `education.cccp.build.*`.
+
+== Livré (US-3a)
+
+[cols="2,4", options="header"]
+|===
+| Élément | Contenu
+
+| `gradle/central/libs.versions.toml`
+| Projection **générée** du catalogue JitPack : mêmes `[versions]` (préfixe `v`
+  retiré quand JitPack l'exige, ex. `youtube-auth-plugin` `v0.0.4` → `0.0.4`),
+  mêmes alias, coordonnées Central.
+
+| `generateCentralCatalogue`
+| Tâche `catalogue` : lit `gradle/libs.versions.toml`, écrit
+  `gradle/central/libs.versions.toml` (règle de projection pure dans le build).
+
+| `verifyCatalogueChannels`
+| Garde **câblée à `check`** : (1) le fichier Central ne dérive pas de la source
+  JitPack ; (2) le catalogue JitPack ne contient **aucune** coordonnée
+  `education.cccp` ; (3) le catalogue Central ne contient **aucune** coordonnée
+  `com.github.cccp-education` ; (4) les blocs `[versions]` sont identiques
+  (source unique).
+|===
+
+*Règle de projection* (anomalies JitPack incluses) :
+
+* `com.github.cccp-education.workspace-bom:<artifact>` → `education.cccp:<artifact>`
+* `com.github.cccp-education.conventions-gradle:<artifact>` →
+  `education.cccp.build:<artifact>`
+* `com.github.cccp-education:video-kernel-gradle` → `education.cccp:video-kernel`
+  (JitPack sert l'artefact repo-level, Central sert `video-kernel`)
+* `com.github.cccp-education:api-key-pool-gradle` → `education.cccp:api-key-pool`
+* `com.github.cccp-education.<repo>:<artifact>` → `education.cccp:<artifact>`
+* toute autre coordonnée (libs tierces) est inchangée.
+
+== Preuves
+
+* `./gradlew generateCentralCatalogue` → fichier généré.
+* `./gradlew verifyCatalogueChannels` →
+  `CATALOGUE OK: JitPack and Central projections are consistent and unmixed`.
+* **CI `runAllTests` `43651793466` VERTE** (commit `842b402`) — le job
+  `Check · workspace-bom` exécute `check` → `verifyCatalogueChannels`.
+* Aucun test modifié, aucun secret, aucune publication.
+
+== Dette / 3b
+
+* Le **BOM** reste bâti sur le catalogue `libs` par défaut (JitPack). Publier
+  un **BOM Central** exige de sélectionner le catalogue au niveau `settings` :
+  `create("libs") { from(...) }` **entre en conflit** avec le catalogue
+  auto-chargé (`Multiple 'from' invocations`). Deux options pour 3b :
+  (a) renommer les fichiers en `gradle/jitpack/…` + `gradle/central/…` et créer
+  `libs` explicitement — mais **15+ références** (tests `agent-contracts`, `ci/run.sh`,
+  docs, tests cross-borough) pointent `gradle/libs.versions.toml` ;
+  (b) un sous-build `central/` autonome (comme `conventions-plugin`).
+* `conventions-plugin` reste pinné `0.0.17` : `PlatformCatalogAlignmentTest`
+  l'exige. Le bump `0.0.18` appartient à US-5 (mise à jour du test = permission
+  explicite requise par `.agents/AGENT.adoc`).
+
+== Suivant
+
+. **US-3b** — BOM Central (sous-build `central/` ou migration des 15+ références
+  au catalogue), puis publication Central après le reset (US-7).
+. **US-5** — `ci/run.sh` passe `-Pchannel`, shims `0.0.18`, alignement des 20
+  consommateurs.
