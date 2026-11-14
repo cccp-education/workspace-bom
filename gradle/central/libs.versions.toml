@@ -1,0 +1,420 @@
+[versions]
+# ── Workspace BOM shared versions ─────────────────────────────────────────────
+workspace-bom = "0.0.136"
+
+# ── Kotlin ────────────────────────────────────────────────────────────────────
+kotlin = "2.4.10"
+kotlinx-serial = "1.7.3"
+coroutines = "1.10.2"
+
+# ── Framework ─────────────────────────────────────────────────────────────────
+jackson = "2.21.2"
+langchain4j = "1.22.0"
+langchain4j-beta = "1.22.0-beta32"
+koog = "1.3.0"
+
+# ── Database ──────────────────────────────────────────────────────────────────
+r2dbc-postgresql = "1.0.7.RELEASE"
+r2dbc-pool = "1.0.2.RELEASE"
+r2dbc-spi = "1.0.0.RELEASE"
+
+# ── Logging ───────────────────────────────────────────────────────────────────
+logback = "1.5.32"
+slf4j = "2.0.17"
+
+# ── Processing ────────────────────────────────────────────────────────────────
+mapstruct = "1.6.3"
+arrow = "2.3.0"
+arrow-jackson = "0.15.1"
+commons-io = "2.13.0"
+
+# ── Tests ─────────────────────────────────────────────────────────────────────
+junit-jupiter = "5.12.2"
+junit-platform = "1.14.3"
+testcontainers = "1.21.4"
+cucumber = "7.34.3"
+mockito-kotlin = "6.2.3"
+mockito-jupiter = "5.23.0"
+assertj = "3.25.3"
+
+# ── Gradle tooling ────────────────────────────────────────────────────────────
+plugin-publish = "2.2.1"
+kover = "0.9.8"
+gradle-tooling = "9.7.1"
+node-gradle = "7.1.0"
+
+# ── JetBrains annotations (conflit koog 26.0.2-1 vs testcontainers 17.0.0) ────
+jetbrains-annotations = "26.0.2-1"
+
+# ── Plugin versions (published by education.cccp) ────────────────────────────
+bakery-plugin = "0.0.38"
+capsule-plugin = "0.0.21"
+codex-plugin = "0.0.12"
+planner-plugin = "0.0.2"
+slider-plugin = "0.0.20"
+plantuml-plugin = "0.0.16"
+readme-plugin = "0.0.2"
+hyperframes-plugin = "0.0.16"
+graphify-plugin = "0.0.5"
+dashboard-plugin = "0.0.4"
+api-key-pool-plugin = "0.0.2"
+codebase-plugin = "0.0.18"
+conventions-plugin = "0.0.18"
+
+# ── Shared libraries (education.cccp, N1) ─────────────────────────────────────
+video-kernel = "0.9.1"
+youtube-auth-plugin = "0.0.4"
+
+# ── PDF/Extraction ────────────────────────────────────────────────────────────
+asciidoctorj = "3.0.1"
+asciidoctorj-epub3 = "2.2.0"
+pdfbox = "3.0.4"
+tika = "3.1.0"
+flexmark = "0.64.8"
+asciidoctorj-diagram = "3.2.1"
+asciidoctorj-diagram-plantuml = "1.2026.2"
+
+# ── Agent Contracts ───────────────────────────────────────────────────────────
+agent-contracts = "0.0.136"
+codebase-contracts = "0.0.136"
+llm-pool-contracts = "0.0.136"
+opencode-session-contracts = "0.0.136"
+i18n-contracts = "0.0.136"
+pipeline-contracts = "0.0.136"
+runtime-contracts = "0.0.136"
+ocr-contracts = "0.0.136"
+plantuml-contracts = "0.0.136"
+catalog-contracts = "0.0.136"
+document-plugin = "0.0.30"
+
+# ── Docker / Infrastructure ───────────────────────────────────────────────────
+docker-java = "3.7.0"
+postgresql-jdbc = "42.7.4"
+
+# ── Git ───────────────────────────────────────────────────────────────────────
+jgit = "7.8.0.202609011348-r"
+xz = "1.12"
+
+# ── Other ─────────────────────────────────────────────────────────────────────
+playwright = "1.52.0"
+
+# ── PlantUML specific ─────────────────────────────────────────────────────────
+spring-boot = "3.4.2"
+spring-dependency-management = "1.1.7"
+spring-cloud-contract = "4.2.2"
+deps-versions = "0.51.0"
+poi = "5.3.0"
+okhttp-digest = "2.10"
+grolifant = "1.2.2"
+jjwt = "0.12.3"
+netty-tcnative = "2.0.70.Final"
+commons-fileupload = "1.5"
+google-api-client = "2.1.0"
+google-auth-library = "1.28.0"
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
+kotlin-allopen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }
+kotlin-noarg = { id = "org.jetbrains.kotlin.plugin.noarg", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
+spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
+versions = { id = "com.github.ben-manes.versions", version.ref = "deps-versions" }
+plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "plugin-publish" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+node-gradle = { id = "com.github.node-gradle.node", version.ref = "node-gradle" }
+# ── Borough plugins (education.cccp) — alias pour block plugins {} consommateurs (D7) ──
+bakery = { id = "education.cccp.bakery", version.ref = "bakery-plugin" }
+document = { id = "education.cccp.document", version.ref = "document-plugin" }
+codex = { id = "education.cccp.codex", version.ref = "codex-plugin" }
+plantuml = { id = "education.cccp.plantuml", version.ref = "plantuml-plugin" }
+hyperframes = { id = "education.cccp.hyperframes", version.ref = "hyperframes-plugin" }
+youtube-auth = { id = "education.cccp.video.auth", version.ref = "youtube-auth-plugin" }
+planner = { id = "education.cccp.planner", version.ref = "planner-plugin" }
+readme = { id = "education.cccp.readme", version.ref = "readme-plugin" }
+graphify = { id = "education.cccp.graphify", version.ref = "graphify-plugin" }
+dashboard = { id = "education.cccp.dashboard", version.ref = "dashboard-plugin" }
+
+[libraries]
+# ── Kotlin ──
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serial" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-coroutines-reactive = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-reactive", version.ref = "coroutines" }
+kotlinx-coroutines-reactor = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-reactor", version.ref = "coroutines" }
+kotlinx-coroutines-jdk8 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8", version.ref = "coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+
+# ── Framework ──
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
+jackson-dataformat-yaml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml", version.ref = "jackson" }
+jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
+jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jackson" }
+jackson-module-jsonSchema = { module = "com.fasterxml.jackson.module:jackson-module-jsonSchema", version.ref = "jackson" }
+
+# ── LangChain4j ──
+langchain4j = { module = "dev.langchain4j:langchain4j", version.ref = "langchain4j" }
+langchain4j-ollama = { module = "dev.langchain4j:langchain4j-ollama", version.ref = "langchain4j" }
+langchain4j-open-ai = { module = "dev.langchain4j:langchain4j-open-ai", version.ref = "langchain4j" }
+langchain4j-gemini = { module = "dev.langchain4j:langchain4j-google-ai-gemini", version.ref = "langchain4j" }
+langchain4j-mistral = { module = "dev.langchain4j:langchain4j-mistral-ai", version.ref = "langchain4j" }
+langchain4j-anthropic = { module = "dev.langchain4j:langchain4j-anthropic", version.ref = "langchain4j" }
+langchain4j-pgvector = { module = "dev.langchain4j:langchain4j-pgvector", version.ref = "langchain4j-beta" }
+langchain4j-minilm = { module = "dev.langchain4j:langchain4j-embeddings-all-minilm-l6-v2", version.ref = "langchain4j-beta" }
+langchain4j-hugging-face = { module = "dev.langchain4j:langchain4j-hugging-face", version.ref = "langchain4j-beta" }
+langchain4j-reactor = { module = "dev.langchain4j:langchain4j-reactor", version.ref = "langchain4j" }
+langchain4j-spring-boot-starter = { module = "dev.langchain4j:langchain4j-spring-boot-starter", version.ref = "langchain4j" }
+langchain4j-ollama-spring-boot-starter = { module = "dev.langchain4j:langchain4j-ollama-spring-boot-starter", version.ref = "langchain4j" }
+langchain4j-web-search-engine-google-custom = { module = "dev.langchain4j:langchain4j-web-search-engine-google-custom", version.ref = "langchain4j" }
+langchain4j-google-ai-gemini = { module = "dev.langchain4j:langchain4j-google-ai-gemini", version.ref = "langchain4j" }
+langchain4j-spring-boot-tests = { module = "dev.langchain4j:langchain4j-spring-boot-tests", version.ref = "langchain4j" }
+
+# ── Koog ──
+koog-agents = { module = "ai.koog:koog-agents", version.ref = "koog" }
+
+# ── Logging ──
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+
+# ── Database ──
+r2dbc-postgresql = { module = "org.postgresql:r2dbc-postgresql", version.ref = "r2dbc-postgresql" }
+r2dbc-pool = { module = "io.r2dbc:r2dbc-pool", version.ref = "r2dbc-pool" }
+r2dbc-spi = { module = "io.r2dbc:r2dbc-spi", version.ref = "r2dbc-spi" }
+
+# ── Processing ──
+arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrow" }
+arrow-fx-coroutines = { module = "io.arrow-kt:arrow-fx-coroutines", version.ref = "arrow" }
+arrow-stack = { module = "io.arrow-kt:arrow-stack", version.ref = "arrow" }
+arrow-jackson = { module = "io.arrow-kt:arrow-integrations-jackson-module", version.ref = "arrow-jackson" }
+commons-io = { module = "commons-io:commons-io", version.ref = "commons-io" }
+commons-beanutils = { module = "commons-beanutils:commons-beanutils", version = "1.9.4" }
+commons-lang3 = { module = "org.apache.commons:commons-lang3", version = "3.17.0" }
+commons-collections4 = { module = "org.apache.commons:commons-collections4", version = "4.4" }
+
+# ── Tests ──
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-platform" }
+junit-platform-suite = { module = "org.junit.platform:junit-platform-suite", version.ref = "junit-platform" }
+junit-platform-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit-jupiter" }
+cucumber-java = { module = "io.cucumber:cucumber-java", version.ref = "cucumber" }
+cucumber-junit-platform-engine = { module = "io.cucumber:cucumber-junit-platform-engine", version.ref = "cucumber" }
+cucumber-picocontainer = { module = "io.cucumber:cucumber-picocontainer", version.ref = "cucumber" }
+testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
+testcontainers-junit5 = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers" }
+mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockito-kotlin" }
+mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito-jupiter" }
+assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
+assertj-swing = { module = "org.assertj:assertj-swing", version.ref = "assertj" }
+wiremock = { module = "org.wiremock:wiremock", version = "3.9.2" }
+
+# ── Docker / Infrastructure ──
+docker-java-core = { module = "com.github.docker-java:docker-java-core", version.ref = "docker-java" }
+docker-java-transport-httpclient5 = { module = "com.github.docker-java:docker-java-transport-httpclient5", version.ref = "docker-java" }
+postgresql-jdbc = { module = "org.postgresql:postgresql", version.ref = "postgresql-jdbc" }
+
+# ── Git ──
+jgit-core = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "jgit" }
+jgit-ssh = { module = "org.eclipse.jgit:org.eclipse.jgit.ssh.jsch", version.ref = "jgit" }
+jgit-archive = { module = "org.eclipse.jgit:org.eclipse.jgit.archive", version.ref = "jgit" }
+xz = { module = "org.tukaani:xz", version.ref = "xz" }
+
+# ── Spring Boot ──
+spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "spring-boot" }
+spring-boot-starter-mail = { module = "org.springframework.boot:spring-boot-starter-mail", version.ref = "spring-boot" }
+spring-boot-starter-thymeleaf = { module = "org.springframework.boot:spring-boot-starter-thymeleaf", version.ref = "spring-boot" }
+spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation", version.ref = "spring-boot" }
+spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux", version.ref = "spring-boot" }
+spring-boot-starter-data-r2dbc = { module = "org.springframework.boot:spring-boot-starter-data-r2dbc", version.ref = "spring-boot" }
+spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security", version.ref = "spring-boot" }
+spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-boot" }
+spring-security-data = { module = "org.springframework.security:spring-security-data", version.ref = "spring-boot" }
+spring-security-test = { module = "org.springframework.security:spring-security-test", version.ref = "spring-boot" }
+spring-cloud-starter-contract-verifier = { module = "org.springframework.cloud:spring-cloud-starter-contract-verifier", version.ref = "spring-cloud-contract" }
+spring-boot-devtools = { module = "org.springframework.boot:spring-boot-devtools", version.ref = "spring-boot" }
+spring-boot-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor", version.ref = "spring-boot" }
+spring-boot-properties-migrator = { module = "org.springframework.boot:spring-boot-properties-migrator", version.ref = "spring-boot" }
+
+# ── PDF/Extraction ──
+poi-ooxml = { module = "org.apache.poi:poi-ooxml", version.ref = "poi" }
+tika-parsers-standard = { module = "org.apache.tika:tika-parsers-standard-package", version.ref = "tika" }
+
+# ── Other ──
+okhttp-digest = { module = "com.burgstaller:okhttp-digest", version.ref = "okhttp-digest" }
+grolifant = { module = "org.ysb33r.gradle:grolifant", version.ref = "grolifant" }
+jjwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref = "jjwt" }
+jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref = "jjwt" }
+netty-tcnative-boringssl-static = { module = "io.netty:netty-tcnative-boringssl-static", version.ref = "netty-tcnative" }
+commons-fileupload = { module = "commons-fileupload:commons-fileupload", version.ref = "commons-fileupload" }
+google-api-services-forms = { module = "com.google.apis:google-api-services-forms", version.ref = "google-api-client" }
+google-api-services-drive = { module = "com.google.apis:google-api-services-drive", version.ref = "google-api-client" }
+google-api-client-jackson2 = { module = "com.google.api-client:google-api-client-jackson2", version.ref = "google-api-client" }
+google-auth-library-oauth2-http = { module = "com.google.auth:google-auth-library-oauth2-http", version.ref = "google-auth-library" }
+
+# ── Gradle tooling ──
+gradle-tooling-api = { module = "org.gradle:gradle-tooling-api", version.ref = "gradle-tooling" }
+
+# ── Asciidoctor ──
+asciidoctorj = { module = "org.asciidoctor:asciidoctorj", version.ref = "asciidoctorj" }
+asciidoctorj-epub3 = { module = "org.asciidoctor:asciidoctorj-epub3", version.ref = "asciidoctorj-epub3" }
+asciidoctorj-diagram = { module = "org.asciidoctor:asciidoctorj-diagram", version.ref = "asciidoctorj-diagram" }
+asciidoctorj-diagram-plantuml = { module = "org.asciidoctor:asciidoctorj-diagram-plantuml", version.ref = "asciidoctorj-diagram-plantuml" }
+
+# ── PDF/Extraction ──
+pdfbox = { module = "org.apache.pdfbox:pdfbox", version.ref = "pdfbox" }
+tika-core = { module = "org.apache.tika:tika-core", version.ref = "tika" }
+flexmark-all = { module = "com.vladsch.flexmark:flexmark-all", version.ref = "flexmark" }
+
+# ── Kotlin Stdlib ──
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+kotlin-test-junit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5", version.ref = "kotlin" }
+
+# ── Reactor ──
+reactor-kotlin-extensions = { module = "io.projectreactor.kotlin:reactor-kotlin-extensions", version = "1.2.3" }
+reactor-test = { module = "io.projectreactor:reactor-test", version = "3.7.2" }
+
+# ── Other ──
+playwright = { module = "com.microsoft.playwright:playwright", version.ref = "playwright" }
+
+# ── JetBrains annotations (force resolution koog vs testcontainers) ──
+jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
+
+# ── Borough plugins (education.cccp) ──
+ocr-contracts = { module = "education.cccp:ocr-contracts", version.ref = "ocr-contracts" }
+plantuml-contracts = { module = "education.cccp:plantuml-contracts", version.ref = "plantuml-contracts" }
+catalog-contracts = { module = "education.cccp:catalog-contracts", version.ref = "catalog-contracts" }
+agent-contracts = { module = "education.cccp:agent-contracts", version.ref = "agent-contracts" }
+codebase-contracts = { module = "education.cccp:codebase-contracts", version.ref = "codebase-contracts" }
+llm-pool-contracts = { module = "education.cccp:llm-pool-contracts", version.ref = "llm-pool-contracts" }
+opencode-session-contracts = { module = "education.cccp:opencode-session-contracts", version.ref = "opencode-session-contracts" }
+i18n-contracts = { module = "education.cccp:i18n-contracts", version.ref = "i18n-contracts" }
+pipeline-contracts = { module = "education.cccp:pipeline-contracts", version.ref = "pipeline-contracts" }
+runtime-contracts = { module = "education.cccp:runtime-contracts", version.ref = "runtime-contracts" }
+video-kernel = { module = "education.cccp:video-kernel", version.ref = "video-kernel" }
+youtube-auth-plugin = { module = "education.cccp:youtube-auth-plugin", version.ref = "youtube-auth-plugin" }
+mapstruct = { module = "org.mapstruct:mapstruct", version.ref = "mapstruct" }
+
+document-plugin = { module = "education.cccp:document-plugin", version.ref = "document-plugin" }
+bakery-plugin = { module = "education.cccp:bakery-plugin", version.ref = "bakery-plugin" }
+capsule-plugin = { module = "education.cccp:capsule-plugin", version.ref = "capsule-plugin" }
+codex-plugin = { module = "education.cccp:codex-plugin", version.ref = "codex-plugin" }
+planner-plugin = { module = "education.cccp:planner-plugin", version.ref = "planner-plugin" }
+slider-plugin = { module = "education.cccp:slider-plugin", version.ref = "slider-plugin" }
+plantuml-plugin = { module = "education.cccp:plantuml-plugin", version.ref = "plantuml-plugin" }
+readme-plugin = { module = "education.cccp:readme-plugin", version.ref = "readme-plugin" }
+hyperframes-plugin = { module = "education.cccp:hyperframes-plugin", version.ref = "hyperframes-plugin" }
+graphify-plugin = { module = "education.cccp:graphify-plugin", version.ref = "graphify-plugin" }
+dashboard-plugin = { module = "education.cccp:dashboard-plugin", version.ref = "dashboard-plugin" }
+api-key-pool-plugin = { module = "education.cccp:api-key-pool", version.ref = "api-key-pool-plugin" }
+codebase-plugin = { module = "education.cccp:codebase-plugin", version.ref = "codebase-plugin" }
+conventions-plugin = { module = "education.cccp.build:conventions-plugin", version.ref = "conventions-plugin" }
+
+[bundles]
+cucumber = [
+    "cucumber-java",
+    "cucumber-junit-platform-engine",
+    "cucumber-picocontainer",
+    "junit-platform-suite",
+]
+langchain4j-rag = [
+    "langchain4j",
+    "langchain4j-pgvector",
+    "langchain4j-minilm",
+    "langchain4j-ollama",
+]
+r2dbc = [
+    "r2dbc-postgresql",
+    "r2dbc-pool",
+    "r2dbc-spi",
+    "kotlinx-coroutines-core",
+    "kotlinx-coroutines-reactive",
+    "kotlinx-coroutines-reactor",
+]
+arrow = [
+    "arrow-core",
+    "arrow-fx-coroutines",
+]
+coroutines = [
+    "kotlinx-coroutines-core",
+    "kotlinx-coroutines-reactive",
+    "kotlinx-coroutines-jdk8",
+    "kotlinx-coroutines-test",
+    "kotlinx-coroutines-reactor",
+]
+jgit = [
+    "jgit-core",
+    "jgit-ssh",
+    "jgit-archive",
+    "xz",
+]
+testcontainers = [
+    "testcontainers-postgresql",
+    "testcontainers-junit5",
+]
+jackson = [
+    "jackson-databind",
+    "jackson-dataformat-yaml",
+    "jackson-module-kotlin",
+    "jackson-datatype-jsr310",
+]
+docker = [
+    "docker-java-core",
+    "docker-java-transport-httpclient5",
+]
+asciidoctor = [
+    "asciidoctorj",
+    "asciidoctorj-diagram",
+    "asciidoctorj-diagram-plantuml",
+]
+plantuml = [
+    "jgit-core",
+    "jgit-ssh",
+    "jgit-archive",
+    "xz",
+    "commons-io",
+    "poi-ooxml",
+    "tika-parsers-standard",
+    "okhttp-digest",
+    "grolifant",
+    "jjwt-impl",
+    "jjwt-jackson",
+    "netty-tcnative-boringssl-static",
+    "commons-fileupload",
+    "google-api-services-forms",
+    "google-api-services-drive",
+    "google-api-client-jackson2",
+    "google-auth-library-oauth2-http",
+]
+plantuml-ai = [
+    "langchain4j",
+    "langchain4j-reactor",
+    "langchain4j-spring-boot-starter",
+    "langchain4j-ollama-spring-boot-starter",
+    "langchain4j-hugging-face",
+    "langchain4j-mistral",
+    "langchain4j-web-search-engine-google-custom",
+    "langchain4j-google-ai-gemini",
+    "langchain4j-pgvector",
+    "jackson-module-jsonSchema",
+    "arrow-core",
+    "arrow-fx-coroutines",
+    "arrow-jackson",
+    "commons-beanutils",
+    "commons-lang3",
+    "commons-collections4",
+    "spring-boot-starter-actuator",
+    "spring-boot-starter-mail",
+    "spring-boot-starter-thymeleaf",
+    "spring-boot-starter-validation",
+    "spring-boot-starter-webflux",
+    "spring-boot-starter-data-r2dbc",
+    "spring-boot-starter-security",
+    "spring-security-data",
+    "kotlin-reflect",
+    "kotlin-stdlib-jdk8",
+    "kotlinx-coroutines-reactor",
+    "reactor-kotlin-extensions",
+    "reactor-test",
+]

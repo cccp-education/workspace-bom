@@ -449,3 +449,130 @@ signing {
     }
     useGpgCmd()
 }
+
+// ── GBL-014-3 — channel projection of the version catalog ────────────────────
+// One source of versions, two channel projections:
+//   * JitPack (historical file, `com.github.cccp-education.*`);
+//   * Central (generated file, `education.cccp.*` / `education.cccp.build.*`).
+// `generateCentralCatalogue` materialises the Central projection; the checked-in
+// file is proven by `verifyCatalogueChannels` (drift + no coordinate mixing).
+val jitpackCatalogue = layout.projectDirectory.file("gradle/libs.versions.toml")
+val centralCatalogue = layout.projectDirectory.file("gradle/central/libs.versions.toml")
+
+val moduleLine = Regex("""^(\s*[A-Za-z0-9_.-]+\s*=\s*\{\s*module\s*=\s*)"([^"]+)"(.*)$""")
+val versionLine = Regex("""^(\s*[A-Za-z0-9_.-]+\s*=\s*)"v(\d[^"]*)"(\s*)$""")
+
+fun transformSection(text: String, section: String, transform: (String) -> String): String {
+    val lines = text.lines().toMutableList()
+    var inside = false
+    for (index in lines.indices) {
+        val trimmed = lines[index].trim()
+        if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
+            inside = trimmed == "[$section]"
+            continue
+        }
+        if (inside && trimmed.isNotEmpty() && !trimmed.startsWith("#")) {
+            lines[index] = transform(lines[index])
+        }
+    }
+    return lines.joinToString("\n")
+}
+
+fun centralCoordinate(coordinate: String): String {
+    val parts = coordinate.split(":")
+    if (parts.size < 2) return coordinate
+    val group = parts[0]
+    val artifact = parts[1]
+    if (!group.startsWith("com.github.cccp-education")) return coordinate
+    return when {
+        group == "com.github.cccp-education.workspace-bom" -> "education.cccp:$artifact"
+        group == "com.github.cccp-education.conventions-gradle" -> "education.cccp.build:$artifact"
+        group == "com.github.cccp-education" && artifact == "video-kernel-gradle" -> "education.cccp:video-kernel"
+        group == "com.github.cccp-education" && artifact == "api-key-pool-gradle" -> "education.cccp:api-key-pool"
+        else -> "education.cccp:$artifact"
+    }
+}
+
+fun projectCatalogue(text: String): String {
+    val versions = transformSection(text, "versions") { line ->
+        line.replace(versionLine) { match ->
+            "${match.groupValues[1]}\"${match.groupValues[2]}\"${match.groupValues[3]}"
+        }
+    }
+    return transformSection(versions, "libraries") { line ->
+        line.replace(moduleLine) { match ->
+            "${match.groupValues[1]}\"${centralCoordinate(match.groupValues[2])}\"${match.groupValues[3]}"
+        }
+    }
+}
+
+fun sectionText(text: String, section: String): String =
+    text.lines()
+        .dropWhile { it.trim() != "[$section]" }
+        .drop(1)
+        .takeWhile { !it.trim().startsWith("[") }
+        .joinToString("\n")
+
+fun moduleCoordinates(text: String): List<String> =
+    moduleLine.findAll(text).map { it.groupValues[2] }.toList()
+
+fun catalogueFindings(jitpackText: String, centralText: String): List<String> {
+    val findings = mutableListOf<String>()
+    if (projectCatalogue(jitpackText) != centralText) {
+        findings += "gradle/central/libs.versions.toml drifts from gradle/libs.versions.toml " +
+            "(run ./gradlew generateCentralCatalogue)"
+    }
+    val jitpackModules = moduleCoordinates(jitpackText)
+    val centralModules = moduleCoordinates(centralText)
+    jitpackModules.filter { it.startsWith("education.cccp") }.forEach {
+        findings += "JitPack catalogue contains a Central coordinate: $it"
+    }
+    centralModules.filter { it.startsWith("com.github.cccp-education") }.forEach {
+        findings += "Central catalogue contains a JitPack coordinate: $it"
+    }
+    if (sectionText(projectCatalogue(jitpackText), "versions") != sectionText(centralText, "versions")) {
+        findings += "the [versions] blocks of the two catalogues differ (single source violated)"
+    }
+    return findings
+}
+
+tasks.register("generateCentralCatalogue") {
+    group = "catalogue"
+    description = "GBL-014-3 — projects the Central version catalog from the JitPack catalogue"
+    inputs.file(jitpackCatalogue)
+    outputs.file(centralCatalogue)
+    doLast {
+        val target = centralCatalogue.asFile
+        target.parentFile.mkdirs()
+        target.writeText(projectCatalogue(jitpackCatalogue.asFile.readText()))
+        println("CATALOGUE GENERATED: ${target.relativeTo(projectDir)}")
+    }
+}
+
+val verifyCatalogueChannels = tasks.register("verifyCatalogueChannels") {
+    group = "verification"
+    description = "GBL-014-3 — checks catalogue drift and forbids coordinate mixing between channels"
+    inputs.files(jitpackCatalogue, centralCatalogue)
+    outputs.upToDateWhen { false }
+    doLast {
+        if (!centralCatalogue.asFile.isFile) {
+            throw GradleException(
+                "Missing ${centralCatalogue.asFile.relativeTo(projectDir)} — " +
+                    "run ./gradlew generateCentralCatalogue"
+            )
+        }
+        val findings = catalogueFindings(
+            jitpackCatalogue.asFile.readText(),
+            centralCatalogue.asFile.readText(),
+        )
+        if (findings.isNotEmpty()) {
+            findings.forEach { println("  - $it") }
+            throw GradleException("${findings.size} catalogue channel finding(s)")
+        }
+        println("CATALOGUE OK: JitPack and Central projections are consistent and unmixed")
+    }
+}
+
+tasks.matching { it.name == "check" }.configureEach {
+    dependsOn(verifyCatalogueChannels)
+}
