@@ -1,0 +1,65 @@
+= Session 359 — GBL-014-3b : BOM et catalogue channel-aware
+:date: 2026-11-14
+:scope: workspace-bom — publication du BOM/catalogue par canal
+:statut: ✅ 3b LIVRÉE — CI `43653277413` VERTE (commit `fd7cbc3`)
+
+== Contexte
+
+La session 358 avait livré le **catalogue** Central projeté et sa garde, mais le
+BOM `java-platform` restait bâti sur le catalogue `libs` par défaut (JitPack) :
+`create("libs") { from(...) }` entre en conflit avec le catalogue auto-chargé
+(`Multiple 'from' invocations`). Cette session tranche et implémente.
+
+== Décision
+
+* **Catalogue explicite `bom`** créé dans `settings.gradle.kts`, sélectionné par
+  `-Pchannel` : `gradle/libs.versions.toml` (jitpack) ou
+  `gradle/central/libs.versions.toml` (central). Le BOM et ses contraintes
+  consomment `bom.*` — **jamais** `libs.*` pour les coordonnées.
+* Le catalogue `libs` par défaut reste chargé (Gradle) et n'est utilisé que pour
+  **deux** accesseurs gardés par `PlatformCatalogAlignmentTest` :
+  `version = libs.versions.workspace.bom.get()` et
+  `api(libs.asciidoctorj.epub3)` (versions identiques dans les deux canaux).
+* Le plugin `version-catalog` et son composant sont retirés : le catalogue est
+  publié par une **publication Maven dédiée** `workspaceCatalog`
+  (`education.cccp:workspace-catalog`, `packaging = toml`, artefact = le TOML
+  sélectionné). Le BOM `java-platform` est publié par la publication existante,
+  avec les contraintes du canal sélectionné.
+* **Un seul commit, deux canaux** : `-Pchannel=jitpack` (défaut) ou
+  `-Pchannel=central` changent le catalogue, les contraintes et l'artefact
+  publié — sans branche.
+
+== Gardes
+
+* `verifyCatalogueChannels` (S-358) : drift source→projection, zéro coordonnée
+  de l'autre canal, `[versions]` identiques.
+* **`verifyBomChannel`** (nouveau) : lit le POM généré
+  (`build/publications/maven/pom-default.xml`) et vérifie que
+  `<dependencyManagement>` ne contient **que** les coordonnées du canal
+  (central : interdit `com.github.cccp-education` ; jitpack : interdit
+  `education.cccp`). Câblé à `check`.
+
+== Preuves
+
+* `./gradlew verifyBomChannel` → `BOM OK: channel=jitpack, no 'education.cccp' coordinate`.
+* `./gradlew verifyBomChannel -Pchannel=central` → `BOM OK: channel=central, no 'com.github.cccp-education' coordinate`.
+* POM généré en mode central : **0** occurrence de `com.github.cccp-education`
+  dans `<dependencyManagement>`, dépendances `education.cccp` /
+  `education.cccp.build` (`video-kernel`, `api-key-pool` mappés).
+* CI `runAllTests` `43653277413` **VERTE**.
+
+== Incident absorbé
+
+CI rouge `43652622748` : `PlatformCatalogAlignmentTest` pinne littéralement
+`version = libs.versions.workspace.bom.get()` et `api(libs.asciidoctorj.epub3)`.
+Conformément à `.agents/AGENT.adoc` (« ne jamais modifier les tests sans
+permission explicite »), les **deux accesseurs** sont conservés en `libs`
+(versions partagées) ; le reste utilise `bom`.
+
+== Suivant
+
+. **US-5** — `ci/run.sh` passe `-Pchannel`, shims `0.0.18`, alignement des 20
+  consommateurs ; le bump `conventions-plugin` + `PlatformCatalogAlignmentTest`
+  se fait avec permission explicite.
+. **US-7** — publication Central après le reset **2026-12-01** (DAG N0→N1→N2),
+  preuve POM/JAR/module + `url`/`scm`.

@@ -1,43 +1,40 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
-== Session 358 terminée — GBL-014-3a : catalogue Central projeté
+== Session 359 terminée — GBL-014-3b : BOM et catalogue channel-aware
 
-`gradle/central/libs.versions.toml` est **généré** depuis le catalogue JitPack
-(mêmes `[versions]`, mêmes alias, coordonnées `education.cccp.*` /
-`education.cccp.build.*` ; `v` retiré quand JitPack l'exige). Règle de projection
-dans `build.gradle.kts` : contrats, plugins, `video-kernel-gradle` →
-`video-kernel`, `api-key-pool-gradle` → `api-key-pool`.
+* Catalogue explicite **`bom`** dans `settings.gradle.kts`, sélectionné par
+  `-Pchannel` (`gradle/libs.versions.toml` = jitpack, `gradle/central/libs.versions.toml`
+  = central). Le BOM consomme `bom.*` pour toutes les **coordonnées**.
+* Catalogue publié par une publication dédiée `workspaceCatalog`
+  (`education.cccp:workspace-catalog`, `packaging = toml`, artefact = le TOML
+  du canal) ; le plugin `version-catalog` et son composant sont retirés.
+* BOM `java-platform` publié avec les contraintes du canal sélectionné.
+* Deux accesseurs restent en `libs` (versions partagées) car
+  `PlatformCatalogAlignmentTest` les pinne : `version = libs.versions.workspace.bom.get()`
+  et `api(libs.asciidoctorj.epub3)`. **Ne pas modifier les tests** sans
+  permission explicite.
+* `verifyCatalogueChannels` (catalogue) + **`verifyBomChannel`** (POM
+  `dependencyManagement` mono-canal) sont câblés à `check`.
+* **CI `43653277413` VERTE** (commit `fd7cbc3`).
 
-* `generateCentralCatalogue` (groupe `catalogue`) matérialise le fichier.
-* `verifyCatalogueChannels` (groupe `verification`, **câblé à `check`**) :
-  drift source→projection, catalogue JitPack sans coordonnée Central, catalogue
-  Central sans coordonnée JitPack, `[versions]` identiques.
-* **CI `43651793466` VERTE** (commit `842b402`).
-* Aucun test modifié, aucun secret, aucune publication.
+== Preuves locales (build, pas tests)
 
-== Dette — GBL-014-3b (BOM Central)
+* `verifyBomChannel` → `BOM OK: channel=jitpack, no 'education.cccp' coordinate`.
+* `verifyBomChannel -Pchannel=central` → `BOM OK: channel=central, no 'com.github.cccp-education' coordinate`.
+* POM central généré : 0 `com.github.cccp-education` dans
+  `<dependencyManagement>`, dépendances `education.cccp` / `education.cccp.build`.
 
-Le BOM `java-platform` reste bâti sur le catalogue `libs` par défaut (JitPack).
-`create("libs") { from(...) }` dans `settings` **échoue** (`Multiple 'from'
-invocations`) car le catalogue est auto-chargé. Deux options :
+== Prochaine session 360 — GBL-014-5
 
-1. renommer les fichiers (`gradle/jitpack/…` + `gradle/central/…`) et créer
-   `libs` explicitement — mais **15+ références** (tests `agent-contracts`,
-   `ci/run.sh`, docs, tests cross-borough) pointent `gradle/libs.versions.toml` ;
-2. un sous-build `central/` autonome (pattern `conventions-plugin`).
-
-`conventions-plugin` reste pinné `0.0.17` : `PlatformCatalogAlignmentTest`
-l'exige (le bump `0.0.18` + test = US-5, permission explicite requise par
-`.agents/AGENT.adoc`).
-
-== Prochaine session 359
-
-1. **GBL-014-3b** — BOM Central : trancher l'option (sous-build `central/` ou
-   migration des 15+ références), projeter les **contraintes** du BOM (pas
-   seulement le catalogue), preuve POM Central (`education.cccp`) + garde.
-2. **GBL-014-5** — `ci/run.sh` passe `-Pchannel`, shims `0.0.18`, alignement
-   des 20 consommateurs.
-3. **US-7** — publication Central après le reset **2026-12-01** (DAG N0→N1→N2).
+1. `ci/run.sh` passe `-Pchannel` (active `check` → gardes) ; workflows
+   `publish` par canal.
+2. Shims `conventions-plugin 0.0.18` + alignement des 20 consommateurs
+   (settings conditionnels, catalogue/BOM du canal) ; suppression du mélange
+   `bakery`.
+3. Le bump `conventions-plugin` dans ce catalogue + `PlatformCatalogAlignmentTest`
+   se fait **avec permission explicite** (test gardé).
+4. Puis US-7 : publication Central après le reset **2026-12-01**, preuve
+   POM/JAR/module + `url`/`scm`.
 
 == Règles dures
 

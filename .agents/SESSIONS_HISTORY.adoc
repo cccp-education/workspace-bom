@@ -784,3 +784,14 @@ versions, coordonnées Central ; `v` retiré pour `youtube-auth-plugin`).
 sous-build `central/` ou migration des 15+ références. `conventions-plugin`
 reste pinné `0.0.17` (`PlatformCatalogAlignmentTest`). Rapport
 `.agents/sessions/358-gbl-014-3a-catalogue-projection.adoc`.
+
+== Session 359 — GBL-014-3b : BOM et catalogue par canal — 2026-11-14
+
+Catalogue explicite `bom` dans `settings` (`-Pchannel`), BOM `java-platform`
+avec les contraintes du canal, publication `workspaceCatalog`
+(`packaging=toml`, artefact = TOML sélectionné), retrait du plugin
+`version-catalog`. Garde `verifyBomChannel` (POM `dependencyManagement`
+mono-canal) câblée à `check`. Les accesseurs `libs.versions…` et
+`libs.asciidoctorj.epub3` sont conservés (gardes `PlatformCatalogAlignmentTest`,
+pas de modification de test). CI `43653277413` verte (commit `fd7cbc3`).
+Rapport `.agents/sessions/359-gbl-014-3b-bom-channel.adoc`.
