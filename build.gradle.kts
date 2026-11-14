@@ -4,21 +4,13 @@ plugins {
     signing
     `java-platform`
     `maven-publish`
-    `version-catalog`
 }
 
 group = "education.cccp"
-version = libs.versions.workspace.bom.get()
+version = bom.versions.workspace.bom.get()
 
 javaPlatform {
     allowDependencies()
-}
-
-// ── MEM-CAT-2 — Catalog source : le toml est l'unique source de vérité (D1) ──
-catalog {
-    versionCatalog {
-        from(files("gradle/libs.versions.toml"))
-    }
 }
 
 dependencies {
@@ -30,132 +22,132 @@ dependencies {
     // Arrow component. The explicit constraints below remain the single source of
     // truth for the components we use; `arrow-integrations-jackson-module` is NOT
     // part of the stack (separate versioning 0.15.1) and stays pinned apart.
-    api(platform(libs.arrow.stack))
+    api(platform(bom.arrow.stack))
 
     constraints {
         // ── Kotlin ──────────────────────────────────────────────────────────
-        api(libs.kotlin.stdlib)
+        api(bom.kotlin.stdlib)
         // MEMPHIS-BOM-FIX — kotlin-stdlib-jdk8 is consumed WITHOUT a version by
         // document-gradle (`implementation(kotlin("stdlib-jdk8"))` + transitive
         // resolution). Central rejects a versionless runtime dependency
         // ("Dependency version information is missing"), so the BOM must pin it
         // exactly like kotlin-stdlib. Aliased and versioned by the toml (same
         // `kotlin` version ref).
-        api(libs.kotlin.stdlib.jdk8)
-        api(libs.kotlinx.serialization.json)
-        api(libs.kotlinx.coroutines.core)
-        api(libs.kotlinx.coroutines.reactive)
-        api(libs.kotlinx.coroutines.jdk8)
-        api(libs.kotlinx.coroutines.test)
+        api(bom.kotlin.stdlib.jdk8)
+        api(bom.kotlinx.serialization.json)
+        api(bom.kotlinx.coroutines.core)
+        api(bom.kotlinx.coroutines.reactive)
+        api(bom.kotlinx.coroutines.jdk8)
+        api(bom.kotlinx.coroutines.test)
 
         // ── Jackson ─────────────────────────────────────────────────────────
-        api(libs.jackson.databind)
-        api(libs.jackson.dataformat.yaml)
-        api(libs.jackson.module.kotlin)
-        api(libs.jackson.datatype.jsr310)
+        api(bom.jackson.databind)
+        api(bom.jackson.dataformat.yaml)
+        api(bom.jackson.module.kotlin)
+        api(bom.jackson.datatype.jsr310)
 
         // ── LangChain4j ─────────────────────────────────────────────────────
-        api(libs.langchain4j)
-        api(libs.langchain4j.ollama)
-        api(libs.langchain4j.open.ai)
-        api(libs.langchain4j.google.ai.gemini)
-        api(libs.langchain4j.mistral)
-        api(libs.langchain4j.anthropic)
-        api(libs.langchain4j.pgvector)
-        api(libs.langchain4j.minilm)
-        api(libs.langchain4j.hugging.face)
+        api(bom.langchain4j)
+        api(bom.langchain4j.ollama)
+        api(bom.langchain4j.open.ai)
+        api(bom.langchain4j.google.ai.gemini)
+        api(bom.langchain4j.mistral)
+        api(bom.langchain4j.anthropic)
+        api(bom.langchain4j.pgvector)
+        api(bom.langchain4j.minilm)
+        api(bom.langchain4j.hugging.face)
 
         // ── Koog ────────────────────────────────────────────────────────────
-        api(libs.koog.agents)
+        api(bom.koog.agents)
 
         // ── Logging ─────────────────────────────────────────────────────────
-        api(libs.logback.classic)
-        api(libs.slf4j.api)
+        api(bom.logback.classic)
+        api(bom.slf4j.api)
 
         // ── Database ────────────────────────────────────────────────────────
-        api(libs.r2dbc.postgresql)
-        api(libs.r2dbc.pool)
-        api(libs.r2dbc.spi)
-        api(libs.postgresql.jdbc)
+        api(bom.r2dbc.postgresql)
+        api(bom.r2dbc.pool)
+        api(bom.r2dbc.spi)
+        api(bom.postgresql.jdbc)
 
         // ── Processing ──────────────────────────────────────────────────────
-        api(libs.mapstruct)
-        api(libs.arrow.core)
-        api(libs.arrow.fx.coroutines)
-        api(libs.arrow.jackson)
-        api(libs.commons.io)
+        api(bom.mapstruct)
+        api(bom.arrow.core)
+        api(bom.arrow.fx.coroutines)
+        api(bom.arrow.jackson)
+        api(bom.commons.io)
 
         // ── Tests ───────────────────────────────────────────────────────────
-        api(libs.junit.jupiter)
-        api(libs.junit.platform.launcher)
-        api(libs.junit.platform.suite)
-        api(libs.cucumber.java)
-        api(libs.cucumber.junit.platform.engine)
-        api(libs.cucumber.picocontainer)
-        api(libs.testcontainers.postgresql)
-        api(libs.testcontainers.junit5)
-        api(libs.mockito.kotlin)
-        api(libs.mockito.junit.jupiter)
-        api(libs.assertj)
+        api(bom.junit.jupiter)
+        api(bom.junit.platform.launcher)
+        api(bom.junit.platform.suite)
+        api(bom.cucumber.java)
+        api(bom.cucumber.junit.platform.engine)
+        api(bom.cucumber.picocontainer)
+        api(bom.testcontainers.postgresql)
+        api(bom.testcontainers.junit5)
+        api(bom.mockito.kotlin)
+        api(bom.mockito.junit.jupiter)
+        api(bom.assertj)
 
         // ── Docker / Infrastructure ─────────────────────────────────────────
-        api(libs.docker.java.core)
-        api(libs.docker.java.transport.httpclient5)
+        api(bom.docker.java.core)
+        api(bom.docker.java.transport.httpclient5)
 
         // ── Git ─────────────────────────────────────────────────────────────
-        api(libs.jgit.core)
-        api(libs.jgit.ssh)
-        api(libs.jgit.archive)
-        api(libs.xz)
+        api(bom.jgit.core)
+        api(bom.jgit.ssh)
+        api(bom.jgit.archive)
+        api(bom.xz)
 
         // ── Asciidoctor ─────────────────────────────────────────────────────
-        api(libs.asciidoctorj)
-        api(libs.asciidoctorj.diagram)
-        api(libs.asciidoctorj.diagram.plantuml)
-        api(libs.asciidoctorj.epub3)
+        api(bom.asciidoctorj)
+        api(bom.asciidoctorj.diagram)
+        api(bom.asciidoctorj.diagram.plantuml)
+        api(bom.asciidoctorj.epub3)
 
         // ── PDF/Extraction ──────────────────────────────────────────────────
-        api(libs.pdfbox)
-        api(libs.tika.core)
-        api(libs.flexmark.all)
+        api(bom.pdfbox)
+        api(bom.tika.core)
+        api(bom.flexmark.all)
 
         // ── Other ───────────────────────────────────────────────────────────
-        api(libs.playwright)
+        api(bom.playwright)
 
         // ── Internal education.cccp contracts (N0) — source unique de vérité ──
-        api(libs.agent.contracts)
-        api(libs.codebase.contracts)
-        api(libs.llm.pool.contracts)
-        api(libs.opencode.session.contracts)
-        api(libs.i18n.contracts)
-        api(libs.pipeline.contracts)
-        api(libs.runtime.contracts)
-        api(libs.ocr.contracts)
-        api(libs.plantuml.contracts)
-        api(libs.catalog.contracts)
+        api(bom.agent.contracts)
+        api(bom.codebase.contracts)
+        api(bom.llm.pool.contracts)
+        api(bom.opencode.session.contracts)
+        api(bom.i18n.contracts)
+        api(bom.pipeline.contracts)
+        api(bom.runtime.contracts)
+        api(bom.ocr.contracts)
+        api(bom.plantuml.contracts)
+        api(bom.catalog.contracts)
 
         // ── Internal education.cccp plugins (N2) — pilotés par le BOM ───────
-        api(libs.bakery.plugin)
-        api(libs.capsule.plugin)
-        api(libs.codex.plugin)
-        api(libs.planner.plugin)
-        api(libs.slider.plugin)
-        api(libs.plantuml.plugin)
-        api(libs.readme.plugin)
-        api(libs.hyperframes.plugin)
-        api(libs.graphify.plugin)
-        api(libs.api.key.pool.plugin)
-        api(libs.codebase.plugin)
-        api(libs.conventions.plugin)
+        api(bom.bakery.plugin)
+        api(bom.capsule.plugin)
+        api(bom.codex.plugin)
+        api(bom.planner.plugin)
+        api(bom.slider.plugin)
+        api(bom.plantuml.plugin)
+        api(bom.readme.plugin)
+        api(bom.hyperframes.plugin)
+        api(bom.graphify.plugin)
+        api(bom.api.key.pool.plugin)
+        api(bom.codebase.plugin)
+        api(bom.conventions.plugin)
         // document-plugin : publié Central (S-241), consommé par bakery sans version (MEM-CAT-3)
-        api(libs.document.plugin)
+        api(bom.document.plugin)
 
         // ── Shared N1 libraries (education.cccp) — noyau vidéo neutre ────────
-        api(libs.video.kernel)
-        api(libs.youtube.auth.plugin)
+        api(bom.video.kernel)
+        api(bom.youtube.auth.plugin)
 
         // ── Force resolution (koog 26.0.2-1 vs testcontainers 17.0.0) ─────────
-        api(libs.jetbrains.annotations)
+        api(bom.jetbrains.annotations)
     }
 }
 
@@ -406,17 +398,28 @@ publishing {
 }
 
 // ── MEM-CAT-2 — Publication du version catalog `workspace-catalog` (D1/D8/D9) ──
-// Le toml `gradle/libs.versions.toml` est la source unique de vérité des versions
+// Le toml sélectionné par `-Pchannel` est la source unique de vérité des versions
 // cross-borough. Publié comme artefact Maven `education.cccp:workspace-catalog`,
 // consommé via settings.gradle.kts : versionCatalogs { create("ws") { from(...) } }.
-// Même cycle release que le BOM (même commit, même bundle nmcp).
+// Même cycle release que le BOM (même commit, même bundle nmcp). GBL-014 : le
+// artefact publié est la projection du canal (JitPack ou Central), jamais le
+// catalogue de l'autre canal.
+val publicationChannel = providers.gradleProperty("channel").getOrElse("jitpack")
+val selectedCatalogue = layout.projectDirectory.file(
+    if (publicationChannel == "central") {
+        "gradle/central/libs.versions.toml"
+    } else {
+        "gradle/libs.versions.toml"
+    },
+)
 publishing {
     publications {
-        create<MavenPublication>("versionCatalog") {
+        create<MavenPublication>("workspaceCatalog") {
             groupId = "education.cccp"
             artifactId = "workspace-catalog"
-            from(components["versionCatalog"])
+            artifact(selectedCatalogue) { extension = "toml" }
             pom {
+                packaging = "toml"
                 name.set("CCCP Education Workspace Catalog")
                 description.set("Version catalog for CCCP Education plugins — single source of truth for cross-borough versions, consumed via settings.gradle.kts versionCatalogs { from(...) }")
                 url.set("https://github.com/cccp-education/workspace-bom")
@@ -573,6 +576,35 @@ val verifyCatalogueChannels = tasks.register("verifyCatalogueChannels") {
     }
 }
 
+val verifyBomChannel = tasks.register("verifyBomChannel") {
+    group = "verification"
+    description =
+        "GBL-014-3b — the generated BOM POM must only contain the selected channel's coordinates"
+    dependsOn("generatePomFileForMavenPublication")
+    inputs.file(layout.buildDirectory.file("publications/maven/pom-default.xml"))
+    outputs.upToDateWhen { false }
+    doLast {
+        val pom = layout.buildDirectory.file("publications/maven/pom-default.xml")
+            .get().asFile.readText()
+        val dependencies = pom
+            .substringAfter("<dependencyManagement>")
+            .substringBefore("</dependencyManagement>")
+        val forbidden =
+            if (publicationChannel == "central") {
+                "com.github.cccp-education"
+            } else {
+                "education.cccp"
+            }
+        if (dependencies.contains(forbidden)) {
+            throw GradleException(
+                "BOM channel=$publicationChannel contains a forbidden '$forbidden' coordinate " +
+                    "in <dependencyManagement>"
+            )
+        }
+        println("BOM OK: channel=$publicationChannel, no '$forbidden' coordinate")
+    }
+}
+
 tasks.matching { it.name == "check" }.configureEach {
-    dependsOn(verifyCatalogueChannels)
+    dependsOn(verifyCatalogueChannels, verifyBomChannel)
 }

@@ -22,6 +22,15 @@ plugins {
     id("com.gradleup.nmcp.settings").version("1.5.0")
 }
 
+// GBL-014 — channel projection of the version catalog. The root build never
+// uses the auto-loaded `libs` catalog for the BOM: it consumes an explicit
+// `bom` catalog, selected by `-Pchannel` (default `jitpack`). This is what lets
+// the same commit publish a JitPack BOM and a Central BOM without mixing.
+val publicationChannel = providers.gradleProperty("channel").getOrElse("jitpack")
+require(publicationChannel == "jitpack" || publicationChannel == "central") {
+    "Unknown publication channel '$publicationChannel'. Expected 'central' or 'jitpack' (-Pchannel)."
+}
+
 val globalProps = java.util.Properties().also {
     val globalFile = file(System.getProperty("user.home") + "/.gradle/gradle.properties")
     if (globalFile.exists()) it.load(globalFile.inputStream())
@@ -39,6 +48,19 @@ dependencyResolutionManagement {
     repositories {
         mavenLocal()
         mavenCentral()
+    }
+    versionCatalogs {
+        create("bom") {
+            from(
+                files(
+                    if (publicationChannel == "central") {
+                        "gradle/central/libs.versions.toml"
+                    } else {
+                        "gradle/libs.versions.toml"
+                    },
+                ),
+            )
+        }
     }
 }
 
