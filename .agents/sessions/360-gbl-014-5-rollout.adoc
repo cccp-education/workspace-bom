@@ -292,3 +292,22 @@ CI verte après revert (`Test` `43681403218`, `Publish website` `43681403258`).
 Audit et recommandations : `bakery-plugin/.agents/sessions/
 279-gbl-014-5b-relabelled-catalogue-audit.adoc`. Réapplication = après
 réalignement amont (tags JitPack == commits Central).
+
+=== CI sur la dernière LTS Node (GBL-013-10) — 21 dépôts + office + privé
+
+* **Actions** migrées vers les majeures `node24`-natives : `checkout@v7`,
+  `cache@v6` (dont `save|restore`), `setup-java@v6`, `setup-node@v6`,
+  `upload-artifact@v7`, `download-artifact@v8`, `setup-gradle@v6`,
+  `setup-python@v7` — **21 dépôts publics** (179 refs / 35 fichiers),
+  `office` (109 refs / 25 fichiers + 10 miroirs), `foundry/private` (edster,
+  training, waiter, training-catalogue, quizz, payment-scaffold).
+* **Node LTS `26.13.1`** : `node-version: 26` dans les workflows ; plugin Gradle
+  Node épinglé `download = true` + `version = "26.13.1"` (bakery, 2 sites office)
+  — jamais le défaut du plugin ; edster `NODE_VERSION: 26.13.1` ; 7
+  `.yml.disabled` alignés.
+* **Image CI** : `ci-image/Dockerfile` `setup_22.x → setup_26.x`, image rebâtie
+  (`43689467097` ✅, smoke test `node --version` = **v26.13.1**), nouveau digest
+  `sha256:03ead378…` re-piné dans **21 fichiers / 20 dépôts** (capsule par
+  `workflow_dispatch` `43690893554`).
+* **Preuves** : 20 CI publiques vertes ; privé/office rouges **préexistants**
+  (0 step, blocage facturation/spending — annotation GitHub explicite).
