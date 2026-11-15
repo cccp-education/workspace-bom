@@ -1474,6 +1474,22 @@ _Ce dépôt est **porteur du contrat** (`contracts.ci`, source set `test`) et du
 * **US-3b ✅ S-359** : catalogue `bom` sélectionné par `-Pchannel`, BOM
   `java-platform` + `workspaceCatalog` (`packaging=toml`) par canal,
   `verifyBomChannel` (POM mono-canal), CI `43653277413`.
-* Rapports `.agents/sessions/358-gbl-014-3a-catalogue-projection.adoc` et
-  `359-gbl-014-3b-bom-channel.adoc`.
+* **US-5 ✅ S-360 (23 dépôts, hors `bakery`)** : settings conditionnels
+  `-Pchannel` (racine + sous-build), shim conventions `0.0.18`, `ci/run.sh`
+  `-Pchannel` + `verifyChannel` ; **15 CI vertes** (workspace-bom
+  `43660555075`, codebase `43660581478`, codex `43660583819`, document
+  `43660592324`, plantuml `43660608028`, hyperframes `43660600499`, graphify
+  `43660597309`, readme `43660609854`, planner `43660605330`, api-key-pool
+  `43660576312`, video-kernel `43660618970`, dashboard `43660589621`,
+  jhipster `43660602652`, runner `43660614282`, academy), 6 dépôts sans
+  workflow. **`bakery` → US 5b** (mélange structurel : catalogue JitPack +
+  `platform` BOM Central + 6 coordonnées Central en dur + 4 plateformes).
+  Échecs préexistants stash-prouvés : `bureau-plugin` (repositories du build
+  supplantant le DRM), `agile` root (`libs`), stubs `ticket`/`agile`.
+* **US-4 découvertes (S-360)** : `verifyChannel` n'existe que dans les builds
+  `.publishing` (aucune gate pour `academy`/`dashboard`/`jhipster`/`bureau`/
+  `container-provision`) ; `ChannelConsistency` est **textuel** (faux positifs
+  `FORBIDDEN_*` en `central`, inopérant aujourd'hui).
+* Rapports `.agents/sessions/358-gbl-014-3a-catalogue-projection.adoc`,
+  `359-gbl-014-3b-bom-channel.adoc` et `360-gbl-014-5-rollout.adoc`.
 

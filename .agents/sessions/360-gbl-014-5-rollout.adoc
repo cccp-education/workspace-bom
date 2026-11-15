@@ -1,0 +1,177 @@
+= Session 360 — GBL-014-5 : rollout du canal de publication (23 dépôts)
+:date: 2026-11-15
+:scope: workspace-bom (propriétaire GBL-014) + 21 dépôts publics consommateurs
+:statut: ✅ migration poussée — 15/21 dépôts avec CI verte, 6 sans CI, `bakery` reporté
+
+== Contexte
+
+La session 229 (globale) ouvre la mission GBL-014-5 : projeter le canal de
+publication (`-Pchannel=jitpack|central`, défaut `jitpack`) sur **tous** les
+dépôts publics qui portaient encore le shim `conventions-plugin:0.0.17`
+(`capsule` et `slider` faits aux S-227/S-083, `magic-stick` = exception).
+
+Constat d'ouverture (mesuré sur disque) : **51** `settings.gradle.kts` portaient
+le shim (49 en `0.0.17`, 2 en `0.0.16` — `bakery`), répartis sur **22 dépôts**.
+
+== Modèle appliqué (identique à `capsule`/`slider`)
+
+[source,kotlin]
+----
+// GBL-014 — the publication channel is a build property, never a branch.
+val publicationChannel = providers.gradleProperty("channel").getOrElse("jitpack")
+
+if (publicationChannel == "jitpack") {
+    // CNV-16 — … (commentaire historique conservé)
+    pluginManagement.repositories.maven("https://jitpack.io")
+    pluginManagement.resolutionStrategy.eachPlugin { … useModule("…:0.0.18") }
+}
+…
+if (publicationChannel == "jitpack") {
+    dependencyResolutionManagement.repositories.maven("https://jitpack.io")
+}
+----
+
+* Le dépôt JitPack **et** le shim ne sont déclarés que sur le canal `jitpack` ;
+  en `central` le build résout les markers `education.cccp.*` et ne contient
+  aucune coordonnée JitPack (`ChannelConsistency` le vérifie).
+* Shim bumpé `0.0.17|0.0.16` → **`0.0.18`** ; `verifyChannel` (conventions
+  0.0.18) est câblé à `check` **dès que `-Pchannel` est explicite**.
+* `ci/run.sh` : `channel="${CHANNEL:-jitpack}"`, `-Pchannel="$channel"` sur
+  chaque invocation Gradle ; `verifyChannel` ajouté aux jobs qui n'exécutent pas
+  `check`/`build` **et** dont le build applique `.publishing`.
+
+== Dépôts migrés (21 + workspace-bom)
+
+[cols="2,1,2", options="header"]
+|===
+| Dépôt | Commit | Remarque
+
+| workspace-bom (owner) | `b278b2d`, `123692c` | root + **10 contrats N0** ; `ci/run.sh` (`fast`/`test`/`publish`) ; blancs normalisés (ktlint)
+| academy-gradle | `12c5292` | root + `academy-plugin` + `dogfood`
+| agile-gradle | `43affe7` | root (sous-build `agile-plugin` = stub sans wrapper, préexistant)
+| api-key-pool-gradle | `6443267` | root + plugin + `ci/run.sh`
+| bureau-gradle | `b4ced65` | root + plugin
+| codebase-gradle | `20d058b` | root + plugin + `ci/run.sh`
+| codex-gradle | `7f6e8f0` | root + plugin + `ci/run.sh`
+| container-provision-gradle | `9c4f5fa` | root + plugin
+| dashboard-gradle | `f94e6da` | root (2 blocs `eachPlugin`) réécrit + plugin + `ci/run.sh`
+| document-gradle | `b96307d` | root + plugin + `ci/run.sh` (`central` → `-Pchannel=central`)
+| flow-gradle | `a5d9da1` | root + plugin
+| graphify-gradle | `7c07ca6` | root + plugin + `ci/run.sh`
+| hyperframes-gradle | `0556074` | root + plugin + `ci/run.sh`
+| jhipster-gradle-plugins | `d639f61` | root + `ci/run.sh`
+| planner-gradle | `50759ed` | root + plugin + `ci/run.sh`
+| plantuml-gradle | `c5c85e7` | root + plugin + `ci/run.sh`
+| readme-gradle | `1109181` | root + plugin + `ci/run.sh`
+| review-gradle | `26f9f67` | root + plugin
+| runner-gradle | `7aeae74` | root (bloc `when { … }` + shim bakery) réécrit + `ci/run.sh`
+| ticket-gradle | `99f429c` | root (sous-build = stub sans settings, préexistant)
+| video-kernel-gradle | `85b9808` | `video-kernel-plugin` + `youtube-auth-plugin` + `ci/run.sh`
+|===
+
+== Cas particuliers traités
+
+* **`dashboard` root** : le fichier portait **deux** blocs `eachPlugin` (shim
+  `education.cccp.dashboard` avec préférence mavenLocal, puis shim conventions).
+  Une migration mécanique n'aurait câblé que la ligne `dependencyResolution…` ;
+  le fichier a été réécrit à la main (les deux blocs sont dans le `if`).
+* **`runner` root** : le shim utilisait `when { … }` avec une branche
+  `education.cccp.bakery` → `0.0.39` (JitPack). Réécrit à la main ; le catalogue
+  `ws` devient channel-aware (`education.cccp:workspace-catalog` en central vs
+  `com.github.cccp-education.workspace-bom:workspace-catalog` en jitpack) — même
+  version `0.0.136`.
+* **`document` `ci/run.sh`** : la cible `publish central` force
+  `-Pchannel=central` (une tâche nmcp est central-only, `PublishChannelGuard`).
+* **`jhipster`** : aucun build ne porte `verifyChannel` au root (les
+  sous-projets appliquent `.lint` seulement) → `-Pchannel` passé, pas de gate.
+
+== Preuves locales (Local = Build, jamais de test)
+
+* `workspace-bom` : 10 contrats `compileKotlin compileTestKotlin -Pchannel=jitpack`
+  **VERTS** (`runtime-contracts` exige d'abord `publishToMavenLocal` des 2
+  siblings runtime — c'est exactement ce que fait `ci/run.sh test`) ;
+  `verifyBomChannel` + `verifyCatalogueChannels` VERTS.
+* `verifyChannel` **OK** (`CHANNEL OK: settings.gradle.kts is consistent with
+  channel=jitpack`) sur `agent-contracts`, `api-key-pool-plugin`,
+  `graphify-plugin`… et par construction sur les builds `.publishing`.
+* Compiles VERTS : `academy-plugin`, `readme-plugin`, `planner-plugin`,
+  `hyperframes-plugin`, `codex-plugin`, `document-plugin`, `plantuml-plugin`,
+  `codebase-plugin`, `review-plugin`, `video-kernel-plugin`,
+  `youtube-auth-plugin`, `dashboard-plugin`, `api-key-pool-plugin`,
+  `graphify-plugin`, `container-provision-plugin`, `flow-plugin` (`-p`),
+  `jhipster` (root) ; `tasks` VERTS sur `runner` et `dashboard` (racines sans
+  Kotlin). `bash -n` sur les 16 `ci/run.sh` touchés.
+
+== Échecs préexistants (stash-prouvés, hors périmètre)
+
+* `bureau-plugin` : `compileTestKotlin` échoue sur
+  `com.github.cccp-education.workspace-bom:workspace-bom:0.0.136` introuvable —
+  le build déclare ses propres `repositories {}`, qui **supplantent** le
+  `dependencyResolutionManagement` des settings. Repro­duit à HEAD (stash) →
+  ce n'est pas la migration. Correctif = projeter les `repositories` du build
+  sur le canal.
+* `agile-gradle` (root) : `Unresolved reference 'libs'` (build DSL sans
+  catalogue) — baseline documentée ; `agile-plugin` n'a ni wrapper ni settings.
+* `ticket-plugin` : ni wrapper ni settings (stub de bootstrap).
+
+== Cas `bakery` — reporté (décision motivée)
+
+`bakery` est le seul dépôt où le **mélange est structurel** : le catalogue `ws`
+vient de JitPack, mais le build importe `platform("education.cccp:workspace-bom:…")`
+**et** des coordonnées Central en dur (`education.cccp:document-plugin`,
+`plantuml-plugin`, `api-key-pool:0.0.1`, `i18n-contracts:0.0.4`,
+`plantuml-contracts`, plus 4 `platform(...)` dans les source sets). Le retrait du
+`platform` seul laisserait des versions manquantes (`document-plugin` sans
+version) ; la projection complète = ~6 coordonnées + 4 plateformes + le
+catalogue. C'est une **US dédiée** (risque build Kover/Node/e2e), pas une étape
+mécanique. Recommandation : `GBL-014-5b` (projection coordonnées `bakery`), ou
+bascule `channel=central` quand US-7 sera ouverte.
+
+== Découvertes pour US-4 (gardes)
+
+* `verifyChannel` n'existe **que** dans les builds qui appliquent
+  `education.cccp.build.publishing`. `academy`, `dashboard`, `jhipster`,
+  `bureau`, `container-provision` (plugin-publish direct + `.lint`) n'ont donc
+  **aucune** gate de canal disponible aujourd'hui — leurs settings sont migrés
+  mais non gardés. À couvrir par US-4 (ou en enregistrant `verifyChannel` dans
+  `.lint`).
+* `ChannelConsistency` est **textuel** : en `central`, le corps du
+  `if (publicationChannel == "jitpack") { … }` contient encore les chaînes
+  `https://jitpack.io` et `usemodule(` et déclencherait `FORBIDDEN_*` si la
+  configuration aboutissait (elle n'aboutit pas : markers non publiés). À
+  traiter en US-4 (audit sémantique ou marqueur).
+
+== Preuves CI (run du commit poussé)
+
+[cols="2,1,3", options="header"]
+|===
+| Dépôt | Run | Statut
+
+| workspace-bom | `43660555075` | ✅ `runAllTests` (21 jobs)
+| codebase-gradle | `43660581478` | ✅ `CI`
+| codex-gradle | `43660583819` | ✅ `Test`
+| document-gradle | `43660592324` | ✅ `Test`
+| plantuml-gradle | `43660608028` | ✅ `Test`
+| hyperframes-gradle | `43660600499` | ✅ `Test`
+| graphify-gradle | `43660597309` | ✅ `Test`
+| readme-gradle | `43660609854` | ✅ `CI`
+| planner-gradle | `43660605330` | ✅ `Test`
+| api-key-pool-gradle | `43660576312` | ✅ `Lint`
+| academy-gradle | (run `12c5292` annulé par le push parallèle) | ✅ sur `b35da20` (contient `12c5292`)
+| video-kernel-gradle | `43660618970` | ✅ `Test`
+| dashboard-gradle | `43660589621` | ✅ `Lint`
+| jhipster-gradle-plugins | `43660602652` | ✅ `Lint`
+| runner-gradle | `43660614282` | ✅ `Test`
+|===
+
+*Six dépôts n'ont **aucun workflow** (`bureau`, `container-provision`, `flow`,
+`review`, `ticket`, `agile`) : preuve locale uniquement (`compile*`, `tasks`,
+`bash -n`).*
+*Une session parallèle a poussé `b35da20` sur `academy` juste après ; la CI
+verte porte sur ce commit, qui contient la migration.*
+
+== Suivi
+
+* Aucune publication, aucun tag, aucun test lancé localement, zéro secret.
+* US-5 restant : `bakery` (US dédiée, cf. ci-dessus) ; US-4 gardes (2
+  découvertes consignées) ; US-6 (envoi humain) ; US-7 (après 2026-12-01).

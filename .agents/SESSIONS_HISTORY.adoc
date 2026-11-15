@@ -795,3 +795,27 @@ mono-canal) câblée à `check`. Les accesseurs `libs.versions…` et
 `libs.asciidoctorj.epub3` sont conservés (gardes `PlatformCatalogAlignmentTest`,
 pas de modification de test). CI `43653277413` verte (commit `fd7cbc3`).
 Rapport `.agents/sessions/359-gbl-014-3b-bom-channel.adoc`.
+
+== Session 360 — GBL-014-5 : rollout du canal sur 21 dépôts — 2026-11-15
+
+Migration mécanique de **21 dépôts** (+ workspace-bom) : `settings.gradle.kts`
+(racine et sous-build) conditionnels sur `-Pchannel` (défaut `jitpack`), dépôt
+JitPack + shim `useModule(...)` **seulement** en `jitpack`, shim conventions
+`0.0.17|0.0.16 → 0.0.18`, `ci/run.sh` passant `-Pchannel` et `verifyChannel`
+là où le build applique `education.cccp.build.publishing`. Cas manuels :
+`dashboard` root (deux blocs `eachPlugin`), `runner` root (`when { … }` +
+shim bakery), `document` (`publish central` → `-Pchannel=central`),
+`jhipster` (pas de gate disponible). **15 CI vertes** (workspace-bom
+`43660555075`, codebase `43660581478`, codex `43660583819`, document
+`43660592324`, plantuml `43660608028`, hyperframes `43660600499`, graphify
+`43660597309`, readme `43660609854`, planner `43660605330`, api-key-pool
+`43660576312`, video-kernel `43660618970`, dashboard `43660589621`, jhipster
+`43660602652`, runner `43660614282`, academy `b35da20`), 6 dépôts sans
+workflow. **`bakery` reporté** (mélange structurel catalogue JitPack +
+`platform` BOM Central + 6 coordonnées Central en dur) → US 5b. Échecs
+préexistants stash-prouvés : `bureau-plugin` (repositories de build
+supplantant le DRM), `agile` root (`libs`), `ticket`/`agile` plugins (stubs).
+2 découvertes pour US-4 : `verifyChannel` n'existe qu'avec `.publishing` ;
+`ChannelConsistency` est textuel (faux positifs en `central`). Aucun test
+local, aucune publication, zéro secret. Rapport
+`.agents/sessions/360-gbl-014-5-rollout.adoc`.

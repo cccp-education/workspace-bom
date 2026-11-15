@@ -339,3 +339,17 @@
   `check` ; CI `43653277413` verte.
 * Accesseurs `libs.versions…`/`libs.asciidoctorj.epub3` conservés (gardes).
 * Rapport `.agents/sessions/359-gbl-014-3b-bom-channel.adoc`.
+
+== S-360 — GBL-014-5 : rollout du canal de publication (21 dépôts) ✅
+
+* Settings conditionnels `-Pchannel` (racine + sous-build) sur `academy`,
+  `agile`, `api-key-pool`, `bureau`, `codebase`, `codex`, `container-provision`,
+  `dashboard`, `document`, `flow`, `graphify`, `hyperframes`, `jhipster`,
+  `planner`, `plantuml`, `readme`, `review`, `runner`, `ticket`,
+  `video-kernel` + `workspace-bom` (root + 10 contrats N0).
+* Shim conventions `0.0.18` ; JitPack repo + shim uniquement en `jitpack`.
+* `ci/run.sh` : `-Pchannel` + `verifyChannel` (16 fichiers).
+* 15 CI vertes (workspace-bom `43660555075`, codebase `43660581478`, …) ;
+  6 dépôts sans workflow ; `bakery` reporté (US 5b) ;
+  échecs préexistants stash-prouvés (`bureau`, `agile`, stubs `ticket`/`agile`).
+* Rapport `.agents/sessions/360-gbl-014-5-rollout.adoc`.
