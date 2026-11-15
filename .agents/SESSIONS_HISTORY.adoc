@@ -868,3 +868,17 @@ catalogue local) + shim `0.0.19` (`f55a2b0`) ; compiles VERTS, aucune CI.
   JitPack des plugins cross-borough ne sont pas les commits Central du même
   numéro (dérive `document 0.0.30` / DOC-OUT-2). CI verte après revert.
   Audit : `bakery-plugin/.agents/sessions/279-…`.
+
+== Session 360 (suite 4) — CI sur la dernière LTS Node — 2026-11-15
+
+Avertissements « Node.js 20 is deprecated » soldés : actions migrées vers les
+majeures `node24`-natives (`checkout@v7`, `cache@v6` dont `save|restore`,
+`setup-java@v6`, `setup-node@v6`, `upload-artifact@v7`,
+`download-artifact@v8`, `setup-gradle@v6`, `setup-python@v7`) sur **21 dépôts
+publics** (179 refs / 35 fichiers), `office` (109 refs / 24 fichiers + 11
+miroirs) et `foundry/private` ; **Node aligné sur la LTS `26.13.1`**
+(`node-version: 26` ; blocs Gradle `node {}` → `download = true` +
+`version = "26.13.1"` ; edster `NODE_VERSION: 26.13.1` ; 7 `.yml.disabled`).
+CI publiques vertes ; privé/office rouges préexistants (0 step, facturation).
+Reste : image `cccp-ci-base` encore Node 22 (rebuild + re-pin digest), actions
+legacy `gradle/wrapper-validation-action@v1` / `gradle/gradle-build-action@v2`.
