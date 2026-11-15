@@ -27,7 +27,7 @@ runs:
   steps:
     - name: Restore shared Gradle / Maven dependency cache
       id: common-cache
-      uses: actions/cache/restore@v4
+      uses: actions/cache/restore@v6
       with:
         # Dependency *bytes* + Gradle generated artefacts shared by every job.
         # The `generated-gradle-jars` (gradle-api ≈185 MB), `kotlin-dsl` (≈86 MB)

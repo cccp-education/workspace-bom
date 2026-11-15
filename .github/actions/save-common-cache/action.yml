@@ -21,7 +21,7 @@ runs:
   using: composite
   steps:
     - name: Save shared Gradle / Maven dependency cache
-      uses: actions/cache/save@v4
+      uses: actions/cache/save@v6
       continue-on-error: true
       with:
         path: |
