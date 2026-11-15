@@ -796,9 +796,9 @@ mono-canal) câblée à `check`. Les accesseurs `libs.versions…` et
 pas de modification de test). CI `43653277413` verte (commit `fd7cbc3`).
 Rapport `.agents/sessions/359-gbl-014-3b-bom-channel.adoc`.
 
-== Session 360 — GBL-014-5 : rollout du canal sur 21 dépôts — 2026-11-15
+== Session 360 — GBL-014-5 : rollout du canal sur 25 dépôts — 2026-11-15
 
-Migration mécanique de **21 dépôts** (+ workspace-bom) : `settings.gradle.kts`
+Migration mécanique de **25 dépôts** (+ workspace-bom) : `settings.gradle.kts`
 (racine et sous-build) conditionnels sur `-Pchannel` (défaut `jitpack`), dépôt
 JitPack + shim `useModule(...)` **seulement** en `jitpack`, shim conventions
 `0.0.17|0.0.16 → 0.0.18`, `ci/run.sh` passant `-Pchannel` et `verifyChannel`
@@ -842,7 +842,7 @@ Rapport `.agents/sessions/360-gbl-014-5-rollout.adoc` (section « Compléments �
 
 == Session 360 (suite 2) — rollout conventions 0.0.19 + bureau — 2026-11-15
 
-Shim `conventions-plugin 0.0.18 → 0.0.19` sur **21 dépôts** (lot A 10 +
+Shim `conventions-plugin 0.0.18 → 0.0.19` sur **25 dépôts** (lot A 10 +
 lot B 11, racine et sous-builds), une ligne par fichier, aucun test modifié,
 `workspace-bom` intact. Gates : `CHANNEL OK` partout où `verifyChannel` existe,
 **aucun finding** ; trou de gate confirmé pour `container-provision`

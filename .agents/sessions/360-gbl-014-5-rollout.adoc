@@ -219,7 +219,7 @@ mécanique incomplète). Corrigé (repository conditionnel), compiles +
 `dashboard` `16b4a1c`, `graphify` `c3684c4`, `hyperframes` `dae63eb` — **5 CI
 vertes**.
 
-=== Rollout `conventions-plugin 0.0.19` — 21 dépôts (sous-agents)
+=== Rollout `conventions-plugin 0.0.19` — 25 dépôts (sous-agents)
 
 Shim `0.0.18 → 0.0.19` dans tous les `settings.gradle.kts` consommateurs
 (racine + sous-builds), une seule ligne changée par fichier, **aucun test

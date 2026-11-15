@@ -1511,7 +1511,7 @@ _Ce dépôt est **porteur du contrat** (`contracts.ci`, source set `test`) et du
 
 == GBL-014-4 — rollout `conventions-plugin 0.0.19` (suite S-360)
 
-* ✅ **Rollout fait** sur **21 dépôts** (lot A 10, lot B 11, racine +
+* ✅ **Rollout fait** sur **25 dépôts** (lot A 10, lot B 11, racine +
   sous-builds) : shim `0.0.18 → 0.0.19`, une ligne par fichier, aucun test
   modifié. `CHANNEL OK` partout où `verifyChannel` existe, **zéro finding**
   `FORBIDDEN_*`/`MISSING_*`. CI vertes : academy, api-key-pool, dashboard,
