@@ -324,3 +324,18 @@
   `.agents/sessions/356-gbl-013-us9-portability-gate.adoc`.
 
 * Session 357 — EAGER : publication JitPack canal unique (AGENT/PROMPT_REPRISE alignés ; Central/Portal retirés) — 2026-11-14.
+
+== S-358 — GBL-014-3a : catalogue Central projeté ✅
+
+* `gradle/central/libs.versions.toml` généré depuis le catalogue JitPack.
+* `generateCentralCatalogue` + `verifyCatalogueChannels` (drift + no-mix,
+  câblé à `check`) ; CI `43651793466` verte.
+* Rapport `.agents/sessions/358-gbl-014-3a-catalogue-projection.adoc`.
+
+== S-359 — GBL-014-3b : BOM/catalogue channel-aware ✅
+
+* Catalogue `bom` sélectionné par `-Pchannel`, BOM `java-platform` et
+  `workspaceCatalog` (`packaging=toml`) par canal, `verifyBomChannel` câblé à
+  `check` ; CI `43653277413` verte.
+* Accesseurs `libs.versions…`/`libs.asciidoctorj.epub3` conservés (gardes).
+* Rapport `.agents/sessions/359-gbl-014-3b-bom-channel.adoc`.
