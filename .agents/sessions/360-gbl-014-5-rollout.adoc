@@ -147,7 +147,7 @@ bascule `channel=central` quand US-7 sera ouverte.
 |===
 | Dépôt | Run | Statut
 
-| workspace-bom | `43660555075` | ✅ `runAllTests` (21 jobs)
+| workspace-bom | `43660555075` (code), `43661975362` (docs) | ✅ `runAllTests` (21 jobs)
 | codebase-gradle | `43660581478` | ✅ `CI`
 | codex-gradle | `43660583819` | ✅ `Test`
 | document-gradle | `43660592324` | ✅ `Test`
