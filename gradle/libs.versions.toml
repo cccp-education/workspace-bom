@@ -59,7 +59,7 @@ graphify-plugin = "0.0.5"
 dashboard-plugin = "0.0.4"
 api-key-pool-plugin = "0.0.2"
 codebase-plugin = "0.0.18"
-conventions-plugin = "0.0.19"
+conventions-plugin = "0.0.20"
 
 # ── Shared libraries (education.cccp, N1) ─────────────────────────────────────
 video-kernel = "0.9.1"

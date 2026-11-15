@@ -78,9 +78,9 @@ class PlatformCatalogAlignmentTest {
             )
         }
         assertEquals(
-            "0.0.19",
+            "0.0.20",
             tomlVersions["conventions-plugin"],
-            "conventions-plugin 0.0.19 (JitPack, GBL-014-4 — verifyChannel en .lint, audit sémantique)",
+            "conventions-plugin 0.0.20 (JitPack, GBL-014-4b — verifyChannel enregistré par toutes les conventions)",
         )
     }
 
