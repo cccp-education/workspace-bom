@@ -18,6 +18,8 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
 job="${1:-}"
+# GBL-014 — publication channel (jitpack default until the Sonatype reset).
+channel="${CHANNEL:-jitpack}"
 
 contracts=(
   agent-contracts
@@ -40,7 +42,7 @@ publish_runtime_siblings() {
   local version
   version="$(workspace_version)"
   for module in i18n-contracts opencode-session-contracts; do
-    ( cd "$module" && ./gradlew publishToMavenLocal --no-daemon --console=plain -Pversion="$version" )
+    ( cd "$module" && ./gradlew publishToMavenLocal --no-daemon --console=plain -Pversion="$version" -Pchannel="$channel" )
   done
 }
 
@@ -49,21 +51,21 @@ check_n0_contracts() {
   printf '%s\n' "${contracts[@]}" |
     xargs -I{} -P "${N0_CONCURRENCY:-5}" bash -c '
       set -euo pipefail
-      ( cd "$1" && ./gradlew check --no-daemon --console=plain \
+      ( cd "$1" && ./gradlew check --no-daemon --console=plain -Pchannel="$3" \
           -Dorg.gradle.daemon.registry.base="$2/daemon-registry-$1" )
-    ' _ {} "$registry_root"
+    ' _ {} "$registry_root" "$channel"
 }
 
 case "$job" in
   fast)
-    ./gradlew verifyCiMatrixCoverage --no-daemon --console=plain
+    ./gradlew verifyCiMatrixCoverage --no-daemon --console=plain -Pchannel="$channel"
     ;;
   test)
     publish_runtime_siblings
     check_n0_contracts
     ;;
   publish)
-    ./gradlew publishToMavenLocal --no-daemon --console=plain
+    ./gradlew publishToMavenLocal --no-daemon --console=plain -Pchannel="$channel"
     ;;
   *)
     printf 'unsupported job for workspace-bom: %s\n' "${job:-<none>}" >&2

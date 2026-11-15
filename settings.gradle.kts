@@ -7,13 +7,21 @@ pluginManagement {
         mavenCentral()
     }
 }
-// CNV-16 — JitPack mirror for the education.cccp.build.* conventions
-// (bypasses Sonatype / Gradle Plugin Portal). The JitPack tag is pinned while
-// the canonical plugin declarations may stay on the released version.
-pluginManagement.repositories.maven("https://jitpack.io")
-pluginManagement.resolutionStrategy.eachPlugin {
-    if (requested.id.id.startsWith("education.cccp.build.")) {
-        useModule("com.github.cccp-education.conventions-gradle:conventions-plugin:0.0.17")
+// GBL-014 — the publication channel is a build property, never a branch.
+val publicationChannel = providers.gradleProperty("channel").getOrElse("jitpack")
+require(publicationChannel == "jitpack" || publicationChannel == "central") {
+    "Unknown publication channel '$publicationChannel'. Expected 'central' or 'jitpack' (-Pchannel)."
+}
+
+if (publicationChannel == "jitpack") {
+    // CNV-16 — JitPack mirror for the education.cccp.build.* conventions
+    // (bypasses Sonatype / Gradle Plugin Portal). The JitPack tag is pinned while
+    // the canonical plugin declarations may stay on the released version.
+    pluginManagement.repositories.maven("https://jitpack.io")
+    pluginManagement.resolutionStrategy.eachPlugin {
+        if (requested.id.id.startsWith("education.cccp.build.")) {
+            useModule("com.github.cccp-education.conventions-gradle:conventions-plugin:0.0.18")
+        }
     }
 }
 
@@ -26,10 +34,7 @@ plugins {
 // uses the auto-loaded `libs` catalog for the BOM: it consumes an explicit
 // `bom` catalog, selected by `-Pchannel` (default `jitpack`). This is what lets
 // the same commit publish a JitPack BOM and a Central BOM without mixing.
-val publicationChannel = providers.gradleProperty("channel").getOrElse("jitpack")
-require(publicationChannel == "jitpack" || publicationChannel == "central") {
-    "Unknown publication channel '$publicationChannel'. Expected 'central' or 'jitpack' (-Pchannel)."
-}
+// The channel property itself is declared at the top of this file (GBL-014).
 
 val globalProps = java.util.Properties().also {
     val globalFile = file(System.getProperty("user.home") + "/.gradle/gradle.properties")
@@ -66,4 +71,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "workspace-bom"
 
-dependencyResolutionManagement.repositories.maven("https://jitpack.io")
+if (publicationChannel == "jitpack") {
+    dependencyResolutionManagement.repositories.maven("https://jitpack.io")
+}
