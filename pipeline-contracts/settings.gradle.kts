@@ -22,7 +22,6 @@ if (publicationChannel == "jitpack") {
     }
 }
 
-
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention").version("0.10.0")
     id("com.gradleup.nmcp.settings").version("1.5.0")
