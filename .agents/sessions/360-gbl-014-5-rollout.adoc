@@ -260,3 +260,35 @@ junit-platform 1.14.3, cucumber 7.34.3, kotlin-test 2.4.10). Shim
 `0.0.19` (racine `f55a2b0`). `compileKotlin`/`compileTestKotlin` VERTS.
 Aucune CI (dépôt sans workflow). Reste : adopter `.lint`/`.publishing` pour
 obtenir `verifyChannel`.
+
+=== Catalogue `conventions-plugin` 0.0.19 puis 0.0.20 (sous-agents)
+
+* **0.0.17 → 0.0.19** (commit `6641764`) : `gradle/libs.versions.toml` +
+  `gradle/central/libs.versions.toml` (régénéré) + le littéral attendu de
+  `PlatformCatalogAlignmentTest` (permission pilote explicite). CI
+  `43677468113` **22/22** (après rerun : `Bakery · unit` flaky, réseau au
+  configuration time — non imputable).
+* **0.0.19 → 0.0.20** (commit `11195bf`) : `conventions-plugin 0.0.20` enregistre
+  `verifyChannel` dans **toutes** les conventions (`.cucumber`, `.library`,
+  `.gradle-plugin`, `.functional-test`, `.kover`, `.lint`, `.publishing`, … ;
+  idempotent, sémantique `check`-si-`-Pchannel` conservée, 7 TestKit nouveaux).
+  Tag `v0.0.20`, JitPack 200 (POM/JAR/`.module` + marker). `container-provision`
+  repinné `0.0.20` et **`CHANNEL OK`** à la racine ; compiles VERTS (aucune CI).
+  Catalogue repinné `0.0.20` ici, garde de test mise à jour.
+
+=== Dette `bakery` — investiguée, non soldée (patch reverté)
+
+Le catalogue JitPack **relabellé** existe bien à `0.0.136` (les tags `v0.0.133`
+et `0.0.133` servent l'ancien contenu Central ; `v0.0.136` → 404). L'adoption a
+été implémentée et **vérifiée verte localement** (5 source sets, `CHANNEL OK`,
+zéro coordonnée `education.cccp` en jitpack) puis **revertée** (patch `ee496ac3`
+→ `2c9451a5`) : le catalogue `0.0.136` pointe les **tags JitPack** de
+`document`/`codebase`/`graphify`/`plantuml`, qui ne sont pas les commits des
+releases Central du même numéro — `document v0.0.30` (tag `7cdff0e`) contient
+`DOC-OUT-2` (`TranslationOutputIntegrity`) que le JAR Central `0.0.30` n'a pas →
+le garde structurel de bakery rejette le faux traducteur gelé → BDD `marker [en]`
+rouge. Décision : ne pas mélanger les canaux et ne pas adapter les tests gelés.
+CI verte après revert (`Test` `43681403218`, `Publish website` `43681403258`).
+Audit et recommandations : `bakery-plugin/.agents/sessions/
+279-gbl-014-5b-relabelled-catalogue-audit.adoc`. Réapplication = après
+réalignement amont (tags JitPack == commits Central).

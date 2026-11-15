@@ -1528,3 +1528,24 @@ _Ce dépôt est **porteur du contrat** (`contracts.ci`, source set `test`) et du
   `PlatformCatalogAlignmentTest` → **permission explicite**) ; gate de
   `container-provision` (applique `.cucumber`, ni `.lint` ni `.publishing`) et
   des racines agrégateurs ; adoption `.lint`/`.publishing` par `bureau`.
+
+== GBL-014-4b — `verifyChannel` dans toutes les conventions (S-360, suite)
+
+* ✅ **`conventions-plugin 0.0.20`** (tag `v0.0.20`, JitPack 200) : la garde est
+  enregistrée par **toutes** les conventions (`.cucumber`, `.library`,
+  `.gradle-plugin`, `.functional-test`, `.kover`, `.lint`, `.publishing`,
+  `.logback-exclusion` ; idempotent, sémantique « `check` ssi `-Pchannel`
+  explicite » conservée), 7 TestKit nouveaux ; CI `43678844589`/`43679188725`/
+  `43679642825`.
+* ✅ **Catalogue** `conventions-plugin` : `0.0.17 → 0.0.19` (`6641764`, CI
+  `43677468113` 22/22) puis `→ 0.0.20` (`11195bf`), les deux catalogues
+  régénérés, garde `PlatformCatalogAlignmentTest` alignée.
+* ✅ **`container-provision`** : shim `0.0.20` (`b06b79a`), `CHANNEL OK` à la
+  racine, compiles VERTS (aucune CI). Le sous-build `container-provision-plugin`
+  est autonome et n'applique encore aucune convention — décision de rollout.
+* 🟡 **Dette `bakery`** (relabellé `0.0.136`) : implémentée et vérifiée verte
+  localement puis **revertée** (`ee496ac3` → `2c9451a5`) — les tags JitPack
+  (`document`, `codebase`, `graphify`, `plantuml`) ne sont pas les commits
+  Central du même numéro (dérive DOC-OUT-2 sur `document 0.0.30`).
+  Réapplication = après réalignement amont ; audit
+  `bakery-plugin/.agents/sessions/279-gbl-014-5b-relabelled-catalogue-audit.adoc`.

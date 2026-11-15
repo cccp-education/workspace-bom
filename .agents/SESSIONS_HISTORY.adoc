@@ -856,3 +856,15 @@ vertes : academy `43670867999`, api-key-pool `43670873099`, dashboard
 workflow. **`bureau` réparé** (`d0e302b` : bloc `repositories` de projet
 supprimé, 2 `platform(BOM JitPack)` retirées — D5, versions explicites du
 catalogue local) + shim `0.0.19` (`f55a2b0`) ; compiles VERTS, aucune CI.
+
+== Session 360 (suite 3) — catalogue conventions 0.0.20 + dette bakery — 2026-11-15
+
+* Catalogue `conventions-plugin` `0.0.17 → 0.0.19` (`6641764`, CI 22/22) puis
+  `→ 0.0.20` (`11195bf`) : `conventions-plugin 0.0.20` enregistre
+  `verifyChannel` dans **toutes** les conventions (7 TestKit nouveaux), tag
+  `v0.0.20`, JitPack 200. `container-provision` repinné et `CHANNEL OK`.
+* `bakery` : adoption du catalogue relabellé `0.0.136` implémentée, vérifiée
+  verte localement, puis **revertée** (`ee496ac3` → `2c9451a5`) — les tags
+  JitPack des plugins cross-borough ne sont pas les commits Central du même
+  numéro (dérive `document 0.0.30` / DOC-OUT-2). CI verte après revert.
+  Audit : `bakery-plugin/.agents/sessions/279-…`.

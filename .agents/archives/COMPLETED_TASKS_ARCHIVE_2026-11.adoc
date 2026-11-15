@@ -372,3 +372,11 @@
 * `bureau` `d0e302b` : `repositories` de projet supprimés (DRM appliqué),
   2 `platform(BOM JitPack)` retirées (D5), shim `f55a2b0` ; compiles VERTS.
 * Trou de gate restant : `container-provision` (`.cucumber` seulement).
+
+== S-360 (suite 3) — catalogue conventions 0.0.20 ✅ ; dette bakery auditée
+
+* Catalogue `conventions-plugin` `0.0.19` (`6641764`) puis `0.0.20` (`11195bf`) ;
+  `0.0.20` enregistre `verifyChannel` dans **toutes** les conventions.
+* `container-provision` repinné `0.0.20`, `CHANNEL OK` (racine), compiles VERTS.
+* `bakery` : adoption du catalogue relabellé `0.0.136` revertée (dérive des
+  tags JitPack vs commits Central) — audit `bakery S-279`.
