@@ -882,3 +882,15 @@ miroirs) et `foundry/private` ; **Node aligné sur la LTS `26.13.1`**
 CI publiques vertes ; privé/office rouges préexistants (0 step, facturation).
 Reste : image `cccp-ci-base` encore Node 22 (rebuild + re-pin digest), actions
 legacy `gradle/wrapper-validation-action@v1` / `gradle/gradle-build-action@v2`.
+
+== Session 360 (suite 5) — image CI sur Node 26 LTS — 2026-11-15
+
+`conventions-gradle/ci-image/Dockerfile` : `setup_22.x` → **`setup_26.x`**
+(Node 26 LTS, jamais le défaut du plugin). `ci-image` rebâtie et publiée
+(`43689467097` ✅, smoke test `node --version` = **v26.13.1**). Nouveau digest
+public **`sha256:03ead378…`** re-piné dans **21 fichiers / 20 dépôts** (public :
+academy, api-key-pool, bakery, capsule, codebase, codex, conventions, dashboard,
+document, graphify, hyperframes, jhipster, newpipe, planner, plantuml, readme,
+runner, slider, video-kernel, workspace-bom) ; CI vertes (capsule prouvé par
+`workflow_dispatch` `43690893554`). L'ancien digest `4722c1bc…` (Node 22) n'est
+plus référencé.
