@@ -839,3 +839,20 @@ Sous-agents dédiés sur la même session :
   `codebase`, `codex`, `dashboard`, `graphify`, `hyperframes` → conditionnel ;
   5 CI vertes (`dae06b9`, `939b05e`, `16b4a1c`, `c3684c4`, `dae63eb`).
 Rapport `.agents/sessions/360-gbl-014-5-rollout.adoc` (section « Compléments »).
+
+== Session 360 (suite 2) — rollout conventions 0.0.19 + bureau — 2026-11-15
+
+Shim `conventions-plugin 0.0.18 → 0.0.19` sur **21 dépôts** (lot A 10 +
+lot B 11, racine et sous-builds), une ligne par fichier, aucun test modifié,
+`workspace-bom` intact. Gates : `CHANNEL OK` partout où `verifyChannel` existe,
+**aucun finding** ; trou de gate confirmé pour `container-provision`
+(`.cucumber`, ni `.lint` ni `.publishing`) et les racines agrégateurs. CI
+vertes : academy `43670867999`, api-key-pool `43670873099`, dashboard
+`43670881553`, jhipster `43670884431`, video-kernel `43670893704`, codebase
+`43672561359`, codex `43672563626`, document `43672566477`, graphify
+`43672568653`, hyperframes `43672570615`, planner `43672573254`, plantuml
+`43672575259`, readme `43672577432`, runner `43672580220`, bakery
+`43672589887` + `43672589904`, conventions `43672592161` ; 6 dépôts sans
+workflow. **`bureau` réparé** (`d0e302b` : bloc `repositories` de projet
+supprimé, 2 `platform(BOM JitPack)` retirées — D5, versions explicites du
+catalogue local) + shim `0.0.19` (`f55a2b0`) ; compiles VERTS, aucune CI.

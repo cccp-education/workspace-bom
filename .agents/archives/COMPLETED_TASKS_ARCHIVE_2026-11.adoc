@@ -364,3 +364,11 @@
 * Hygiène : JitPack repo conditionnel dans `codebase` `dae06b9`, `codex`
   `939b05e`, `dashboard` `16b4a1c`, `graphify` `c3684c4`, `hyperframes`
   `dae63eb` (5 CI vertes).
+
+== S-360 (suite 2) — rollout `conventions-plugin 0.0.19` (21 dépôts) + `bureau` ✅
+
+* Shim `0.0.19` partout (lot A 10, lot B 11), `CHANNEL OK`, zéro finding,
+  aucune modification de test ; 16 CI vertes, 6 dépôts sans workflow.
+* `bureau` `d0e302b` : `repositories` de projet supprimés (DRM appliqué),
+  2 `platform(BOM JitPack)` retirées (D5), shim `f55a2b0` ; compiles VERTS.
+* Trou de gate restant : `container-provision` (`.cucumber` seulement).

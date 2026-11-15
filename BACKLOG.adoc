@@ -1508,3 +1508,23 @@ _Ce dépôt est **porteur du contrat** (`contracts.ci`, source set `test`) et du
 * Rapports `.agents/sessions/358-gbl-014-3a-catalogue-projection.adoc`,
   `359-gbl-014-3b-bom-channel.adoc` et `360-gbl-014-5-rollout.adoc`.
 
+
+== GBL-014-4 — rollout `conventions-plugin 0.0.19` (suite S-360)
+
+* ✅ **Rollout fait** sur **21 dépôts** (lot A 10, lot B 11, racine +
+  sous-builds) : shim `0.0.18 → 0.0.19`, une ligne par fichier, aucun test
+  modifié. `CHANNEL OK` partout où `verifyChannel` existe, **zéro finding**
+  `FORBIDDEN_*`/`MISSING_*`. CI vertes : academy, api-key-pool, dashboard,
+  jhipster, video-kernel, codebase, codex, document, graphify, hyperframes,
+  planner, plantuml, readme, runner, bakery, conventions ; 6 dépôts sans
+  workflow.
+* ✅ **`bureau` réparé** (`d0e302b`) : bloc `repositories {}` de projet supprimé
+  (le DRM des settings s'applique, JitPack conditionnel), **2**
+  `platform("com.github.cccp-education.workspace-bom:…")` retirées (BOM JitPack
+  importé comme `platform` — D5 interdit) ; versions alignées par le catalogue
+  local (junit-platform 1.14.3, cucumber 7.34.3, kotlin-test 2.4.10). Shim
+  `f55a2b0`. Compiles VERTS, aucune CI (dépôt sans workflow).
+* 🟡 Reste : **bump du catalogue** `conventions-plugin` (`0.0.17 → 0.0.19`,
+  `PlatformCatalogAlignmentTest` → **permission explicite**) ; gate de
+  `container-provision` (applique `.cucumber`, ni `.lint` ni `.publishing`) et
+  des racines agrégateurs ; adoption `.lint`/`.publishing` par `bureau`.
