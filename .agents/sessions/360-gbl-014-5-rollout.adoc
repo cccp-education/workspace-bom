@@ -1,7 +1,7 @@
-= Session 360 — GBL-014-5 : rollout du canal de publication (23 dépôts)
+= Session 360 — GBL-014-5 : rollout du canal de publication (20 dépôts publics + `workspace-bom`, + `bakery` et `conventions` en compléments)
 :date: 2026-11-15
-:scope: workspace-bom (propriétaire GBL-014) + 21 dépôts publics consommateurs
-:statut: ✅ migration poussée — 15/21 dépôts avec CI verte, 6 sans CI, `bakery` reporté
+:scope: workspace-bom (propriétaire GBL-014) + 20 dépôts publics consommateurs ; compléments `bakery` et `conventions`
+:statut: ✅ migration poussée — 15 runs CI verts (14 consommateurs + `workspace-bom`), 6 dépôts sans workflow ; `bakery` livré en complément
 
 == Contexte
 
@@ -40,7 +40,7 @@ if (publicationChannel == "jitpack") {
   chaque invocation Gradle ; `verifyChannel` ajouté aux jobs qui n'exécutent pas
   `check`/`build` **et** dont le build applique `.publishing`.
 
-== Dépôts migrés (21 + workspace-bom)
+== Dépôts migrés (20 dépôts publics + `workspace-bom`)
 
 [cols="2,1,2", options="header"]
 |===
@@ -175,3 +175,46 @@ verte porte sur ce commit, qui contient la migration.*
 * Aucune publication, aucun tag, aucun test lancé localement, zéro secret.
 * US-5 restant : `bakery` (US dédiée, cf. ci-dessus) ; US-4 gardes (2
   découvertes consignées) ; US-6 (envoi humain) ; US-7 (après 2026-12-01).
+
+== Compléments — sous-agents (même session 229)
+
+=== GBL-014-5b — `bakery` (sous-agent dédié)
+
+Livré (commit `4be0066c`) : settings conditionnels `-Pchannel` (racine +
+plugin), catalogue `ws` projeté par canal, **5** coordonnées Central en dur →
+accesseurs `ws.*`, **4** `platform(workspace-bom)` restreintes au canal
+`central`, versions explicites dans le catalogue local (`jackson`, `cucumber`,
+`junit-platform`, `logback`, `langchain4j`, `playwright`, `arrow`), shim
+`0.0.18`, `ci/run.sh` `-Pchannel`/`verifyChannel`. Garde
+`BakeryPluginPublicationTest` **non modifiée** (chaînes conservées).
+Preuves : compilations des 5 source sets VERTES, `verifyChannel` OK,
+`Test` `43663467157` ✅ 18/18, `Publish website` `43663467047` ✅.
+Reste : pin `workspaceCatalogVersion=v0.0.133` encore aux coordonnées Central
+(relabel `0.0.136` servi sans `v`) → assouplir la garde (permission) ou publier
+un tag `v0.0.136`. Rapport `bakery-plugin/.agents/sessions/278-…`.
+
+=== GBL-014-4 — gardes (sous-agent dédié, conventions)
+
+Livré en `conventions-plugin 0.0.19` (commits `33ebd81`, `5a1ae46`, `2acd6ae`,
+`667ec58` ; CI `43664464982`/`43664765633`/`43665282351` vertes) :
+`ChannelVerificationTask` enregistré aussi par `LintConventionsPlugin` (les
+builds `.lint` — `academy`, `dashboard`, `jhipster` — ont désormais
+`verifyChannel`, règle de transition inchangée) ; `ChannelConsistency`
+**sémantique** (marché à accolades/parenthèses équilibrées, commentaires et
+littéraux masqués : en `central`, seul le JitPack **hors** garde
+`if (publicationChannel == "jitpack")` est un finding) ; 13 tests unitaires +
+5 fonctionnels TestKit nouveaux, tests existants intacts. Tag annoté
+`v0.0.19`, JitPack HTTP 200 (POM/JAR/`.module` + marker). Rapport
+`conventions-plugin/.agents/sessions/051-…`. Reste : rollout du shim `0.0.19`
+chez les consommateurs, `bureau`/`container-provision` sans convention
+lint/publishing, bump catalogue (garde).
+
+=== Hygiène révélée par l'audit sémantique — 5 dépôts
+
+Le nouvel audit a détecté un `maven("https://jitpack.io")` **inconditionnel**
+dans le `dependencyResolutionManagement` de `codebase-plugin`, `codex-plugin`,
+`dashboard-plugin`, `graphify-plugin` et `hyperframes-plugin` (migration
+mécanique incomplète). Corrigé (repository conditionnel), compiles +
+`verifyChannel` VERTS, poussé : `codebase` `dae06b9`, `codex` `939b05e`,
+`dashboard` `16b4a1c`, `graphify` `c3684c4`, `hyperframes` `dae63eb` — **5 CI
+vertes**.

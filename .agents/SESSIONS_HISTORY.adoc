@@ -819,3 +819,23 @@ supplantant le DRM), `agile` root (`libs`), `ticket`/`agile` plugins (stubs).
 `ChannelConsistency` est textuel (faux positifs en `central`). Aucun test
 local, aucune publication, zéro secret. Rapport
 `.agents/sessions/360-gbl-014-5-rollout.adoc`.
+
+== Session 360 (suite) — GBL-014-5b / 5b / 4 : bakery, gardes, hygiène — 2026-11-15
+
+Sous-agents dédiés sur la même session :
+* **GBL-014-5b `bakery`** (`4be0066c`) : catalogue `ws` projeté par canal,
+  5 coordonnées Central en dur → accesseurs `ws.*`, 4 `platform(workspace-bom)`
+  restreintes à `central`, versions explicites dans le catalogue local, shim
+  `0.0.18`, `ci/run.sh` `-Pchannel`/`verifyChannel` ; garde
+  `BakeryPluginPublicationTest` non modifiée ; `Test` `43663467157` (18/18) et
+  `Publish website` `43663467047` vertes.
+* **GBL-014-4 `conventions-plugin 0.0.19`** (tag `v0.0.19`, JitPack 200) :
+  `verifyChannel` enregistré aussi par `LintConventionsPlugin` ;
+  `ChannelConsistency` **sémantique** (garde `if (publicationChannel ==
+  "jitpack")` ignorée en `central`) ; 13 UT + 5 FT TestKit nouveaux, tests
+  existants intacts ; CI `43664464982`/`43664765633`/`43665282351`.
+* **Hygiène** : `maven("https://jitpack.io")` inconditionnel en
+  `dependencyResolutionManagement` détecté par l'audit sémantique sur
+  `codebase`, `codex`, `dashboard`, `graphify`, `hyperframes` → conditionnel ;
+  5 CI vertes (`dae06b9`, `939b05e`, `16b4a1c`, `c3684c4`, `dae63eb`).
+Rapport `.agents/sessions/360-gbl-014-5-rollout.adoc` (section « Compléments »).

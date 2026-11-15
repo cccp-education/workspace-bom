@@ -1,63 +1,58 @@
 = PROMPT_REPRISE — MEMPHIS (workspace-bom)
 
-== Session 360 terminée — GBL-014-5 : rollout du canal (21 dépôts)
+== Session 360 terminée — GBL-014-5 / 5b / 4
 
-* **Migration poussée** sur **21 dépôts** (+ `workspace-bom` propriétaire) :
-  `settings.gradle.kts` (racine **et** sous-build) conditionnels sur
-  `-Pchannel` (défaut `jitpack`), dépôt JitPack + shim `useModule(...)`
-  **seulement** en `jitpack`, shim bumpé **`0.0.18`**, `ci/run.sh` passe
-  `-Pchannel` et `verifyChannel` quand le build applique `.publishing`.
-  Avec `capsule` (S-227) et `slider` (S-083), **23 dépôts** sont projetés.
-* **Preuves CI vertes** (run du commit) : `workspace-bom` `43660555075`,
-  `codebase` `43660581478`, `codex` `43660583819`, `document` `43660592324`,
-  `plantuml` `43660608028`, `hyperframes` `43660600499`, `graphify`
-  `43660597309`, `readme` `43660609854`, `planner` `43660605330`,
-  `api-key-pool` `43660576312`, `video-kernel` `43660618970`, `dashboard`
-  `43660589621`, `jhipster` `43660602652`, `runner` `43660614282`, `academy`
-  (vert sur `b35da20`, contient la migration).
-* **6 dépôts sans workflow** (`bureau`, `container-provision`, `flow`,
-  `review`, `ticket`, `agile`) : preuve locale seulement (`compile*`,
-  `tasks`, `bash -n`).
-* **`bakery` reporté** : mélange structurel (catalogue JitPack + `platform`
-  BOM Central + 6 coordonnées Central en dur + 4 plateformes dans les source
-  sets). Retirer le `platform` seul laisserait des versions manquantes.
-  → **US dédiée `GBL-014-5b`** (projection des coordonnées), ou bascule
-  `central` après US-7.
-* **Échecs préexistants stash-prouvés** : `bureau-plugin` (ses `repositories`
-  de build supplantent le DRM des settings → BOM JitPack introuvable),
-  `agile` root (`Unresolved reference 'libs'`), `ticket-plugin`/`agile-plugin`
-  (stubs sans wrapper ni settings).
-
-== Découvertes pour US-4 (gardes)
-
-* `verifyChannel` n'existe **que** dans les builds appliquant
-  `education.cccp.build.publishing` → `academy`, `dashboard`, `jhipster`,
-  `bureau`, `container-provision` **n'ont aucune gate** de canal (settings
-  migrés, non gardés). Enregistrer `verifyChannel` dans `.lint` ou en faire
-  une tâche des conventions.
-* `ChannelConsistency` est **textuel** : en `central`, le corps du
-  `if (publicationChannel == "jitpack") { … }` conserve les chaînes
-  `https://jitpack.io` et `usemodule(` → `FORBIDDEN_*` si la configuration
-  aboutissait (elle n'aboutit pas : markers non publiés). Audit sémantique
-  ou marqueur à prévoir.
+* **US-5 ✅ hors `bakery`** : **20 dépôts publics + `workspace-bom`** (root + 10 contrats
+  N0) — settings conditionnels `-Pchannel` (défaut `jitpack`), JitPack repo +
+  shim `useModule(...)` seulement en `jitpack`, shim `0.0.18`, `ci/run.sh`
+  `-Pchannel` + `verifyChannel` (16 scripts). Avec `capsule`/`slider`, 23
+  dépôts projetés. **15 CI vertes** ; 6 dépôts sans workflow (`bureau`,
+  `container-provision`, `flow`, `review`, `ticket`, `agile`).
+* **US-5b ✅ `bakery`** (commit `4be0066c`) : catalogue `ws` par canal,
+  5 coordonnées Central → `ws.*`, 4 `platform(workspace-bom)` central-only,
+  versions explicites, shim `0.0.18`. Garde `BakeryPluginPublicationTest`
+  **non modifiée**. `Test` `43663467157` ✅ 18/18 + `Publish website`
+  `43663467047` ✅.
+* **US-4 ✅ `conventions-plugin 0.0.19`** (tag `v0.0.19`, JitPack 200) :
+  `verifyChannel` aussi enregistré par `.lint` (gate disponible pour
+  `academy`/`dashboard`/`jhipster`) ; `ChannelConsistency` **sémantique**
+  (garde `if (publicationChannel == "jitpack")` ignorée en `central`).
+* **Hygiène** : 5 dépôts avaient un `maven("https://jitpack.io")`
+  inconditionnel en DRM (`codebase`, `codex`, `dashboard`, `graphify`,
+  `hyperframes`) — corrigé, 5 CI vertes (`dae06b9`, `939b05e`, `16b4a1c`,
+  `c3684c4`, `dae63eb`).
 
 == Prochaine session 361 — options
 
-1. **`GBL-014-5b`** : projeter les coordonnées de `bakery` (catalogue `ws`
-   channel-aware, retrait des 4 `platform(Central)`, versionnement des 6
-   dépendances Central par le catalogue) — puis CI `Test` verte.
-2. **US-4** : consolidations des gardes (les 2 découvertes ci-dessus) +
-   preuve CI par canal.
-3. **US-6** : Sonatype 130791 — brouillon prêt (`.agents/sessions/228-…`),
-   **envoi humain** ; US-7 après le reset **2026-12-01**.
+1. **Rollout `conventions-plugin 0.0.19`** chez les consommateurs (shim
+   `0.0.18 → 0.0.19` dans les `settings.gradle.kts`, puis bump du catalogue
+   `conventions-plugin` ici) : donne la gate `verifyChannel` aux dépôts
+   `.lint`-only et active l'audit sémantique. Le bump catalogue exige de
+   **modifier `PlatformCatalogAlignmentTest`** → permission explicite.
+2. **`bureau` / `container-provision`** : aucune gate possible aujourd'hui
+   (pas de `.lint`/`.publishing`) ; `bureau` est en plus cassé à HEAD
+   (`bureau-plugin` : ses `repositories` de build supplantent le DRM →
+   BOM JitPack introuvable). Chantier dédié.
+3. **`bakery` dette** : pin `workspaceCatalogVersion=v0.0.133` encore aux
+   coordonnées Central — assouplir la garde (permission) ou publier un tag
+   `v0.0.136` du catalogue relabellé.
+4. **US-6** : Sonatype 130791 — brouillon prêt (`.agents/sessions/228-…`),
+   **envoi humain** ; **US-7** après le reset **2026-12-01**.
+
+== Échecs préexistants (stash-prouvés, ne pas imputer)
+
+* `bureau-plugin` (repositories de build supplantant le DRM), `agile` root
+  (`Unresolved reference 'libs'`), stubs `ticket-plugin`/`agile-plugin`
+  (ni wrapper ni settings).
 
 == Preuves locales (build, pas tests)
 
-* 10 contrats N0 : `compileKotlin compileTestKotlin -Pchannel=jitpack` VERTS
+* 10 contrats N0 `compileKotlin compileTestKotlin -Pchannel=jitpack` VERTS
   (`runtime-contracts` exige `publishToMavenLocal` des 2 siblings runtime —
   c'est ce que fait `ci/run.sh test`).
 * `verifyBomChannel` + `verifyCatalogueChannels` VERTS ;
-  `CHANNEL OK: settings.gradle.kts is consistent with channel=jitpack`.
+  `CHANNEL OK: settings.gradle.kts is consistent with channel=jitpack`
+  (prouvé aussi dans les logs CI `codebase` et `plantuml`).
 
 == Règles dures
 

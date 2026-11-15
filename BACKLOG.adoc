@@ -1486,10 +1486,25 @@ _Ce dépôt est **porteur du contrat** (`contracts.ci`, source set `test`) et du
   `platform` BOM Central + 6 coordonnées Central en dur + 4 plateformes).
   Échecs préexistants stash-prouvés : `bureau-plugin` (repositories du build
   supplantant le DRM), `agile` root (`libs`), stubs `ticket`/`agile`.
-* **US-4 découvertes (S-360)** : `verifyChannel` n'existe que dans les builds
-  `.publishing` (aucune gate pour `academy`/`dashboard`/`jhipster`/`bureau`/
-  `container-provision`) ; `ChannelConsistency` est **textuel** (faux positifs
-  `FORBIDDEN_*` en `central`, inopérant aujourd'hui).
+* **US-4 ✅ S-360 (conventions `0.0.19`)** : `verifyChannel` enregistré aussi
+  par `LintConventionsPlugin` (gate disponible pour les builds `.lint` seul :
+  `academy`, `dashboard`, `jhipster`) et `ChannelConsistency` **sémantique**
+  (en `central`, les références JitPack dans la garde
+  `if (publicationChannel == "jitpack") { … }` sont ignorées) ; 13 UT + 5 FT
+  TestKit nouveaux. Tag `v0.0.19`, JitPack HTTP 200. Restent : rollout du shim
+  `0.0.19` chez les consommateurs + bump catalogue (garde
+  `PlatformCatalogAlignmentTest`), `bureau`/`container-provision` (aucune
+  convention de publication/lint).
+* **US-5b ✅ S-360 (`bakery`)** : catalogue `ws` projeté par canal,
+  5 coordonnées Central en dur → accesseurs `ws.*`, 4 `platform(workspace-bom)`
+  restreintes à `central`, versions explicites dans le catalogue local, shim
+  `0.0.18`. Garde `BakeryPluginPublicationTest` non modifiée. `Test`
+  `43663467157` (18/18) + `Publish website` `43663467047`. Dette : pin
+  `workspaceCatalogVersion=v0.0.133` encore aux coordonnées Central.
+* **Hygiène S-360** : `maven("https://jitpack.io")` inconditionnel en
+  `dependencyResolutionManagement` corrigé sur `codebase` `dae06b9`, `codex`
+  `939b05e`, `dashboard` `16b4a1c`, `graphify` `c3684c4`, `hyperframes`
+  `dae63eb` (5 CI vertes).
 * Rapports `.agents/sessions/358-gbl-014-3a-catalogue-projection.adoc`,
   `359-gbl-014-3b-bom-channel.adoc` et `360-gbl-014-5-rollout.adoc`.
 

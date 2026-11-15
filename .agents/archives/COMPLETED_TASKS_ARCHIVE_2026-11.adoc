@@ -353,3 +353,14 @@
   6 dépôts sans workflow ; `bakery` reporté (US 5b) ;
   échecs préexistants stash-prouvés (`bureau`, `agile`, stubs `ticket`/`agile`).
 * Rapport `.agents/sessions/360-gbl-014-5-rollout.adoc`.
+
+== S-360 (suite) — GBL-014-5b + GBL-014-4 + hygiène DRM ✅
+
+* `bakery` (`4be0066c`) : catalogue `ws` par canal, 5 coordonnées → `ws.*`,
+  4 `platform` central-only, shim `0.0.18`, `ci/run.sh` ; `Test`
+  `43663467157` (18/18) + `Publish website` `43663467047`.
+* `conventions-plugin 0.0.19` (tag `v0.0.19`) : `verifyChannel` en `.lint`,
+  `ChannelConsistency` sémantique (13 UT + 5 FT ajoutés).
+* Hygiène : JitPack repo conditionnel dans `codebase` `dae06b9`, `codex`
+  `939b05e`, `dashboard` `16b4a1c`, `graphify` `c3684c4`, `hyperframes`
+  `dae63eb` (5 CI vertes).
