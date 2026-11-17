@@ -311,3 +311,16 @@ réalignement amont (tags JitPack == commits Central).
   `workflow_dispatch` `43690893554`).
 * **Preuves** : 20 CI publiques vertes ; privé/office rouges **préexistants**
   (0 step, blocage facturation/spending — annotation GitHub explicite).
+
+=== Audit des journaux CI (avant reprise de compilation)
+
+Tous les runs des dépôts altérés ont été relus (`gh run view --log`) :
+**0 alerte « Node.js 20 is deprecated »** après bump des actions, y compris
+`magic-stick` et `conventions/ci-image` où subsistaient les actions `docker/*`
+en Node 20 — corrigées en `build-push-action@v7`, `login-action@v4`,
+`setup-buildx-action@v4`, `setup-qemu-action@v4` (`ee2ed31`, `5705b89` ;
+`Build ISO` `44197533337` ✅, `ci-image` `44197536562` ✅). Les seules
+dépréciations restantes sont les bannières Gradle génériques (MEM-WARN-ZERO) et
+`sun.misc.Unsafe` (JDK 25) ; les lignes `::error::` des journaux sont des
+**échos de sources** (action `verify-gradle-wrapper`) et des erreurs attendues
+de fixtures (Tesseract absent, `validation=FAIL`), pas des échecs.
