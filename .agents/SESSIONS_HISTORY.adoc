@@ -894,3 +894,16 @@ document, graphify, hyperframes, jhipster, newpipe, planner, plantuml, readme,
 runner, slider, video-kernel, workspace-bom) ; CI vertes (capsule prouvé par
 `workflow_dispatch` `43690893554`). L'ancien digest `4722c1bc…` (Node 22) n'est
 plus référencé.
+
+== Session 360 (suite 6) — audit des journaux CI, actions Docker — 2026-11-15
+
+Audit `gh run view --log` des dernières exécutions de tous les dépôts altérés :
+les actions `docker/*` restaient en Node 20 (`magic-stick` : `build-push@v5`,
+`login@v3`, `setup-buildx@v3`, `setup-qemu@v3` ; `conventions/ci-image` :
+`build-push@v6`, `login@v3`, `setup-buildx@v3`) → bump `@v7`/`@v4`/`@v4`/`@v4`
+(`ee2ed31`, `5705b89` ; `Build ISO` `44197533337` ✅, `ci-image` `44197536562` ✅).
+**0 alerte « Node.js 20 »** sur le périmètre. Restent les bannières Gradle
+(MEM-WARN-ZERO) et `sun.misc.Unsafe` (JDK 25) ; les `::error::` des journaux
+sont des échos de sources et des erreurs de fixtures attendues. L'image
+`latest` est repassée à `sha256:db41c938…` (contenu identique) ; pins
+consommateurs inchangés (`sha256:03ead378…`).

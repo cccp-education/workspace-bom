@@ -380,3 +380,10 @@
 * `container-provision` repinné `0.0.20`, `CHANNEL OK` (racine), compiles VERTS.
 * `bakery` : adoption du catalogue relabellé `0.0.136` revertée (dérive des
   tags JitPack vs commits Central) — audit `bakery S-279`.
+
+== S-360 (suite 6) — audit logs CI + actions Docker node24 ✅
+
+* `docker/build-push-action@v7`, `login@v4`, `setup-buildx@v4`,
+  `setup-qemu@v4` (`ee2ed31` magic-stick, `5705b89` conventions).
+* `Build ISO` `44197533337` ✅, `ci-image` `44197536562` ✅ ;
+  **0 alerte « Node.js 20 »** sur tout le périmètre audité.
